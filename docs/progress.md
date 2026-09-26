@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 3 complete (19 tests green), proceeding to Phase 4
+**Status:** Phase 4 complete (47 tests green), proceeding to Phase 5
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -28,8 +28,8 @@ and its commit lands.
 | 0 | Repository initialization | complete | `b5dc646` (docs), `pending` (this doc) |
 | 1 | Project skeleton and tooling | complete | `cc0b9dc` |
 | 2 | Domain models: state, actions, events | complete | `0270402` |
-| 3 | Event system and persistence (SQLite + JSONL) | complete | `pending` |
-| 4 | Game engine and generic phase engine | pending | |
+| 3 | Event system and persistence (SQLite + JSONL) | complete | `be2fa02` |
+| 4 | Game engine and generic phase engine | complete | `pending` |
 | 5 | Communication routing and information projection | pending | |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
 | 7 | LLM gateway and FakeLLMProvider | pending | |
@@ -107,15 +107,15 @@ events written to JSONL are append-only and replayable.
 
 ### Phase 4: Game engine and generic phase engine
 
-- [ ] `game_engine.py`: owns state, assigns roles, validates and applies
+- [x] `game_engine.py`: owns state, assigns roles, validates and applies
   actions, emits events, computes win conditions (spec §5).
-- [ ] `phase_engine.py` with `Phase` protocol (`run(context) ->
+- [x] `phase_engine.py` with `Phase` protocol (`run(context) ->
   PhaseResult`) and configurable phase ordering (spec §7).
-- [ ] `rules.py` rule checks (alive checks, self-vote prohibition,
+- [x] `rules.py` rule checks (alive checks, self-vote prohibition,
   role-restricted actions, phase limits).
-- [ ] Deterministic seeded RNG for role assignment.
-- [ ] Engine never generates natural language (spec §5, §40).
-- [ ] Unit tests: role assignment distribution, phase transitions, vote
+- [x] Deterministic seeded RNG for role assignment.
+- [x] Engine never generates natural language (spec §5, §40).
+- [x] Unit tests: role assignment distribution, phase transitions, vote
   counting, tie handling, elimination, win conditions.
 
 **Verification:** `pytest tests/unit/test_engine*.py` passes; engine
@@ -273,3 +273,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Phase 1 complete: skeleton, pyproject, configs, personas, smoke test (1 passed). |
 | 2026-09-26 | Phase 2 complete: domain models (state, actions, channels, events), 12 unit tests passed. |
 | 2026-09-26 | Phase 3 complete: JSONL event log, SQLite schema + 11 repositories, snapshots; 19 tests passed. |
+| 2026-09-26 | Phase 4 complete: game engine, rule validator, generic phase engine, config loader; 47 tests passed. |
