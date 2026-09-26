@@ -1,0 +1,272 @@
+# Project Progress: LLM Social Simulation Framework
+
+**Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
+**Status:** Phase 0 complete, awaiting Phase 1 approval
+**Started:** 2026-09-26
+
+This document tracks implementation progress. Each phase ends with a git
+commit. A phase is only marked complete when its verification step passes
+and its commit lands.
+
+------------------------------------------------------------------------
+
+## Conventions
+
+- One git commit per completed phase, prefixed `phase-N: ...`.
+- A phase moves from `pending` to `in progress` to `complete` only after
+  its verification step runs and its commit lands.
+- Tests are written alongside the phase they verify, not deferred.
+- Spec section references (e.g. `spec §29`) point into
+  `02-framework-requirements-and-scaffolding-spec.md`.
+
+------------------------------------------------------------------------
+
+## Phase overview
+
+| Phase | Title | Status | Commit |
+|-------|-------|--------|--------|
+| 0 | Repository initialization | complete | `b5dc646` (docs), `pending` (this doc) |
+| 1 | Project skeleton and tooling | pending | |
+| 2 | Domain models: state, actions, events | pending | |
+| 3 | Event system and persistence (SQLite + JSONL) | pending | |
+| 4 | Game engine and generic phase engine | pending | |
+| 5 | Communication routing and information projection | pending | |
+| 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
+| 7 | LLM gateway and FakeLLMProvider | pending | |
+| 8 | Traitors environment (phases, rules, win conditions) | pending | |
+| 9 | Deterministic test suite (unit, security, integration) | pending | |
+| 10 | OllamaProvider | pending | |
+| 11 | CLI, config-driven run, run artifacts | pending | |
+| 12 | Replay, inspect, list-games | pending | |
+
+Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
+six-player game on the fake backend with proven information boundaries.
+Phases 10-11 completing is **Milestone 2** (spec §34): same game on
+Ollama with `game.json`, `events.jsonl`, `transcript.txt`,
+`metrics.json` outputs.
+
+------------------------------------------------------------------------
+
+## Phase details
+
+### Phase 0: Repository initialization
+
+- [x] `git init`, branch `main`.
+- [x] Commit research notes and scaffolding spec.
+- [x] Commit this progress document.
+
+**Verification:** `git log` shows the doc commits.
+
+### Phase 1: Project skeleton and tooling
+
+- [ ] `pyproject.toml` with package `simulation` under `src/`, Python 3.11+,
+  dependencies: `pydantic`, `pyyaml`, `typer` (or `argparse`), `pytest`.
+- [ ] Directory tree per spec §41: `src/simulation/{engine,agents,memory,
+  beliefs,relationships,communication,actions,models,persistence,
+  experiments,environments/traitors,cli}`, `tests/{unit,integration,
+  security}`, `configs/{traitors,personas}`, `runs/`, `docs/`.
+- [ ] Package `__init__.py` files, empty placeholder modules.
+- [ ] `.gitignore` (`runs/`, `__pycache__/`, `.venv/`, `*.db`).
+- [ ] `README.md` with run instructions stub.
+- [ ] `configs/traitors/basic.yaml` initial draft (6 players, 2 traitors,
+  5 rounds, phase list, llm section per spec §22, §32).
+- [ ] Persona config files in `configs/personas/` (analytical, politician,
+  observer, contrarian, loyalist, opportunist).
+
+**Verification:** `pip install -e ".[dev]"` succeeds, `pytest` collects
+zero tests without error, `python -c "import simulation"` works.
+
+### Phase 2: Domain models: state, actions, events
+
+- [ ] Pydantic models: `GameState`, `PlayerState`, `Role`, `GamePhase`,
+  `MissionState` (spec §6).
+- [ ] `ActionType` enum with MVP subset: `PUBLIC_MESSAGE`,
+  `PRIVATE_MESSAGE`, `VOTE`, `TRAITOR_KILL` (spec §8).
+- [ ] Structured `Action` model (action, target, content, confidence).
+- [ ] Event models for the full event vocabulary (spec §23).
+- [ ] `Message` model with `Channel` enum: `PUBLIC`, `PRIVATE`,
+  `ROLE_PRIVATE`, `SYSTEM` (spec §9).
+- [ ] Unit tests: model validation, enum coverage, event serialization.
+
+**Verification:** `pytest tests/unit/test_models*.py` passes.
+
+### Phase 3: Event system and persistence (SQLite + JSONL)
+
+- [ ] Append-only JSONL event log writer (spec §23).
+- [ ] SQLite schema and repositories: `games`, `agents`,
+  `agent_memories`, `messages`, `events`, `votes`, `eliminations`,
+  `relationships`, `beliefs`, `snapshots`, `experiments` (spec §24).
+- [ ] Repositories kept separate from domain logic.
+- [ ] State snapshot creation (for later replay/counterfactuals,
+  spec §44).
+- [ ] Unit tests: event round-trip serialization, repository CRUD,
+  snapshot restore.
+
+**Verification:** `pytest tests/unit/test_persistence*.py` passes;
+events written to JSONL are append-only and replayable.
+
+### Phase 4: Game engine and generic phase engine
+
+- [ ] `game_engine.py`: owns state, assigns roles, validates and applies
+  actions, emits events, computes win conditions (spec §5).
+- [ ] `phase_engine.py` with `Phase` protocol (`run(context) ->
+  PhaseResult`) and configurable phase ordering (spec §7).
+- [ ] `rules.py` rule checks (alive checks, self-vote prohibition,
+  role-restricted actions, phase limits).
+- [ ] Deterministic seeded RNG for role assignment.
+- [ ] Engine never generates natural language (spec §5, §40).
+- [ ] Unit tests: role assignment distribution, phase transitions, vote
+  counting, tie handling, elimination, win conditions.
+
+**Verification:** `pytest tests/unit/test_engine*.py` passes; engine
+steps through phases with scripted actions, no LLM involved.
+
+### Phase 5: Communication routing and information projection
+
+- [ ] Message router for `PUBLIC`, `PRIVATE`, `ROLE_PRIVATE`, `SYSTEM`
+  channels (spec §9).
+- [ ] Structural visibility enforcement: non-recipients can never read a
+  message (not prompt-based) (spec §9).
+- [ ] `InformationProjector.project(game_state, agent_id)` producing
+  agent-specific views (spec §10).
+- [ ] Security tests: faithful cannot see traitor private chat, traitor
+  cannot see unrelated private chat, hidden roles never appear in public
+  observations, dead agents excluded (spec §29).
+
+**Verification:** `pytest tests/security/` passes, zero leakage cases.
+
+### Phase 6: Agent runtime: persona, memory, beliefs, relationships, prompts
+
+- [ ] `Agent` stateful object: identity, persona, role, goals, memory,
+  beliefs, relationships, model handle (spec §11).
+- [ ] Runtime loop: observation -> memory retrieval -> prompt build ->
+  LLM call -> parse -> validate -> return action (never executes it).
+- [ ] Persona as YAML data with trait-to-instruction translation
+  (spec §12).
+- [ ] Goals separated from personality, role goals injectable (spec §13).
+- [ ] `Memory` interface: `remember`, `retrieve`, `summarize`; recent
+  buffer + periodic summary, SQLite-backed, no vector DB (spec §14).
+- [ ] Structured `Beliefs` state (spec §15) and `Relationships` state
+  (spec §16), optional at runtime.
+- [ ] Prompt builder as separate component with composition per spec §20.
+- [ ] Structured output parsing with malformed-output retry prompt
+  (spec §21).
+- [ ] Unit tests: prompt builder composition, memory persistence,
+  belief/relationship updates, output parsing and retry.
+
+**Verification:** `pytest tests/unit/test_agents*.py
+tests/unit/test_memory*.py tests/unit/test_prompt*.py` passes.
+
+### Phase 7: LLM gateway and FakeLLMProvider
+
+- [ ] `LLMProvider` protocol: `generate(messages, response_schema,
+  config) -> LLMResponse` (spec §17).
+- [ ] `ModelConfig` normalization (temperature, max_tokens, timeout,
+  provider-specific options) (spec §19).
+- [ ] `FakeLLMProvider` returning predetermined structured actions
+  (spec §30).
+- [ ] Concurrency limiting (`max_concurrency`) in gateway (spec §18).
+- [ ] No provider-specific code in agent or engine (spec §17).
+- [ ] Unit tests: fake provider script playback, config parsing,
+  concurrency cap.
+
+**Verification:** `pytest tests/unit/test_models*.py` passes without any
+Ollama running.
+
+### Phase 8: Traitors environment (phases, rules, win conditions)
+
+- [ ] `environments/traitors/game.py`, `rules.py`, `phases.py`.
+- [ ] Phase implementations: `MISSION`, `PUBLIC_DISCUSSION`,
+  `PRIVATE_CHAT`, `ROUND_TABLE`, `VOTING`, `ELIMINATION`,
+  `TRAITOR_NIGHT`, `GAME_END` (spec §7).
+- [ ] 6 players, 2 traitors, 4 faithful, 5 rounds max; mission
+  abstraction; night kill; majority-vote elimination; win conditions
+  (spec §2).
+- [ ] Communication limits from config (`public_messages_per_agent`,
+  `private_messages_per_agent`).
+- [ ] Environment implementing the generic `Environment` interface
+  (spec §38) so future games can reuse the runtime.
+- [ ] Unit tests: phase ordering, mission resolution, night kill
+  targeting, win detection for both teams.
+
+**Verification:** `pytest tests/unit/test_traitors*.py` passes.
+
+### Phase 9: Deterministic test suite (unit, security, integration) — Milestone 1
+
+- [ ] Full unit coverage sweep per spec §29 list.
+- [ ] Security-style tests complete per spec §29.
+- [ ] Integration test: 4-agent miniature game on `FakeLLMProvider`,
+  fully deterministic, no Ollama (spec §29, §30).
+- [ ] Full six-player game end-to-end on fake backend (spec §33).
+- [ ] Leakage audit: scan all produced observations for role strings.
+
+**Verification:** `pytest` green across `tests/`; integration test
+produces a complete game with a winner and consistent event log.
+
+**Milestone 1 gate:** do not proceed to Ollama until this passes.
+
+### Phase 10: OllamaProvider
+
+- [ ] `OllamaProvider` implementing `LLMProvider` over local Ollama HTTP
+  API (spec §17, §18).
+- [ ] Model config: `provider: ollama`, `model: gpt-oss:20b`,
+  `max_concurrency: 2` defaults (spec §18, §22).
+- [ ] Timeout, error handling, structured-output enforcement.
+- [ ] Tests against a mock HTTP layer (no live Ollama in CI).
+
+**Verification:** unit tests pass; one manual smoke call to local Ollama
+documented in commit message.
+
+### Phase 11: CLI, config-driven run, run artifacts — Milestone 2
+
+- [ ] CLI commands: `run <config>`, `batch <config> --games N`,
+  `replay <game_id>`, `inspect <game_id>`, `list-games` (spec §31).
+- [ ] `python -m simulation run configs/traitors/basic.yaml` produces a
+  complete game (spec §43).
+- [ ] Run artifacts per game under `runs/<game_id>/`: `config.yaml`,
+  `events.jsonl`, `transcript.json`, `metrics.json` (spec §34, §43).
+- [ ] Experiment identity recorded: `experiment_id`, `game_id`,
+  `random_seed`, `model`, `model_parameters`, `prompt_version`,
+  `persona_version`, `game_rules_version`, `memory_strategy`
+  (spec §27).
+- [ ] Batch runner with deterministic per-game seeds (spec §26).
+- [ ] Optional Langfuse flag wired as no-op when disabled (spec §28).
+
+**Verification:** fake-backend run from the CLI produces the full output
+tree from spec §43; one real Ollama run documented.
+
+**Milestone 2 gate.**
+
+### Phase 12: Replay, inspect, list-games
+
+- [ ] `simulation replay <game_id>` reconstructs visible state from
+  events (spec §25).
+- [ ] `simulation inspect <game_id> --agent alice` shows an agent's
+  projected view.
+- [ ] `simulation snapshot <game_id> --round 3` (from snapshots stored
+  in Phase 3).
+- [ ] Tests: replay determinism (same events -> same reconstructed
+  state).
+
+**Verification:** `pytest tests/unit/test_replay*.py` passes; CLI replay
+of an integration-test game matches its recorded final state.
+
+------------------------------------------------------------------------
+
+## Later milestones (tracked, not yet scheduled)
+
+- **Milestone 3** (spec §35): batch 10-100 games, aggregate winner,
+  placement, survival time, vote counts, message counts, public/private
+  ratio, betrayals, alliance events.
+- **Milestone 4** (spec §36): relationship tracking live, structured
+  beliefs live, better memory, Langfuse, full replay tooling.
+- **Milestone 5** (spec §37): providers beyond Ollama (OpenAI,
+  Anthropic, Gemini, OpenRouter) behind the same gateway.
+
+------------------------------------------------------------------------
+
+## Change log
+
+| Date | Change |
+|------|--------|
+| 2026-09-26 | Repo initialized (`main`), specs committed, progress doc created, phase plan defined (Phases 0-12). |
