@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 8 complete (105 tests green), proceeding to Phase 9 (Milestone 1 gate)
+**Status:** MILESTONE 1 REACHED (110 tests green) - awaiting go-ahead for Phase 10 (Ollama)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -34,8 +34,8 @@ and its commit lands.
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | complete | `1820c57` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
 | 7 | LLM gateway and FakeLLMProvider | complete | `5d5a14b` |
-| 8 | Traitors environment (phases, rules, win conditions) | complete | `pending` |
-| 9 | Deterministic test suite (unit, security, integration) | pending | |
+| 8 | Traitors environment (phases, rules, win conditions) | complete | `10607b5` |
+| 9 | Deterministic test suite (unit, security, integration) | complete | `pending` |
 | 10 | OllamaProvider | pending | |
 | 11 | CLI, config-driven run, run artifacts | pending | |
 | 12 | Replay, inspect, list-games | pending | |
@@ -194,12 +194,12 @@ Ollama running.
 
 ### Phase 9: Deterministic test suite (unit, security, integration) — Milestone 1
 
-- [ ] Full unit coverage sweep per spec §29 list.
-- [ ] Security-style tests complete per spec §29.
-- [ ] Integration test: 4-agent miniature game on `FakeLLMProvider`,
+- [x] Full unit coverage sweep per spec §29 list.
+- [x] Security-style tests complete per spec §29.
+- [x] Integration test: 4-agent miniature game on `FakeLLMProvider`,
   fully deterministic, no Ollama (spec §29, §30).
-- [ ] Full six-player game end-to-end on fake backend (spec §33).
-- [ ] Leakage audit: scan all produced observations for role strings.
+- [x] Full six-player game end-to-end on fake backend (spec §33).
+- [x] Leakage audit: scan all produced observations for role strings.
 
 **Verification:** `pytest` green across `tests/`; integration test
 produces a complete game with a winner and consistent event log.
@@ -280,3 +280,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Phase 6 code complete: persona/goals/beliefs/relationships/memory/prompt builder/action parser; 88 tests passed. Agent decision loop deferred to Phase 7 (needs LLM gateway). |
 | 2026-09-27 | Phase 7 complete: LLMProvider protocol, ModelConfig, LLMGateway concurrency cap, FakeLLMProvider, AgentRuntime decide loop with correction retries; 99 tests passed. |
 | 2026-09-27 | Phase 8 complete: TraitorsEnvironment, all 7 phases, legal-target rules, votes/eliminations persisted; 105 tests passed. |
+| 2026-09-27 | Phase 9 complete = MILESTONE 1: 4-agent and 6-player full games on fake backend, deterministic replay, leakage audit over 42 observed views; 110 tests passed. |
