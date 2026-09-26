@@ -26,6 +26,8 @@ class ModelConfig(StrictModel):
     max_tokens: int = 512
     timeout_seconds: int = 120
     reasoning_effort: str = "medium"
+    # Local Ollama server (or any OpenAI-compatible proxy base later).
+    base_url: str = "http://localhost:11434"
     options: dict[str, Any] = Field(default_factory=dict)
 
 

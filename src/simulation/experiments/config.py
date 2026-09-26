@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import yaml
 from pydantic import Field, model_validator
 
 from simulation.engine.state import GamePhase
 from simulation.models.base import StrictModel
+from simulation.models.llm import ModelConfig
 
 # Phase names that make up the configurable round loop (spec section 7).
 # SETUP opens the game and GAME_END closes it, so neither is configurable.
@@ -53,13 +54,35 @@ class CommunicationSettings(StrictModel):
 
 
 class LLMSettings(StrictModel):
+    """The `llm:` YAML block: model selection and model details.
+
+    Everything about which model runs and how (spec section 19, 22)
+    lives here so the game config stays the single source of truth.
+    """
+
     provider: str = "ollama"
     model: str = "gpt-oss:20b"
+    base_url: str = "http://localhost:11434"
     temperature: float = 0.7
     max_tokens: int = 512
     reasoning_effort: str = "medium"
     timeout_seconds: int = 120
     max_concurrency: int = Field(default=2, ge=1)
+    # Provider-specific knobs the normalized fields do not cover.
+    options: dict[str, Any] = Field(default_factory=dict)
+
+    def to_model_config(self) -> ModelConfig:
+        """Build the provider-facing normalized model config."""
+        return ModelConfig(
+            provider=self.provider,
+            name=self.model,
+            base_url=self.base_url,
+            temperature=self.temperature,
+            max_tokens=self.max_tokens,
+            timeout_seconds=self.timeout_seconds,
+            reasoning_effort=self.reasoning_effort,
+            options=dict(self.options),
+        )
 
 
 class ObservabilitySettings(StrictModel):
