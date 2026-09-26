@@ -40,6 +40,12 @@ python -m simulation batch configs/traitors/basic.yaml --games 10 --seed 100 --p
 Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 {ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
 
+Game rules are config-driven as well: `game.players`, `game.traitors`,
+`game.max_rounds`, the `phases:` ordering, and recruitment
+(`game.recruit_on_banish` converts a living faithful player when the
+round table banishes a traitor; `game.max_recruits` caps it, 0 means
+no cap).
+
 Each game writes `runs/<game_id>/`:
 
 ```text

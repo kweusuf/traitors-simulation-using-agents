@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 1 REACHED (110 tests green) - awaiting go-ahead for Phase 10 (Ollama)
+**Status:** MILESTONE 2 REACHED (Phases 0-13 complete, 197 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -32,13 +32,13 @@ and its commit lands.
 | 4 | Game engine and generic phase engine | complete | `fd0ddc4` |
 | 5 | Communication routing and information projection | complete | `1c8e337` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | complete | `1820c57` |
-| 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
 | 7 | LLM gateway and FakeLLMProvider | complete | `5d5a14b` |
 | 8 | Traitors environment (phases, rules, win conditions) | complete | `10607b5` |
-| 9 | Deterministic test suite (unit, security, integration) | complete | `pending` |
-| 10 | OllamaProvider | complete | `2c27c8e` (code), `pending` (this doc) |
-| 11 | CLI, config-driven run, run artifacts | pending | |
-| 12 | Replay, inspect, list-games | pending | |
+| 9 | Deterministic test suite (unit, security, integration) | complete | `511a6f5` |
+| 10 | OllamaProvider | complete | `2c27c8e` (code), `8fb7d21` (docs) |
+| 11 | CLI, config-driven run, run artifacts | complete | `f9da4fe` |
+| 12 | Replay, inspect, list-games | complete | `f9da4fe` |
+| 13 | Traitor recruitment on banishment | complete | `b9d540c` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -142,9 +142,9 @@ steps through phases with scripted actions, no LLM involved.
   beliefs, relationships, model handle (spec §11).
 - [x] Runtime loop: observation -> memory retrieval -> prompt build ->
   LLM call -> parse -> validate -> return action (never executes it).
-- [ ] Persona as YAML data with trait-to-instruction translation
+- [x] Persona as YAML data with trait-to-instruction translation
   (spec §12).
-- [ ] Goals separated from personality, role goals injectable (spec §13).
+- [x] Goals separated from personality, role goals injectable (spec §13).
 - [x] `Memory` interface: `remember`, `retrieve`, `summarize`; recent
   buffer + periodic summary, SQLite-backed, no vector DB (spec §14).
 - [x] Structured `Beliefs` state (spec §15) and `Relationships` state
@@ -213,9 +213,9 @@ produces a complete game with a winner and consistent event log.
 - [x] Model selection and model details are config-driven (spec §18,
   §19, §22): `LLMSettings` gained `base_url` and `options`, and
   `LLMSettings.to_model_config()` builds the provider-facing
-  `ModelConfig`. Current model is `hauhau-qwen:latest`; its details
-  live in `configs/traitors/basic.yaml`, which is deliberately left
-  uncommitted for now.
+  `ModelConfig`. Current model is `hauhau-qwen:latest`, recorded in
+  `configs/traitors/basic.yaml`. Machine-specific endpoints (a remote
+  Ollama host) go in a `*.local.yaml` copy that `.gitignore` excludes.
 - [x] Timeout, transport/HTTP/malformed-response error handling
   (`OllamaError`), JSON-schema structured output (`format`).
 - [x] `reasoning_effort` normalized onto Ollama's `think` flag;
@@ -231,37 +231,81 @@ constrained reply parsed as an `action` in ~14s, 31 eval tokens.
 
 ### Phase 11: CLI, config-driven run, run artifacts — Milestone 2
 
-- [ ] CLI commands: `run <config>`, `batch <config> --games N`,
+- [x] CLI commands: `run <config>`, `batch <config> --games N`,
   `replay <game_id>`, `inspect <game_id>`, `list-games` (spec §31).
-- [ ] `python -m simulation run configs/traitors/basic.yaml` produces a
+- [x] `python -m simulation run configs/traitors/basic.yaml` produces a
   complete game (spec §43).
-- [ ] Run artifacts per game under `runs/<game_id>/`: `config.yaml`,
+- [x] Run artifacts per game under `runs/<game_id>/`: `config.yaml`,
   `events.jsonl`, `transcript.json`, `metrics.json` (spec §34, §43).
-- [ ] Experiment identity recorded: `experiment_id`, `game_id`,
+  The run also writes `game.json` and `transcript.txt`.
+- [x] Experiment identity recorded: `experiment_id`, `game_id`,
   `random_seed`, `model`, `model_parameters`, `prompt_version`,
   `persona_version`, `game_rules_version`, `memory_strategy`
   (spec §27).
-- [ ] Batch runner with deterministic per-game seeds (spec §26).
-- [ ] Optional Langfuse flag wired as no-op when disabled (spec §28).
+- [x] Batch runner with deterministic per-game seeds (spec §26).
+- [x] Optional Langfuse flag wired as no-op when disabled (spec §28):
+  `experiments/observability.py` ships `NullTracer` and says so when
+  `observability.enabled=true`.
 
 **Verification:** fake-backend run from the CLI produces the full output
-tree from spec §43; one real Ollama run documented.
+tree from spec §43 (`config.yaml`, `events.jsonl`, `game.json`,
+`transcript.json`, `transcript.txt`, `metrics.json`) with every
+identity field populated; one real Ollama run documented as
+`runs/game-003` (44 calls, 8,123 tokens, ~11 min against
+`hauhau-qwen:latest`).
 
-**Milestone 2 gate.**
+**Milestone 2 gate:** passed (with Phase 10).
 
 ### Phase 12: Replay, inspect, list-games
 
-- [ ] `simulation replay <game_id>` reconstructs visible state from
+- [x] `simulation replay <game_id>` reconstructs visible state from
   events (spec §25).
-- [ ] `simulation inspect <game_id> --agent alice` shows an agent's
+- [x] `simulation inspect <game_id> --agent alice` shows an agent's
   projected view.
-- [ ] `simulation snapshot <game_id> --round 3` (from snapshots stored
+- [x] `simulation snapshot <game_id> --round 3` (from snapshots stored
   in Phase 3).
-- [ ] Tests: replay determinism (same events -> same reconstructed
+- [x] Tests: replay determinism (same events -> same reconstructed
   state).
 
-**Verification:** `pytest tests/unit/test_replay*.py` passes; CLI replay
-of an integration-test game matches its recorded final state.
+**Verification:** `pytest tests/unit/test_replay*.py` passes; CLI
+replay of a fresh fake run matches its `game.json` on winner, roles
+and alive set; `snapshot --round 1` reads the stored snapshot from
+SQLite.
+
+Phases 11 and 12 landed in a single commit (`f9da4fe`) because
+`cli/main.py` serves both: `list-games` reads reconstructed state out
+of `experiments/replay.py`, so the two phases cannot be split into a
+buildable intermediate state.
+
+### Phase 13: Traitor recruitment on banishment
+
+Outside the original phase plan: a game rule the long game needs. When
+the round table banishes a traitor and `game.recruit_on_banish` is on,
+the banished traitor is asked for one `RECRUIT` action before the tally
+resolves and picks a living faithful player, who is converted before
+the win check runs. `game.max_recruits` caps conversions for the game
+(0 = no cap).
+
+- [x] `RECRUIT` action: target required, traitor-only, elimination
+  phase only, one per phase, rejected while recruitment is disabled.
+- [x] `ROLE_RECRUITED` event carried through replay, transcript,
+  metrics and CLI progress output.
+- [x] Engine holds the recruit offer until the banishment resolves, so
+  a last traitor taken off the board by vote can still hand over.
+- [x] Runner re-syncs agent roles, so a recruited player prompts and
+  plays as a traitor from then on.
+- [x] Config: `recruit_on_banish` / `max_recruits` on `GameSettings`;
+  off in `basic.yaml`, uncapped in `long_game.yaml`.
+- [x] Tests: `tests/unit/test_recruitment.py` (config, rules, engine
+  conversion and cap, phase wiring, prompt, role sync, replay, ten full
+  fake-backend games).
+
+**Verification:** 197 tests green. A fake run of the 21-player
+`long_game` config completes in 8 rounds with 477 calls, zero rejected
+actions, and a recruitment on every banishment, ending in a traitor
+win. Note the balance consequence: with no cap the faithful can never
+empty the traitor team by voting, so their only wins come from the
+round limit or from `max_recruits` being reached.
 
 ------------------------------------------------------------------------
 
@@ -293,3 +337,5 @@ of an integration-test game matches its recorded final state.
 | 2026-09-27 | Phase 8 complete: TraitorsEnvironment, all 7 phases, legal-target rules, votes/eliminations persisted; 105 tests passed. |
 | 2026-09-27 | Phase 9 complete = MILESTONE 1: 4-agent and 6-player full games on fake backend, deterministic replay, leakage audit over 42 observed views; 110 tests passed. |
 | 2026-09-27 | Phase 10 complete: OllamaProvider (JSON schema output, error handling, `think` mapping), config-driven model selection with `base_url`/`options`; 130 tests passed. `configs/traitors/basic.yaml` model details (`hauhau-qwen:latest`) intentionally left uncommitted. |
+| 2026-09-26 | Phases 11 and 12 complete = MILESTONE 2: CLI `run`/`batch`/`list-games`, per-run artifact tree with experiment identity, `replay`/`inspect`/`snapshot`, no-op observability tracer; 179 tests passed; `basic.yaml` now tracked with its model block. |
+| 2026-09-26 | Phase 13 complete (extends the 0-12 plan): traitor recruitment on banishment (`RECRUIT` action, `ROLE_RECRUITED` event, `recruit_on_banish`/`max_recruits` config); 197 tests passed. Machine-local configs excluded via `*.local.yaml` in `.gitignore`. |
