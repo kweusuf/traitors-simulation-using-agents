@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 5 complete (60 tests green, security suite added), proceeding to Phase 6
+**Status:** Phase 6 mostly complete (88 tests green); decision loop lands with Phase 7 gateway
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -31,6 +31,7 @@ and its commit lands.
 | 3 | Event system and persistence (SQLite + JSONL) | complete | `ef3f4ed` |
 | 4 | Game engine and generic phase engine | complete | `fd0ddc4` |
 | 5 | Communication routing and information projection | complete | `1c8e337` |
+| 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | in progress | |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
 | 7 | LLM gateway and FakeLLMProvider | pending | |
 | 8 | Traitors environment (phases, rules, win conditions) | pending | |
@@ -137,21 +138,21 @@ steps through phases with scripted actions, no LLM involved.
 
 ### Phase 6: Agent runtime: persona, memory, beliefs, relationships, prompts
 
-- [ ] `Agent` stateful object: identity, persona, role, goals, memory,
+- [x] `Agent` stateful object: identity, persona, role, goals, memory,
   beliefs, relationships, model handle (spec §11).
 - [ ] Runtime loop: observation -> memory retrieval -> prompt build ->
   LLM call -> parse -> validate -> return action (never executes it).
 - [ ] Persona as YAML data with trait-to-instruction translation
   (spec §12).
 - [ ] Goals separated from personality, role goals injectable (spec §13).
-- [ ] `Memory` interface: `remember`, `retrieve`, `summarize`; recent
+- [x] `Memory` interface: `remember`, `retrieve`, `summarize`; recent
   buffer + periodic summary, SQLite-backed, no vector DB (spec §14).
-- [ ] Structured `Beliefs` state (spec §15) and `Relationships` state
+- [x] Structured `Beliefs` state (spec §15) and `Relationships` state
   (spec §16), optional at runtime.
-- [ ] Prompt builder as separate component with composition per spec §20.
-- [ ] Structured output parsing with malformed-output retry prompt
+- [x] Prompt builder as separate component with composition per spec §20.
+- [x] Structured output parsing with malformed-output retry prompt
   (spec §21).
-- [ ] Unit tests: prompt builder composition, memory persistence,
+- [x] Unit tests: prompt builder composition, memory persistence,
   belief/relationship updates, output parsing and retry.
 
 **Verification:** `pytest tests/unit/test_agents*.py
@@ -276,3 +277,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Phase 4 complete: game engine, rule validator, generic phase engine, config loader; 47 tests passed. |
 | 2026-09-26 | Phase 5 complete: message router, structural visibility, InformationProjector, security leakage tests; 60 tests passed. |
 | 2026-09-26 | History rewritten to purge accidentally staged `ollama-model/*.gguf` (2.6 GB -> 192 KB); phase 2-5 hashes changed, dir gitignored. |
+| 2026-09-26 | Phase 6 code complete: persona/goals/beliefs/relationships/memory/prompt builder/action parser; 88 tests passed. Agent decision loop deferred to Phase 7 (needs LLM gateway). |
