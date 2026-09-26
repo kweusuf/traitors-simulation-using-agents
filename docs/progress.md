@@ -27,10 +27,10 @@ and its commit lands.
 |-------|-------|--------|--------|
 | 0 | Repository initialization | complete | `b5dc646` (docs), `pending` (this doc) |
 | 1 | Project skeleton and tooling | complete | `cc0b9dc` |
-| 2 | Domain models: state, actions, events | complete | `0270402` |
-| 3 | Event system and persistence (SQLite + JSONL) | complete | `be2fa02` |
-| 4 | Game engine and generic phase engine | complete | `973969d` |
-| 5 | Communication routing and information projection | complete | `pending` |
+| 2 | Domain models: state, actions, events | complete | `86e73a0` |
+| 3 | Event system and persistence (SQLite + JSONL) | complete | `ef3f4ed` |
+| 4 | Game engine and generic phase engine | complete | `fd0ddc4` |
+| 5 | Communication routing and information projection | complete | `1c8e337` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
 | 7 | LLM gateway and FakeLLMProvider | pending | |
 | 8 | Traitors environment (phases, rules, win conditions) | pending | |
@@ -275,3 +275,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Phase 3 complete: JSONL event log, SQLite schema + 11 repositories, snapshots; 19 tests passed. |
 | 2026-09-26 | Phase 4 complete: game engine, rule validator, generic phase engine, config loader; 47 tests passed. |
 | 2026-09-26 | Phase 5 complete: message router, structural visibility, InformationProjector, security leakage tests; 60 tests passed. |
+| 2026-09-26 | History rewritten to purge accidentally staged `ollama-model/*.gguf` (2.6 GB -> 192 KB); phase 2-5 hashes changed, dir gitignored. |
