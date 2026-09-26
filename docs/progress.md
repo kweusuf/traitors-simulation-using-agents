@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 2 complete (tests green), proceeding to Phase 3
+**Status:** Phase 3 complete (19 tests green), proceeding to Phase 4
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -27,8 +27,8 @@ and its commit lands.
 |-------|-------|--------|--------|
 | 0 | Repository initialization | complete | `b5dc646` (docs), `pending` (this doc) |
 | 1 | Project skeleton and tooling | complete | `cc0b9dc` |
-| 2 | Domain models: state, actions, events | complete | `pending` |
-| 3 | Event system and persistence (SQLite + JSONL) | pending | |
+| 2 | Domain models: state, actions, events | complete | `0270402` |
+| 3 | Event system and persistence (SQLite + JSONL) | complete | `pending` |
 | 4 | Game engine and generic phase engine | pending | |
 | 5 | Communication routing and information projection | pending | |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
@@ -92,14 +92,14 @@ zero tests without error, `python -c "import simulation"` works.
 
 ### Phase 3: Event system and persistence (SQLite + JSONL)
 
-- [ ] Append-only JSONL event log writer (spec §23).
-- [ ] SQLite schema and repositories: `games`, `agents`,
+- [x] Append-only JSONL event log writer (spec §23).
+- [x] SQLite schema and repositories: `games`, `agents`,
   `agent_memories`, `messages`, `events`, `votes`, `eliminations`,
   `relationships`, `beliefs`, `snapshots`, `experiments` (spec §24).
-- [ ] Repositories kept separate from domain logic.
-- [ ] State snapshot creation (for later replay/counterfactuals,
+- [x] Repositories kept separate from domain logic.
+- [x] State snapshot creation (for later replay/counterfactuals,
   spec §44).
-- [ ] Unit tests: event round-trip serialization, repository CRUD,
+- [x] Unit tests: event round-trip serialization, repository CRUD,
   snapshot restore.
 
 **Verification:** `pytest tests/unit/test_persistence*.py` passes;
@@ -272,3 +272,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Repo initialized (`main`), specs committed, progress doc created, phase plan defined (Phases 0-12). |
 | 2026-09-26 | Phase 1 complete: skeleton, pyproject, configs, personas, smoke test (1 passed). |
 | 2026-09-26 | Phase 2 complete: domain models (state, actions, channels, events), 12 unit tests passed. |
+| 2026-09-26 | Phase 3 complete: JSONL event log, SQLite schema + 11 repositories, snapshots; 19 tests passed. |
