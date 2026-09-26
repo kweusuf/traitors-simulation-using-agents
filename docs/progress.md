@@ -36,7 +36,7 @@ and its commit lands.
 | 7 | LLM gateway and FakeLLMProvider | complete | `5d5a14b` |
 | 8 | Traitors environment (phases, rules, win conditions) | complete | `10607b5` |
 | 9 | Deterministic test suite (unit, security, integration) | complete | `pending` |
-| 10 | OllamaProvider | pending | |
+| 10 | OllamaProvider | complete | `2c27c8e` (code), `pending` (this doc) |
 | 11 | CLI, config-driven run, run artifacts | pending | |
 | 12 | Replay, inspect, list-games | pending | |
 
@@ -208,15 +208,26 @@ produces a complete game with a winner and consistent event log.
 
 ### Phase 10: OllamaProvider
 
-- [ ] `OllamaProvider` implementing `LLMProvider` over local Ollama HTTP
-  API (spec §17, §18).
-- [ ] Model config: `provider: ollama`, `model: gpt-oss:20b`,
-  `max_concurrency: 2` defaults (spec §18, §22).
-- [ ] Timeout, error handling, structured-output enforcement.
-- [ ] Tests against a mock HTTP layer (no live Ollama in CI).
+- [x] `OllamaProvider` implementing `LLMProvider` over local Ollama HTTP
+  API (spec §17, §18), poster-injectable so tests need no server.
+- [x] Model selection and model details are config-driven (spec §18,
+  §19, §22): `LLMSettings` gained `base_url` and `options`, and
+  `LLMSettings.to_model_config()` builds the provider-facing
+  `ModelConfig`. Current model is `hauhau-qwen:latest`; its details
+  live in `configs/traitors/basic.yaml`, which is deliberately left
+  uncommitted for now.
+- [x] Timeout, transport/HTTP/malformed-response error handling
+  (`OllamaError`), JSON-schema structured output (`format`).
+- [x] `reasoning_effort` normalized onto Ollama's `think` flag;
+  `none` keeps thinking tokens out of the `max_tokens` budget.
+- [x] Tests against an injected fake HTTP layer (no live Ollama in CI):
+  `tests/unit/test_ollama.py`.
 
-**Verification:** unit tests pass; one manual smoke call to local Ollama
-documented in commit message.
+**Verification:** `pytest` green (130 tests; also green with the
+committed `basic.yaml`, so the suite does not depend on the
+uncommitted config). Manual smoke against local Ollama with
+`hauhau-qwen:latest` via `OllamaProvider.generate`: JSON-schema
+constrained reply parsed as an `action` in ~14s, 31 eval tokens.
 
 ### Phase 11: CLI, config-driven run, run artifacts — Milestone 2
 
@@ -281,3 +292,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-27 | Phase 7 complete: LLMProvider protocol, ModelConfig, LLMGateway concurrency cap, FakeLLMProvider, AgentRuntime decide loop with correction retries; 99 tests passed. |
 | 2026-09-27 | Phase 8 complete: TraitorsEnvironment, all 7 phases, legal-target rules, votes/eliminations persisted; 105 tests passed. |
 | 2026-09-27 | Phase 9 complete = MILESTONE 1: 4-agent and 6-player full games on fake backend, deterministic replay, leakage audit over 42 observed views; 110 tests passed. |
+| 2026-09-27 | Phase 10 complete: OllamaProvider (JSON schema output, error handling, `think` mapping), config-driven model selection with `base_url`/`options`; 130 tests passed. `configs/traitors/basic.yaml` model details (`hauhau-qwen:latest`) intentionally left uncommitted. |
