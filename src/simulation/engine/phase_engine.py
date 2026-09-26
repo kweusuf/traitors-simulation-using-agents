@@ -51,10 +51,17 @@ class PhaseContext:
 
 
 class PhaseEngine:
+    # One rapid-fire finale iteration: talk, side conversations, vote.
+    FINALE_PHASES = ("round_table", "private_chat", "voting", "elimination")
+
     def __init__(self, config: GameConfig, engine: GameEngine, phases: dict[str, Phase]) -> None:
         unknown = [name for name in config.phases if name not in phases]
         if unknown:
             raise ValueError(f"no implementation registered for phases: {unknown}")
+        if config.game.finale_traitors:
+            missing = [n for n in self.FINALE_PHASES if n not in phases]
+            if missing:
+                raise ValueError(f"finale needs phase implementations for: {missing}")
         self.config = config
         self.engine = engine
         self.phases = phases
@@ -67,21 +74,46 @@ class PhaseEngine:
         max_rounds = self.config.game.max_rounds
 
         for _ in range(max_rounds):
-            if self.engine.is_over:
+            if self.engine.is_over or self.engine.state.finale:
                 break
             self.engine.start_round()
             for name in self.order:
-                if self.engine.is_over:
+                if self.engine.is_over or self.engine.state.finale:
                     break
                 self.engine.begin_phase(_phase_enum(name))
                 await self.phases[name].run(context)
                 self.engine.end_phase()
+
+        if self.engine.state.finale:
+            await self._run_finale(context)
 
         if not self.engine.is_over:
             self.engine.apply_round_limit()
 
         self.engine.begin_phase(GamePhase.GAME_END)
         self.engine.finish()
+
+    async def _run_finale(self, context: PhaseContext) -> None:
+        """Rapid-fire rounds: discussion, side conversations, vote, repeat.
+
+        No missions, no night murder, no recruitment. A tie eliminates
+        nobody and the vote simply runs again. After `finale_max_votes`
+        consecutive rounds without a banishment, `round_limit_winner`
+        is declared instead.
+        """
+        stalled = 0
+        while not self.engine.is_over and stalled < self.config.game.finale_max_votes:
+            before = len(self.engine.state.alive_players)
+            self.engine.start_round()
+            for name in self.FINALE_PHASES:
+                self.engine.begin_phase(_phase_enum(name))
+                await self.phases[name].run(context)
+                self.engine.end_phase()
+                if self.engine.is_over:
+                    return
+            stalled = 0 if len(self.engine.state.alive_players) < before else stalled + 1
+        if not self.engine.is_over:
+            self.engine.apply_round_limit(reason="finale_vote_limit")
 
 
 def _phase_enum(name: str) -> GamePhase:

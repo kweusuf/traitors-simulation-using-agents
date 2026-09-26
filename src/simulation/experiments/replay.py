@@ -40,6 +40,7 @@ class ReplayState:
     rounds: int = 0
     rejected_actions: int = 0
     event_count: int = 0
+    finale: bool = False
 
     @classmethod
     def from_events(cls, events: list[Event]) -> "ReplayState":
@@ -56,6 +57,8 @@ class ReplayState:
                     state.roles[event.actor] = Role(role)
             elif event.type is EventType.ROLE_RECRUITED and event.actor:
                 state.roles[event.actor] = Role.TRAITOR
+            elif event.type is EventType.FINALE_STARTED:
+                state.finale = True
             elif event.type is EventType.ROUND_STARTED:
                 state.rounds = max(state.rounds, event.round)
             elif event.type is EventType.PHASE_STARTED:
@@ -197,10 +200,21 @@ def build_transcript(events: list[Event]) -> dict:
         ),
         None,
     )
+    finale = any(event.type is EventType.FINALE_STARTED for event in events)
+    solo = next(
+        (
+            bool(event.payload.get("solo"))
+            for event in reversed(events)
+            if event.type is EventType.GAME_WON
+        ),
+        False,
+    )
     return {
         "messages": messages,
         "eliminations": eliminations,
         "recruitments": recruitments,
+        "finale": finale,
+        "solo_traitor_win": solo,
         "winner": winner,
     }
 
@@ -230,6 +244,12 @@ def render_transcript(events: list[Event]) -> str:
         elif event.type is EventType.ROLE_RECRUITED:
             lines.append(
                 f"    Recruited: {event.actor} (by {event.payload.get('by', '?')})"
+            )
+        elif event.type is EventType.FINALE_STARTED:
+            lines.append(
+                "Finale: rapid fire voting "
+                f"({len(event.payload.get('traitors', []))} traitors, "
+                f"{len(event.payload.get('faithful', []))} faithful)"
             )
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")

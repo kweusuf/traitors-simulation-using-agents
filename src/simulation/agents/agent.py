@@ -32,15 +32,23 @@ class Agent:
         self.persona = persona
         self.base_goals = goals or Goals()
         self.role: Optional[Role] = None
+        self.ambition: Optional[str] = None
         self.goals = self.base_goals
         self.memory = memory or ShortTermMemory(game_id="", agent_id=agent_id)
         self.beliefs = Beliefs()
         self.relationships = Relationships()
 
-    def assign_role(self, role: Role) -> None:
-        """Roles come from the engine; role goals are injected here (spec section 13)."""
+    def assign_role(
+        self, role: Role, ambition: Optional[str] = None
+    ) -> None:
+        """Roles come from the engine; role goals are injected here (spec section 13).
+
+        `ambition` is the seeded solo/team disposition; it only affects
+        traitors and never enters an observation.
+        """
         self.role = role
-        self.goals = inject_role_goals(self.base_goals, role)
+        self.ambition = ambition
+        self.goals = inject_role_goals(self.base_goals, role, ambition)
 
     async def remember(
         self,

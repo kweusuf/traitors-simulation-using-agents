@@ -23,7 +23,7 @@ from simulation.agents.goals import Goals
 from simulation.agents.persona import Persona, load_persona_bundle
 from simulation.agents.runtime import AgentRuntime
 from simulation.engine.phase_engine import PhaseContext, PhaseEngine
-from simulation.engine.state import GameState
+from simulation.engine.state import GameState, Role
 from simulation.environments.traitors.game import TraitorsEnvironment
 from simulation.experiments.config import GameConfig, LLMSettings
 from simulation.experiments.observability import NullTracer, build_tracer
@@ -276,7 +276,7 @@ class GameRunner:
         for pid, role in env.state.roles.items():
             agent = agents.get(pid)
             if agent is not None and agent.role is not role:
-                agent.assign_role(role)
+                agent.assign_role(role, env.state.ambitions.get(pid))
 
     def _build_agents(self, env: TraitorsEnvironment) -> dict[str, Agent]:
         """Create agents with configured personas and the engine's roles."""
@@ -289,7 +289,7 @@ class GameRunner:
                 persona, goals = Persona(description=f"{pid} plays carefully."), Goals()
             agents[pid] = Agent(pid, pid.capitalize(), persona, goals=goals)
         for pid, role in env.state.roles.items():
-            agents[pid].assign_role(role)
+            agents[pid].assign_role(role, env.state.ambitions.get(pid))
         return agents
 
     def _load_personas(self) -> list[tuple[Persona, Goals]]:
@@ -337,6 +337,27 @@ class GameRunner:
             for e in events
             if e.type is EventType.PLAYER_ELIMINATED
         ]
+        alive_traitors = [
+            p for p in state.alive_players if state.roles[p] is Role.TRAITOR
+        ]
+        # A traitor faction win with one survivor is a solo win; with
+        # two or more it is a team win. Faithful win as a team.
+        solo = state.winner == "traitor" and len(alive_traitors) == 1
+        outcomes = {
+            pid: (
+                "won"
+                if (
+                    (state.winner == "faithful" and role is Role.FAITHFUL)
+                    or (
+                        state.winner == "traitor"
+                        and role is Role.TRAITOR
+                        and pid in alive_traitors
+                    )
+                )
+                else "lost"
+            )
+            for pid, role in state.roles.items()
+        }
         return {
             # identity (spec section 27)
             "experiment_id": experiment_id,
@@ -356,6 +377,11 @@ class GameRunner:
             "players": len(state.players),
             "traitors": self.config.game.traitors,
             "duration_seconds": round(elapsed, 3),
+            "finale": state.finale,
+            "solo_traitor_win": solo,
+            "surviving_traitors": sorted(alive_traitors),
+            "outcomes": outcomes,
+            "ambitions": dict(state.ambitions),
             # activity
             "events": {"total": len(events), "by_type": dict(sorted(by_type.items()))},
             "messages": {

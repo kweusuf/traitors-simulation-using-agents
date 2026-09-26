@@ -67,8 +67,17 @@ class PromptBuilder:
             "",
             *goals.lines(),
             "",
-            "Stay in character. Reason only from the information you are given.",
         ]
+        if role is Role.TRAITOR:
+            lines.append(
+                "As a traitor you may switch sides: work with your traitor "
+                "allies to banish every faithful player and win as a team, or "
+                "ally with the faithful to banish rival traitors and win alone "
+                "as the last traitor standing. The other traitors may back "
+                "you or may plot against you."
+            )
+            lines.append("")
+        lines.append("Stay in character. Reason only from the information you are given.")
         return "\n".join(lines)
 
     def build_user(

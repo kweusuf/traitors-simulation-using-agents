@@ -14,6 +14,13 @@ game:
   # positive number to give the faithful a path back.
   recruit_on_banish: true
   max_recruits: 0
+  # Finale: normal play stops at exactly 3 traitors and 3 faithful and
+  # rapid-fire voting (round table, side conversations, vote, banish)
+  # decides the winner. If votes tie for `finale_max_votes` rounds in a
+  # row, `round_limit_winner` is declared instead.
+  finale_traitors: 3
+  finale_faithful: 3
+  finale_max_votes: 10
   player_names:
     - alice
     - bob

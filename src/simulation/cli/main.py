@@ -48,6 +48,10 @@ def make_progress_printer():
             print(f"  Eliminated: {event.actor}{suffix}")
         elif event.type is EventType.ROLE_RECRUITED:
             print(f"  Recruited: {event.actor} (by {event.payload.get('by', '?')})")
+        elif event.type is EventType.FINALE_STARTED:
+            traitors = len(event.payload.get("traitors", []))
+            faithful = len(event.payload.get("faithful", []))
+            print(f"\nFinale: rapid fire voting ({traitors} traitors, {faithful} faithful)")
         elif event.type is EventType.VOTE_TIE:
             print("  Vote tied: nobody eliminated")
         elif event.type is EventType.TRAITOR_KILL:
@@ -186,6 +190,7 @@ def cmd_replay(args: argparse.Namespace) -> int:
                     ],
                     "winner": state.winner,
                     "rounds": state.rounds,
+                    "finale": state.finale,
                 },
                 indent=2,
                 sort_keys=True,

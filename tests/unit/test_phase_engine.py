@@ -115,7 +115,12 @@ def test_round_limit_declares_configured_winner() -> None:
     assert engine.state.winning_team is Role.TRAITOR
     assert engine.state.phase is GamePhase.GAME_END
     won = [e for e in engine.sink.events if e.type is EventType.GAME_WON]
-    assert won[-1].payload == {"team": "traitor", "reason": "round_limit"}
+    payload = won[-1].payload
+    assert payload["team"] == "traitor"
+    assert payload["reason"] == "round_limit"
+    assert payload["finale"] is False
+    assert payload["solo"] is False  # both traitors survived
+    assert payload["surviving_traitors"] == ["bob", "eve"]
 
 
 def test_phase_engine_rejects_unknown_phase_implementation() -> None:

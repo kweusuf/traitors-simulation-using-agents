@@ -108,6 +108,7 @@ class GameEngine:
         for pid in self.player_ids:
             role = Role.TRAITOR if pid in traitor_ids else Role.FAITHFUL
             self.state.roles[pid] = role
+            self.state.ambitions[pid] = "solo" if rng.random() < 0.5 else "team"
             self._emit(
                 EventType.ROLE_ASSIGNED, actor=pid, payload={"role": role.value}
             )
@@ -115,6 +116,7 @@ class GameEngine:
                 self._agents.upsert(
                     self.state.game_id, pid, pid.capitalize(), role.value, persona={}
                 )
+        self._check_finale_trigger()  # a config can open at the finale counts
 
     def start_round(self) -> None:
         self.state.round_number += 1
@@ -269,6 +271,8 @@ class GameEngine:
         game = self.config.game
         if not game.recruit_on_banish:
             return False
+        if self.state.finale:
+            return False  # rapid-fire voting is pure voting, no conversions
         if game.max_recruits and self.recruits_used >= game.max_recruits:
             return False
         if self.state.roles.get(player_id) is not Role.TRAITOR:
@@ -373,6 +377,8 @@ class GameEngine:
         """Return True if the game reached a terminal state."""
         if self.state.winner is not None:
             return True
+        if self._check_finale_trigger():
+            return False
         alive_traitors = [
             p for p in self.state.alive_players if self.state.roles[p] is Role.TRAITOR
         ]
@@ -389,19 +395,67 @@ class GameEngine:
         self._declare_winner(winner, reason="elimination")
         return True
 
-    def apply_round_limit(self) -> None:
+    def _check_finale_trigger(self) -> bool:
+        """Start the finale when the configured split is reached.
+
+        Normal play stops there instead of a parity win: the rapid-fire
+        vote decides from 3 against 3. Called on every win check and
+        once at game start, so a game configured at the finale counts
+        opens straight into rapid fire.
+        """
+        game = self.config.game
+        if not game.finale_traitors or self.state.finale:
+            return False
+        alive_traitors = [
+            p for p in self.state.alive_players if self.state.roles[p] is Role.TRAITOR
+        ]
+        alive_faithful = [
+            p for p in self.state.alive_players if self.state.roles[p] is Role.FAITHFUL
+        ]
+        if (
+            len(alive_traitors) == game.finale_traitors
+            and len(alive_faithful) == game.finale_faithful
+        ):
+            self._start_finale(alive_traitors, alive_faithful)
+            return True
+        return False
+
+    def _start_finale(self, traitors: list[str], faithful: list[str]) -> None:
+        self.state.finale = True
+        self._emit(
+            EventType.FINALE_STARTED,
+            payload={
+                "traitors": sorted(traitors),
+                "faithful": sorted(faithful),
+            },
+        )
+
+    def apply_round_limit(self, reason: str = "round_limit") -> None:
         if self.state.winner is not None:
             return
         self._declare_winner(
-            Role(self.config.game.round_limit_winner), reason="round_limit"
+            Role(self.config.game.round_limit_winner), reason=reason
         )
 
     def _declare_winner(self, team: Role, reason: str) -> None:
         self.state.winning_team = team
         self.state.winner = team.value
+        survivors = sorted(
+            p
+            for p in self.state.alive_players
+            if self.state.roles[p] is Role.TRAITOR
+        )
         self._emit(
             EventType.GAME_WON,
-            payload={"team": team.value, "reason": reason},
+            payload={
+                "team": team.value,
+                "reason": reason,
+                "finale": self.state.finale,
+                "surviving_traitors": survivors,
+                # One traitor left when the faction wins: they took their
+                # rivals out with the faithful and win alone.
+                "solo": team is Role.TRAITOR and len(survivors) == 1,
+            },
         )
 
     # ------------------------------------------------------------------

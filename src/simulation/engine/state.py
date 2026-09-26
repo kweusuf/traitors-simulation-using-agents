@@ -55,3 +55,9 @@ class GameState(StrictModel):
     missions: list[MissionState] = Field(default_factory=list)
     winner: Optional[str] = None  # winning player/team label, e.g. "faithful"
     winning_team: Optional[Role] = None
+    # Rapid-fire finale is running (config `finale_traitors`/`finale_faithful`).
+    finale: bool = False
+    # Seeded per-player disposition: "solo" wants to be the last traitor
+    # standing, "team" wants the traitor faction to win together. Hidden
+    # information: it reaches prompts through Goals, never through views.
+    ambitions: dict[str, str] = Field(default_factory=dict)

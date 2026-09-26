@@ -34,6 +34,15 @@ class GameSettings(StrictModel):
     # can never empty the traitor team by voting alone.
     recruit_on_banish: bool = False
     max_recruits: int = Field(default=0, ge=0)
+    # Finale: normal play stops when exactly `finale_traitors` traitors
+    # and `finale_faithful` faithful are alive, and rapid-fire voting
+    # decides the winner (0/0 disables the finale and keeps the plain
+    # parity win).
+    finale_traitors: int = Field(default=0, ge=0)
+    finale_faithful: int = Field(default=0, ge=0)
+    # How many consecutive rapid-fire rounds may pass with nobody
+    # banished before `round_limit_winner` is declared instead.
+    finale_max_votes: int = Field(default=10, ge=1)
     player_names: Optional[list[str]] = None
     # Persona names resolved against the configs/personas directory;
     # assigned round-robin when there are fewer names than players.
@@ -54,6 +63,13 @@ class GameSettings(StrictModel):
         data["faithful"] = faithful
         if data.get("round_limit_winner", "faithful") not in {"faithful", "traitor"}:
             raise ValueError("round_limit_winner must be 'faithful' or 'traitor'")
+        if bool(data.get("finale_traitors", 0)) != bool(data.get("finale_faithful", 0)):
+            raise ValueError(
+                "finale_traitors and finale_faithful must be set together (or both 0)"
+            )
+        finale_traitors = data.get("finale_traitors", 0)
+        if finale_traitors and finale_traitors >= players:
+            raise ValueError("finale_traitors must be fewer than players")
         return data
 
 
