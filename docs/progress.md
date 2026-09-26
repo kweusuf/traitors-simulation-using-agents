@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 0 complete, awaiting Phase 1 approval
+**Status:** Phase 1 complete, awaiting Phase 2 approval
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -26,7 +26,7 @@ and its commit lands.
 | Phase | Title | Status | Commit |
 |-------|-------|--------|--------|
 | 0 | Repository initialization | complete | `b5dc646` (docs), `pending` (this doc) |
-| 1 | Project skeleton and tooling | pending | |
+| 1 | Project skeleton and tooling | complete | `pending` |
 | 2 | Domain models: state, actions, events | pending | |
 | 3 | Event system and persistence (SQLite + JSONL) | pending | |
 | 4 | Game engine and generic phase engine | pending | |
@@ -59,18 +59,18 @@ Ollama with `game.json`, `events.jsonl`, `transcript.txt`,
 
 ### Phase 1: Project skeleton and tooling
 
-- [ ] `pyproject.toml` with package `simulation` under `src/`, Python 3.11+,
+- [x] `pyproject.toml` with package `simulation` under `src/`, Python 3.11+,
   dependencies: `pydantic`, `pyyaml`, `typer` (or `argparse`), `pytest`.
-- [ ] Directory tree per spec §41: `src/simulation/{engine,agents,memory,
+- [x] Directory tree per spec §41: `src/simulation/{engine,agents,memory,
   beliefs,relationships,communication,actions,models,persistence,
   experiments,environments/traitors,cli}`, `tests/{unit,integration,
   security}`, `configs/{traitors,personas}`, `runs/`, `docs/`.
-- [ ] Package `__init__.py` files, empty placeholder modules.
-- [ ] `.gitignore` (`runs/`, `__pycache__/`, `.venv/`, `*.db`).
-- [ ] `README.md` with run instructions stub.
-- [ ] `configs/traitors/basic.yaml` initial draft (6 players, 2 traitors,
+- [x] Package `__init__.py` files, empty placeholder modules.
+- [x] `.gitignore` (`runs/`, `__pycache__/`, `.venv/`, `*.db`).
+- [x] `README.md` with run instructions stub.
+- [x] `configs/traitors/basic.yaml` initial draft (6 players, 2 traitors,
   5 rounds, phase list, llm section per spec §22, §32).
-- [ ] Persona config files in `configs/personas/` (analytical, politician,
+- [x] Persona config files in `configs/personas/` (analytical, politician,
   observer, contrarian, loyalist, opportunist).
 
 **Verification:** `pip install -e ".[dev]"` succeeds, `pytest` collects
@@ -270,3 +270,4 @@ of an integration-test game matches its recorded final state.
 | Date | Change |
 |------|--------|
 | 2026-09-26 | Repo initialized (`main`), specs committed, progress doc created, phase plan defined (Phases 0-12). |
+| 2026-09-26 | Phase 1 complete: skeleton, pyproject, configs, personas, smoke test (1 passed). |
