@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 1 complete, awaiting Phase 2 approval
+**Status:** Phase 2 complete (tests green), proceeding to Phase 3
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -26,8 +26,8 @@ and its commit lands.
 | Phase | Title | Status | Commit |
 |-------|-------|--------|--------|
 | 0 | Repository initialization | complete | `b5dc646` (docs), `pending` (this doc) |
-| 1 | Project skeleton and tooling | complete | `pending` |
-| 2 | Domain models: state, actions, events | pending | |
+| 1 | Project skeleton and tooling | complete | `cc0b9dc` |
+| 2 | Domain models: state, actions, events | complete | `pending` |
 | 3 | Event system and persistence (SQLite + JSONL) | pending | |
 | 4 | Game engine and generic phase engine | pending | |
 | 5 | Communication routing and information projection | pending | |
@@ -78,15 +78,15 @@ zero tests without error, `python -c "import simulation"` works.
 
 ### Phase 2: Domain models: state, actions, events
 
-- [ ] Pydantic models: `GameState`, `PlayerState`, `Role`, `GamePhase`,
+- [x] Pydantic models: `GameState`, `PlayerState`, `Role`, `GamePhase`,
   `MissionState` (spec §6).
-- [ ] `ActionType` enum with MVP subset: `PUBLIC_MESSAGE`,
+- [x] `ActionType` enum with MVP subset: `PUBLIC_MESSAGE`,
   `PRIVATE_MESSAGE`, `VOTE`, `TRAITOR_KILL` (spec §8).
-- [ ] Structured `Action` model (action, target, content, confidence).
-- [ ] Event models for the full event vocabulary (spec §23).
-- [ ] `Message` model with `Channel` enum: `PUBLIC`, `PRIVATE`,
+- [x] Structured `Action` model (action, target, content, confidence).
+- [x] Event models for the full event vocabulary (spec §23).
+- [x] `Message` model with `Channel` enum: `PUBLIC`, `PRIVATE`,
   `ROLE_PRIVATE`, `SYSTEM` (spec §9).
-- [ ] Unit tests: model validation, enum coverage, event serialization.
+- [x] Unit tests: model validation, enum coverage, event serialization.
 
 **Verification:** `pytest tests/unit/test_models*.py` passes.
 
@@ -271,3 +271,4 @@ of an integration-test game matches its recorded final state.
 |------|--------|
 | 2026-09-26 | Repo initialized (`main`), specs committed, progress doc created, phase plan defined (Phases 0-12). |
 | 2026-09-26 | Phase 1 complete: skeleton, pyproject, configs, personas, smoke test (1 passed). |
+| 2026-09-26 | Phase 2 complete: domain models (state, actions, channels, events), 12 unit tests passed. |
