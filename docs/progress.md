@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-13 complete, 197 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-14 complete, 212 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -39,6 +39,7 @@ and its commit lands.
 | 11 | CLI, config-driven run, run artifacts | complete | `f9da4fe` |
 | 12 | Replay, inspect, list-games | complete | `f9da4fe` |
 | 13 | Traitor recruitment on banishment | complete | `b9d540c` |
+| 14 | Finale at 3v3, rapid-fire voting, solo/team wins | complete | `3c911ca` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -307,6 +308,36 @@ win. Note the balance consequence: with no cap the faithful can never
 empty the traitor team by voting, so their only wins come from the
 round limit or from `max_recruits` being reached.
 
+### Phase 14: Finale at 3v3, rapid-fire voting, solo and team wins
+
+Also outside the original plan. Normal play stops when exactly
+`finale_traitors` traitors and `finale_faithful` faithful are alive:
+the parity win is suppressed at that split and a rapid-fire finale
+runs instead, one iteration of round table, private chat, vote and
+banishment at a time, with no missions, no night murder and no
+recruitment. A tie eliminates nobody and the vote repeats; after
+`finale_max_votes` consecutive rounds with no banishment,
+`round_limit_winner` is declared with reason `finale_vote_limit`.
+
+- [x] `finale_traitors` / `finale_faithful` / `finale_max_votes` on
+  `GameSettings`, both counts required together, 0/0 disables the
+  finale; enabled in `long_game.yaml`.
+- [x] `FINALE_STARTED` event; `GameState.finale` reaches `game.json`,
+  snapshots, replay and transcript.
+- [x] Seeded hidden ambition per player (`GameState.ambitions`,
+  `"solo"` or `"team"`) injected into traitor goals, plus a traitor
+  system-prompt paragraph that spells out both alliances. Views never
+  expose it.
+- [x] Individual outcomes: `GAME_WON` carries `surviving_traitors`,
+  `finale` and `solo`; `metrics.json` gains `outcomes`,
+  `solo_traitor_win`, `finale` and `ambitions`.
+- [x] Tests: `tests/unit/test_finale.py`.
+
+**Verification:** 212 tests green. A fake run of the 21-player
+`long_game` config reaches 3v3 in round 8 (8 recruits along the way),
+runs four rapid-fire votes, and ends on a solo traitor win with 531
+calls and zero rejected actions.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -339,3 +370,4 @@ round limit or from `max_recruits` being reached.
 | 2026-09-27 | Phase 10 complete: OllamaProvider (JSON schema output, error handling, `think` mapping), config-driven model selection with `base_url`/`options`; 130 tests passed. `configs/traitors/basic.yaml` model details (`hauhau-qwen:latest`) intentionally left uncommitted. |
 | 2026-09-26 | Phases 11 and 12 complete = MILESTONE 2: CLI `run`/`batch`/`list-games`, per-run artifact tree with experiment identity, `replay`/`inspect`/`snapshot`, no-op observability tracer; 179 tests passed; `basic.yaml` now tracked with its model block. |
 | 2026-09-26 | Phase 13 complete (extends the 0-12 plan): traitor recruitment on banishment (`RECRUIT` action, `ROLE_RECRUITED` event, `recruit_on_banish`/`max_recruits` config); 197 tests passed. Machine-local configs excluded via `*.local.yaml` in `.gitignore`. |
+| 2026-09-26 | Phase 14 complete: finale at exactly 3 traitors and 3 faithful with rapid-fire voting, seeded solo/team ambitions, solo and team win reporting; 212 tests passed. |

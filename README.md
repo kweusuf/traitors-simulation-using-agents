@@ -41,10 +41,14 @@ Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 {ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
 
 Game rules are config-driven as well: `game.players`, `game.traitors`,
-`game.max_rounds`, the `phases:` ordering, and recruitment
+`game.max_rounds`, the `phases:` ordering, recruitment
 (`game.recruit_on_banish` converts a living faithful player when the
 round table banishes a traitor; `game.max_recruits` caps it, 0 means
-no cap).
+no cap), and the finale (`game.finale_traitors` / `game.finale_faithful`
+stop normal play at that split and let rapid-fire voting decide;
+`game.finale_max_votes` bounds a vote that keeps tying). Traitors carry
+a seeded solo or team ambition: they can win alone as the last traitor
+standing or together as a team.
 
 Each game writes `runs/<game_id>/`:
 
