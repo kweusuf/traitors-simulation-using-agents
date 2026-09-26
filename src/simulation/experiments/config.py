@@ -12,7 +12,10 @@ from simulation.engine.state import GamePhase
 from simulation.models.base import StrictModel
 
 # Phase names that make up the configurable round loop (spec section 7).
-CONFIGURABLE_PHASES = frozenset(p.value for p in GamePhase if p is not GamePhase.SETUP)
+# SETUP opens the game and GAME_END closes it, so neither is configurable.
+CONFIGURABLE_PHASES = frozenset(
+    p.value for p in GamePhase if p not in (GamePhase.SETUP, GamePhase.GAME_END)
+)
 
 
 class GameSettings(StrictModel):

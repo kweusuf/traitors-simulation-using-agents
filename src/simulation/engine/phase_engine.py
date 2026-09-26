@@ -62,7 +62,8 @@ class PhaseEngine:
 
     async def run(self, context: PhaseContext) -> None:
         """Run the game until a winner is declared or rounds run out."""
-        self.engine.start()
+        if not self.engine.started:
+            self.engine.start()
         max_rounds = self.config.game.max_rounds
 
         for _ in range(max_rounds):

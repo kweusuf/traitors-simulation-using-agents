@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 7 complete (99 tests green), proceeding to Phase 8
+**Status:** Phase 8 complete (105 tests green), proceeding to Phase 9 (Milestone 1 gate)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -33,8 +33,8 @@ and its commit lands.
 | 5 | Communication routing and information projection | complete | `1c8e337` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | complete | `1820c57` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
-| 7 | LLM gateway and FakeLLMProvider | complete | `pending` |
-| 8 | Traitors environment (phases, rules, win conditions) | pending | |
+| 7 | LLM gateway and FakeLLMProvider | complete | `5d5a14b` |
+| 8 | Traitors environment (phases, rules, win conditions) | complete | `pending` |
 | 9 | Deterministic test suite (unit, security, integration) | pending | |
 | 10 | OllamaProvider | pending | |
 | 11 | CLI, config-driven run, run artifacts | pending | |
@@ -176,18 +176,18 @@ Ollama running.
 
 ### Phase 8: Traitors environment (phases, rules, win conditions)
 
-- [ ] `environments/traitors/game.py`, `rules.py`, `phases.py`.
-- [ ] Phase implementations: `MISSION`, `PUBLIC_DISCUSSION`,
+- [x] `environments/traitors/game.py`, `rules.py`, `phases.py`.
+- [x] Phase implementations: `MISSION`, `PUBLIC_DISCUSSION`,
   `PRIVATE_CHAT`, `ROUND_TABLE`, `VOTING`, `ELIMINATION`,
   `TRAITOR_NIGHT`, `GAME_END` (spec §7).
-- [ ] 6 players, 2 traitors, 4 faithful, 5 rounds max; mission
+- [x] 6 players, 2 traitors, 4 faithful, 5 rounds max; mission
   abstraction; night kill; majority-vote elimination; win conditions
   (spec §2).
-- [ ] Communication limits from config (`public_messages_per_agent`,
+- [x] Communication limits from config (`public_messages_per_agent`,
   `private_messages_per_agent`).
-- [ ] Environment implementing the generic `Environment` interface
+- [x] Environment implementing the generic `Environment` interface
   (spec §38) so future games can reuse the runtime.
-- [ ] Unit tests: phase ordering, mission resolution, night kill
+- [x] Unit tests: phase ordering, mission resolution, night kill
   targeting, win detection for both teams.
 
 **Verification:** `pytest tests/unit/test_traitors*.py` passes.
@@ -279,3 +279,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | History rewritten to purge accidentally staged `ollama-model/*.gguf` (2.6 GB -> 192 KB); phase 2-5 hashes changed, dir gitignored. |
 | 2026-09-26 | Phase 6 code complete: persona/goals/beliefs/relationships/memory/prompt builder/action parser; 88 tests passed. Agent decision loop deferred to Phase 7 (needs LLM gateway). |
 | 2026-09-27 | Phase 7 complete: LLMProvider protocol, ModelConfig, LLMGateway concurrency cap, FakeLLMProvider, AgentRuntime decide loop with correction retries; 99 tests passed. |
+| 2026-09-27 | Phase 8 complete: TraitorsEnvironment, all 7 phases, legal-target rules, votes/eliminations persisted; 105 tests passed. |

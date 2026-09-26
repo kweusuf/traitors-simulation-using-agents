@@ -19,7 +19,12 @@ from simulation.experiments.config import GameConfig
 from simulation.communication.router import MessageRouter
 from simulation.persistence.database import Database
 from simulation.persistence.event_log import EventType
-from simulation.persistence.repositories import AgentRepository, SnapshotRepository
+from simulation.persistence.repositories import (
+    AgentRepository,
+    EliminationRepository,
+    SnapshotRepository,
+    VoteRepository,
+)
 from simulation.persistence.sink import EventSink
 
 DEFAULT_PLAYER_NAMES = [
@@ -58,6 +63,8 @@ class GameEngine:
         self.router = MessageRouter(sink.game_id, db)
         self._agents = AgentRepository(db) if db is not None else None
         self._snapshots = SnapshotRepository(db) if db is not None else None
+        self._votes_repo = VoteRepository(db) if db is not None else None
+        self._eliminations = EliminationRepository(db) if db is not None else None
 
         names = config.game.player_names or DEFAULT_PLAYER_NAMES
         if config.game.players > len(names):
@@ -72,6 +79,10 @@ class GameEngine:
     # ------------------------------------------------------------------
     # Lifecycle
     # ------------------------------------------------------------------
+    @property
+    def started(self) -> bool:
+        return self._started
+
     def start(self) -> None:
         if self._started:
             raise RuntimeError("game already started")
@@ -223,6 +234,10 @@ class GameEngine:
         tally = self.tally_votes()
         if not tally.counts:
             return tally
+        if self._votes_repo is not None:
+            self._votes_repo.replace_round(
+                self.state.game_id, self.state.round_number, self.state.votes
+            )
         if tally.tie:
             self._emit(EventType.VOTE_TIE, targets=tally.top, payload={"counts": tally.counts})
             return tally
@@ -272,6 +287,10 @@ class GameEngine:
         )
         if self._agents is not None:
             self._agents.set_alive(self.state.game_id, player_id, False)
+        if self._eliminations is not None:
+            self._eliminations.add(
+                self.state.game_id, self.state.round_number, player_id, method
+            )
         self.check_win()
 
     def check_win(self) -> bool:
