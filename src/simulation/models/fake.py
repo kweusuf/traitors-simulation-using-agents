@@ -1,7 +1,9 @@
-"""Deterministic fake LLM provider (spec section 30).
+"""Deterministic fake LLM providers (spec section 30).
 
-Returns scripted structured actions keyed by agent id so the whole
-engine can be tested without any model calls.
+`FakeLLMProvider` returns scripted structured actions keyed by agent id
+so the whole engine can be tested without any model calls.
+`PromptScriptProvider` answers from the prompt itself, which lets the
+CLI play a full game deterministically without a model (spec section 47).
 """
 
 from __future__ import annotations
@@ -11,11 +13,13 @@ import json
 import re
 from typing import Any, Optional
 
-from simulation.actions.actions import Action
+from simulation.actions.actions import Action, ActionType
 from simulation.models.base import ChatMessage
 from simulation.models.llm import LLMResponse, ModelConfig
 
 _AGENT_RE = re.compile(r"You are ([a-zA-Z0-9_]+),")
+_ACTION_RE = re.compile(r"Required action type: (\w+)")
+_TARGETS_RE = re.compile(r"^Legal targets: (.+)$", re.MULTILINE)
 DEFAULT_QUEUE = "__default__"
 
 
@@ -78,3 +82,64 @@ class FakeLLMProvider:
     @property
     def remaining(self) -> dict[str, int]:
         return {key: len(q) for key, q in self.script.items()}
+
+
+class PromptScriptProvider(FakeLLMProvider):
+    """A fake provider that answers from the prompt itself.
+
+    Reads the required action type and legal target list out of the
+    user message and replies with a deterministic structured action, so
+    any game length can be played back without scripting every turn.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(script={})
+        self.counts: dict[str, int] = {}
+
+    async def generate(
+        self,
+        messages: list[ChatMessage],
+        response_schema: type = Action,
+        config: Optional[ModelConfig] = None,
+    ) -> LLMResponse:
+        self.calls.append(messages)
+        agent_id = self._agent_id(messages)
+        user = next(m for m in reversed(messages) if m.role == "user").content
+
+        action_match = _ACTION_RE.search(user)
+        if action_match is None:
+            raise RuntimeError("prompt must state the required action type")
+        action_type = ActionType(action_match.group(1))
+
+        targets_match = _TARGETS_RE.search(user)
+        raw_targets = targets_match.group(1).strip() if targets_match else ""
+        if raw_targets.startswith("none") or not raw_targets:
+            targets: list[str] = []
+        else:
+            targets = [t.strip() for t in raw_targets.split(",")]
+
+        n = self.counts.get(agent_id, 0)
+        self.counts[agent_id] = n + 1
+
+        if action_type is ActionType.PUBLIC_MESSAGE:
+            payload = {
+                "action": "public_message",
+                "content": f"[{agent_id}#{n}] I am watching everyone closely.",
+                "confidence": 0.6,
+            }
+        elif action_type is ActionType.PRIVATE_MESSAGE:
+            payload = {
+                "action": "private_message",
+                "target": targets[0],
+                "content": f"[{agent_id}#{n}] privately sharing a read.",
+                "confidence": 0.5,
+            }
+        else:
+            # VOTE and TRAITOR_KILL: pile onto the first legal target.
+            payload = {
+                "action": action_type.value,
+                "target": targets[0],
+                "confidence": 0.8,
+                "reason_summary": "first legal target",
+            }
+        return LLMResponse(content=json.dumps(payload), model="fake")

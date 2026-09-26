@@ -29,6 +29,9 @@ class GameSettings(StrictModel):
     # Who wins when max_rounds is exhausted without an elimination victory.
     round_limit_winner: str = "faithful"
     player_names: Optional[list[str]] = None
+    # Persona names resolved against the configs/personas directory;
+    # assigned round-robin when there are fewer names than players.
+    personas: Optional[list[str]] = None
 
     @model_validator(mode="before")
     @classmethod

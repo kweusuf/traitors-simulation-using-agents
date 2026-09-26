@@ -8,9 +8,14 @@ enter the prompt.
 
 from __future__ import annotations
 
+import json
 from typing import Optional
 
-from simulation.actions.actions import ActionType
+from simulation.actions.actions import (
+    ACTIONS_REQUIRING_CONTENT,
+    ACTIONS_REQUIRING_TARGET,
+    ActionType,
+)
 from simulation.agents.goals import Goals
 from simulation.agents.persona import Persona
 from simulation.communication.visibility import AgentView
@@ -21,6 +26,29 @@ ACTION_JSON_HINT = (
     'Respond with JSON only, e.g. {"action": "...", "target": "...", '
     '"content": "...", "confidence": 0.8}. No other text.'
 )
+
+
+def action_json_hint(action_type: ActionType) -> str:
+    """Example JSON for one action type.
+
+    The example is action-specific because a generic example lets the
+    model drop fields (e.g. `content` on a private message) that the
+    schema marks optional but the game rules require. `target` and
+    `content` are always shown because the structured-output schema
+    always requires them; actions without a target say so explicitly
+    instead of leaving the model to guess.
+    """
+    example: dict[str, object] = {"action": action_type.value}
+    example["target"] = "bob" if action_type in ACTIONS_REQUIRING_TARGET else None
+    if action_type in ACTIONS_REQUIRING_CONTENT:
+        example["content"] = "your message here"
+    else:
+        example["content"] = ""
+    example["confidence"] = 0.8
+    return (
+        f"Respond with JSON only, e.g. {json.dumps(example)}. "
+        "Include every field shown in the example. No other text."
+    )
 
 
 class PromptBuilder:
@@ -60,7 +88,10 @@ class PromptBuilder:
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))
         else:
-            lines.append("Legal targets: none (this action takes no target).")
+            lines.append(
+                'Legal targets: none (this action takes no target; '
+                'set "target" to null).'
+            )
 
         if view.public_transcript:
             lines.append("")
@@ -88,7 +119,7 @@ class PromptBuilder:
             lines.append(extra_instruction)
 
         lines.append("")
-        lines.append(ACTION_JSON_HINT)
+        lines.append(action_json_hint(action_type))
         return "\n".join(lines)
 
     def build(

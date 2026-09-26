@@ -127,3 +127,18 @@ def test_phase_engine_rejects_unknown_phase_implementation() -> None:
         assert "voting" in str(exc)
     else:
         raise AssertionError("expected ValueError for missing phase implementation")
+
+
+def test_duplicate_phase_runs_once_per_config_entry() -> None:
+    # Three `mission` entries per round = three tasks a day (long_game).
+    phases = ["mission", "mission", "mission", "voting", "elimination"]
+    engine, log, phase_engine, context = build(phases, max_rounds=2)
+    asyncio.run(phase_engine.run(context))
+
+    assert [name for _, name in log] == phases * 2
+    assert [rnd for rnd, _ in log] == [1] * 5 + [2] * 5
+    started = [
+        e for e in engine.sink.events if e.type is EventType.PHASE_STARTED
+    ]
+    missions = [e for e in started if e.payload["phase"] == "mission"]
+    assert len(missions) == 6  # 3 per round over 2 rounds

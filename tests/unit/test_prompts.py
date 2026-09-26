@@ -5,7 +5,7 @@ from __future__ import annotations
 from simulation.actions.actions import ActionType
 from simulation.agents.goals import Goals
 from simulation.agents.persona import Persona
-from simulation.agents.prompts import PromptBuilder
+from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.channels import Channel, Message
 from simulation.communication.visibility import AgentView
 from simulation.engine.state import GamePhase, Role
@@ -105,6 +105,36 @@ def test_prompt_never_contains_absent_private_content() -> None:
     view = make_view(private_conversations=[])
     user = build(view=view)[1].content
     assert "i trust you" not in user
+
+
+def test_action_json_hint_covers_required_fields() -> None:
+    # The structured-output schema requires action, target and content
+    # for every action, so the example always shows all three keys;
+    # irrelevant values are null/empty instead of omitted.
+    private = action_json_hint(ActionType.PRIVATE_MESSAGE)
+    assert '"action": "private_message"' in private
+    assert '"target": "bob"' in private
+    assert '"content": "your message here"' in private
+
+    vote = action_json_hint(ActionType.VOTE)
+    assert '"action": "vote"' in vote
+    assert '"target": "bob"' in vote
+    assert '"content": ""' in vote
+
+    kill = action_json_hint(ActionType.TRAITOR_KILL)
+    assert '"action": "traitor_kill"' in kill
+    assert '"target": "bob"' in kill
+    assert '"content": ""' in kill
+
+    public = action_json_hint(ActionType.PUBLIC_MESSAGE)
+    assert '"content": "your message here"' in public
+    assert '"target": null' in public
+
+
+def test_prompt_uses_action_specific_hint() -> None:
+    user = build(action_type=ActionType.PRIVATE_MESSAGE, legal_targets=["bob"])[1].content
+    assert action_json_hint(ActionType.PRIVATE_MESSAGE) in user
+    assert '"content": "your message here"' in user
 
 
 def test_extra_instruction_appended() -> None:

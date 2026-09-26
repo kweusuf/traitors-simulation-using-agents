@@ -1,17 +1,21 @@
 """Event sink: single write path for events to JSONL, SQLite, and memory.
 
-Assigns monotonic sequences so replays stay deterministic.
+Assigns monotonic sequences so replays stay deterministic. An optional
+observer callback sees each event as it is emitted, which is how the
+CLI streams progress while a game runs.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from simulation.persistence.database import Database
 from simulation.persistence.event_log import Event, EventType
 from simulation.persistence.jsonl import EventLog
 from simulation.persistence.repositories import EventRepository
+
+Observer = Callable[[Event], None]
 
 
 class EventSink:
@@ -20,10 +24,12 @@ class EventSink:
         game_id: str,
         jsonl_path: Optional[str | Path] = None,
         db: Optional[Database] = None,
+        observer: Optional[Observer] = None,
     ) -> None:
         self.game_id = game_id
         self._log = EventLog(jsonl_path) if jsonl_path is not None else None
         self._repo = EventRepository(db) if db is not None else None
+        self._observer = observer
         self._sequence = 0
         self.events: list[Event] = []
 
@@ -54,6 +60,8 @@ class EventSink:
             self._log.append(event)
         if self._repo is not None:
             self._repo.append(self.game_id, event)
+        if self._observer is not None:
+            self._observer(event)
         return event
 
     @property

@@ -11,9 +11,26 @@ from __future__ import annotations
 from typing import Optional
 
 from simulation.actions.actions import ActionType
+from simulation.actions.validator import ActionParseError
 from simulation.engine.phase_engine import PhaseContext, PhaseResult
 from simulation.engine.state import Role
 from simulation.environments.traitors.rules import legal_targets
+
+
+async def _ask(
+    context: PhaseContext, actor: str, action_type: ActionType, targets: list[str]
+):
+    """Ask one agent for an action, tolerating exhausted output retries.
+
+    `AgentRuntime` has already spent its correction attempts by the time
+    `ActionParseError` reaches here, so the turn is skipped and recorded
+    as a rejected action instead of ending the run (spec section 21).
+    """
+    try:
+        return await context.ask(actor, action_type, targets)
+    except ActionParseError as exc:
+        context.engine.record_unparseable_action(actor, action_type, str(exc))
+        return None
 
 
 async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None:
@@ -22,8 +39,9 @@ async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None
     allow_self = engine.config.game.allow_self_vote
     for actor in sorted(engine.state.alive_players):
         targets = legal_targets(engine.state, actor, action_type, allow_self)
-        action = await context.ask(actor, action_type, targets)
-        engine.submit_action(action)
+        action = await _ask(context, actor, action_type, targets)
+        if action is not None:
+            engine.submit_action(action)
 
 
 class MissionPhase:
@@ -90,7 +108,8 @@ class TraitorNightPhase:
             targets = legal_targets(engine.state, actor, ActionType.TRAITOR_KILL)
             if not targets:
                 continue
-            action = await context.ask(actor, ActionType.TRAITOR_KILL, targets)
-            engine.submit_action(action)
+            action = await _ask(context, actor, ActionType.TRAITOR_KILL, targets)
+            if action is not None:
+                engine.submit_action(action)
         victim = engine.resolve_night()
         return {"victim": victim}

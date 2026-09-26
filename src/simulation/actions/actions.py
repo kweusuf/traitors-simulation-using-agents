@@ -36,7 +36,7 @@ MVP_ACTIONS: frozenset[ActionType] = frozenset(
     }
 )
 
-_ACTIONS_REQUIRING_TARGET = frozenset(
+ACTIONS_REQUIRING_TARGET = frozenset(
     {
         ActionType.PRIVATE_MESSAGE,
         ActionType.VOTE,
@@ -47,7 +47,7 @@ _ACTIONS_REQUIRING_TARGET = frozenset(
     }
 )
 
-_ACTIONS_REQUIRING_CONTENT = frozenset(
+ACTIONS_REQUIRING_CONTENT = frozenset(
     {
         ActionType.PUBLIC_MESSAGE,
         ActionType.PRIVATE_MESSAGE,
@@ -69,11 +69,27 @@ class Action(StrictModel):
     confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     reason_summary: Optional[str] = None
 
+    @classmethod
+    def __get_pydantic_json_schema__(cls, core_schema, handler):
+        """JSON schema handed to a model for structured output (spec section 21).
+
+        The generated schema is what constrains the model's answer, so
+        every field a message action cannot work without is required
+        there even though the Python model keeps defaults (the framework
+        stamps `actor_id`, and a vote may legitimately carry no text).
+        Pydantic's own schema leaves them optional, which is exactly how
+        a small model ends up dropping `content` from a private message.
+        """
+        schema = handler(core_schema)
+        if isinstance(schema, dict):
+            schema["required"] = ["action", "target", "content"]
+        return schema
+
     @model_validator(mode="after")
     def _check_required_fields(self) -> "Action":
-        if self.action in _ACTIONS_REQUIRING_TARGET and not self.target:
+        if self.action in ACTIONS_REQUIRING_TARGET and not self.target:
             raise ValueError(f"action '{self.action.value}' requires a target")
-        if self.action in _ACTIONS_REQUIRING_CONTENT and not (
+        if self.action in ACTIONS_REQUIRING_CONTENT and not (
             self.content and self.content.strip()
         ):
             raise ValueError(f"action '{self.action.value}' requires content")

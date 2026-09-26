@@ -57,6 +57,35 @@ def test_non_object_response_raises() -> None:
         parse_action(42, "alice")
 
 
+@pytest.mark.parametrize(
+    "sentinel", ["none", "None", "N/A", "null", "-", "", "  none  "]
+)
+def test_sentinel_target_dropped_for_targetless_actions(sentinel: str) -> None:
+    # Models echo the prompt's "Legal targets: none" wording as a target.
+    action = parse_action(
+        {"action": "public_message", "target": sentinel, "content": "hello"},
+        "alice",
+    )
+    assert action.target is None
+
+
+def test_sentinel_target_still_rejected_for_target_actions() -> None:
+    action = parse_action(
+        {"action": "private_message", "target": "none", "content": "hi"}, "alice"
+    )
+    reason = check_action_constraints(
+        action, {ActionType.PRIVATE_MESSAGE}, ["bob", "charlie"]
+    )
+    assert reason is not None
+    assert "'none' is not legal" in reason
+
+
+def test_parse_dict_is_not_mutated() -> None:
+    payload = {"action": "public_message", "target": "none", "content": "hi"}
+    parse_action(payload, "alice")
+    assert payload["target"] == "none"
+
+
 def test_constraint_check_reports_wrong_action_type() -> None:
     action = parse_action({"action": "vote", "target": "bob"}, "alice")
     reason = check_action_constraints(action, {ActionType.PUBLIC_MESSAGE})

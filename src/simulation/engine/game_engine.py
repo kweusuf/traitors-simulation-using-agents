@@ -184,6 +184,27 @@ class GameEngine:
 
         return ValidationResult.accepted()
 
+    def record_unparseable_action(
+        self, actor: str, action_type: ActionType, reason: str
+    ) -> None:
+        """Record an action the agent failed to produce (spec section 21).
+
+        The correction retries are exhausted before this is called. The
+        turn is skipped rather than aborted so one malformed model reply
+        cannot throw away a run, and the miss stays visible in the event
+        log and in `metrics.json` instead of being swallowed.
+        """
+        self._emit(
+            EventType.ACTION_REJECTED,
+            actor=actor,
+            payload={
+                "action": action_type.value,
+                "target": None,
+                "reason": reason,
+                "stage": "output_parse",
+            },
+        )
+
     def _record_message(self, action: Action) -> None:
         channel = (
             Channel.PUBLIC

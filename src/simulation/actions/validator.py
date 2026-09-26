@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from typing import Any, Iterable, Optional
 
-from simulation.actions.actions import Action, ActionType
+from simulation.actions.actions import ACTIONS_REQUIRING_TARGET, Action, ActionType
 
 
 class ActionParseError(ValueError):
@@ -27,7 +27,7 @@ def parse_action(payload: Any, actor_id: str) -> Action:
         except json.JSONDecodeError as exc:
             raise ActionParseError(f"response is not valid JSON: {exc}") from exc
     elif isinstance(payload, dict):
-        data = payload
+        data = dict(payload)
     else:
         raise ActionParseError(f"unsupported response type: {type(payload).__name__}")
 
@@ -35,10 +35,28 @@ def parse_action(payload: Any, actor_id: str) -> Action:
         raise ActionParseError("response must be a JSON object")
     # Never trust a model-supplied actor: stamp the real agent id.
     data["actor_id"] = actor_id
+    _clear_target_for_targetless_action(data)
     try:
         return Action.model_validate(data)
     except Exception as exc:
         raise ActionParseError(f"invalid action: {exc}") from exc
+
+
+def _clear_target_for_targetless_action(data: dict[str, Any]) -> None:
+    """Drop whatever target the model sent when the action takes none.
+
+    The structured-output schema forces a `target` on every response, so
+    a public message arrives carrying either a copied player name or a
+    `'none'` placeholder. Neither means anything for an action without a
+    target, and leaving either in place would fail the legal-target check
+    against an empty target list.
+    """
+    try:
+        action_type = ActionType(data.get("action"))
+    except ValueError:
+        return  # unknown action type: validation reports it
+    if action_type not in ACTIONS_REQUIRING_TARGET:
+        data["target"] = None
 
 
 def check_action_constraints(

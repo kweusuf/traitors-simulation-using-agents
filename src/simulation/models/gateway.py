@@ -21,6 +21,10 @@ class LLMGateway:
         self.max_concurrency = max_concurrency
         self.in_flight_peak = 0
         self._in_flight = 0
+        # Lightweight run stats for metrics.json (spec section 34).
+        self.calls = 0
+        self.total_latency_ms = 0.0
+        self.total_tokens = 0
 
     async def generate(
         self,
@@ -32,8 +36,14 @@ class LLMGateway:
             self._in_flight += 1
             self.in_flight_peak = max(self.in_flight_peak, self._in_flight)
             try:
-                return await self._provider.generate(
+                response = await self._provider.generate(
                     messages, response_schema, config
                 )
             finally:
                 self._in_flight -= 1
+        self.calls += 1
+        if response.latency_ms:
+            self.total_latency_ms += response.latency_ms
+        if response.tokens_used:
+            self.total_tokens += response.tokens_used
+        return response

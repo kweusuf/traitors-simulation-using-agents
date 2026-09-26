@@ -12,7 +12,7 @@ from typing import Optional
 from simulation.actions.actions import Action, ActionType
 from simulation.actions.validator import ActionParseError, check_action_constraints, parse_action
 from simulation.agents.agent import Agent
-from simulation.agents.prompts import ACTION_JSON_HINT, PromptBuilder
+from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.visibility import AgentView, InformationProjector
 from simulation.engine.game_engine import GameEngine
 from simulation.models.base import ChatMessage
@@ -21,13 +21,18 @@ from simulation.models.llm import ModelConfig
 
 
 class AgentRuntime:
+    """One decide loop per agent turn; `max_retries` correction attempts
+    are additional, so the default is three attempts per action (spec
+    section 21). Small local models miss required fields often enough
+    that a single retry still lost whole runs."""
+
     def __init__(
         self,
         agents: dict[str, Agent],
         gateway: LLMGateway,
         model_config: ModelConfig,
         prompt_builder: Optional[PromptBuilder] = None,
-        max_retries: int = 1,
+        max_retries: int = 2,
     ) -> None:
         self.agents = agents
         self.gateway = gateway
@@ -84,7 +89,10 @@ class AgentRuntime:
                     ChatMessage(role="assistant", content=response.content),
                     ChatMessage(
                         role="user",
-                        content=f"Invalid action: {last_reason}. Try again. {ACTION_JSON_HINT}",
+                        content=(
+                            f"Invalid action: {last_reason}. Try again. "
+                            f"{action_json_hint(action_type)}"
+                        ),
                     ),
                 ]
 

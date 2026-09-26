@@ -36,6 +36,20 @@ def test_load_basic_config() -> None:
     assert config.llm.max_concurrency == 2
 
 
+def test_load_long_game_config() -> None:
+    config = load_config("configs/traitors/long_game.yaml")
+    assert config.game.players == 21
+    assert config.game.traitors == 3
+    assert config.game.faithful == 18
+    assert config.game.max_rounds == 12
+    assert len(config.game.player_names or []) == 21
+    # Three tasks a day; murder is the last phase, after the round table.
+    assert config.phases.count("mission") == 3
+    assert config.phases[-1] == "traitor_night"
+    assert config.phases.index("round_table") < config.phases.index("voting")
+    assert config.phases.index("voting") < config.phases.index("traitor_night")
+
+
 def test_config_rejects_bad_phase() -> None:
     with pytest.raises(Exception, match="unknown phases"):
         GameConfig(phases=["mission", "dance_party"])

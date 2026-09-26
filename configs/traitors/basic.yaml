@@ -21,14 +21,22 @@ communication:
   public_messages_per_agent: 1
   private_messages_per_agent: 2
 
+# Model selection and model details are config-driven (spec sections
+# 19 and 22). Machine-specific endpoints (e.g. a remote Ollama host)
+# belong in an uncommitted `*.local.yaml` copy of this file.
 llm:
   provider: ollama
-  model: gpt-oss:20b
+  model: hauhau-qwen:latest        # from `ollama list`: DIGEST_A, 5.6 GB
+  base_url: http://localhost:11434
   temperature: 0.7
   max_tokens: 512
-  reasoning_effort: medium
+  # `none` turns off hybrid thinking so thinking tokens cannot eat the
+  # output budget; use low/medium/high to enable it for this model.
+  reasoning_effort: none
   timeout_seconds: 120
   max_concurrency: 2
+  # Raw Ollama options; they override the normalized fields above.
+  options: {}
 
 # Deterministic per-game seed; batch runs derive one seed per game.
 seed: 42
