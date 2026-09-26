@@ -16,6 +16,7 @@ from simulation.communication.channels import Channel, Message
 from simulation.engine.state import GamePhase, GameState, MissionState, PlayerState, Role
 from simulation.engine.rules import RuleValidator, ValidationResult
 from simulation.experiments.config import GameConfig
+from simulation.communication.router import MessageRouter
 from simulation.persistence.database import Database
 from simulation.persistence.event_log import EventType
 from simulation.persistence.repositories import AgentRepository, SnapshotRepository
@@ -54,7 +55,7 @@ class GameEngine:
         self.sink = sink
         self.seed = seed if seed is not None else config.seed
         self.validator = RuleValidator(config)
-        self.router = None  # set by Phase 5 wiring (object with .deliver(Message))
+        self.router = MessageRouter(sink.game_id, db)
         self._agents = AgentRepository(db) if db is not None else None
         self._snapshots = SnapshotRepository(db) if db is not None else None
 

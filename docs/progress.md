@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 4 complete (47 tests green), proceeding to Phase 5
+**Status:** Phase 5 complete (60 tests green, security suite added), proceeding to Phase 6
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -29,8 +29,8 @@ and its commit lands.
 | 1 | Project skeleton and tooling | complete | `cc0b9dc` |
 | 2 | Domain models: state, actions, events | complete | `0270402` |
 | 3 | Event system and persistence (SQLite + JSONL) | complete | `be2fa02` |
-| 4 | Game engine and generic phase engine | complete | `pending` |
-| 5 | Communication routing and information projection | pending | |
+| 4 | Game engine and generic phase engine | complete | `973969d` |
+| 5 | Communication routing and information projection | complete | `pending` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
 | 7 | LLM gateway and FakeLLMProvider | pending | |
 | 8 | Traitors environment (phases, rules, win conditions) | pending | |
@@ -123,13 +123,13 @@ steps through phases with scripted actions, no LLM involved.
 
 ### Phase 5: Communication routing and information projection
 
-- [ ] Message router for `PUBLIC`, `PRIVATE`, `ROLE_PRIVATE`, `SYSTEM`
+- [x] Message router for `PUBLIC`, `PRIVATE`, `ROLE_PRIVATE`, `SYSTEM`
   channels (spec §9).
-- [ ] Structural visibility enforcement: non-recipients can never read a
+- [x] Structural visibility enforcement: non-recipients can never read a
   message (not prompt-based) (spec §9).
-- [ ] `InformationProjector.project(game_state, agent_id)` producing
+- [x] `InformationProjector.project(game_state, agent_id)` producing
   agent-specific views (spec §10).
-- [ ] Security tests: faithful cannot see traitor private chat, traitor
+- [x] Security tests: faithful cannot see traitor private chat, traitor
   cannot see unrelated private chat, hidden roles never appear in public
   observations, dead agents excluded (spec §29).
 
@@ -274,3 +274,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Phase 2 complete: domain models (state, actions, channels, events), 12 unit tests passed. |
 | 2026-09-26 | Phase 3 complete: JSONL event log, SQLite schema + 11 repositories, snapshots; 19 tests passed. |
 | 2026-09-26 | Phase 4 complete: game engine, rule validator, generic phase engine, config loader; 47 tests passed. |
+| 2026-09-26 | Phase 5 complete: message router, structural visibility, InformationProjector, security leakage tests; 60 tests passed. |
