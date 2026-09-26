@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** Phase 6 mostly complete (88 tests green); decision loop lands with Phase 7 gateway
+**Status:** Phase 7 complete (99 tests green), proceeding to Phase 8
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -31,9 +31,9 @@ and its commit lands.
 | 3 | Event system and persistence (SQLite + JSONL) | complete | `ef3f4ed` |
 | 4 | Game engine and generic phase engine | complete | `fd0ddc4` |
 | 5 | Communication routing and information projection | complete | `1c8e337` |
-| 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | in progress | |
+| 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | complete | `1820c57` |
 | 6 | Agent runtime: persona, memory, beliefs, relationships, prompts | pending | |
-| 7 | LLM gateway and FakeLLMProvider | pending | |
+| 7 | LLM gateway and FakeLLMProvider | complete | `pending` |
 | 8 | Traitors environment (phases, rules, win conditions) | pending | |
 | 9 | Deterministic test suite (unit, security, integration) | pending | |
 | 10 | OllamaProvider | pending | |
@@ -140,7 +140,7 @@ steps through phases with scripted actions, no LLM involved.
 
 - [x] `Agent` stateful object: identity, persona, role, goals, memory,
   beliefs, relationships, model handle (spec §11).
-- [ ] Runtime loop: observation -> memory retrieval -> prompt build ->
+- [x] Runtime loop: observation -> memory retrieval -> prompt build ->
   LLM call -> parse -> validate -> return action (never executes it).
 - [ ] Persona as YAML data with trait-to-instruction translation
   (spec §12).
@@ -160,15 +160,15 @@ tests/unit/test_memory*.py tests/unit/test_prompt*.py` passes.
 
 ### Phase 7: LLM gateway and FakeLLMProvider
 
-- [ ] `LLMProvider` protocol: `generate(messages, response_schema,
+- [x] `LLMProvider` protocol: `generate(messages, response_schema,
   config) -> LLMResponse` (spec §17).
-- [ ] `ModelConfig` normalization (temperature, max_tokens, timeout,
+- [x] `ModelConfig` normalization (temperature, max_tokens, timeout,
   provider-specific options) (spec §19).
-- [ ] `FakeLLMProvider` returning predetermined structured actions
+- [x] `FakeLLMProvider` returning predetermined structured actions
   (spec §30).
-- [ ] Concurrency limiting (`max_concurrency`) in gateway (spec §18).
-- [ ] No provider-specific code in agent or engine (spec §17).
-- [ ] Unit tests: fake provider script playback, config parsing,
+- [x] Concurrency limiting (`max_concurrency`) in gateway (spec §18).
+- [x] No provider-specific code in agent or engine (spec §17).
+- [x] Unit tests: fake provider script playback, config parsing,
   concurrency cap.
 
 **Verification:** `pytest tests/unit/test_models*.py` passes without any
@@ -278,3 +278,4 @@ of an integration-test game matches its recorded final state.
 | 2026-09-26 | Phase 5 complete: message router, structural visibility, InformationProjector, security leakage tests; 60 tests passed. |
 | 2026-09-26 | History rewritten to purge accidentally staged `ollama-model/*.gguf` (2.6 GB -> 192 KB); phase 2-5 hashes changed, dir gitignored. |
 | 2026-09-26 | Phase 6 code complete: persona/goals/beliefs/relationships/memory/prompt builder/action parser; 88 tests passed. Agent decision loop deferred to Phase 7 (needs LLM gateway). |
+| 2026-09-27 | Phase 7 complete: LLMProvider protocol, ModelConfig, LLMGateway concurrency cap, FakeLLMProvider, AgentRuntime decide loop with correction retries; 99 tests passed. |
