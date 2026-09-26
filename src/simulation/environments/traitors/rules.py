@@ -38,6 +38,15 @@ def legal_targets(
             if p != actor_id and state.roles.get(p) is not Role.TRAITOR
         )
 
+    if action_type is ActionType.RECRUIT:
+        if state.roles.get(actor_id) is not Role.TRAITOR:
+            return []
+        return sorted(
+            p
+            for p in alive
+            if p != actor_id and state.roles.get(p) is Role.FAITHFUL
+        )
+
     return []
 
 

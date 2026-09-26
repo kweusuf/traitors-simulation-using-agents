@@ -28,6 +28,12 @@ class GameSettings(StrictModel):
     allow_self_vote: bool = False
     # Who wins when max_rounds is exhausted without an elimination victory.
     round_limit_winner: str = "faithful"
+    # Recruitment: when a traitor is banished at the round table, they get
+    # to convert one living faithful player before leaving. `max_recruits`
+    # caps it for the whole game (0 = no cap); without a cap the faithful
+    # can never empty the traitor team by voting alone.
+    recruit_on_banish: bool = False
+    max_recruits: int = Field(default=0, ge=0)
     player_names: Optional[list[str]] = None
     # Persona names resolved against the configs/personas directory;
     # assigned round-robin when there are fewer names than players.

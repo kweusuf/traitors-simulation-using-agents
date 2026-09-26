@@ -18,6 +18,7 @@ from simulation.models.base import StrictModel
 class EventType(str, Enum):
     GAME_STARTED = "GAME_STARTED"
     ROLE_ASSIGNED = "ROLE_ASSIGNED"
+    ROLE_RECRUITED = "ROLE_RECRUITED"
     ROUND_STARTED = "ROUND_STARTED"
     PHASE_STARTED = "PHASE_STARTED"
     PHASE_ENDED = "PHASE_ENDED"

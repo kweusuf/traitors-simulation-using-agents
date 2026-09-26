@@ -6,6 +6,9 @@ game:
   traitors: 2
   faithful: 4
   max_rounds: 5
+  # Off here: when on, a traitor banished at the round table converts a
+  # living faithful player before leaving (see long_game.yaml).
+  recruit_on_banish: false
 
 # Phase ordering is configurable (spec section 7).
 phases:

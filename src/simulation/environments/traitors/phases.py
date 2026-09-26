@@ -84,12 +84,27 @@ class VotingPhase:
 
 
 class EliminationPhase:
-    """Resolve the tally; ties eliminate nobody (spec section 29)."""
+    """Resolve the tally; ties eliminate nobody (spec section 29).
+
+    When the round table is about to banish a traitor and recruitment is
+    on, that traitor is asked for one RECRUIT action first: they pick a
+    living faithful player, who is converted before the win check runs.
+    """
 
     name = "elimination"
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
-        tally = context.engine.resolve_votes()
+        engine = context.engine
+        tally = engine.tally_votes()
+        if not tally.tie and tally.top:
+            banished = tally.top[0]
+            if engine.recruitment_opportunity(banished):
+                targets = legal_targets(engine.state, banished, ActionType.RECRUIT)
+                if targets:
+                    action = await _ask(context, banished, ActionType.RECRUIT, targets)
+                    if action is not None:
+                        engine.submit_action(action)
+        tally = engine.resolve_votes()
         return {"counts": tally.counts, "tie": tally.tie}
 
 

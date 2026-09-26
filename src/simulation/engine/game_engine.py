@@ -75,6 +75,8 @@ class GameEngine:
         self.state = GameState(game_id=sink.game_id)
         self._usage: dict[tuple[str, ActionType], int] = {}
         self._night_choices: list[Action] = []
+        self._pending_recruit: Optional[str] = None
+        self.recruits_used = 0
 
     # ------------------------------------------------------------------
     # Lifecycle
@@ -118,6 +120,7 @@ class GameEngine:
         self.state.round_number += 1
         self.state.votes.clear()
         self._night_choices.clear()
+        self._pending_recruit = None
         self._emit(EventType.ROUND_STARTED)
 
     def begin_phase(self, phase: GamePhase) -> None:
@@ -181,6 +184,11 @@ class GameEngine:
             )
         elif action.action is ActionType.TRAITOR_KILL:
             self._night_choices.append(action)
+        elif action.action is ActionType.RECRUIT:
+            # Held until the banishment resolves, so the conversion lands
+            # before the win check (see `eliminate`).
+            assert action.target is not None
+            self._pending_recruit = action.target
 
         return ValidationResult.accepted()
 
@@ -251,6 +259,25 @@ class GameEngine:
         top = sorted(t for t, c in counts.items() if c == highest)
         return TallyResult(counts=counts, top=top, tie=len(top) > 1)
 
+    def recruitment_opportunity(self, player_id: str) -> bool:
+        """Could this player recruit right now if the round table banishes them?
+
+        Asked before the elimination resolves, while the banished player
+        is still alive, so the phase knows whether to request a RECRUIT
+        action from them.
+        """
+        game = self.config.game
+        if not game.recruit_on_banish:
+            return False
+        if game.max_recruits and self.recruits_used >= game.max_recruits:
+            return False
+        if self.state.roles.get(player_id) is not Role.TRAITOR:
+            return False
+        return any(
+            p != player_id and self.state.roles.get(p) is Role.FAITHFUL
+            for p in self.state.alive_players
+        )
+
     def resolve_votes(self) -> TallyResult:
         tally = self.tally_votes()
         if not tally.counts:
@@ -260,9 +287,11 @@ class GameEngine:
                 self.state.game_id, self.state.round_number, self.state.votes
             )
         if tally.tie:
+            self._pending_recruit = None
             self._emit(EventType.VOTE_TIE, targets=tally.top, payload={"counts": tally.counts})
             return tally
-        self.eliminate(tally.top[0], method="vote", votes=tally.counts)
+        recruit, self._pending_recruit = self._pending_recruit, None
+        self.eliminate(tally.top[0], method="vote", votes=tally.counts, recruit=recruit)
         return tally
 
     def resolve_night(self) -> Optional[str]:
@@ -295,6 +324,7 @@ class GameEngine:
         player_id: str,
         method: str,
         votes: Optional[dict[str, int]] = None,
+        recruit: Optional[str] = None,
     ) -> None:
         if player_id not in self.state.alive_players:
             raise ValueError(f"player '{player_id}' is not alive")
@@ -312,7 +342,32 @@ class GameEngine:
             self._eliminations.add(
                 self.state.game_id, self.state.round_number, player_id, method
             )
+        # A banished traitor recruits before the win check, so a last
+        # traitor taken off the board by vote can still hand over.
+        if recruit is not None:
+            if self.state.roles.get(player_id) is not Role.TRAITOR:
+                raise ValueError(
+                    f"recruitment '{recruit}' requested for non-traitor '{player_id}'"
+                )
+            self._apply_recruit(recruit, by=player_id)
         self.check_win()
+
+    def _apply_recruit(self, player_id: str, by: str) -> None:
+        """Convert one living faithful player into a traitor."""
+        if player_id not in self.state.alive_players:
+            raise ValueError(f"cannot recruit '{player_id}': not alive")
+        if self.state.roles.get(player_id) is not Role.FAITHFUL:
+            raise ValueError(f"cannot recruit '{player_id}': not a faithful player")
+        self.state.roles[player_id] = Role.TRAITOR
+        self.recruits_used += 1
+        self._emit(
+            EventType.ROLE_RECRUITED,
+            actor=player_id,
+            targets=[by],
+            payload={"by": by, "recruits_used": self.recruits_used},
+        )
+        if self._agents is not None:
+            self._agents.set_role(self.state.game_id, player_id, Role.TRAITOR.value)
 
     def check_win(self) -> bool:
         """Return True if the game reached a terminal state."""

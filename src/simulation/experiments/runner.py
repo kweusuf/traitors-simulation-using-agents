@@ -178,7 +178,7 @@ class GameRunner:
         context = PhaseContext(
             engine=env.engine,
             config=config,
-            request_action=self._callback(env, runtime),
+            request_action=self._callback(env, runtime, agents),
         )
 
         self.tracer.record("game_started", game_id=game_id, seed=seed)
@@ -250,14 +250,33 @@ class GameRunner:
     # ------------------------------------------------------------------
     # Internals
     # ------------------------------------------------------------------
-    def _callback(self, env: TraitorsEnvironment, runtime: AgentRuntime):
+    def _callback(
+        self,
+        env: TraitorsEnvironment,
+        runtime: AgentRuntime,
+        agents: dict[str, Agent],
+    ):
         """Wire AgentRuntime into the PhaseContext action callback."""
 
         async def callback(agent_id, action_type, legal_targets):
+            self._sync_roles(env, agents)
             view = env.observe(agent_id)
             return await runtime.decide(agent_id, view, action_type, legal_targets)
 
         return callback
+
+    @staticmethod
+    def _sync_roles(env: TraitorsEnvironment, agents: dict[str, Agent]) -> None:
+        """Keep agent roles in step with the engine.
+
+        Recruitment flips a faithful player to traitor mid-game; the
+        prompt reads `agent.role`, so without this the recruit would
+        keep playing as faithful.
+        """
+        for pid, role in env.state.roles.items():
+            agent = agents.get(pid)
+            if agent is not None and agent.role is not role:
+                agent.assign_role(role)
 
     def _build_agents(self, env: TraitorsEnvironment) -> dict[str, Agent]:
         """Create agents with configured personas and the engine's roles."""

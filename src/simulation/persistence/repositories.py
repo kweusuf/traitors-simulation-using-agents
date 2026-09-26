@@ -132,6 +132,14 @@ class AgentRepository:
         )
         self._db.commit()
 
+    def set_role(self, game_id: str, agent_id: str, role: str) -> None:
+        """Role can change mid-game when a player is recruited."""
+        self._db.execute(
+            "UPDATE agents SET role = ? WHERE game_id = ? AND agent_id = ?",
+            (role, game_id, agent_id),
+        )
+        self._db.commit()
+
     def get(self, game_id: str) -> list[dict[str, Any]]:
         rows = self._db.execute(
             "SELECT * FROM agents WHERE game_id = ? ORDER BY agent_id", (game_id,)

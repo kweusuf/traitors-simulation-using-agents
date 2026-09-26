@@ -54,6 +54,8 @@ class ReplayState:
                 role = event.payload.get("role")
                 if role is not None:
                     state.roles[event.actor] = Role(role)
+            elif event.type is EventType.ROLE_RECRUITED and event.actor:
+                state.roles[event.actor] = Role.TRAITOR
             elif event.type is EventType.ROUND_STARTED:
                 state.rounds = max(state.rounds, event.round)
             elif event.type is EventType.PHASE_STARTED:
@@ -178,6 +180,15 @@ def build_transcript(events: list[Event]) -> dict:
         for event in events
         if event.type is EventType.PLAYER_ELIMINATED
     ]
+    recruitments = [
+        {
+            "round": event.round,
+            "player": event.actor,
+            "by": event.payload.get("by"),
+        }
+        for event in events
+        if event.type is EventType.ROLE_RECRUITED
+    ]
     winner = next(
         (
             str(event.payload.get("team"))
@@ -189,6 +200,7 @@ def build_transcript(events: list[Event]) -> dict:
     return {
         "messages": messages,
         "eliminations": eliminations,
+        "recruitments": recruitments,
         "winner": winner,
     }
 
@@ -215,6 +227,10 @@ def render_transcript(events: list[Event]) -> str:
             method = event.payload.get("method", "")
             suffix = " (night)" if method == "night" else ""
             lines.append(f"    Eliminated: {event.actor}{suffix}")
+        elif event.type is EventType.ROLE_RECRUITED:
+            lines.append(
+                f"    Recruited: {event.actor} (by {event.payload.get('by', '?')})"
+            )
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")
         elif event.type is EventType.GAME_WON:

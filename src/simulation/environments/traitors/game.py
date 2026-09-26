@@ -63,7 +63,8 @@ class TraitorsEnvironment:
         allow_self = self.config.game.allow_self_vote
         result: dict[ActionType, list[str]] = {}
         for action_type in action_types_for_phase(state.phase):
-            if action_type is ActionType.TRAITOR_KILL:
+            if action_type in (ActionType.TRAITOR_KILL, ActionType.RECRUIT):
+                # Role-restricted: empty means "not available to this agent".
                 targets = legal_targets(state, agent_id, action_type)
                 if not targets:
                     continue

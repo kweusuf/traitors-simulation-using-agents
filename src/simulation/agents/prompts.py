@@ -85,6 +85,12 @@ class PromptBuilder:
             f"Current phase: {view.phase.value}.",
             f"Required action type: {action_type.value}.",
         ]
+        if action_type is ActionType.RECRUIT:
+            lines.append(
+                "You are a banished traitor making one final choice: recruit a "
+                "living faithful player onto the traitor team. They become a "
+                "traitor immediately and are told their new role."
+            )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))
         else:

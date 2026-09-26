@@ -46,6 +46,8 @@ def make_progress_printer():
             method = event.payload.get("method", "")
             suffix = " (night)" if method == "night" else ""
             print(f"  Eliminated: {event.actor}{suffix}")
+        elif event.type is EventType.ROLE_RECRUITED:
+            print(f"  Recruited: {event.actor} (by {event.payload.get('by', '?')})")
         elif event.type is EventType.VOTE_TIE:
             print("  Vote tied: nobody eliminated")
         elif event.type is EventType.TRAITOR_KILL:

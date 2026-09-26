@@ -21,7 +21,7 @@ PHASE_ALLOWED_ACTIONS: dict[GamePhase, frozenset[ActionType]] = {
     GamePhase.PRIVATE_CHAT: frozenset({ActionType.PRIVATE_MESSAGE}),
     GamePhase.ROUND_TABLE: frozenset({ActionType.PUBLIC_MESSAGE}),
     GamePhase.VOTING: frozenset({ActionType.VOTE}),
-    GamePhase.ELIMINATION: frozenset(),
+    GamePhase.ELIMINATION: frozenset({ActionType.RECRUIT}),
     GamePhase.TRAITOR_NIGHT: frozenset({ActionType.TRAITOR_KILL}),
     GamePhase.GAME_END: frozenset(),
 }
@@ -69,6 +69,11 @@ class RuleValidator:
         role = state.roles.get(action.actor_id)
         if action.action is ActionType.TRAITOR_KILL and role is not Role.TRAITOR:
             return ValidationResult.rejected("only traitors may kill at night")
+        if action.action is ActionType.RECRUIT:
+            if not self._config.game.recruit_on_banish:
+                return ValidationResult.rejected("recruitment is disabled for this game")
+            if role is not Role.TRAITOR:
+                return ValidationResult.rejected("only traitors may recruit")
 
         # 4. Target checks.
         if action.target is not None:
@@ -84,6 +89,11 @@ class RuleValidator:
                     return ValidationResult.rejected("cannot kill self")
                 if state.roles.get(action.target) is Role.TRAITOR:
                     return ValidationResult.rejected("cannot kill a fellow traitor")
+            if action.action is ActionType.RECRUIT:
+                if action.target == action.actor_id:
+                    return ValidationResult.rejected("cannot recruit yourself")
+                if state.roles.get(action.target) is not Role.FAITHFUL:
+                    return ValidationResult.rejected("can only recruit a faithful player")
 
         # 5. Phase limits (per-agent usage within the current phase).
         limit = self._action_limit(action)
@@ -104,6 +114,6 @@ class RuleValidator:
             return comm.private_messages_per_agent
         if action.action is ActionType.VOTE:
             return 1  # one vote per agent per round
-        if action.action is ActionType.TRAITOR_KILL:
+        if action.action in (ActionType.TRAITOR_KILL, ActionType.RECRUIT):
             return 1
         return None
