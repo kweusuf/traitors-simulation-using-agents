@@ -70,7 +70,10 @@ llm:
   temperature: 0.7
   max_tokens: 512
   reasoning_effort: none
-  timeout_seconds: 120
+  # Headroom for a cold model load on the remote host: Ollama
+  # unloads after ~5 idle minutes, and a reload can take a while.
+  timeout_seconds: 300
+  retries: 3              # extra attempts for timeouts and 5xx
   max_concurrency: 2
   options: {}
 

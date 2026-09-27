@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-14 complete, 212 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-14 complete, 217 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -371,3 +371,4 @@ calls and zero rejected actions.
 | 2026-09-26 | Phases 11 and 12 complete = MILESTONE 2: CLI `run`/`batch`/`list-games`, per-run artifact tree with experiment identity, `replay`/`inspect`/`snapshot`, no-op observability tracer; 179 tests passed; `basic.yaml` now tracked with its model block. |
 | 2026-09-26 | Phase 13 complete (extends the 0-12 plan): traitor recruitment on banishment (`RECRUIT` action, `ROLE_RECRUITED` event, `recruit_on_banish`/`max_recruits` config); 197 tests passed. Machine-local configs excluded via `*.local.yaml` in `.gitignore`. |
 | 2026-09-26 | Phase 14 complete: finale at exactly 3 traitors and 3 faithful with rapid-fire voting, seeded solo/team ambitions, solo and team win reporting; 212 tests passed. |
+| 2026-09-27 | Fix after the first live run died: Ollama calls now retry transient failures (timeout, unreachable host, 5xx/429, garbage body) with exponential backoff, `llm.retries` is config-driven and reported in `metrics.json`, and the long game allows 300s per call for cold model loads; 217 tests passed. |

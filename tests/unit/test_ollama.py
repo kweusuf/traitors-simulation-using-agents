@@ -216,3 +216,118 @@ def test_game_config_llm_block_is_config_driven() -> None:
 def test_unknown_llm_field_is_rejected() -> None:
     with pytest.raises(Exception):
         LLMSettings(bogus_field=1)
+
+
+# ----------------------------------------------------------------------
+# Retry of transient failures (a cold model load must not kill a run)
+# ----------------------------------------------------------------------
+
+OK_BODY = {
+    "model": "hauhau-qwen:latest",
+    "message": {"role": "assistant", "content": '{"action": "vote"}'},
+    "eval_count": 7,
+}
+
+
+def test_retries_a_transient_failure_then_succeeds() -> None:
+    attempts: list[float] = []
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        attempts.append(timeout)
+        if len(attempts) < 3:
+            raise OllamaError("timed out after 300.0s", retryable=True)
+        return OK_BODY
+
+    provider = OllamaProvider(poster=poster, backoff=(0.0, 0.0, 0.0))
+    response = asyncio.run(
+        provider.generate(MESSAGES, Action, make_config(retries=3))
+    )
+
+    assert response.content == '{"action": "vote"}'
+    assert len(attempts) == 3
+    assert provider.calls == 1
+    assert provider.retries == 2
+
+
+def test_does_not_retry_a_permanent_error() -> None:
+    calls = {"n": 0}
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        calls["n"] += 1
+        raise OllamaError("HTTP 404 from http://localhost:11434/api/chat: no model")
+
+    provider = OllamaProvider(poster=poster, backoff=(0.0, 0.0, 0.0))
+    with pytest.raises(OllamaError, match="HTTP 404"):
+        asyncio.run(provider.generate(MESSAGES, Action, make_config(retries=3)))
+
+    assert calls["n"] == 1
+    assert provider.retries == 0
+
+
+def test_gives_up_after_the_retry_budget() -> None:
+    calls = {"n": 0}
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        calls["n"] += 1
+        raise OllamaError("cannot reach Ollama", retryable=True)
+
+    provider = OllamaProvider(poster=poster, backoff=(0.0, 0.0, 0.0))
+    with pytest.raises(OllamaError, match="cannot reach Ollama"):
+        asyncio.run(provider.generate(MESSAGES, Action, make_config(retries=2)))
+
+    assert calls["n"] == 3  # the first attempt plus two retries
+    assert provider.retries == 2
+
+
+def test_retries_can_be_switched_off() -> None:
+    calls = {"n": 0}
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        calls["n"] += 1
+        raise OllamaError("timed out", retryable=True)
+
+    provider = OllamaProvider(poster=poster, backoff=(0.0,))
+    with pytest.raises(OllamaError):
+        asyncio.run(provider.generate(MESSAGES, Action, make_config(retries=0)))
+
+    assert calls["n"] == 1
+
+
+def test_default_poster_marks_transient_failures_retryable() -> None:
+    import simulation.models.ollama as ollama_module
+
+    original = ollama_module.urllib.request.urlopen
+
+    def fail_with(error: BaseException):
+        def opener(url: str, *args: Any, **kwargs: Any):
+            raise error
+
+        return opener
+
+    cases = [
+        (TimeoutError("timed out"), True),
+        (urllib.error.URLError("connection refused"), True),
+        (
+            urllib.error.HTTPError(
+                "http://localhost:11434/api/chat", 503, "unavailable", {}, None
+            ),
+            True,
+        ),
+        (
+            urllib.error.HTTPError(
+                "http://localhost:11434/api/chat", 404, "not found", {}, None
+            ),
+            False,
+        ),
+    ]
+    try:
+        for error, expected in cases:
+            ollama_module.urllib.request.urlopen = fail_with(error)  # type: ignore[assignment]
+            try:
+                ollama_module._urllib_post("http://localhost:11434/api/chat", {}, 1.0)
+            except OllamaError as exc:
+                assert exc.retryable is expected, (error, exc.retryable)
+            else:
+                raise AssertionError(f"{error!r} did not raise")
+    finally:
+        ollama_module.urllib.request.urlopen = original  # type: ignore[assignment]

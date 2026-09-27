@@ -25,6 +25,8 @@ class ModelConfig(StrictModel):
     temperature: float = 0.7
     max_tokens: int = 512
     timeout_seconds: int = 120
+    # Extra attempts for transient transport failures (spec section 18).
+    retries: int = Field(default=3, ge=0)
     reasoning_effort: str = "medium"
     # Local Ollama server (or any OpenAI-compatible proxy base later).
     base_url: str = "http://localhost:11434"

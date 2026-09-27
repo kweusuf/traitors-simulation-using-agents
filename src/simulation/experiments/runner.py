@@ -96,6 +96,7 @@ def model_identity(settings: LLMSettings) -> tuple[str, dict[str, Any]]:
         "max_tokens": settings.max_tokens,
         "reasoning_effort": settings.reasoning_effort,
         "timeout_seconds": settings.timeout_seconds,
+        "retries": settings.retries,
         "max_concurrency": settings.max_concurrency,
         "base_url": settings.base_url,
         "options": dict(settings.options),
@@ -195,6 +196,7 @@ class GameRunner:
             env=env,
             events=events,
             gateway=gateway,
+            provider=provider,
             elapsed=elapsed,
         )
         self._write_artifacts(
@@ -324,6 +326,7 @@ class GameRunner:
         env: TraitorsEnvironment,
         events: list[Event],
         gateway: LLMGateway,
+        provider: LLMProvider,
         elapsed: float,
     ) -> dict[str, Any]:
         """Run metrics plus the experiment identity (spec sections 27, 34)."""
@@ -395,6 +398,7 @@ class GameRunner:
             "llm": {
                 "provider": self.config.llm.provider,
                 "calls": gateway.calls,
+                "retries": getattr(provider, "retries", 0),
                 "latency_ms_total": round(gateway.total_latency_ms, 1),
                 "tokens": gateway.total_tokens,
                 "in_flight_peak": gateway.in_flight_peak,

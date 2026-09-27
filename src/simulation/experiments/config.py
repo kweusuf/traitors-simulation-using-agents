@@ -92,6 +92,9 @@ class LLMSettings(StrictModel):
     max_tokens: int = 512
     reasoning_effort: str = "medium"
     timeout_seconds: int = 120
+    # Extra attempts for transient failures (timeouts, 5xx) before the
+    # run gives up; backoff lives in the Ollama provider.
+    retries: int = Field(default=3, ge=0)
     max_concurrency: int = Field(default=2, ge=1)
     # Provider-specific knobs the normalized fields do not cover.
     options: dict[str, Any] = Field(default_factory=dict)
@@ -105,6 +108,7 @@ class LLMSettings(StrictModel):
             temperature=self.temperature,
             max_tokens=self.max_tokens,
             timeout_seconds=self.timeout_seconds,
+            retries=self.retries,
             reasoning_effort=self.reasoning_effort,
             options=dict(self.options),
         )

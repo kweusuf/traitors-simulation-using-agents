@@ -25,7 +25,16 @@ Poster = Callable[[str, dict[str, Any], float], dict[str, Any]]
 
 
 class OllamaError(RuntimeError):
-    """Ollama request, transport, or response failure."""
+    """Ollama request, transport, or response failure.
+
+    `retryable` marks a transient failure (timeout, unreachable host,
+    server-side error) that is worth another attempt; the gateway and
+    the agent loop let non-retryable errors end the run.
+    """
+
+    def __init__(self, message: str, retryable: bool = False) -> None:
+        super().__init__(message)
+        self.retryable = retryable
 
 
 def _urllib_post(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
@@ -41,27 +50,52 @@ def _urllib_post(url: str, payload: dict[str, Any], timeout: float) -> dict[str,
             body = response.read().decode("utf-8")
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
-        raise OllamaError(f"HTTP {exc.code} from {url}: {detail[:500]}") from exc
+        raise OllamaError(
+            f"HTTP {exc.code} from {url}: {detail[:500]}",
+            retryable=exc.code >= 500 or exc.code == 429,
+        ) from exc
     except urllib.error.URLError as exc:
-        raise OllamaError(f"cannot reach Ollama at {url}: {exc.reason}") from exc
+        raise OllamaError(
+            f"cannot reach Ollama at {url}: {exc.reason}", retryable=True
+        ) from exc
     except TimeoutError as exc:
-        raise OllamaError(f"Ollama request to {url} timed out after {timeout}s") from exc
+        raise OllamaError(
+            f"Ollama request to {url} timed out after {timeout}s", retryable=True
+        ) from exc
 
     try:
         return json.loads(body)
     except json.JSONDecodeError as exc:
-        raise OllamaError(f"non-JSON response from {url}: {body[:200]}") from exc
+        # A truncated or garbled body usually means the server hiccupped.
+        raise OllamaError(
+            f"non-JSON response from {url}: {body[:200]}", retryable=True
+        ) from exc
+
+
+# Extra attempts for retryable failures, and the pause before each
+# (exponential, capped by the tuple length).
+DEFAULT_RETRIES = 3
+RETRY_BACKOFF = (1.0, 2.0, 4.0)
 
 
 class OllamaProvider:
     """Implements the LLMProvider protocol against a local Ollama server.
 
     `poster` is injectable so unit tests never touch the network.
+    Retryable failures (timeouts, unreachable host, 5xx/429, garbage
+    bodies) are retried `config.retries` times with backoff, which is
+    what keeps a slow cold load from killing a whole run.
     """
 
-    def __init__(self, poster: Poster | None = None) -> None:
+    def __init__(
+        self,
+        poster: Poster | None = None,
+        backoff: tuple[float, ...] = RETRY_BACKOFF,
+    ) -> None:
         self._poster: Poster = poster or _urllib_post
+        self._backoff = backoff
         self.calls: int = 0
+        self.retries: int = 0
 
     async def generate(
         self,
@@ -73,9 +107,26 @@ class OllamaProvider:
         url = f"{config.base_url.rstrip('/')}/api/chat"
         self.calls += 1
         started = time.monotonic()
-        data = await asyncio.to_thread(
-            self._poster, url, payload, float(config.timeout_seconds)
-        )
+        attempts = 1 + max(0, int(config.retries))
+        for attempt in range(attempts):
+            try:
+                data = await asyncio.to_thread(
+                    self._poster, url, payload, float(config.timeout_seconds)
+                )
+            except OllamaError as exc:
+                if not exc.retryable or attempt == attempts - 1:
+                    raise
+                self.retries += 1
+                delay = self._backoff[min(attempt, len(self._backoff) - 1)]
+                if delay:
+                    await asyncio.sleep(delay)
+                continue
+            break
+        return self._parse(data, config, started)
+
+    def _parse(
+        self, data: Any, config: ModelConfig, started: float
+    ) -> LLMResponse:
         if not isinstance(data, dict):
             raise OllamaError(f"malformed Ollama response: {str(data)[:200]}")
         message = data.get("message")
