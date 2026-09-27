@@ -85,6 +85,7 @@ python -m simulation metrics game-001 --json    # raw metrics.json
 python -m simulation metrics game-001 --recompute  # rebuild quality from events
 python -m simulation compare game-001 game-002  # gate one run against another
 python -m simulation diagnose game-001          # write runs/game-001/diagnosis.md
+python -m simulation benchmark game-008 --season configs/seasons/the-traitors-uk-s01.yaml
 ```
 
 `compare` scores a candidate against a baseline on paired seeds with per
@@ -94,6 +95,20 @@ any breach, so a prompt change can be promoted or rejected on evidence.
 Every finished run also appends a line to `runs/ledger.jsonl`, and seeds
 where `seed % 10 >= 7` are marked as holdout so they never drive a
 promotion decision.
+
+## Replay a real season
+
+`configs/traitors/season_uk_s01.yaml` recreates The Traitors (UK) Series 1:
+22 players with personas written from the cast's on-screen behaviour
+(`configs/personas/uk_s01/`), the three original traitors pinned by name
+(`game.traitor_names`), the finale counted at three faithful against two
+traitors to match the real final five, and recruitment off because the
+season never refilled the tower by conversion. The ground truth for it
+lives in `configs/seasons/the-traitors-uk-s01.yaml`, and
+`simulation benchmark <game_id> --season <file>` scores a finished run
+against it on outcome, traitor roster, banishment and murder alignment,
+traitor hit rate, survival curve, final counts, finale, recruitments and
+exit order, writing `benchmark.md` into the run directory.
 
 ## Test
 

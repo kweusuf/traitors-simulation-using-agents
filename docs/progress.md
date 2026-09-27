@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-20 complete, 307 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-22 complete, 322 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -46,6 +46,8 @@ and its commit lands.
 | 18 | Traitor night council and strategy guidance | complete | `4674f58` |
 | 19 | Score ledger, paired-seed gates, run diagnosis | complete | `2b89f58` |
 | 20 | Shield, seer, dagger and the murder shortlist | complete | `0df713e` |
+| 21 | Benchmark a run against a real season | complete | `9d9f658` |
+| 22 | Season replay: pinned traitors, cast personas, ground truth | complete | `d9317b5` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -513,6 +515,42 @@ all four flags on completed end to end: 8 item awards, 6 dagger uses, a
 seer check, 7 murder shortlists, one shield block, 8 recruitments, a
 finale, and two different winners, with zero rejected actions.
 
+### Phase 21: Benchmark a run against a real season
+
+- [x] `experiments/season.py`: `load_season`, `benchmark_run`,
+  `render_benchmark`, with ten weighted components (outcome 0.20,
+  traitor roster 0.10, banishment alignment 0.12, murder alignment 0.10,
+  traitor hit rate 0.08, survival curve 0.12, final counts 0.08, finale
+  0.08, recruitments 0.06, exit order 0.06). A component with no data on
+  one side scores null, is listed as skipped, and its weight is
+  redistributed rather than counted as a miss.
+- [x] `simulation benchmark <game_id> [--season FILE] [--json]`, writing
+  `runs/<game_id>/benchmark.md` with the season id, its sources and the
+  per-component method notes.
+- [x] Tests: `tests/unit/test_season_benchmark.py`, twelve cases.
+
+**Verification:** 319 tests green at `9d9f658`.
+
+### Phase 22: Season replay with pinned traitors and cast personas
+
+- [x] `game.traitor_names` pins the traitor roles to named players,
+  validated against the cast and the traitor count, so a replay starts
+  from the same information the season did; without a pin the seeded
+  draw is unchanged.
+- [x] `configs/seasons/the-traitors-uk-s01.yaml`: ground truth for UK
+  Series 1, 22 contestants, three original traitors, the elimination
+  order by episode, the two recruitment attempts, the final five, the
+  faithful win, and the four places where sources disagree.
+- [x] `configs/personas/uk_s01/`: 22 personas written from on-screen
+  behaviour, traits plus description, one per contestant.
+- [x] `configs/traitors/season_uk_s01.yaml`: the run that matches it,
+  with recruitment off because the real season never refilled the tower
+  by conversion, and the finale at three faithful against two traitors.
+
+**Verification:** 322 tests green at `d9317b5`. A fake dry run of the
+season config opens with alyssa, amanda and wilf as traitors and
+completes.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -557,3 +595,5 @@ finale, and two different winners, with zero rejected actions.
 | 2026-09-27 | Research: two docs-researcher briefs on the worldwide Traitors format and on metric-driven prompt loops, condensed into docs/2026-09-27-traitors-format-adoption-and-self-improvement.md. |
 | 2026-09-27 | Phase 19 complete: score ledger, holdout seeds, `simulation compare` gates and `simulation diagnose`; 275 tests passed. |
 | 2026-09-27 | Phase 20 complete: shield, seer, dagger and the murder shortlist behind default-off config flags, enabled in long_game.yaml; 307 tests passed. |
+| 2026-09-27 | Phase 21 complete: season benchmark with ten weighted components and a `benchmark` command writing `benchmark.md`; 319 tests passed. |
+| 2026-09-27 | Phase 22 complete: pinned traitors, 22 UK Series 1 personas, season ground truth and the season_uk_s01 config; 322 tests passed. Live season run started as game-008. |
