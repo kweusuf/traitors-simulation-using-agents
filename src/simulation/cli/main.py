@@ -1,7 +1,9 @@
-"""CLI (spec section 31): run, batch, replay, inspect, list-games, snapshot.
+"""CLI (spec section 31): run, batch, replay, inspect, list-games,
+snapshot, metrics, compare, diagnose.
 
-The CLI is a thin shell around `experiments.runner` and
-`experiments.replay`: argument parsing, progress printing, and file
+The CLI is a thin shell around `experiments.runner`,
+`experiments.replay`, `experiments.compare` and
+`experiments.diagnosis`: argument parsing, progress printing, and file
 lookup only.
 """
 
@@ -13,7 +15,10 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from simulation.experiments.compare import OUTCOME_FIELDS, compare_runs
 from simulation.experiments.config import GameConfig, load_config
+from simulation.experiments.diagnosis import build_diagnosis
+from simulation.experiments.ledger import is_holdout_seed
 from simulation.experiments.quality import analyse as analyse_quality
 from simulation.experiments.replay import ReplayState, load_events, render_transcript
 from simulation.experiments.runner import GameRunner, model_identity
@@ -96,6 +101,17 @@ def load_state(game_id: str, runs_dir: str) -> tuple[ReplayState, list[Event]]:
     run_dir = open_run_dir(game_id, runs_dir)
     events = load_events(run_dir / "events.jsonl")
     return ReplayState.from_events(events), events
+
+
+def load_run_metrics(game_id: str, runs_dir: str) -> dict:
+    """Read one finished run's metrics.json (compare and diagnose)."""
+    path = Path(runs_dir) / game_id / "metrics.json"
+    if not path.is_file():
+        raise ValueError(
+            f"no metrics.json for '{game_id}' in {runs_dir}/; "
+            "the run has not finished yet"
+        )
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _load_config(args: argparse.Namespace) -> GameConfig:
@@ -383,6 +399,96 @@ def cmd_metrics(args: argparse.Namespace) -> int:
     return 0
 
 
+def _fmt(value) -> str:
+    """Gate table cell: '-' for a missing value, else a fixed width."""
+    if value is None:
+        return "-"
+    if isinstance(value, float):
+        return f"{value:.4f}"
+    return str(value)
+
+
+def _fmt_delta(value) -> str:
+    if value is None:
+        return "-"
+    if isinstance(value, float):
+        return f"{value:+.4f}"
+    return f"{value:+d}"
+
+
+def cmd_compare(args: argparse.Namespace) -> int:
+    """Gate a candidate run against a baseline run, one dimension each."""
+    baseline = load_run_metrics(args.baseline_game, args.runs_dir)
+    candidate = load_run_metrics(args.candidate_game, args.runs_dir)
+    result = compare_runs(baseline, candidate)
+    seed = candidate.get("random_seed")
+    holdout = isinstance(seed, int) and is_holdout_seed(seed)
+    payload = {
+        "baseline": {"game_id": args.baseline_game,
+                     "seed": baseline.get("random_seed")},
+        "candidate": {"game_id": args.candidate_game, "seed": seed},
+        "holdout_candidate": holdout,
+        **result,
+    }
+
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0 if result["passed"] else 1
+
+    print(
+        f"Comparing {args.baseline_game} (baseline) vs "
+        f"{args.candidate_game} (candidate)\n"
+    )
+    print(
+        f"  {'metric':<36}{'baseline':>10} {'candidate':>10} {'delta':>10}  "
+        f"{'rule':<22}result"
+    )
+    for gate in result["gates"]:
+        if gate["skipped"]:
+            verdict = "SKIP"
+        else:
+            verdict = "PASS" if gate["passed"] else "FAIL"
+        note = f" ({gate['note']})" if gate["note"] else ""
+        print(
+            f"  {gate['metric']:<36}{_fmt(gate['baseline']):>10} "
+            f"{_fmt(gate['candidate']):>10} {_fmt_delta(gate['delta']):>10}  "
+            f"{gate['rule']:<22}{verdict}{note}"
+        )
+
+    print("\nOutcome (information only, never gated):")
+    for field in OUTCOME_FIELDS:
+        entry = result["outcome"][field]
+        print(f"  {field}: {entry['baseline']} -> {entry['candidate']}")
+
+    if holdout:
+        print(
+            f"\nWARNING: candidate seed {seed} is a holdout seed; holdout "
+            "runs must not be used to promote a change."
+        )
+    if result["passed"]:
+        print("\nAll gates pass.")
+        return 0
+    print(f"\n{result['failed']} gate(s) FAILED; do not promote this candidate.")
+    return 1
+
+
+def cmd_diagnose(args: argparse.Namespace) -> int:
+    """Write and print a deterministic diagnosis for one finished run."""
+    run_dir = open_run_dir(args.game_id, args.runs_dir)
+    metrics_path = run_dir / "metrics.json"
+    metrics = (
+        json.loads(metrics_path.read_text(encoding="utf-8"))
+        if metrics_path.exists()
+        else {}  # an unfinished run still has events worth diagnosing
+    )
+    report = build_diagnosis(
+        args.game_id, load_events(run_dir / "events.jsonl"), metrics
+    )
+    (run_dir / "diagnosis.md").write_text(report, encoding="utf-8")
+    print(report, end="")
+    return 0
+
+
 def cmd_list_games(args: argparse.Namespace) -> int:
     rows = []
     for events_path in sorted(Path(args.runs_dir).glob("*/events.jsonl")):
@@ -507,6 +613,24 @@ def build_parser() -> argparse.ArgumentParser:
     listing = sub.add_parser("list-games", help="list games under the runs directory")
     listing.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
     listing.set_defaults(func=cmd_list_games)
+
+    compare = sub.add_parser(
+        "compare", help="gate a candidate run against a baseline run"
+    )
+    compare.add_argument("baseline_game")
+    compare.add_argument("candidate_game")
+    compare.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
+    compare.add_argument(
+        "--json", action="store_true", help="dump the structured result"
+    )
+    compare.set_defaults(func=cmd_compare)
+
+    diagnose = sub.add_parser(
+        "diagnose", help="write and print a run's diagnosis.md report"
+    )
+    diagnose.add_argument("game_id")
+    diagnose.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
+    diagnose.set_defaults(func=cmd_diagnose)
 
     return parser
 

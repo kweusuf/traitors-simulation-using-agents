@@ -66,7 +66,10 @@ def test_batch_writes_multiple_games(tmp_path, capsys) -> None:
     assert code == 0
     assert "game-001" in out and "game-002" in out
     runs = tmp_path / "runs"
-    assert sorted(p.name for p in runs.iterdir()) == ["game-001", "game-002"]
+    assert sorted(p.name for p in runs.iterdir() if p.is_dir()) == [
+        "game-001",
+        "game-002",
+    ]
     seeds = [
         json.loads((runs / g / "metrics.json").read_text())["random_seed"]
         for g in ("game-001", "game-002")
@@ -272,3 +275,167 @@ def test_metrics_on_an_unfinished_run_never_invents_metrics(tmp_path, capsys) ->
     assert "never finished" in out
     assert "hallucination_score" in out
     assert not metrics_path.exists()  # no fake artifact for a dead run
+
+
+# ----------------------------------------------------------------------
+# compare: paired-seed gates (plan wave A, A2)
+# ----------------------------------------------------------------------
+
+
+def write_metrics(run_dir: Path, **overrides) -> None:
+    """A small complete metrics.json for gate tests."""
+    run_dir.mkdir(parents=True, exist_ok=True)
+    metrics = {
+        "random_seed": 42,
+        "winner": "faithful",
+        "rounds": 3,
+        "finale": "vote",
+        "solo_traitor_win": False,
+        "quality": {
+            "hallucination_score": 0.0,
+            "diversity": {"duplication_score": 0.05, "duplicate_rate": 0.0},
+            "speech_similarity": {
+                "content_words": {"mean": 0.3},
+                "phrasing": {"mean": 0.4},
+            },
+            "secrecy": {"flags_total": 0},
+            "parsing": {"rejected_actions": 1},
+        },
+        "llm": {"total_tokens": 1000, "latency_ms": {"p95": 120.0}},
+    }
+    metrics.update(overrides)
+    (run_dir / "metrics.json").write_text(json.dumps(metrics), encoding="utf-8")
+
+
+def test_compare_passes_on_identical_runs(tmp_path, capsys) -> None:
+    runs = tmp_path / "runs"
+    write_metrics(runs / "game-001")
+    write_metrics(runs / "game-002")
+
+    code, out = run_cli(
+        ["compare", "game-001", "game-002", "--runs-dir", str(runs)], capsys
+    )
+    assert code == 0
+    assert "hallucination_score" in out
+    assert "PASS" in out
+    assert "FAIL" not in out
+    assert "never gated" in out  # outcome fields are information only
+    assert "All gates pass." in out
+
+
+def test_compare_exits_one_when_a_gate_is_breached(tmp_path, capsys) -> None:
+    runs = tmp_path / "runs"
+    write_metrics(runs / "game-001")
+    # 0.05 > baseline 0.0 + 0.02: hallucination gate must fail.
+    worse_quality = {
+        "hallucination_score": 0.05,
+        "diversity": {"duplication_score": 0.05, "duplicate_rate": 0.0},
+        "speech_similarity": {
+            "content_words": {"mean": 0.3},
+            "phrasing": {"mean": 0.4},
+        },
+        "secrecy": {"flags_total": 0},
+        "parsing": {"rejected_actions": 1},
+    }
+    write_metrics(runs / "game-002", quality=worse_quality)
+
+    code, out = run_cli(
+        ["compare", "game-001", "game-002", "--runs-dir", str(runs)], capsys
+    )
+    assert code == 1
+    assert "hallucination_score" in out
+    assert "FAIL" in out
+    assert "do not promote" in out
+
+
+def test_compare_json_dumps_every_gate(tmp_path, capsys) -> None:
+    runs = tmp_path / "runs"
+    write_metrics(runs / "game-001")
+    write_metrics(runs / "game-002")
+
+    code, out = run_cli(
+        ["compare", "game-001", "game-002", "--runs-dir", str(runs), "--json"],
+        capsys,
+    )
+    payload = json.loads(out)
+    assert code == 0
+    assert payload["passed"] is True
+    assert payload["holdout_candidate"] is False
+    assert {gate["metric"] for gate in payload["gates"]} == {
+        "hallucination_score",
+        "duplication_score",
+        "speech_similarity.content_words.mean",
+        "speech_similarity.phrasing.mean",
+        "secrecy.flags_total",
+        "parsing.rejected_actions",
+        "llm.latency_ms.p95",
+        "llm.total_tokens",
+    }
+    assert payload["outcome"]["winner"]["baseline"] == "faithful"
+
+
+def test_compare_warns_on_a_holdout_candidate_seed(tmp_path, capsys) -> None:
+    runs = tmp_path / "runs"
+    write_metrics(runs / "game-001", random_seed=42)
+    write_metrics(runs / "game-002", random_seed=7)  # 7 % 10 >= 7: holdout
+
+    code, out = run_cli(
+        ["compare", "game-001", "game-002", "--runs-dir", str(runs)], capsys
+    )
+    assert code == 0  # a warning, not a gate: the gates decide the exit
+    assert "WARNING" in out
+    assert "holdout seed" in out
+    assert "seed 7" in out
+
+
+# ----------------------------------------------------------------------
+# diagnose: deterministic post-run report (plan wave A, A3)
+# ----------------------------------------------------------------------
+
+
+def test_diagnose_writes_report_with_top_repeated_text(tmp_path, capsys) -> None:
+    runs = tmp_path / "runs"
+    run_dir = runs / "game-001"
+    run_dir.mkdir(parents=True)
+    repeated = "We should all vote together today."
+    events = [
+        {"event_id": "e1", "game_id": "game-001", "sequence": 1,
+         "type": "GAME_STARTED",
+         "payload": {"players": ["alice", "bob", "carol"]}},
+        {"event_id": "e2", "game_id": "game-001", "sequence": 2, "round": 1,
+         "type": "PUBLIC_MESSAGE", "actor": "alice",
+         "payload": {"content": repeated}},
+        {"event_id": "e3", "game_id": "game-001", "sequence": 3, "round": 1,
+         "type": "PUBLIC_MESSAGE", "actor": "bob",
+         "payload": {"content": repeated}},
+        {"event_id": "e4", "game_id": "game-001", "sequence": 4, "round": 1,
+         "type": "PUBLIC_MESSAGE", "actor": "carol",
+         "payload": {"content": repeated}},
+        {"event_id": "e5", "game_id": "game-001", "sequence": 5, "round": 1,
+         "type": "PUBLIC_MESSAGE", "actor": "alice",
+         "payload": {"content": "One lone take that nobody echoes."}},
+        {"event_id": "e6", "game_id": "game-001", "sequence": 6,
+         "type": "GAME_ENDED",
+         "payload": {"rounds": 1, "winner": "faithful"}},
+    ]
+    (run_dir / "events.jsonl").write_text(
+        "\n".join(json.dumps(event) for event in events) + "\n",
+        encoding="utf-8",
+    )
+
+    code, out = run_cli(["diagnose", "game-001", "--runs-dir", str(runs)], capsys)
+    assert code == 0
+    report = (run_dir / "diagnosis.md").read_text(encoding="utf-8")
+    assert report in out  # the report is printed as well as written
+    assert "## Metric summary" in out
+    assert "## Most repeated messages" in out
+    assert "3 messages (alice, bob, carol)" in out
+    assert repeated in out
+    assert "## Secrecy samples" in out
+    assert "## Hallucination samples" in out
+    assert "## Most similar player pair" in out
+    assert "## Hypotheses" in out
+    # Two of four texts repeat across authors: duplication_score 0.5
+    # crosses the documented 0.15 threshold and must be proposed.
+    assert "duplication_score > 0.15" in out
+    assert "no metrics.json" in out  # metrics were never written here

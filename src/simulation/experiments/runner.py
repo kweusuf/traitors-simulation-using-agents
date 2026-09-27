@@ -27,6 +27,7 @@ from simulation.engine.phase_engine import PhaseContext, PhaseEngine
 from simulation.engine.state import GameState, Role
 from simulation.environments.traitors.game import TraitorsEnvironment
 from simulation.experiments.config import GameConfig, LLMSettings
+from simulation.experiments.ledger import append_run as append_ledger
 from simulation.experiments.observability import NullTracer, build_tracer
 from simulation.experiments.quality import analyse as analyse_quality
 from simulation.experiments.telemetry import TelemetryRecorder
@@ -209,6 +210,9 @@ class GameRunner:
             telemetry=telemetry,
             elapsed=elapsed,
         )
+        # The ledger spans runs, so it is appended outside the per-run
+        # artifacts, the moment the run has numbers worth comparing.
+        append_ledger(self.runs_dir, metrics)
         self._write_artifacts(
             run_dir=run_dir,
             seed=seed,
