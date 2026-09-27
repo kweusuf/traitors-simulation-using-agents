@@ -65,9 +65,9 @@ llm_calls.jsonl   one line per model call: tokens in/out, latency, retries
 `metrics.json` gives each run a 360 degree view of the model
 operations: input and output tokens, latency percentiles, transport
 retries, per-action call breakdown, failed turns, and a quality block
-(hallucination score against the game record, secrecy violations,
-duplicate messages, parse failures) computed from that run's own
-messages.
+computed from that run's own messages (hallucination score against the
+game record, secrecy violations, a duplication score, cross-player
+speech similarity on content and phrasing, parse failures).
 
 ## Inspect
 

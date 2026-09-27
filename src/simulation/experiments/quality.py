@@ -14,8 +14,15 @@ social deduction game means different things:
   self-declaration, traitor affiliation phrasing such as "two of our
   kind", a traitor naming a fellow traitor next to affiliation wording,
   a faithful claiming to be a traitor).
-- **diversity**: exact duplicate messages from different authors, which
-  is how a small model pads discussion.
+- **diversity**: duplication, both across authors and within one, which
+  is how a small model pads discussion. `duplication_score` is
+  1 - (distinct texts / messages), so 0.0 means every message is its
+  own text and 1.0 means they are all the same.
+- **speech similarity**: how alike two players' wording is, measured
+  two ways over each player's whole corpus: cosine over content words
+  (do they talk about the same things) and cosine over character
+  trigrams (do they phrase things the same way). Reported as the mean
+  and the most similar pair, plus a per-player average.
 - **parsing**: actions the model failed to produce in valid form.
 
 `hallucination_score` is the share of checked messages that contain at
@@ -25,7 +32,10 @@ contradicts the record).
 
 from __future__ import annotations
 
+import math
 import re
+from collections import Counter
+from itertools import combinations
 from typing import Any, Optional
 
 from simulation.persistence.event_log import Event, EventType
@@ -74,6 +84,107 @@ _ACCUSATION_CONTEXT = re.compile(
 _ELIMINATION_CLAIM = r"{name}\s+(?:was|is|has been)\s+(?:banished|murdered|killed|eliminated|voted out)"
 _STILL_ALIVE_CLAIM = r"{name}\s+(?:is|remains|is still)\s+alive"
 _ROUND_CLAIM = re.compile(r"\bround\s+(\d+)\b", re.IGNORECASE)
+
+# Word overlap would otherwise be dominated by glue words, so the
+# content-word comparison drops the commonest English ones.
+_STOPWORDS = frozenset(
+    """a an and are as at be but by been can did do does for from had has have
+    he her him his i if in into is it its me my no not of on or our out she so
+    that the their them then there these they this to too up us was we were
+    what when which who will with you your""".split()
+)
+
+
+def _normalise(text: str) -> str:
+    return " ".join(text.lower().split())
+
+
+def _content_tokens(text: str) -> list[str]:
+    return [
+        token
+        for token in re.findall(r"[a-z']+", text.lower())
+        if len(token) > 1 and token not in _STOPWORDS
+    ]
+
+
+def _trigrams(text: str) -> list[str]:
+    flat = _normalise(text).replace(" ", "_")
+    return [flat[i : i + 3] for i in range(max(0, len(flat) - 2))]
+
+
+def _cosine(left: Counter, right: Counter) -> float:
+    if not left or not right:
+        return 0.0
+    dot = sum(count * right.get(term, 0) for term, count in left.items())
+    if not dot:
+        return 0.0
+    norm_left = math.sqrt(sum(count * count for count in left.values()))
+    norm_right = math.sqrt(sum(count * count for count in right.values()))
+    if not norm_left or not norm_right:
+        return 0.0
+    return dot / (norm_left * norm_right)
+
+
+def _speech_similarity(by_player: dict[str, list[str]]) -> dict[str, Any]:
+    """How alike each pair of players is, on content and on phrasing."""
+    method = (
+        "cosine over each player's whole corpus: content words with "
+        "stopwords removed, and character trigrams for phrasing"
+    )
+    corpora = {pid: " ".join(texts) for pid, texts in by_player.items() if texts}
+    players = sorted(corpora)
+
+    def empty() -> dict[str, Any]:
+        return {"mean": 0.0, "max": 0.0, "max_pair": None}
+
+    if len(players) < 2:
+        return {
+            "method": method,
+            "players_compared": len(players),
+            "pairs": 0,
+            "content_words": empty(),
+            "phrasing": empty(),
+            "per_player": {},
+        }
+
+    content = {pid: Counter(_content_tokens(corpora[pid])) for pid in players}
+    phrasing = {pid: Counter(_trigrams(corpora[pid])) for pid in players}
+    pairs = list(combinations(players, 2))
+
+    content_scores = [
+        (a, b, round(_cosine(content[a], content[b]), 4)) for a, b in pairs
+    ]
+    phrasing_scores = [
+        (a, b, round(_cosine(phrasing[a], phrasing[b]), 4)) for a, b in pairs
+    ]
+
+    def stats(scores: list[tuple[str, str, float]]) -> dict[str, Any]:
+        values = [score for _, _, score in scores]
+        top = max(scores, key=lambda item: (item[2], item[0], item[1]))
+        return {
+            "mean": round(sum(values) / len(values), 4),
+            "max": top[2],
+            "max_pair": [top[0], top[1]],
+        }
+
+    per_player: dict[str, dict[str, float]] = {}
+    for pid in players:
+        mine_content = [s for a, b, s in content_scores if pid in (a, b)]
+        mine_phrasing = [s for a, b, s in phrasing_scores if pid in (a, b)]
+        per_player[pid] = {
+            "content_words": round(sum(mine_content) / len(mine_content), 4),
+            "phrasing": round(sum(mine_phrasing) / len(mine_phrasing), 4),
+        }
+
+    return {
+        "method": method,
+        "players_compared": len(players),
+        "pairs": len(pairs),
+        "content_words": stats(content_scores),
+        "phrasing": stats(phrasing_scores),
+        "per_player": per_player,
+    }
+
 
 _SAMPLE_EXCERPT = 180
 _NAME_WINDOW = 80  # characters around a name searched for context
@@ -151,6 +262,8 @@ def analyse(events: list[Event]) -> dict[str, Any]:
     false_role_claims = 0
     content_seen: dict[str, str] = {}
     duplicate_messages = 0
+    by_player: dict[str, list[str]] = {}
+    distinct_texts: set[str] = set()
 
     def note(bucket: list[dict[str, Any]], kind: str, event: Event, detail: str) -> None:
         if len(bucket) < 20:
@@ -168,6 +281,10 @@ def analyse(events: list[Event]) -> dict[str, Any]:
         content = str(event.payload.get("content", ""))
         sender = event.actor or ""
         violations = 0
+        if sender:
+            by_player.setdefault(sender, []).append(content)
+        if content.strip():
+            distinct_texts.add(_normalise(content))
 
         # 1. Claims the record contradicts.
         for name in roster:
@@ -311,7 +428,12 @@ def analyse(events: list[Event]) -> dict[str, Any]:
             "duplicate_rate": round(duplicate_messages / checked, 4)
             if checked
             else 0.0,
+            "distinct_texts": len(distinct_texts),
+            "duplication_score": round(1 - len(distinct_texts) / checked, 4)
+            if checked
+            else 0.0,
         },
+        "speech_similarity": _speech_similarity(by_player),
         "parsing": {
             "rejected_actions": rejected,
             "unparseable_actions": unparseable,

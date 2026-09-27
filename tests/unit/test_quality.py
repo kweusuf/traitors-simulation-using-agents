@@ -264,3 +264,78 @@ def test_rejected_actions_are_counted_by_stage() -> None:
     result = analyse(events)
     assert result["parsing"]["rejected_actions"] == 2
     assert result["parsing"]["unparseable_actions"] == 1
+
+
+# ----------------------------------------------------------------------
+# Duplication score and cross-player speech similarity
+# ----------------------------------------------------------------------
+
+
+def two_player_events(text_a: str, text_b: str) -> list[Event]:
+    return [
+        ev(1, EventType.GAME_STARTED, players=["alice", "bob"]),
+        message(2, "alice", text_a),
+        message(3, "bob", text_b),
+    ]
+
+
+def test_duplication_score_counts_distinct_texts() -> None:
+    clean = analyse(base_events())
+    assert clean["diversity"]["distinct_texts"] == 2
+    assert clean["diversity"]["duplication_score"] == 0.0
+
+    repeated = base_events() + [
+        message(20, "bob", "Hello there friend, I am listening closely."),
+        message(21, "charlie", "Hello there friend, I am listening closely."),
+    ]
+    result = analyse(repeated)
+    # four messages, three distinct texts
+    assert result["diversity"]["distinct_texts"] == 3
+    assert result["diversity"]["duplication_score"] == 0.25
+
+
+def test_identical_speech_scores_one_for_that_pair() -> None:
+    shared = "Watching the harbour lights while the captain checks the nets twice."
+    result = analyse(two_player_events(shared, shared))
+    similarity = result["speech_similarity"]
+
+    assert similarity["players_compared"] == 2
+    assert similarity["pairs"] == 1
+    assert similarity["content_words"]["mean"] == 1.0
+    assert similarity["content_words"]["max"] == 1.0
+    assert similarity["content_words"]["max_pair"] == ["alice", "bob"]
+    assert similarity["phrasing"]["max"] == 1.0
+    assert set(similarity["per_player"]) == {"alice", "bob"}
+    assert similarity["per_player"]["alice"]["content_words"] == 1.0
+
+
+def test_different_speech_scores_low() -> None:
+    result = analyse(
+        two_player_events(
+            "Alpha beta gamma delta epsilon zeta.",
+            "Quartz jupiter nebula vortex mimic pyre.",
+        )
+    )
+    similarity = result["speech_similarity"]
+    assert similarity["content_words"]["mean"] == 0.0
+    assert similarity["phrasing"]["max"] < 0.5
+
+
+def test_similarity_needs_two_speakers() -> None:
+    events = [
+        ev(1, EventType.GAME_STARTED, players=["alice", "bob"]),
+        message(2, "alice", "I will watch everyone closely tonight."),
+    ]
+    similarity = analyse(events)["speech_similarity"]
+    assert similarity["players_compared"] == 1
+    assert similarity["pairs"] == 0
+    assert similarity["content_words"] == {"mean": 0.0, "max": 0.0, "max_pair": None}
+    assert similarity["per_player"] == {}
+
+
+def test_similarity_ignores_players_who_never_spoke() -> None:
+    events = base_events() + [message(20, "bob", "I say nothing much at all.")]
+    similarity = analyse(events)["speech_similarity"]
+    # alice and charlie spoke in the base run, bob joins; david never did.
+    assert similarity["players_compared"] == 3
+    assert "david" not in similarity["per_player"]

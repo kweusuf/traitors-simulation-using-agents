@@ -361,8 +361,21 @@ def cmd_metrics(args: argparse.Namespace) -> int:
     )
     print(
         f"  diversity: duplicates={diversity.get('duplicate_messages')} "
-        f"rate={diversity.get('duplicate_rate')}"
+        f"rate={diversity.get('duplicate_rate')} "
+        f"duplication_score={diversity.get('duplication_score')} "
+        f"distinct={diversity.get('distinct_texts')}"
     )
+    similarity = quality.get("speech_similarity", {})
+    if similarity:
+        content = similarity.get("content_words", {})
+        phrasing = similarity.get("phrasing", {})
+        pair = content.get("max_pair") or ["-", "-"]
+        print(
+            f"  speech similarity: mean content={content.get('mean')} "
+            f"phrasing={phrasing.get('mean')} over {similarity.get('pairs')} pairs; "
+            f"most alike: {pair[0]} ~ {pair[1]} "
+            f"(content {content.get('max')}, phrasing {phrasing.get('max')})"
+        )
     print(
         f"  parsing: rejected={parsing.get('rejected_actions')} "
         f"unparseable={parsing.get('unparseable_actions')}"

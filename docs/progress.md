@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-16 complete, 253 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-17 complete, 261 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -42,6 +42,7 @@ and its commit lands.
 | 14 | Finale at 3v3, rapid-fire voting, solo/team wins | complete | `3c911ca` |
 | 15 | Per-call LLM telemetry and quality metrics per run | complete | `1f6fc63` |
 | 16 | Concurrent turns and bounded prompts (performance) | complete | `b2bc68f` |
+| 17 | Duplication score and cross-player speech similarity | pending | |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -402,6 +403,29 @@ a call fails.
 
 **Verification:** 253 tests green.
 
+### Phase 17: Duplication score and cross-player speech similarity
+
+Two more deterministic signals in the quality block, both derived from
+the run's own messages:
+
+- [x] `diversity.duplication_score`, 1 - (distinct texts / messages),
+  so 0.0 means every message is unique and 1.0 means they are all the
+  same, alongside the existing cross-author duplicate counters and
+  `distinct_texts`.
+- [x] `speech_similarity`: for every pair of players who spoke, cosine
+  similarity over each player's whole corpus, reported twice, content
+  words with stopwords removed (do they talk about the same things) and
+  character trigrams (do they phrase things the same way), with the
+  mean, the most similar pair, and a per-player average.
+- [x] Both printed by `simulation metrics <game_id>`.
+- [x] Tests: `tests/unit/test_quality.py`.
+
+**Verification:** 261 tests green. On game-005 the scores read
+duplication 0.4908 (139 distinct texts out of 273 messages) and mean
+speech similarity 0.82 content / 0.94 phrasing across 210 pairs, with
+judy and oscar the most alike pair at 0.979 / 0.9925, which matches
+the boilerplate collapse seen by eye.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -441,3 +465,4 @@ a call fails.
 | 2026-09-27 | Phase 16 complete: concurrent turns within a phase (3.4x measured throughput at concurrency 4) and a bounded transcript window per prompt (31k evaluated tokens per call was the main cost); 253 tests passed. |
 | 2026-09-27 | Fix: dropped connections are now retryable; game-005 and game-006 both died when the remote host stopped answering because `RemoteDisconnected` is an `OSError` and never reached the retry loop; 256 tests passed. |
 | 2026-09-27 | Fix: message duplication. game-005 had 153 of 273 messages as exact duplicates (one line shared by 89), public prompts were near-identical across players and agents copied what they could see; added an Originality hard rule plus per-action reminders; 256 tests passed. |
+| 2026-09-27 | Phase 17 complete: duplication score and cross-player speech similarity (content words and trigrams, per pair and per player) in the quality block and the metrics command; 261 tests passed. |
