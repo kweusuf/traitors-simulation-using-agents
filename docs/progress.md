@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-15 complete, 250 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-16 complete, 253 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -41,6 +41,7 @@ and its commit lands.
 | 13 | Traitor recruitment on banishment | complete | `b9d540c` |
 | 14 | Finale at 3v3, rapid-fire voting, solo/team wins | complete | `3c911ca` |
 | 15 | Per-call LLM telemetry and quality metrics per run | complete | `1f6fc63` |
+| 16 | Concurrent turns and bounded prompts (performance) | complete | `b2bc68f` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -372,6 +373,35 @@ namings, one faithful claiming traitor) while leaving the clean
 game-003 at zero. A fake CLI run produces all seven artifacts with the
 telemetry line count matching `llm.calls`.
 
+### Phase 16: Concurrent turns and bounded prompts
+
+Speed work driven by measurements against the remote Ollama host, not
+guesses. A round had been taking over an hour for two reasons, and
+there were no sleeps or waits anywhere in the game path: the only
+`asyncio.sleep` in production code is the retry backoff that runs when
+a call fails.
+
+- [x] Turns inside a phase are decided concurrently
+  (`_ask_all_alive` and the night kill gather them), capped by the
+  gateway's `max_concurrency`, then submitted in id order from
+  phase-start snapshots so the event log stays deterministic.
+  Measured: 4 concurrent calls give 1.7 calls/min against 0.5
+  calls/min serial, about 3.4x throughput. Previously
+  `in_flight_peak` was 1 in every run, because the phase loop awaited
+  one player after another.
+- [x] `communication.transcript_messages_per_prompt` (default 40,
+  0 = all) bounds the transcript a prompt carries. A reconstructed
+  late-game prompt is 168,750 characters and Ollama evaluated 31,410
+  tokens of it per call at 109 to 220 seconds per call, so prompt
+  evaluation, not generation, dominates. Views, replay and `inspect`
+  are unchanged; only the prompt window is trimmed, with an explicit
+  "earlier N messages are omitted" note.
+- [x] Long game configs run at `max_concurrency: 4`.
+- [x] Tests for concurrent asking (every player asked at once,
+  submissions still in id order) and for the transcript window.
+
+**Verification:** 253 tests green.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -408,3 +438,4 @@ telemetry line count matching `llm.calls`.
 | 2026-09-27 | Fix after the first live run died: Ollama calls now retry transient failures (timeout, unreachable host, 5xx/429, garbage body) with exponential backoff, `llm.retries` is config-driven and reported in `metrics.json`, and the long game allows 300s per call for cold model loads; 217 tests passed. |
 | 2026-09-27 | Fix: traitors were announcing themselves in the first public message (both live runs). The prompt had no secrecy rule, `AgentView.render()` printed `Known roles:` as if it were public, and the alliance paragraph invited allying with the faithful. Now both prompts carry a hard secrecy rule, the public-message turn repeats it, and role knowledge is labelled private; verified against the live model; 222 tests passed. |
 | 2026-09-27 | Phase 15 complete: per-call telemetry (`llm_calls.jsonl`), `llm` metrics with input/output tokens and latency percentiles, deterministic `quality` block (hallucination, secrecy, diversity, parsing), `simulation metrics` command with `--recompute`; 250 tests passed. |
+| 2026-09-27 | Phase 16 complete: concurrent turns within a phase (3.4x measured throughput at concurrency 4) and a bounded transcript window per prompt (31k evaluated tokens per call was the main cost); 253 tests passed. |
