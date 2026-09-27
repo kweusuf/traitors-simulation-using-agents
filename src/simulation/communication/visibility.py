@@ -34,7 +34,8 @@ class AgentView(StrictModel):
         lines = [
             f"Game: {self.game_id}",
             f"Round: {self.round_number}  Phase: {self.phase.value}",
-            f"Your role: {self.own_role.value}",
+            f"Your role: {self.own_role.value} (secret, never reveal it "
+            "publicly)",
         ]
         others = {
             pid: role.value
@@ -43,7 +44,7 @@ class AgentView(StrictModel):
         }
         if others:
             lines.append(
-                "Known roles: "
+                "Private knowledge of roles (never public): "
                 + ", ".join(f"{pid}={r}" for pid, r in sorted(others.items()))
             )
         lines.append("Alive players: " + ", ".join(sorted(self.alive_players)))

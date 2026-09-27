@@ -140,3 +140,66 @@ def test_prompt_uses_action_specific_hint() -> None:
 def test_extra_instruction_appended() -> None:
     user = build(extra_instruction="Choose carefully.")[1].content
     assert "Choose carefully." in user
+
+
+# ----------------------------------------------------------------------
+# Role secrecy (traitors must not declare themselves in public)
+# ----------------------------------------------------------------------
+
+
+def test_both_roles_get_the_secrecy_rule() -> None:
+    builder = PromptBuilder()
+    persona = Persona(description="Careful player.")
+    for role in (Role.FAITHFUL, Role.TRAITOR):
+        system = builder.build_system("alice", role, persona, Goals())
+        assert "Role secrecy (hard rule)" in system
+        assert "never say or hint that you are a traitor" in system
+        assert "Never claim a role you were not given" in system
+
+
+def test_traitor_prompt_keeps_the_alliance_paths_secret() -> None:
+    system = PromptBuilder().build_system(
+        "alice", Role.TRAITOR, Persona(description="Careful player."), Goals()
+    )
+    assert "switch sides" in system
+    assert "keep your own identity secret" in system
+    # The two win paths must not read as an invitation to announce
+    # yourself to the faithful.
+    assert "never by announcing that you or anyone else is a traitor" in system
+
+
+def test_faithful_prompt_has_no_traitor_alliance_paragraph() -> None:
+    system = PromptBuilder().build_system(
+        "bob", Role.FAITHFUL, Persona(description="Careful player."), Goals()
+    )
+    assert "switch sides" not in system
+
+
+def test_public_message_prompt_repeats_the_secrecy_reminder() -> None:
+    builder = PromptBuilder()
+    public = builder.build_user(make_view(), ActionType.PUBLIC_MESSAGE, [])
+    assert "no claims about your own role" in public
+    assert "no naming anyone as a traitor" in public
+
+    # Other actions keep their own instructions; the reminder is
+    # scoped to the message everybody can read.
+    vote = builder.build_user(make_view(), ActionType.VOTE, ["bob", "charlie"])
+    assert "no claims about your own role" not in vote
+
+
+def test_view_labels_role_information_as_private() -> None:
+    view = make_view(
+        own_role=Role.TRAITOR,
+        known_roles={
+            "alice": Role.TRAITOR,
+            "bob": Role.TRAITOR,
+            "charlie": Role.FAITHFUL,
+        },
+    )
+    rendered = view.render()
+    assert "Your role: traitor (secret, never reveal it publicly)" in rendered
+    assert (
+        "Private knowledge of roles (never public): bob=traitor, charlie=faithful"
+        in rendered
+    )
+    assert "Known roles" not in rendered

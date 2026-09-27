@@ -163,6 +163,7 @@ def test_view_render_contains_no_hidden_role_for_living_traitor() -> None:
     render = projector.project(state, "frank").render()
     assert "Your role: faithful" in render
     assert "Known roles" not in render
+    assert "Private knowledge of roles" not in render
     # Player names are public; living traitor roles are not.
     assert "alice=traitor" not in render
     assert "bob=traitor" not in render

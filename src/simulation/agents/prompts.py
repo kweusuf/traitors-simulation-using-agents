@@ -67,14 +67,23 @@ class PromptBuilder:
             "",
             *goals.lines(),
             "",
+            "Role secrecy (hard rule): your role is hidden from every other "
+            "player. In any public message you must never say or hint that "
+            "you are a traitor, never name anyone as a traitor, and never "
+            "repeat the roles you privately know as if the group could see "
+            "them. Never claim a role you were not given.",
+            "",
         ]
         if role is Role.TRAITOR:
             lines.append(
                 "As a traitor you may switch sides: work with your traitor "
                 "allies to banish every faithful player and win as a team, or "
-                "ally with the faithful to banish rival traitors and win alone "
-                "as the last traitor standing. The other traitors may back "
-                "you or may plot against you."
+                "side with the faithful against a rival traitor and win alone "
+                "as the last traitor standing. Both paths keep your own "
+                "identity secret: you act through your votes and your "
+                "reasoning in discussion, never by announcing that you or "
+                "anyone else is a traitor. The other traitors may back you "
+                "or may plot against you."
             )
             lines.append("")
         lines.append("Stay in character. Reason only from the information you are given.")
@@ -99,6 +108,13 @@ class PromptBuilder:
                 "You are a banished traitor making one final choice: recruit a "
                 "living faithful player onto the traitor team. They become a "
                 "traitor immediately and are told their new role."
+            )
+        if action_type is ActionType.PUBLIC_MESSAGE:
+            lines.append(
+                "This message goes to every player. Speak as one player among "
+                "many: no claims about your own role, no naming anyone as a "
+                "traitor, and no repeating role information you only privately "
+                "know."
             )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))
