@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-14 complete, 222 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-15 complete, 250 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -40,6 +40,7 @@ and its commit lands.
 | 12 | Replay, inspect, list-games | complete | `f9da4fe` |
 | 13 | Traitor recruitment on banishment | complete | `b9d540c` |
 | 14 | Finale at 3v3, rapid-fire voting, solo/team wins | complete | `3c911ca` |
+| 15 | Per-call LLM telemetry and quality metrics per run | complete | `1f6fc63` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -338,6 +339,39 @@ recruitment. A tie eliminates nobody and the vote repeats; after
 runs four rapid-fire votes, and ends on a solo traitor win with 531
 calls and zero rejected actions.
 
+### Phase 15: Per-call LLM telemetry and quality metrics per run
+
+Every run now carries its own 360 degree view of the model operations,
+stored inside the run directory so the artifacts travel together.
+
+- [x] `llm_calls.jsonl`: one line per model call with agent, action,
+  phase, round, attempt, tokens in and out, latency, prompt size,
+  transport retries and failure reason (`experiments/telemetry.py`).
+- [x] `metrics.json` `llm` block: input/output/total tokens, token
+  coverage, latency avg/p50/p95/max, per-action breakdown, failed
+  turns, parse-retry calls, provider calls and retries.
+- [x] `metrics.json` `quality` block (`experiments/quality.py`),
+  derived from the run's own events with no model in the loop:
+  `hallucination_score` (fabricated eliminations, calling an eliminated
+  player alive, invented rounds), secrecy flags judged against the role
+  held at that moment (traitor self-declaration, affiliation phrasing,
+  naming a fellow traitor next to affiliation wording but not next to
+  an accusation, faithful claiming traitor), duplicate messages across
+  authors, and parse failures.
+- [x] `simulation metrics <game_id>` command with `--json` and
+  `--recompute`; an unfinished run reports quality but never gets an
+  invented `metrics.json`.
+- [x] Ollama input tokens captured from `prompt_eval_count`
+  (`LLMResponse.input_tokens`), which was previously discarded.
+- [x] Tests: `tests/unit/test_telemetry.py`,
+  `tests/unit/test_quality.py`, plus runner and CLI cases.
+
+**Verification:** 250 tests green. The detector was validated against
+the spoiled game-004 (one affiliation outing by alice, two teammate
+namings, one faithful claiming traitor) while leaving the clean
+game-003 at zero. A fake CLI run produces all seven artifacts with the
+telemetry line count matching `llm.calls`.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -373,3 +407,4 @@ calls and zero rejected actions.
 | 2026-09-26 | Phase 14 complete: finale at exactly 3 traitors and 3 faithful with rapid-fire voting, seeded solo/team ambitions, solo and team win reporting; 212 tests passed. |
 | 2026-09-27 | Fix after the first live run died: Ollama calls now retry transient failures (timeout, unreachable host, 5xx/429, garbage body) with exponential backoff, `llm.retries` is config-driven and reported in `metrics.json`, and the long game allows 300s per call for cold model loads; 217 tests passed. |
 | 2026-09-27 | Fix: traitors were announcing themselves in the first public message (both live runs). The prompt had no secrecy rule, `AgentView.render()` printed `Known roles:` as if it were public, and the alliance paragraph invited allying with the faithful. Now both prompts carry a hard secrecy rule, the public-message turn repeats it, and role knowledge is labelled private; verified against the live model; 222 tests passed. |
+| 2026-09-27 | Phase 15 complete: per-call telemetry (`llm_calls.jsonl`), `llm` metrics with input/output tokens and latency percentiles, deterministic `quality` block (hallucination, secrecy, diversity, parsing), `simulation metrics` command with `--recompute`; 250 tests passed. |
