@@ -127,7 +127,13 @@ class EliminationPhase:
 
 
 class TraitorNightPhase:
-    """Alive traitors pick the night victim; majority, earliest-choice tiebreak."""
+    """The traitor council talks, then picks the night victim.
+
+    First every living traitor gets one message on the traitor channel
+    so they can argue the merits (biggest threat versus most chaos, who
+    takes the blame), then the kill is a majority vote with an
+    earliest-choice tiebreak.
+    """
 
     name = "traitor_night"
 
@@ -137,6 +143,16 @@ class TraitorNightPhase:
             p for p in engine.state.alive_players
             if engine.state.roles.get(p) is Role.TRAITOR
         )
+        if len(traitors) > 1:
+            council = await asyncio.gather(
+                *(
+                    _ask(context, actor, ActionType.TRAITOR_MESSAGE, [])
+                    for actor in traitors
+                )
+            )
+            for action in council:
+                if action is not None:
+                    engine.submit_action(action)
         # Same concurrent decision, submitted in id order so the
         # earliest-choice tiebreak stays deterministic.
         choices = await asyncio.gather(

@@ -173,7 +173,11 @@ class GameEngine:
             self._usage.get((action.actor_id, action.action), 0) + 1
         )
 
-        if action.action in (ActionType.PUBLIC_MESSAGE, ActionType.PRIVATE_MESSAGE):
+        if action.action in (
+            ActionType.PUBLIC_MESSAGE,
+            ActionType.PRIVATE_MESSAGE,
+            ActionType.TRAITOR_MESSAGE,
+        ):
             self._record_message(action)
         elif action.action is ActionType.VOTE:
             assert action.target is not None
@@ -216,14 +220,20 @@ class GameEngine:
         )
 
     def _record_message(self, action: Action) -> None:
-        channel = (
-            Channel.PUBLIC
-            if action.action is ActionType.PUBLIC_MESSAGE
-            else Channel.PRIVATE
-        )
-        recipients = (
-            [] if channel is Channel.PUBLIC else [action.target or ""]
-        )
+        if action.action is ActionType.TRAITOR_MESSAGE:
+            # The traitor channel: every living traitor but the sender.
+            channel = Channel.ROLE_PRIVATE
+            recipients = sorted(
+                p
+                for p in self.state.alive_players
+                if p != action.actor_id and self.state.roles.get(p) is Role.TRAITOR
+            )
+        elif action.action is ActionType.PUBLIC_MESSAGE:
+            channel = Channel.PUBLIC
+            recipients = []
+        else:
+            channel = Channel.PRIVATE
+            recipients = [action.target or ""]
         message = Message(
             message_id=f"{self.state.game_id}-msg-{self.sink.next_sequence:05d}",
             sender_id=action.actor_id,
@@ -243,6 +253,7 @@ class GameEngine:
                 "content": message.content,
                 "message_id": message.message_id,
                 "confidence": action.confidence,
+                "channel": channel.value,
             },
         )
         if self.router is not None:

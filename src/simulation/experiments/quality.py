@@ -326,9 +326,21 @@ def analyse(events: list[Event]) -> dict[str, Any]:
                 )
 
         # 2. Role secrecy, judged against the role the sender actually
-        # held at that moment in the game.
+        # held at that moment in the game, and only where a non-traitor
+        # could read it: the traitor channel and traitor-to-traitor
+        # whispers are meant to say exactly these things.
         sender_role = role_at(sender, event.round) if sender else ""
-        if sender and sender_role == "traitor":
+        channel = str(event.payload.get("channel", ""))
+        recipients = {r for r in event.targets}
+        read_by_non_traitors = (
+            event.type is EventType.PUBLIC_MESSAGE
+            or channel == "public"
+            or not recipients
+            or any(role_at(r, event.round) != "traitor" for r in recipients)
+        )
+        if not read_by_non_traitors:
+            pass  # private between traitors: no leak to score
+        elif sender and sender_role == "traitor":
             strict = _matches(_SELF_DECLARATION, content)
             loose = _matches(_AFFILIATION, content)
             if strict:
@@ -371,7 +383,12 @@ def analyse(events: list[Event]) -> dict[str, Any]:
                             "affiliation wording",
                         )
                         break
-        elif sender and sender_role == "faithful" and _declares_role(content):
+        elif (
+            sender
+            and sender_role == "faithful"
+            and read_by_non_traitors
+            and _declares_role(content)
+        ):
             false_role_claims += 1
             note(
                 secrecy_samples,

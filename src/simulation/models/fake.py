@@ -127,6 +127,15 @@ class PromptScriptProvider(FakeLLMProvider):
                 "content": f"[{agent_id}#{n}] I am watching everyone closely.",
                 "confidence": 0.6,
             }
+        elif action_type is ActionType.TRAITOR_MESSAGE:
+            payload = {
+                "action": "traitor_message",
+                "content": (
+                    f"[{agent_id}#{n}] let us agree the loudest voice dies "
+                    "tonight and the blame lands elsewhere."
+                ),
+                "confidence": 0.6,
+            }
         elif action_type is ActionType.PRIVATE_MESSAGE:
             payload = {
                 "action": "private_message",

@@ -48,7 +48,10 @@ no cap), and the finale (`game.finale_traitors` / `game.finale_faithful`
 stop normal play at that split and let rapid-fire voting decide;
 `game.finale_max_votes` bounds a vote that keeps tying). Traitors carry
 a seeded solo or team ambition: they can win alone as the last traitor
-standing or together as a team.
+standing or together as a team. Before each night kill the living
+traitors get one message on a channel no faithful can read, to argue
+who dies and whose name takes the blame, and at the round table they
+are told to build the case against a specific innocent.
 
 Each game writes `runs/<game_id>/`:
 

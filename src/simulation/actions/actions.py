@@ -20,6 +20,7 @@ class ActionType(str, Enum):
     PRIVATE_MESSAGE = "private_message"
     VOTE = "vote"
     TRAITOR_KILL = "traitor_kill"
+    TRAITOR_MESSAGE = "traitor_message"
     RECRUIT = "recruit"
     ACCUSE = "accuse"
     DEFEND = "defend"
@@ -53,6 +54,7 @@ ACTIONS_REQUIRING_CONTENT = frozenset(
     {
         ActionType.PUBLIC_MESSAGE,
         ActionType.PRIVATE_MESSAGE,
+        ActionType.TRAITOR_MESSAGE,
         ActionType.ACCUSE,
         ActionType.DEFEND,
         ActionType.SHARE_INFORMATION,

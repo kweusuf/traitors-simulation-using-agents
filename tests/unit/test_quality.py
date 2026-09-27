@@ -228,13 +228,40 @@ def test_messages_are_checked_including_private_ones() -> None:
         round=1,
         phase="private_chat",
         actor="alice",
-        targets=["bob"],
+        targets=["charlie"],  # a faithful player: a real leak
         content="I am a traitor, trust me.",
     )
     result = analyse(base_events() + [private])
     assert result["messages_checked"] == 3
     assert result["private_messages"] == 1
     assert result["secrecy"]["traitor_public_declarations"] == 1
+
+
+def test_talk_between_traitors_is_not_a_secrecy_flag() -> None:
+    # bob and alice are both traitors in base_events, so an admission
+    # between them leaks nothing. Same for the traitor channel.
+    whisper = ev(
+        20,
+        EventType.PRIVATE_MESSAGE,
+        round=1,
+        phase="private_chat",
+        actor="alice",
+        targets=["bob"],
+        content="I am a traitor, so are you. Let us kill david.",
+    )
+    council = ev(
+        21,
+        EventType.PRIVATE_MESSAGE,
+        round=1,
+        phase="traitor_night",
+        actor="alice",
+        targets=["bob"],
+        channel="role_private",
+        content="As a traitor I say we frame charlie and I am a traitor.",
+    )
+    result = analyse(base_events() + [whisper, council])
+    assert result["messages_checked"] == 4
+    assert result["secrecy"]["flags_total"] == 0
 
 
 # ----------------------------------------------------------------------

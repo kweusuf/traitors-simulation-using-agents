@@ -13,7 +13,7 @@ from simulation.actions.actions import Action, ActionType
 from simulation.communication.visibility import AgentView, InformationProjector
 from simulation.engine.game_engine import GameEngine
 from simulation.engine.phase_engine import Phase
-from simulation.engine.state import GamePhase, GameState
+from simulation.engine.state import GamePhase, GameState, Role
 from simulation.environments.traitors.phases import (
     EliminationPhase,
     MissionPhase,
@@ -63,6 +63,12 @@ class TraitorsEnvironment:
         allow_self = self.config.game.allow_self_vote
         result: dict[ActionType, list[str]] = {}
         for action_type in action_types_for_phase(state.phase):
+            if action_type is ActionType.TRAITOR_MESSAGE:
+                # Targetless and role-restricted: only traitors have it.
+                if state.roles.get(agent_id) is not Role.TRAITOR:
+                    continue
+                result[action_type] = []
+                continue
             if action_type in (ActionType.TRAITOR_KILL, ActionType.RECRUIT):
                 # Role-restricted: empty means "not available to this agent".
                 targets = legal_targets(state, agent_id, action_type)

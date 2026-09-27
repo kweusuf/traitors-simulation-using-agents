@@ -19,7 +19,7 @@ from simulation.actions.actions import (
 from simulation.agents.goals import Goals
 from simulation.agents.persona import Persona
 from simulation.communication.visibility import AgentView
-from simulation.engine.state import Role
+from simulation.engine.state import GamePhase, Role
 from simulation.models.base import ChatMessage
 
 ACTION_JSON_HINT = (
@@ -148,6 +148,40 @@ class PromptBuilder:
                 "This message goes to one player only. Address them by name "
                 "and continue something the two of you actually said; do not "
                 "reuse phrasing from the public transcript."
+            )
+        if action_type is ActionType.TRAITOR_MESSAGE:
+            lines.append(
+                "Traitors only, no faithful player can read this. Argue the "
+                "kill: is tonight's victim the biggest threat to your team, "
+                "or the death that makes the most convenient suspect? Agree "
+                "who takes the blame at the round table and which innocent "
+                "you will push the faithful to banish."
+            )
+        if action_type is ActionType.TRAITOR_KILL:
+            lines.append(
+                "Pick tonight's victim for a reason that fits your plan: the "
+                "player most dangerous to your team, or a player whose death "
+                "puts an innocent in the frame for the next banishment. Say "
+                "the reason in reason_summary so it matches what you argued "
+                "in the traitor council."
+            )
+        if (
+            action_type is ActionType.PUBLIC_MESSAGE
+            and view.own_role is Role.TRAITOR
+            and view.phase is GamePhase.ROUND_TABLE
+        ):
+            lines.append(
+                "Round table: choose one innocent to take the fall and build "
+                "the case against them in public, so the faithful banish one "
+                "of their own. Stay inside the secrecy rule, never hint that "
+                "you are coordinating, and if suspicion is turning on you, "
+                "defend yourself before pushing anyone else."
+            )
+        if action_type is ActionType.VOTE and view.own_role is Role.TRAITOR:
+            lines.append(
+                "Vote with the faithful against the innocent you have been "
+                "framing, unless the vote is on you or a fellow traitor: then "
+                "vote for whichever faithful keeps both of you safe."
             )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))

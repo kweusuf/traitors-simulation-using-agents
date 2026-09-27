@@ -5,7 +5,11 @@ from __future__ import annotations
 
 import asyncio
 
+import pytest
+from pydantic import ValidationError
+
 from simulation.actions.actions import Action, ActionType
+from simulation.communication.channels import Channel
 from simulation.engine.phase_engine import PhaseContext, PhaseEngine
 from simulation.engine.state import GamePhase, Role
 from simulation.environments.traitors.game import TraitorsEnvironment
@@ -60,7 +64,8 @@ def test_action_types_for_phase_mapping() -> None:
     ]
     assert action_types_for_phase(GamePhase.VOTING) == [ActionType.VOTE]
     assert action_types_for_phase(GamePhase.TRAITOR_NIGHT) == [
-        ActionType.TRAITOR_KILL
+        ActionType.TRAITOR_KILL,
+        ActionType.TRAITOR_MESSAGE,
     ]
     assert action_types_for_phase(GamePhase.MISSION) == []
 
@@ -223,6 +228,12 @@ def counting_callback(engine, delay: float = 0.0):
                     target=target,
                     content=f"{agent_id} whispers to {target}",
                 )
+            if action_type is ActionType.TRAITOR_MESSAGE:
+                return Action(
+                    action=ActionType.TRAITOR_MESSAGE,
+                    actor_id=agent_id,
+                    content=f"{agent_id} plots with the traitors",
+                )
             return Action(action=action_type, actor_id=agent_id, target=targets[0])
         finally:
             callback.in_flight -= 1
@@ -261,3 +272,112 @@ def test_night_kill_asks_traitors_concurrently() -> None:
 
     assert callback.peak == 3
     assert result["victim"] is not None
+
+
+# ----------------------------------------------------------------------
+# The traitor council before the night kill
+# ----------------------------------------------------------------------
+
+
+def council_callback():
+    """Scripted traitor night: one council line, then one kill choice."""
+
+    async def callback(agent_id: str, action_type: ActionType, targets: list[str]):
+        callback.order.append((agent_id, action_type))
+        if action_type is ActionType.TRAITOR_MESSAGE:
+            return Action(
+                action=ActionType.TRAITOR_MESSAGE,
+                actor_id=agent_id,
+                content=f"{agent_id} argues for the loudest voice tonight",
+            )
+        return Action(action=action_type, actor_id=agent_id, target=targets[0])
+
+    callback.order = []
+    return callback
+
+
+def test_night_council_runs_before_the_kill_and_stays_private() -> None:
+    env, _ = make_env(players=6, traitors=3)
+    engine = env.engine
+    callback = council_callback()
+    context = PhaseContext(engine=engine, config=env.config, request_action=callback)
+
+    engine.begin_phase(GamePhase.TRAITOR_NIGHT)
+    asyncio.run(env.phases()["traitor_night"].run(context))
+
+    traitors = sorted(
+        p for p in engine.state.alive_players if engine.state.roles[p] is Role.TRAITOR
+    )
+    faithful = sorted(
+        p for p in engine.state.alive_players if engine.state.roles[p] is Role.FAITHFUL
+    )
+    asked = [action for _, action in callback.order]
+    # Everyone argues first, in id order, then everyone chooses a victim.
+    assert asked[:3] == [ActionType.TRAITOR_MESSAGE] * 3
+    assert [actor for actor, _ in callback.order[:3]] == traitors
+    assert asked[3:] == [ActionType.TRAITOR_KILL] * 3
+
+    council = [
+        m for m in engine.router.messages if m.channel is Channel.ROLE_PRIVATE
+    ]
+    assert len(council) == 3
+    assert {m.sender_id for m in council} == set(traitors)
+
+    # Structural visibility: no faithful player can read any of it.
+    for player in faithful:
+        assert [
+            m
+            for m in engine.router.visible_to(player)
+            if m.channel is Channel.ROLE_PRIVATE
+        ] == []
+    for player in traitors:
+        seen = [m for m in engine.router.visible_to(player) if m.channel is Channel.ROLE_PRIVATE]
+        assert len(seen) == 3  # own line plus the two peers
+
+
+def test_lone_traitor_gets_no_council() -> None:
+    env, _ = make_env(players=4, traitors=1)
+    engine = env.engine
+    callback = council_callback()
+    context = PhaseContext(engine=engine, config=env.config, request_action=callback)
+
+    engine.begin_phase(GamePhase.TRAITOR_NIGHT)
+    asyncio.run(env.phases()["traitor_night"].run(context))
+
+    assert [action for _, action in callback.order] == [ActionType.TRAITOR_KILL]
+
+
+def test_traitor_message_rules() -> None:
+    env, _ = make_env(players=6, traitors=3)
+    engine = env.engine
+    traitor = sorted(
+        p for p, r in engine.state.roles.items() if r is Role.TRAITOR
+    )[0]
+    faithful = sorted(
+        p for p, r in engine.state.roles.items() if r is Role.FAITHFUL
+    )[0]
+
+    with pytest.raises(ValidationError):
+        Action(action=ActionType.TRAITOR_MESSAGE, actor_id=traitor)  # no content
+
+    engine.begin_phase(GamePhase.TRAITOR_NIGHT)
+    rejected = engine.submit_action(
+        Action(action=ActionType.TRAITOR_MESSAGE, actor_id=faithful, content="hi")
+    )
+    assert not rejected.ok and "channel" in rejected.reason
+
+    accepted = engine.submit_action(
+        Action(action=ActionType.TRAITOR_MESSAGE, actor_id=traitor, content="we hit bob")
+    )
+    assert accepted.ok
+
+    second = engine.submit_action(
+        Action(action=ActionType.TRAITOR_MESSAGE, actor_id=traitor, content="again")
+    )
+    assert not second.ok and "limit" in second.reason
+
+    engine.begin_phase(GamePhase.PUBLIC_DISCUSSION)
+    wrong_phase = engine.submit_action(
+        Action(action=ActionType.TRAITOR_MESSAGE, actor_id=traitor, content="hi")
+    )
+    assert not wrong_phase.ok and "not allowed in phase" in wrong_phase.reason

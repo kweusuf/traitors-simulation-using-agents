@@ -35,10 +35,12 @@ def test_mvp_action_subset() -> None:
         ActionType.VOTE,
         ActionType.TRAITOR_KILL,
     }
-    # Full vocabulary: MVP four plus post-MVP RECRUIT and the debate
-    # actions reserved for later milestones.
+    # Full vocabulary: MVP four plus the post-MVP RECRUIT and
+    # TRAITOR_MESSAGE actions, and the debate actions reserved for
+    # later milestones.
     assert ActionType.RECRUIT not in MVP_ACTIONS
-    assert len(ActionType) == 9
+    assert ActionType.TRAITOR_MESSAGE not in MVP_ACTIONS
+    assert len(ActionType) == 10
 
 
 def test_vote_requires_target() -> None:

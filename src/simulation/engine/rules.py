@@ -22,7 +22,7 @@ PHASE_ALLOWED_ACTIONS: dict[GamePhase, frozenset[ActionType]] = {
     GamePhase.ROUND_TABLE: frozenset({ActionType.PUBLIC_MESSAGE}),
     GamePhase.VOTING: frozenset({ActionType.VOTE}),
     GamePhase.ELIMINATION: frozenset({ActionType.RECRUIT}),
-    GamePhase.TRAITOR_NIGHT: frozenset({ActionType.TRAITOR_KILL}),
+    GamePhase.TRAITOR_NIGHT: frozenset({ActionType.TRAITOR_KILL, ActionType.TRAITOR_MESSAGE}),
     GamePhase.GAME_END: frozenset(),
 }
 
@@ -74,6 +74,18 @@ class RuleValidator:
                 return ValidationResult.rejected("recruitment is disabled for this game")
             if role is not Role.TRAITOR:
                 return ValidationResult.rejected("only traitors may recruit")
+        if action.action is ActionType.TRAITOR_MESSAGE:
+            if role is not Role.TRAITOR:
+                return ValidationResult.rejected("only traitors have that channel")
+            peers = [
+                p
+                for p in state.alive_players
+                if p != action.actor_id and state.roles.get(p) is Role.TRAITOR
+            ]
+            if not peers:
+                return ValidationResult.rejected(
+                    "no fellow traitors alive to talk to"
+                )
 
         # 4. Target checks.
         if action.target is not None:
@@ -114,6 +126,10 @@ class RuleValidator:
             return comm.private_messages_per_agent
         if action.action is ActionType.VOTE:
             return 1  # one vote per agent per round
-        if action.action in (ActionType.TRAITOR_KILL, ActionType.RECRUIT):
+        if action.action in (
+            ActionType.TRAITOR_KILL,
+            ActionType.RECRUIT,
+            ActionType.TRAITOR_MESSAGE,
+        ):
             return 1
         return None

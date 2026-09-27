@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-17 complete, 261 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-18 complete, 266 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -43,6 +43,7 @@ and its commit lands.
 | 15 | Per-call LLM telemetry and quality metrics per run | complete | `1f6fc63` |
 | 16 | Concurrent turns and bounded prompts (performance) | complete | `b2bc68f` |
 | 17 | Duplication score and cross-player speech similarity | complete | `0e881f4` |
+| 18 | Traitor night council and strategy guidance | pending | |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -426,6 +427,34 @@ speech similarity 0.82 content / 0.94 phrasing across 210 pairs, with
 judy and oscar the most alike pair at 0.979 / 0.9925, which matches
 the boilerplate collapse seen by eye.
 
+### Phase 18: Traitor night council and strategy guidance
+
+The night had no discussion at all: each traitor picked a victim
+independently and a majority vote settled it, and nothing in the
+prompts ever mentioned blame, framing or threat. Now:
+
+- [x] `TRAITOR_MESSAGE` action on the `ROLE_PRIVATE` channel, asked of
+  every living traitor before the kill, targetless, content required,
+  traitor-only, one per phase, only while other traitors are alive.
+  Recipients are the living traitors, enforced by the router, so a
+  faithful player structurally cannot read it.
+- [x] Prompt guidance: the council argument (biggest threat versus
+  most convenient suspect, who takes the blame), the kill (victim for
+  a reason that puts an innocent in the frame, recorded in
+  `reason_summary`), the round table (build the case against one
+  innocent, defend yourself first if suspicion turns), and the vote
+  (vote with the faithful against the framed innocent, otherwise keep
+  yourself and your team safe).
+- [x] Quality metrics ignore traitor-only traffic for secrecy, since
+  saying "I am a traitor" to your own team is the point of the
+  channel, not a leak.
+- [x] Tests: council before kill, structural invisibility to faithful,
+  lone traitor gets no council, action rules, prompt guidance scoped to
+  traitors and to the round table.
+
+**Verification:** 266 tests green. A fake long game runs 21 council
+messages over 12 rounds with zero messages reaching a non-traitor.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -466,3 +495,4 @@ the boilerplate collapse seen by eye.
 | 2026-09-27 | Fix: dropped connections are now retryable; game-005 and game-006 both died when the remote host stopped answering because `RemoteDisconnected` is an `OSError` and never reached the retry loop; 256 tests passed. |
 | 2026-09-27 | Fix: message duplication. game-005 had 153 of 273 messages as exact duplicates (one line shared by 89), public prompts were near-identical across players and agents copied what they could see; added an Originality hard rule plus per-action reminders; 256 tests passed. |
 | 2026-09-27 | Phase 17 complete: duplication score and cross-player speech similarity (content words and trigrams, per pair and per player) in the quality block and the metrics command; 261 tests passed. |
+| 2026-09-27 | Phase 18 complete: traitor night council on a role-private channel plus strategy guidance for the kill, the round table and the vote; secrecy scoring skips traitor-only traffic; 266 tests passed. |

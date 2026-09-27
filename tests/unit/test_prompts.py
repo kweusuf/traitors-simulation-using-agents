@@ -248,3 +248,38 @@ def test_originality_rules_are_in_both_prompts() -> None:
     )
     assert "Address them by name" in private
     assert "do not reuse phrasing" in private
+
+
+def test_night_and_table_guidance_only_for_traitors() -> None:
+    builder = PromptBuilder()
+    persona = Persona(description="Careful player.")
+
+    traitor_view = make_view(own_role=Role.TRAITOR, phase=GamePhase.ROUND_TABLE)
+    traitor_public = builder.build_user(traitor_view, ActionType.PUBLIC_MESSAGE, [])
+    assert "choose one innocent to take the fall" in traitor_public
+    assert "defend yourself before pushing anyone else" in traitor_public
+
+    faithful_view = make_view(own_role=Role.FAITHFUL, phase=GamePhase.ROUND_TABLE)
+    faithful_public = builder.build_user(faithful_view, ActionType.PUBLIC_MESSAGE, [])
+    assert "take the fall" not in faithful_public
+
+    traitor_vote = builder.build_user(traitor_view, ActionType.VOTE, ["bob"])
+    assert "Vote with the faithful against the innocent" in traitor_vote
+    faithful_vote = builder.build_user(faithful_view, ActionType.VOTE, ["bob"])
+    assert "Vote with the faithful against the innocent" not in faithful_vote
+
+    council = builder.build_user(traitor_view, ActionType.TRAITOR_MESSAGE, [])
+    assert "no faithful player can read this" in council
+    assert "biggest threat to your team" in council
+
+    kill = builder.build_user(traitor_view, ActionType.TRAITOR_KILL, ["bob"])
+    assert "puts an innocent in the frame" in kill
+    assert "reason_summary" in kill
+
+    # Discussion outside the round table keeps the framing advice off.
+    discussion = builder.build_user(
+        make_view(own_role=Role.TRAITOR, phase=GamePhase.PUBLIC_DISCUSSION),
+        ActionType.PUBLIC_MESSAGE,
+        [],
+    )
+    assert "take the fall" not in discussion
