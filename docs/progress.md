@@ -42,7 +42,7 @@ and its commit lands.
 | 14 | Finale at 3v3, rapid-fire voting, solo/team wins | complete | `3c911ca` |
 | 15 | Per-call LLM telemetry and quality metrics per run | complete | `1f6fc63` |
 | 16 | Concurrent turns and bounded prompts (performance) | complete | `b2bc68f` |
-| 17 | Duplication score and cross-player speech similarity | pending | |
+| 17 | Duplication score and cross-player speech similarity | complete | `0e881f4` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
