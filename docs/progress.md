@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-18 complete, 266 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-20 complete, 307 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -44,6 +44,8 @@ and its commit lands.
 | 16 | Concurrent turns and bounded prompts (performance) | complete | `b2bc68f` |
 | 17 | Duplication score and cross-player speech similarity | complete | `0e881f4` |
 | 18 | Traitor night council and strategy guidance | complete | `4674f58` |
+| 19 | Score ledger, paired-seed gates, run diagnosis | complete | `2b89f58` |
+| 20 | Shield, seer, dagger and the murder shortlist | complete | `0df713e` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -455,6 +457,62 @@ prompts ever mentioned blame, framing or threat. Now:
 **Verification:** 266 tests green. A fake long game runs 21 council
 messages over 12 rounds with zero messages reaching a non-traitor.
 
+### Phase 19: Score ledger, paired-seed gates, run diagnosis
+
+Wave A of the self-improvement plan in
+`docs/2026-09-27-traitors-format-adoption-and-self-improvement.md`:
+make every run's scores comparable so a prompt change can be promoted or
+rejected on evidence.
+
+- [x] `runs/ledger.jsonl`: one appended line per finished run with seed,
+  holdout flag, prompt version, outcome, calls, tokens, latency
+  percentiles and the quality summary (`experiments/ledger.py`).
+- [x] `is_holdout_seed(seed)`, `seed % 10 >= 7`, so 30 percent of seeds
+  are excluded from promotion decisions.
+- [x] `simulation compare <baseline> <candidate>`: eight gates covering
+  hallucination, duplication, both speech similarity means, secrecy
+  flags, parse failures, then latency p95 and total tokens as cost
+  guards, with per-metric deltas, `--json`, a holdout warning, and exit
+  1 on any breach (`experiments/compare.py`).
+- [x] `simulation diagnose <game_id>`: deterministic `diagnosis.md` with
+  the metric summary, repeated texts, secrecy and hallucination
+  samples, the most similar pair, and 1 to 3 hypotheses from a fixed
+  threshold table (`experiments/diagnosis.py`).
+- [x] Tests: `tests/unit/test_ledger.py` plus five CLI cases.
+
+**Verification:** 275 tests green at `2b89f58`. Two fake long games
+compare cleanly (exit 0) with all gates listed, and a breach flips the
+exit code to 1.
+
+### Phase 20: Shield, seer, dagger and the murder shortlist
+
+Wave B of the same plan: four mechanics that the research found to be
+the portable, single-use, information-bearing kind the show keeps.
+
+- [x] Config flags `shield`, `seer`, `dagger`, `on_trial` on
+  `GameSettings`, all default off and enabled only in `long_game.yaml`.
+- [x] Seeded item awards after a round's first mission, cycling
+  shield, dagger, seer, private to the holder via `GameState.items` and
+  an `AgentView.items` line in the prompt.
+- [x] Shield blocks one murder and is consumed (`SHIELD_BLOCKED`), the
+  murder attempt is not refunded.
+- [x] Dagger doubles the holder's vote and is spent on first use
+  (`DAGGER_USED`), with a `votes.weight` column and a small
+  `Database._migrate()` for pre-existing databases.
+- [x] Seer: one-shot `SEER_CHECK` in `private_chat`, answered by a
+  role-private message from `host` that only the holder can read.
+- [x] On Trial: each living traitor nominates one player at night, the
+  union is the murder shortlist (`MURDER_SHORTLIST`), and the kill must
+  come from it.
+- [x] Quality scoring ignores non-roster senders such as `host`.
+- [x] Tests: `tests/unit/test_items.py` and additions to prompts,
+  traitors, quality and models tests.
+
+**Verification:** 307 tests green at `0df713e`. Two fake long games with
+all four flags on completed end to end: 8 item awards, 6 dagger uses, a
+seer check, 7 murder shortlists, one shield block, 8 recruitments, a
+finale, and two different winners, with zero rejected actions.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -496,3 +554,6 @@ messages over 12 rounds with zero messages reaching a non-traitor.
 | 2026-09-27 | Fix: message duplication. game-005 had 153 of 273 messages as exact duplicates (one line shared by 89), public prompts were near-identical across players and agents copied what they could see; added an Originality hard rule plus per-action reminders; 256 tests passed. |
 | 2026-09-27 | Phase 17 complete: duplication score and cross-player speech similarity (content words and trigrams, per pair and per player) in the quality block and the metrics command; 261 tests passed. |
 | 2026-09-27 | Phase 18 complete: traitor night council on a role-private channel plus strategy guidance for the kill, the round table and the vote; secrecy scoring skips traitor-only traffic; 266 tests passed. |
+| 2026-09-27 | Research: two docs-researcher briefs on the worldwide Traitors format and on metric-driven prompt loops, condensed into docs/2026-09-27-traitors-format-adoption-and-self-improvement.md. |
+| 2026-09-27 | Phase 19 complete: score ledger, holdout seeds, `simulation compare` gates and `simulation diagnose`; 275 tests passed. |
+| 2026-09-27 | Phase 20 complete: shield, seer, dagger and the murder shortlist behind default-off config flags, enabled in long_game.yaml; 307 tests passed. |

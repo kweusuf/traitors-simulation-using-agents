@@ -83,7 +83,17 @@ python -m simulation snapshot game-001 --round 1      # stored snapshot
 python -m simulation metrics game-001           # LLM ops + quality view
 python -m simulation metrics game-001 --json    # raw metrics.json
 python -m simulation metrics game-001 --recompute  # rebuild quality from events
+python -m simulation compare game-001 game-002  # gate one run against another
+python -m simulation diagnose game-001          # write runs/game-001/diagnosis.md
 ```
+
+`compare` scores a candidate against a baseline on paired seeds with per
+metric gates (hallucination, duplication, speech similarity, secrecy,
+parse failures, then latency and tokens as cost guards) and exits 1 on
+any breach, so a prompt change can be promoted or rejected on evidence.
+Every finished run also appends a line to `runs/ledger.jsonl`, and seeds
+where `seed % 10 >= 7` are marked as holdout so they never drive a
+promotion decision.
 
 ## Test
 
