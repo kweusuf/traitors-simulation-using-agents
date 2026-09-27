@@ -62,6 +62,13 @@ def _urllib_post(url: str, payload: dict[str, Any], timeout: float) -> dict[str,
         raise OllamaError(
             f"Ollama request to {url} timed out after {timeout}s", retryable=True
         ) from exc
+    except OSError as exc:
+        # Connection dropped or reset mid-request. A host going to
+        # sleep looks exactly like this, and it used to kill a whole
+        # run because it never reached the retry path.
+        raise OllamaError(
+            f"connection to {url} failed: {exc}", retryable=True
+        ) from exc
 
     try:
         return json.loads(body)

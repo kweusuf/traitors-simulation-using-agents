@@ -331,3 +331,53 @@ def test_default_poster_marks_transient_failures_retryable() -> None:
                 raise AssertionError(f"{error!r} did not raise")
     finally:
         ollama_module.urllib.request.urlopen = original  # type: ignore[assignment]
+
+
+def test_default_poster_marks_dropped_connections_retryable() -> None:
+    import http.client
+    import simulation.models.ollama as ollama_module
+
+    original = ollama_module.urllib.request.urlopen
+    cases = [
+        http.client.RemoteDisconnected("Remote end closed connection without response"),
+        ConnectionResetError("reset by peer"),
+        BrokenPipeError("broken pipe"),
+    ]
+    try:
+        for error in cases:
+            def opener(url, *args, _error=error, **kwargs):
+                raise _error
+
+            ollama_module.urllib.request.urlopen = opener  # type: ignore[assignment]
+            try:
+                ollama_module._urllib_post("http://localhost:11434/api/chat", {}, 1.0)
+            except OllamaError as exc:
+                assert exc.retryable is True, (error, exc.retryable)
+            else:
+                raise AssertionError(f"{error!r} did not raise")
+    finally:
+        ollama_module.urllib.request.urlopen = original  # type: ignore[assignment]
+
+
+def test_provider_survives_a_dropped_connection() -> None:
+    import http.client
+
+    calls = {"n": 0}
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise OllamaError(
+                "connection to http://localhost:11434/api/chat failed: "
+                "Remote end closed connection without response",
+                retryable=True,
+            )
+        return OK_BODY
+
+    provider = OllamaProvider(poster=poster, backoff=(0.0, 0.0, 0.0))
+    response = asyncio.run(
+        provider.generate(MESSAGES, Action, make_config(retries=3))
+    )
+    assert response.content == '{"action": "vote"}'
+    assert calls["n"] == 3
+    assert provider.retries == 2
