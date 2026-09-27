@@ -91,6 +91,13 @@ class PromptBuilder:
             "repeat the roles you privately know as if the group could see "
             "them. Never claim a role you were not given.",
             "",
+            "Originality (hard rule): every message must be yours alone. "
+            "React to one specific thing a named player actually said or "
+            "did, take a position on it, and never repeat or rephrase "
+            "wording already visible in the transcript above. A generic "
+            "observation about caution, patience or how noisy the group "
+            "is could have been written by anyone and tells you nothing.",
+            "",
         ]
         if role is Role.TRAITOR:
             lines.append(
@@ -132,7 +139,15 @@ class PromptBuilder:
                 "This message goes to every player. Speak as one player among "
                 "many: no claims about your own role, no naming anyone as a "
                 "traitor, and no repeating role information you only privately "
-                "know."
+                "know. Name the player you are responding to and say something "
+                "this conversation has not heard yet; do not echo phrasing "
+                "from the transcript."
+            )
+        if action_type is ActionType.PRIVATE_MESSAGE:
+            lines.append(
+                "This message goes to one player only. Address them by name "
+                "and continue something the two of you actually said; do not "
+                "reuse phrasing from the public transcript."
             )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))

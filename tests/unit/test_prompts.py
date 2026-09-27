@@ -229,3 +229,22 @@ def test_transcript_window_keeps_only_the_newest_messages() -> None:
     assert "public line 7" in capped
     assert "public line 6" not in capped
     assert "earlier 7 public messages are omitted" in capped
+
+
+def test_originality_rules_are_in_both_prompts() -> None:
+    builder = PromptBuilder()
+    persona = Persona(description="Careful player.")
+    for role in (Role.FAITHFUL, Role.TRAITOR):
+        system = builder.build_system("alice", role, persona, Goals())
+        assert "Originality (hard rule)" in system
+        assert "never repeat or rephrase" in system
+
+    public = builder.build_user(make_view(), ActionType.PUBLIC_MESSAGE, [])
+    assert "Name the player you are responding to" in public
+    assert "do not echo phrasing" in public
+
+    private = builder.build_user(
+        make_view(), ActionType.PRIVATE_MESSAGE, ["bob"]
+    )
+    assert "Address them by name" in private
+    assert "do not reuse phrasing" in private
