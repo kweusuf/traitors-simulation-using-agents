@@ -126,7 +126,13 @@ class GameEngine:
             },
         )
 
-        traitor_ids = set(rng.sample(self.player_ids, self.config.game.traitors))
+        if self.config.game.traitor_names:
+            # A real season replay: the traitors are known, not drawn.
+            traitor_ids = set(self.config.game.traitor_names)
+        else:
+            traitor_ids = set(
+                rng.sample(self.player_ids, self.config.game.traitors)
+            )
         for pid in self.player_ids:
             role = Role.TRAITOR if pid in traitor_ids else Role.FAITHFUL
             self.state.roles[pid] = role

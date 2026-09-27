@@ -333,3 +333,45 @@ def test_validator_standalone_usage_limits() -> None:
     assert validator.validate(action, engine.state, {}).ok
     over = validator.validate(action, engine.state, {("alice", ActionType.PUBLIC_MESSAGE): 1})
     assert not over.ok
+
+
+# ----------------------------------------------------------------------
+# Pinned traitors, for replaying a real season
+# ----------------------------------------------------------------------
+
+
+def test_pinned_traitors_are_assigned_exactly() -> None:
+    engine = make_engine(
+        players=6,
+        traitors=2,
+        traitor_names=["alice", "frank"],
+    )
+    named = sorted(p for p, r in engine.state.roles.items() if r is Role.TRAITOR)
+    assert named == ["alice", "frank"]
+
+    # Two engines with the same pin agree even across seeds.
+    other = make_engine(seed=7, players=6, traitors=2, traitor_names=["alice", "frank"])
+    assert other.state.roles == engine.state.roles
+
+
+def test_traitor_names_must_match_the_cast_and_the_count() -> None:
+    with pytest.raises(Exception, match="traitor_names must list exactly"):
+        GameConfig(
+            game={"players": 6, "traitors": 2, "traitor_names": ["alice"]}
+        )
+    with pytest.raises(Exception, match="traitor_names not in player_names"):
+        GameConfig(
+            game={
+                "players": 6,
+                "traitors": 2,
+                "player_names": ["alice", "bob", "charlie", "david", "eve", "frank"],
+                "traitor_names": ["alice", "mallory"],
+            }
+        )
+
+
+def test_without_a_pin_the_seed_still_decides() -> None:
+    first = make_engine(seed=42, players=6, traitors=2)
+    second = make_engine(seed=7, players=6, traitors=2)
+    traitors = lambda e: sorted(p for p, r in e.state.roles.items() if r is Role.TRAITOR)
+    assert traitors(first) != traitors(second)

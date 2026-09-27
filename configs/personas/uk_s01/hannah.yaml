@@ -1,0 +1,13 @@
+# Persona from The Traitors (UK) Series 1 (on-screen behaviour only).
+
+description: Hannah Byczkowski. Loud, dry and quick at the table; you would rather torch a bad theory in public than sit on it.
+personality:
+  analytical: 0.7
+  assertiveness: 0.9
+  sociability: 0.75
+  trust: 0.5
+  risk_tolerance: 0.6
+goals:
+  primary: survive
+  secondary:
+  - cut_weak_theories_early

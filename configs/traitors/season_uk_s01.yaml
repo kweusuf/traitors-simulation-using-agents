@@ -1,0 +1,110 @@
+# Season replay: The Traitors (UK), Series 1 (BBC One, 2022).
+#
+# Ground truth lives in configs/seasons/the-traitors-uk-s01.yaml and the
+# personalities in configs/personas/uk_s01/ are written from that cast's
+# on-screen behaviour. The three original traitors are pinned so the run
+# starts from the same information the season did, and the finale counts
+# match the real final five (three faithful against two traitors).
+
+game:
+  name: season_uk_s01
+  players: 22
+  traitors: 3
+  traitor_names: [wilf, amanda, alyssa]
+  max_rounds: 12
+  # Series 1 recruited twice, once declined and once by ultimatum, and it
+  # never replaced a banished traitor with a converted faithful. Our
+  # recruit-on-banish rule would refill the tower every time, which would
+  # make a faithful win arithmetically impossible and distort any
+  # comparison with the real season, so it is off here.
+  recruit_on_banish: false
+  max_recruits: 0
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_max_votes: 10
+  # Series 1 used the shield and a one-off on-trial murder restriction.
+  # It never had a seer or a dagger.
+  shield: true
+  seer: false
+  dagger: false
+  on_trial: false
+  player_names:
+    - aaron
+    - hannah
+    - meryl
+    - wilf
+    - kieran
+    - maddy
+    - andrea
+    - amanda
+    - fay
+    - theo
+    - amos
+    - alex
+    - rayan
+    - alyssa
+    - matt
+    - tom
+    - john
+    - ivan
+    - imran
+    - claire
+    - nicky
+    - aisha
+  personas:
+    - uk_s01/aaron
+    - uk_s01/hannah
+    - uk_s01/meryl
+    - uk_s01/wilf
+    - uk_s01/kieran
+    - uk_s01/maddy
+    - uk_s01/andrea
+    - uk_s01/amanda
+    - uk_s01/fay
+    - uk_s01/theo
+    - uk_s01/amos
+    - uk_s01/alex
+    - uk_s01/rayan
+    - uk_s01/alyssa
+    - uk_s01/matt
+    - uk_s01/tom
+    - uk_s01/john
+    - uk_s01/ivan
+    - uk_s01/imran
+    - uk_s01/claire
+    - uk_s01/nicky
+    - uk_s01/aisha
+
+phases:
+  - mission
+  - mission
+  - mission
+  - public_discussion
+  - private_chat
+  - round_table
+  - voting
+  - elimination
+  - traitor_night
+
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+
+seed: 42
+
+observability:
+  enabled: false
+  provider: langfuse

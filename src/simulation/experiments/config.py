@@ -54,6 +54,9 @@ class GameSettings(StrictModel):
     seer: bool = False
     on_trial: bool = False
     player_names: Optional[list[str]] = None
+    # Pin the traitor roles to named players instead of drawing them from
+    # the seed. Used to replay a real season, where the traitors are known.
+    traitor_names: Optional[list[str]] = None
     # Persona names resolved against the configs/personas directory;
     # assigned round-robin when there are fewer names than players.
     personas: Optional[list[str]] = None
@@ -80,6 +83,19 @@ class GameSettings(StrictModel):
         finale_traitors = data.get("finale_traitors", 0)
         if finale_traitors and finale_traitors >= players:
             raise ValueError("finale_traitors must be fewer than players")
+        traitor_names = data.get("traitor_names")
+        if traitor_names:
+            if len(traitor_names) != traitors:
+                raise ValueError(
+                    "traitor_names must list exactly `traitors` players"
+                )
+            names = data.get("player_names")
+            if names:
+                unknown = [n for n in traitor_names if n not in names]
+                if unknown:
+                    raise ValueError(
+                        f"traitor_names not in player_names: {sorted(unknown)}"
+                    )
         return data
 
 

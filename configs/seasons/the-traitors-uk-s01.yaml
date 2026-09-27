@@ -1,0 +1,97 @@
+# Ground truth for The Traitors (UK), Series 1 (BBC One, 2022).
+#
+# Transcribed from public episode coverage, Wikipedia and the fan wiki,
+# with the disagreements between sources listed at the bottom. Player
+# `id` values match `game.player_names` in
+# configs/traitors/season_uk_s01.yaml so a run can be compared with it.
+#
+# Sources:
+#   https://en.wikipedia.org/wiki/The_Traitors_(British_TV_series)_series_1
+#   https://thetraitorsuk.fandom.com/wiki/Series_1
+#   https://thetraitorsuk.fandom.com/wiki/Series_1,_Episode_12
+#   https://www.bbc.com/news/entertainment-arts-64074768
+#   https://www.bbc.co.uk/mediacentre/2022/the-traitors-winners/
+
+season:
+  id: the-traitors-uk-s01
+  name: The Traitors (UK), Series 1
+  network: BBC One
+  aired: 2022-11-29/2022-12-22
+  episode_count: 12
+  contestant_count: 22
+  starting_traitor_count: 3
+  winner_faction: faithful
+  winners: [aaron, hannah, meryl]
+  runner_up: wilf
+  # The finale ran at five players: three faithful and two traitors.
+  final_counts:
+    faithful: 3
+    traitors: 2
+
+cast:
+  - {id: aaron, role: faithful, result: winner, exit_episode: 12, persona: "emotional, reactive, most persistently accused innocent"}
+  - {id: hannah, role: faithful, result: winner, exit_episode: 12, persona: "vocal and sharp at the table"}
+  - {id: meryl, role: faithful, result: winner, exit_episode: 12, persona: "followed the pack, loyal to Aaron"}
+  - {id: wilf, role: traitor, traitor_type: original, result: finalist_banished, exit_episode: 12, persona: "charming alliance-builder, privately ruthless"}
+  - {id: kieran, role: traitor, traitor_type: recruited, recruited_episode: 11, result: finalist_banished, exit_episode: 12, persona: "reluctant recruit, turned on Wilf and outed him"}
+  - {id: maddy, role: faithful, result: banished, exit_episode: 11, persona: "tunnel-vision accuser, named Wilf for nine episodes"}
+  - {id: andrea, role: faithful, result: murdered, exit_episode: 11, persona: "quiet witness, never voted for a traitor"}
+  - {id: amanda, role: traitor, traitor_type: original, result: banished, exit_episode: 10, persona: "public peacemaker, private schemer"}
+  - {id: fay, role: faithful, result: murdered, exit_episode: 10, persona: "blunt, called out the quiet players"}
+  - {id: theo, role: faithful, result: banished, exit_episode: 9, persona: "emotional, clung to allies"}
+  - {id: amos, role: faithful, result: murdered, exit_episode: 9, murder_event_episode: 8, persona: "first to say Wilf looked too calm"}
+  - {id: alex, role: faithful, result: murdered, exit_episode: 8, persona: "guarded, publicly refused recruitment"}
+  - {id: rayan, role: faithful, result: banished, exit_episode: 7, persona: "accused of being too quiet"}
+  - {id: alyssa, role: traitor, traitor_type: original, result: banished, exit_episode: 6, persona: "framed Nicky, then went quiet, betrayed by Wilf"}
+  - {id: matt, role: faithful, result: murdered, exit_episode: 6, persona: "smitten with Alex"}
+  - {id: tom, role: faithful, result: banished, exit_episode: 5, persona: "showman accuser who unravelled"}
+  - {id: john, role: faithful, result: murdered, exit_episode: 5, persona: "paranoid and confrontational"}
+  - {id: ivan, role: faithful, result: banished, exit_episode: 4, persona: "calm reasoner on the trial logic"}
+  - {id: imran, role: faithful, result: banished, exit_episode: 3, persona: "read as aloof, bandwagon victim"}
+  - {id: claire, role: faithful, result: murdered, exit_episode: 3, persona: "quiet, close to Theo"}
+  - {id: nicky, role: faithful, result: banished, exit_episode: 2, persona: "first banishment, framed over a toast"}
+  - {id: aisha, role: faithful, result: murdered, exit_episode: 2, persona: "low-profile first victim"}
+
+# One entry per episode. Episode 1 had no elimination (two players were
+# sidelined and returned in episode 5); episode 4's murder was replaced
+# by an on-trial twist; episodes 7 and 11 had no murder.
+eliminations:
+  - {episode: 1, night_victim: null, banishment: null, other: "fake elimination of amos and kieran, both returned in episode 5"}
+  - {episode: 2, night_victim: aisha, banishment: nicky, vote: "17-1-1"}
+  - {episode: 3, night_victim: claire, banishment: imran, vote: "10-6-1"}
+  - {episode: 4, night_victim: null, trial: [alex, ivan, john], banishment: ivan, vote: "7-6-2-1"}
+  - {episode: 5, night_victim: john, banishment: tom, vote: "7-4-1-1-1"}
+  - {episode: 6, night_victim: matt, banishment: alyssa, vote: "6-5-2-1"}
+  - {episode: 7, night_victim: null, banishment: rayan, vote: "7-3-2-1", other: "recruitment offered to alex, declined"}
+  - {episode: 8, night_victim: alex, banishment: null, other: "amos killed in plain sight at the dinner party; no round table"}
+  - {episode: 9, night_victim: amos, banishment: theo, vote: "6-2-2"}
+  - {episode: 10, night_victim: fay, banishment: amanda, vote: "4-2-1-1"}
+  - {episode: 11, night_victim: andrea, banishment: maddy, vote: "4-2", other: "kieran recruited by ultimatum"}
+  - {episode: 12, night_victim: null, banishment: [kieran, wilf], vote: ["4-1", "3-1"], other: "fire pit tie 2-2, final end vote 3-0"}
+
+traitor_reveal_episodes:
+  wilf: 12
+  amanda: 10
+  alyssa: 6
+  kieran: 12
+
+recruitments:
+  - {episode: 7, recruiters: [amanda, wilf], target: alex, type: seduce, accepted: false, betrayed_team: false}
+  - {episode: 11, recruiters: [wilf], target: kieran, type: ultimatum, accepted: true, betrayed_team: true}
+
+finale:
+  sequence:
+    - "round table: kieran banished 4-1, reveals he is a traitor and hints wilf is one too"
+    - "end-or-banish vote ties 2-2, so another banishment follows"
+    - "wilf banished 3-1 (wilf voted aaron)"
+    - "end game vote 3-0, faithfuls win"
+  outcome: faithful_win
+
+twists_used: [shield, armoury, on_trial, recruitment_seduce, kiss_of_death, bribe, ultimatum, endgame]
+twists_not_used: [seer, dagger, death_match, secret_traitor]
+
+source_disagreements:
+  - "Amos's murder is listed as episode 9 by the Wikipedia cast table, but the on-screen event was the episode 8 dinner party and the reveal was episode 9 breakfast."
+  - "Wikipedia's immunity row is offset one episode from its own mission table; the mission table winners are used here."
+  - "Episode 11 published tally 4-2 against its per-voter grid 4-1-1; the extra vote is assumed to be Maddy, which fits her on-screen behaviour."
+  - "Episode 5 tally 7-4-1-1-1 does not sum to the eligible voters; a couple of votes are unaccounted for in the source grid."

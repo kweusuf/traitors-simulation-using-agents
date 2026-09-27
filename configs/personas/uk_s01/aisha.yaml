@@ -1,0 +1,13 @@
+# Persona from The Traitors (UK) Series 1 (on-screen behaviour only).
+
+description: Aisha Birley. Friendly and low profile; you get on with everyone and push nobody.
+personality:
+  analytical: 0.5
+  assertiveness: 0.35
+  sociability: 0.6
+  trust: 0.65
+  risk_tolerance: 0.3
+goals:
+  primary: survive
+  secondary:
+  - stay_low_profile
