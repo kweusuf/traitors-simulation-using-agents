@@ -283,3 +283,66 @@ def test_night_and_table_guidance_only_for_traitors() -> None:
         [],
     )
     assert "take the fall" not in discussion
+
+
+# ----------------------------------------------------------------------
+# Wave B: item instructions and the new turns
+# ----------------------------------------------------------------------
+
+
+def test_view_renders_only_the_holders_own_items() -> None:
+    rendered = make_view(items=["shield"]).render()
+    assert "Items: shield" in rendered
+    assert "Items:" not in make_view().render()
+
+
+def test_prompts_tell_the_holder_what_the_item_does() -> None:
+    builder = PromptBuilder()
+
+    shield = builder.build_user(make_view(items=["shield"]), ActionType.VOTE, ["bob"])
+    assert "blocks the next murder attempt" in shield
+    assert "not refunded" in shield
+    assert "choose whether to disclose" in shield
+
+    dagger = builder.build_user(make_view(items=["dagger"]), ActionType.VOTE, ["bob"])
+    assert "your vote counts twice" in dagger
+    assert "spent the first time you vote" in dagger
+
+    seer = builder.build_user(make_view(items=["seer"]), ActionType.VOTE, ["bob"])
+    assert "check one player's true role once" in seer
+    assert "seer_check action during the private_chat phase" in seer
+
+    # Without an item none of those lines appear.
+    plain = builder.build_user(make_view(), ActionType.VOTE, ["bob"])
+    for fragment in ("murder attempt", "counts twice", "true role once"):
+        assert fragment not in plain
+
+
+def test_prompts_explain_the_new_turns() -> None:
+    builder = PromptBuilder()
+    view = make_view(items=["seer"], phase=GamePhase.PRIVATE_CHAT)
+
+    seer_turn = builder.build_user(view, ActionType.SEER_CHECK, ["bob", "charlie"])
+    assert "Required action type: seer_check." in seer_turn
+    assert "seer_check tells you one player's true role" in seer_turn
+    assert "Legal targets: bob, charlie" in seer_turn
+
+    traitor_view = make_view(
+        own_role=Role.TRAITOR, phase=GamePhase.TRAITOR_NIGHT, items=[]
+    )
+    nominate = builder.build_user(traitor_view, ActionType.NOMINATE, ["bob"])
+    assert "Required action type: nominate." in nominate
+    assert "Nominate the player you would most want gone" in nominate
+    assert "nominated group can be murdered tonight" in nominate
+
+
+def test_action_json_hint_covers_the_new_actions() -> None:
+    seer = action_json_hint(ActionType.SEER_CHECK)
+    assert '"action": "seer_check"' in seer
+    assert '"target": "bob"' in seer
+    assert '"content": ""' in seer
+
+    nominate = action_json_hint(ActionType.NOMINATE)
+    assert '"action": "nominate"' in nominate
+    assert '"target": "bob"' in nominate
+    assert '"content": ""' in nominate

@@ -35,6 +35,7 @@ class ReplayState:
     messages: list[Message] = field(default_factory=list)
     phases: list[tuple[int, str]] = field(default_factory=list)  # (round, phase)
     missions: list[tuple[int, bool]] = field(default_factory=list)
+    items: dict[str, list[str]] = field(default_factory=dict)
     winner: str | None = None
     winning_team: str | None = None
     rounds: int = 0
@@ -96,6 +97,24 @@ class ReplayState:
                 state.missions.append(
                     (event.round, bool(event.payload.get("success")))
                 )
+            elif event.type is EventType.ITEM_AWARDED and event.actor:
+                item = str(event.payload.get("item", ""))
+                if item:
+                    state.items.setdefault(event.actor, []).append(item)
+            elif (
+                event.type in (EventType.SHIELD_BLOCKED, EventType.DAGGER_USED)
+                and event.actor
+            ):
+                # Spent items leave the holder's hand in the same order
+                # they were recorded, so the fold matches the live state.
+                spent = (
+                    "shield"
+                    if event.type is EventType.SHIELD_BLOCKED
+                    else "dagger"
+                )
+                held = state.items.get(event.actor, [])
+                if spent in held:
+                    held.remove(spent)
             elif event.type is EventType.ACTION_REJECTED:
                 state.rejected_actions += 1
             elif event.type is EventType.GAME_WON:
@@ -149,6 +168,7 @@ class ReplayState:
                 if m.channel is Channel.PRIVATE
                 and (agent_id == m.sender_id or agent_id in m.recipients)
             ],
+            items=list(self.items.get(agent_id, [])),
             winner=self.winner,
         )
 
@@ -241,6 +261,12 @@ def render_transcript(events: list[Event]) -> str:
             method = event.payload.get("method", "")
             suffix = " (night)" if method == "night" else ""
             lines.append(f"    Eliminated: {event.actor}{suffix}")
+        elif event.type is EventType.ITEM_AWARDED:
+            item = event.payload.get("item", "?")
+            lines.append(f"    Item awarded: {event.actor} receives the {item}")
+        elif event.type is EventType.SHIELD_BLOCKED:
+            victim = event.payload.get("victim", event.actor)
+            lines.append(f"    Shield blocked the murder: {victim} survives")
         elif event.type is EventType.ROLE_RECRUITED:
             lines.append(
                 f"    Recruited: {event.actor} (by {event.payload.get('by', '?')})"

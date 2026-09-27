@@ -366,3 +366,27 @@ def test_similarity_ignores_players_who_never_spoke() -> None:
     # alice and charlie spoke in the base run, bob joins; david never did.
     assert similarity["players_compared"] == 3
     assert "david" not in similarity["per_player"]
+
+
+def test_host_is_never_counted_as_a_player() -> None:
+    # The seer's answer arrives as a system message from `host`. It is
+    # still checked against the record, but it is not one player's
+    # speech and must not skew the per-player similarity.
+    host_line = ev(
+        20,
+        EventType.PRIVATE_MESSAGE,
+        round=1,
+        phase="private_chat",
+        actor="host",
+        targets=["charlie"],
+        channel="role_private",
+        content="bob is a traitor",
+    )
+    result = analyse(base_events() + [host_line])
+
+    assert result["messages_checked"] == 3
+    similarity = result["speech_similarity"]
+    assert "host" not in similarity["per_player"]
+    assert similarity["players_compared"] == 2  # alice and charlie spoke
+    assert result["secrecy"]["flags_total"] == 0
+    assert result["hallucination_score"] == 0.0

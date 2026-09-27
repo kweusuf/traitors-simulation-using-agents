@@ -6,6 +6,8 @@ helpers tell agents (and the environment) what is choosable right now.
 
 from __future__ import annotations
 
+from typing import Optional
+
 from simulation.actions.actions import ActionType
 from simulation.engine.state import GamePhase, GameState, Role
 
@@ -15,8 +17,14 @@ def legal_targets(
     actor_id: str,
     action_type: ActionType,
     allow_self_vote: bool = False,
+    shortlist: Optional[list[str]] = None,
 ) -> list[str]:
-    """Deterministic, sorted list of legal targets for one action request."""
+    """Deterministic, sorted list of legal targets for one action request.
+
+    `shortlist` narrows TRAITOR_KILL to the murder shortlist when
+    `on_trial` is on; callers pass None while it is off (an empty
+    shortlist would otherwise mean "nobody may be killed").
+    """
     alive = sorted(state.alive_players)
 
     if action_type is ActionType.PUBLIC_MESSAGE:
@@ -32,11 +40,14 @@ def legal_targets(
     if action_type is ActionType.TRAITOR_KILL:
         if state.roles.get(actor_id) is not Role.TRAITOR:
             return []
-        return sorted(
+        targets = [
             p
             for p in alive
             if p != actor_id and state.roles.get(p) is not Role.TRAITOR
-        )
+        ]
+        if shortlist is not None:
+            targets = [p for p in targets if p in shortlist]
+        return sorted(targets)
 
     if action_type is ActionType.RECRUIT:
         if state.roles.get(actor_id) is not Role.TRAITOR:
@@ -46,6 +57,20 @@ def legal_targets(
             for p in alive
             if p != actor_id and state.roles.get(p) is Role.FAITHFUL
         )
+
+    if action_type is ActionType.NOMINATE:
+        if state.roles.get(actor_id) is not Role.TRAITOR:
+            return []
+        return sorted(
+            p
+            for p in alive
+            if p != actor_id and state.roles.get(p) is not Role.TRAITOR
+        )
+
+    if action_type is ActionType.SEER_CHECK:
+        if "seer" not in state.items.get(actor_id, []):
+            return []
+        return sorted(p for p in alive if p != actor_id)
 
     return []
 

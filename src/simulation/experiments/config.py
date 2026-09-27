@@ -43,6 +43,16 @@ class GameSettings(StrictModel):
     # How many consecutive rapid-fire rounds may pass with nobody
     # banished before `round_limit_winner` is declared instead.
     finale_max_votes: int = Field(default=10, ge=1)
+    # Wave B mechanics (plan section 4), each off by default so existing
+    # configs and games play exactly as before:
+    # `shield`: a one-shot item that blocks the next murder on its holder.
+    # `dagger`: a one-shot item whose holder's vote counts twice.
+    # `seer`: a one-shot item that checks one player's true role in private.
+    # `on_trial`: traitors nominate a murder shortlist before the kill.
+    shield: bool = False
+    dagger: bool = False
+    seer: bool = False
+    on_trial: bool = False
     player_names: Optional[list[str]] = None
     # Persona names resolved against the configs/personas directory;
     # assigned round-robin when there are fewer names than players.

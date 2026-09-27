@@ -128,6 +128,37 @@ class PromptBuilder:
             f"Current phase: {view.phase.value}.",
             f"Required action type: {action_type.value}.",
         ]
+        if "shield" in view.items:
+            lines.append(
+                "You hold the shield: it blocks the next murder attempt on "
+                "you, the attempt is not refunded to the traitors, and you "
+                "choose whether to disclose that you have it."
+            )
+        if "dagger" in view.items:
+            lines.append(
+                "You hold the dagger: your vote counts twice, and it is "
+                "spent the first time you vote."
+            )
+        if "seer" in view.items:
+            lines.append(
+                "You hold the seer: you may check one player's true role "
+                "once, using the seer_check action during the private_chat "
+                "phase. The answer arrives as a private message from the "
+                "host and nobody else sees it."
+            )
+        if action_type is ActionType.SEER_CHECK:
+            lines.append(
+                "seer_check tells you one player's true role: name the one "
+                "living player you most need to read. This is your only "
+                "check, so spend it on the player whose allegiance would "
+                "change your game."
+            )
+        if action_type is ActionType.NOMINATE:
+            lines.append(
+                "Nominate the player you would most want gone: only the "
+                "nominated group can be murdered tonight, so put the players "
+                "your team cannot afford to keep in front of the knife."
+            )
         if action_type is ActionType.RECRUIT:
             lines.append(
                 "You are a banished traitor making one final choice: recruit a "

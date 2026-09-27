@@ -275,13 +275,27 @@ class VoteRepository:
     def __init__(self, db: Database) -> None:
         self._db = db
 
-    def replace_round(self, game_id: str, round_number: int, votes: dict[str, str]) -> None:
+    def replace_round(
+        self,
+        game_id: str,
+        round_number: int,
+        votes: dict[str, str],
+        weights: Optional[dict[str, int]] = None,
+    ) -> None:
+        """Persist one round's votes with their tally weight.
+
+        `weights` carries the doubled weight of a spent dagger vote;
+        voters without an entry count once.
+        """
         self._db.execute(
             "DELETE FROM votes WHERE game_id = ? AND round = ?", (game_id, round_number)
         )
         for voter, target in votes.items():
+            weight = (weights or {}).get(voter, 1)
             self._db.execute(
-                "INSERT INTO votes VALUES (?,?,?,?)", (game_id, round_number, voter, target)
+                "INSERT INTO votes (game_id, round, voter_id, target_id, weight) "
+                "VALUES (?,?,?,?,?)",
+                (game_id, round_number, voter, target, weight),
             )
         self._db.commit()
 
@@ -291,6 +305,13 @@ class VoteRepository:
             (game_id, round_number),
         ).fetchall()
         return {r["voter_id"]: r["target_id"] for r in rows}
+
+    def get_round_weights(self, game_id: str, round_number: int) -> dict[str, int]:
+        rows = self._db.execute(
+            "SELECT voter_id, weight FROM votes WHERE game_id = ? AND round = ?",
+            (game_id, round_number),
+        ).fetchall()
+        return {r["voter_id"]: r["weight"] for r in rows}
 
 
 class EliminationRepository:

@@ -22,7 +22,7 @@ from simulation.environments.traitors.phases import (
     TraitorNightPhase,
     VotingPhase,
 )
-from simulation.environments.traitors.rules import action_types_for_phase, legal_targets
+from simulation.environments.traitors.rules import legal_targets
 from simulation.experiments.config import GameConfig
 from simulation.persistence.database import Database
 from simulation.persistence.sink import EventSink
@@ -60,18 +60,40 @@ class TraitorsEnvironment:
     def legal_actions(self, agent_id: str) -> dict[ActionType, list[str]]:
         """What this agent could usefully submit in the current phase."""
         state = self.engine.state
-        allow_self = self.config.game.allow_self_vote
+        game = self.config.game
+        allow_self = game.allow_self_vote
+        # An empty shortlist means "nobody may be killed", so only pass
+        # one while `on_trial` is actually constraining the kill.
+        shortlist = self.engine.murder_shortlist if game.on_trial else None
         result: dict[ActionType, list[str]] = {}
-        for action_type in action_types_for_phase(state.phase):
+        for action_type in sorted(
+            self.engine.validator.allowed_actions(state.phase),
+            key=lambda a: a.value,
+        ):
             if action_type is ActionType.TRAITOR_MESSAGE:
                 # Targetless and role-restricted: only traitors have it.
                 if state.roles.get(agent_id) is not Role.TRAITOR:
                     continue
                 result[action_type] = []
                 continue
-            if action_type in (ActionType.TRAITOR_KILL, ActionType.RECRUIT):
-                # Role-restricted: empty means "not available to this agent".
-                targets = legal_targets(state, agent_id, action_type)
+            if action_type is ActionType.SEER_CHECK:
+                # One-shot per game: an already-used check is gone.
+                if agent_id in self.engine.seer_checks_done:
+                    continue
+            if action_type in (
+                ActionType.TRAITOR_KILL,
+                ActionType.RECRUIT,
+                ActionType.NOMINATE,
+                ActionType.SEER_CHECK,
+            ):
+                # Role, item, or shortlist restricted: empty means
+                # "not available to this agent".
+                if action_type is ActionType.TRAITOR_KILL:
+                    targets = legal_targets(
+                        state, agent_id, action_type, shortlist=shortlist
+                    )
+                else:
+                    targets = legal_targets(state, agent_id, action_type)
                 if not targets:
                     continue
             else:

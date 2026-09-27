@@ -143,6 +143,13 @@ class PromptScriptProvider(FakeLLMProvider):
                 "content": f"[{agent_id}#{n}] privately sharing a read.",
                 "confidence": 0.5,
             }
+        elif action_type in (ActionType.SEER_CHECK, ActionType.NOMINATE):
+            # One-shot Wave B actions: take the first name offered.
+            payload = {
+                "action": action_type.value,
+                "target": targets[0],
+                "confidence": 0.9,
+            }
         else:
             # VOTE and TRAITOR_KILL: pile onto the first legal target.
             payload = {

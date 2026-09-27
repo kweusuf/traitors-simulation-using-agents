@@ -61,3 +61,7 @@ class GameState(StrictModel):
     # standing, "team" wants the traitor faction to win together. Hidden
     # information: it reaches prompts through Goals, never through views.
     ambitions: dict[str, str] = Field(default_factory=dict)
+    # Items held per player, e.g. {"alice": ["shield"]}. Private
+    # knowledge: a view exposes only the viewer's own list, and the
+    # holder decides whether to disclose it in discussion.
+    items: dict[str, list[str]] = Field(default_factory=dict)

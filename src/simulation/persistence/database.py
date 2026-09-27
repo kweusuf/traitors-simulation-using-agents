@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS votes (
     round     INTEGER NOT NULL,
     voter_id  TEXT NOT NULL,
     target_id TEXT NOT NULL,
+    weight    INTEGER NOT NULL DEFAULT 1,  -- 2 while a dagger doubles it
     PRIMARY KEY (game_id, round, voter_id)
 );
 
@@ -133,7 +134,21 @@ class Database:
         self._conn = sqlite3.connect(self.path)
         self._conn.row_factory = sqlite3.Row
         self._conn.executescript(SCHEMA)
+        self._migrate()
         self._conn.commit()
+
+    def _migrate(self) -> None:
+        """Bring a database created before this schema version up to date.
+
+        `CREATE TABLE IF NOT EXISTS` never alters an existing table, and
+        `runs/simulation.db` may predate the vote weight column, so add
+        it here once instead of failing on the first doubled vote.
+        """
+        columns = {row[1] for row in self._conn.execute("PRAGMA table_info(votes)")}
+        if columns and "weight" not in columns:
+            self._conn.execute(
+                "ALTER TABLE votes ADD COLUMN weight INTEGER NOT NULL DEFAULT 1"
+            )
 
     @property
     def connection(self) -> sqlite3.Connection:

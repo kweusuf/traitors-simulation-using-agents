@@ -21,9 +21,14 @@ from simulation.persistence.repositories import EliminationRepository
 from simulation.persistence.sink import EventSink
 
 
-def make_env(players: int = 4, traitors: int = 1, max_rounds: int = 5, seed: int = 42):
+def make_env(players: int = 4, traitors: int = 1, max_rounds: int = 5, seed: int = 42, **game_overrides):
     config = GameConfig(
-        game={"players": players, "traitors": traitors, "max_rounds": max_rounds},
+        game={
+            "players": players,
+            "traitors": traitors,
+            "max_rounds": max_rounds,
+            **game_overrides,
+        },
         seed=seed,
     )
     db = Database()
@@ -68,6 +73,38 @@ def test_action_types_for_phase_mapping() -> None:
         ActionType.TRAITOR_MESSAGE,
     ]
     assert action_types_for_phase(GamePhase.MISSION) == []
+
+
+def test_legal_targets_for_the_wave_b_actions() -> None:
+    env, _ = make_env(players=6, traitors=3, on_trial=True, seer=True)
+    state = env.state
+    traitors = sorted(p for p, r in state.roles.items() if r is Role.TRAITOR)
+    faithful = sorted(p for p, r in state.roles.items() if r is Role.FAITHFUL)
+
+    # Nomination: every living player except the nominator and their
+    # fellow traitors, since a fellow traitor can never be killed.
+    assert legal_targets(state, traitors[0], ActionType.NOMINATE) == faithful
+    assert legal_targets(state, faithful[0], ActionType.NOMINATE) == []
+
+    # Seer check: only the holder, against everyone alive but themselves.
+    assert legal_targets(state, faithful[0], ActionType.SEER_CHECK) == []
+    state.items[faithful[0]] = ["seer"]
+    assert legal_targets(state, faithful[0], ActionType.SEER_CHECK) == [
+        p for p in sorted(state.alive_players) if p != faithful[0]
+    ]
+
+    # The night kill narrows to the shortlist when one is passed, and
+    # stays unchanged without one.
+    shortlist = faithful[:2]
+    assert (
+        legal_targets(
+            state, traitors[0], ActionType.TRAITOR_KILL, shortlist=shortlist
+        )
+        == shortlist
+    )
+    assert set(legal_targets(state, traitors[0], ActionType.TRAITOR_KILL)) == set(
+        faithful
+    )
 
 
 def test_environment_legal_actions_by_phase() -> None:

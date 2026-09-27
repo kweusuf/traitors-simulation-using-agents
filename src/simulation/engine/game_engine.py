@@ -40,6 +40,10 @@ DEFAULT_PLAYER_NAMES = [
     "judy",
 ]
 
+# Fixed award order for mission items: the cycle steps through this
+# order once per award, skipping items that are already held.
+ITEM_ORDER = ("shield", "dagger", "seer")
+
 
 @dataclass(frozen=True)
 class TallyResult:
@@ -75,8 +79,26 @@ class GameEngine:
         self.state = GameState(game_id=sink.game_id)
         self._usage: dict[tuple[str, ActionType], int] = {}
         self._night_choices: list[Action] = []
+        self._nominations: list[Action] = []
+        # The murder shortlist (on_trial): who may be killed this night.
+        # Empty while off or unresolved; cleared every round with the
+        # night choices so a stale shortlist can never leak across rounds.
+        self.murder_shortlist: list[str] = []
         self._pending_recruit: Optional[str] = None
         self.recruits_used = 0
+        # One seeded RNG for the whole game, held as an attribute: role
+        # assignment draws first, item awards draw later, and a second
+        # engine with the same seed reproduces the same draws.
+        self.rng = random.Random(self.seed)
+        # Players who already spent their once-per-game seer check.
+        self.seer_checks_done: set[str] = set()
+        # voter -> tally weight (2 while a spent dagger doubles it).
+        self._vote_weights: dict[str, int] = {}
+        # The round that already awarded an item, so a round with three
+        # missions awards exactly once, and the cycle position of the
+        # last award (index into ITEM_ORDER).
+        self._awarded_round = -1
+        self._award_index = 0
 
     # ------------------------------------------------------------------
     # Lifecycle
@@ -89,7 +111,7 @@ class GameEngine:
         if self._started:
             raise RuntimeError("game already started")
         self._started = True
-        rng = random.Random(self.seed)
+        rng = self.rng
         for pid in self.player_ids:
             self.state.players[pid] = PlayerState(player_id=pid, name=pid.capitalize())
         self.state.alive_players = set(self.player_ids)
@@ -121,7 +143,10 @@ class GameEngine:
     def start_round(self) -> None:
         self.state.round_number += 1
         self.state.votes.clear()
+        self._vote_weights.clear()
         self._night_choices.clear()
+        self._nominations.clear()
+        self.murder_shortlist = []
         self._pending_recruit = None
         self._emit(EventType.ROUND_STARTED)
 
@@ -156,7 +181,13 @@ class GameEngine:
     # Actions
     # ------------------------------------------------------------------
     def submit_action(self, action: Action) -> ValidationResult:
-        result = self.validator.validate(action, self.state, self._usage)
+        result = self.validator.validate(
+            action,
+            self.state,
+            self._usage,
+            shortlist=self.murder_shortlist,
+            seer_used=self.seer_checks_done,
+        )
         if not result.ok:
             self._emit(
                 EventType.ACTION_REJECTED,
@@ -181,15 +212,35 @@ class GameEngine:
             self._record_message(action)
         elif action.action is ActionType.VOTE:
             assert action.target is not None
+            weight = 1
+            if "dagger" in self.state.items.get(action.actor_id, []):
+                # The dagger is spent the first time its holder votes,
+                # and that one vote counts twice in the tally.
+                self._remove_item(action.actor_id, "dagger")
+                weight = 2
+                self._emit(
+                    EventType.DAGGER_USED,
+                    actor=action.actor_id,
+                    payload={"player": action.actor_id},
+                )
             self.state.votes[action.actor_id] = action.target
+            self._vote_weights[action.actor_id] = weight
             self._emit(
                 EventType.VOTE_CAST,
                 actor=action.actor_id,
                 targets=[action.target],
-                payload={"confidence": action.confidence},
+                payload={"confidence": action.confidence, "weight": weight},
             )
         elif action.action is ActionType.TRAITOR_KILL:
             self._night_choices.append(action)
+        elif action.action is ActionType.NOMINATE:
+            self._nominations.append(action)
+        elif action.action is ActionType.SEER_CHECK:
+            # Resolved on acceptance: the answer is a host message only
+            # the holder can read, and the event records who asked whom.
+            assert action.target is not None
+            self.seer_checks_done.add(action.actor_id)
+            self._deliver_seer_answer(action.actor_id, action.target)
         elif action.action is ActionType.RECRUIT:
             # Held until the banishment resolves, so the conversion lands
             # before the win check (see `eliminate`).
@@ -264,8 +315,9 @@ class GameEngine:
     # ------------------------------------------------------------------
     def tally_votes(self) -> TallyResult:
         counts: dict[str, int] = {}
-        for target in self.state.votes.values():
-            counts[target] = counts.get(target, 0) + 1
+        for voter, target in self.state.votes.items():
+            # A spent dagger makes its holder's vote count twice.
+            counts[target] = counts.get(target, 0) + self._vote_weights.get(voter, 1)
         if not counts:
             return TallyResult(counts={}, top=[], tie=False)
         highest = max(counts.values())
@@ -299,7 +351,10 @@ class GameEngine:
             return tally
         if self._votes_repo is not None:
             self._votes_repo.replace_round(
-                self.state.game_id, self.state.round_number, self.state.votes
+                self.state.game_id,
+                self.state.round_number,
+                self.state.votes,
+                weights=self._vote_weights,
             )
         if tally.tie:
             self._pending_recruit = None
@@ -331,8 +386,41 @@ class GameEngine:
                 "counts": counts,
             },
         )
+        if "shield" in self.state.items.get(victim, []):
+            # The shield eats the murder: nobody dies, the shield is
+            # spent, and the traitors' choice stays used (no second pick).
+            self._remove_item(victim, "shield")
+            self._emit(
+                EventType.SHIELD_BLOCKED,
+                actor=victim,
+                targets=[victim],
+                payload={"victim": victim},
+            )
+            return None
         self.eliminate(victim, method="night")
         return victim
+
+    def resolve_nominations(self) -> list[str]:
+        """Freeze the murder shortlist from this round's nominations.
+
+        Runs between the nominations and the kill request so that
+        `legal_targets` only offers shortlist members and the validator
+        can reject a kill outside it.
+        """
+        self.murder_shortlist = sorted(
+            {a.target for a in self._nominations if a.target}
+        )
+        self._emit(
+            EventType.MURDER_SHORTLIST,
+            targets=self.murder_shortlist,
+            payload={
+                "shortlist": self.murder_shortlist,
+                "nominations": {
+                    a.actor_id: a.target for a in self._nominations if a.target
+                },
+            },
+        )
+        return self.murder_shortlist
 
     def eliminate(
         self,
@@ -488,6 +576,95 @@ class GameEngine:
         mission.completed = True
         mission.outcome = success
         self._emit(EventType.MISSION_COMPLETED, payload={"success": success})
+        if self._awarded_round != self.state.round_number:
+            # One item per round, right after the round's first
+            # completed mission (a round may run several missions).
+            self._awarded_round = self.state.round_number
+            self._award_item()
+
+    # ------------------------------------------------------------------
+    # Items (shield, dagger, seer)
+    # ------------------------------------------------------------------
+    def _award_item(self) -> None:
+        """Hand out this round's item with the seeded RNG.
+
+        The mission always succeeds, so the item is the mission's
+        reward. The cycle advances one step per award through
+        `ITEM_ORDER`, skipping any item somebody already holds, so
+        shield, dagger and seer come round in turn (a spent shield or
+        dagger becomes awardable again on a later lap). With no item
+        flag on, or nobody eligible, no draw happens, which keeps
+        default-off games on their original random sequence.
+        """
+        game = self.config.game
+        flags = {"shield": game.shield, "dagger": game.dagger, "seer": game.seer}
+        held = {
+            item for items in self.state.items.values() for item in items
+        }
+        item: Optional[str] = None
+        index = self._award_index
+        for offset in range(len(ITEM_ORDER)):
+            candidate = ITEM_ORDER[(index + offset) % len(ITEM_ORDER)]
+            if flags[candidate] and candidate not in held:
+                item = candidate
+                index = (index + offset) % len(ITEM_ORDER)
+                break
+        if item is None:
+            return  # every enabled item is already out there
+        eligible = sorted(
+            p
+            for p in self.state.alive_players
+            if item not in self.state.items.get(p, [])
+        )
+        if not eligible:
+            return  # nobody left to receive it this round
+        recipient = self.rng.choice(eligible)
+        self._award_index = (index + 1) % len(ITEM_ORDER)
+        self.state.items.setdefault(recipient, []).append(item)
+        self._emit(EventType.ITEM_AWARDED, actor=recipient, payload={"item": item})
+
+    def _remove_item(self, player_id: str, item: str) -> None:
+        held = self.state.items.get(player_id, [])
+        if item in held:
+            held.remove(item)
+
+    def _deliver_seer_answer(self, holder: str, target: str) -> None:
+        """Answer a seer check as a host message only the holder reads.
+
+        The answer rides on a role-private message from `host`, so the
+        router's structural filter hides it from every other player, and
+        the SEER_CHECK event records who asked about whom without
+        restating the answer in its payload.
+        """
+        answer = f"{target} is a {self.state.roles[target].value}"
+        self._emit(
+            EventType.SEER_CHECK,
+            actor=holder,
+            targets=[target],
+            payload={"holder": holder, "target": target},
+        )
+        message = Message(
+            message_id=f"{self.state.game_id}-msg-{self.sink.next_sequence:05d}",
+            sender_id="host",
+            recipients=[holder],
+            channel=Channel.ROLE_PRIVATE,
+            content=answer,
+            round_number=self.state.round_number,
+            phase=self.state.phase.value,
+        )
+        self._emit(
+            EventType.PRIVATE_MESSAGE,
+            actor="host",
+            targets=[holder],
+            payload={
+                "content": message.content,
+                "message_id": message.message_id,
+                "confidence": None,
+                "channel": Channel.ROLE_PRIVATE.value,
+            },
+        )
+        if self.router is not None:
+            self.router.deliver(message)
 
     # ------------------------------------------------------------------
     # Helpers

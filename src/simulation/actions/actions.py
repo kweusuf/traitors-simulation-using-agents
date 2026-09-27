@@ -26,6 +26,10 @@ class ActionType(str, Enum):
     DEFEND = "defend"
     SHARE_INFORMATION = "share_information"
     WITHHOLD_INFORMATION = "withhold_information"
+    # Wave B mechanics (plan section 4): a one-shot private role check
+    # and the on-trial murder nomination.
+    SEER_CHECK = "seer_check"
+    NOMINATE = "nominate"
 
 
 # MVP supports only these actions (spec section 8).
@@ -47,6 +51,8 @@ ACTIONS_REQUIRING_TARGET = frozenset(
         ActionType.ACCUSE,
         ActionType.SHARE_INFORMATION,
         ActionType.WITHHOLD_INFORMATION,
+        ActionType.SEER_CHECK,
+        ActionType.NOMINATE,
     }
 )
 

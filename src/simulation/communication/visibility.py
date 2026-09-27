@@ -27,6 +27,9 @@ class AgentView(StrictModel):
     eliminated_players: list[str]
     public_transcript: list[Message]
     private_conversations: list[Message]
+    # Items this player holds, and only theirs: other players' items
+    # are hidden information, like living roles.
+    items: list[str] = []
     winner: str | None = None
 
     def render(self) -> str:
@@ -52,6 +55,8 @@ class AgentView(StrictModel):
             lines.append(
                 "Eliminated: " + ", ".join(sorted(self.eliminated_players))
             )
+        if self.items:
+            lines.append("Items: " + ", ".join(sorted(self.items)))
         if self.winner:
             lines.append(f"Game over. Winner: {self.winner}")
         return "\n".join(lines)
@@ -90,6 +95,7 @@ class InformationProjector:
                 for m in self._router.visible_to(agent_id)
                 if m.channel in (Channel.PRIVATE, Channel.ROLE_PRIVATE)
             ],
+            items=list(state.items.get(agent_id, [])),
             winner=state.winner,
         )
 

@@ -89,6 +89,28 @@ class PrivateChatPhase:
     name = "private_chat"
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
+        engine = context.engine
+        # The seer check runs first, so the answer is already in the
+        # holder's private messages while they write this phase's chats.
+        # Only a holder who has not used the one-shot check is asked,
+        # so an accepted check never turns into a rejected action.
+        if engine.config.game.seer:
+            requests = [
+                (actor, legal_targets(engine.state, actor, ActionType.SEER_CHECK))
+                for actor in sorted(engine.state.alive_players)
+                if "seer" in engine.state.items.get(actor, [])
+                and actor not in engine.seer_checks_done
+            ]
+            checks = await asyncio.gather(
+                *(
+                    _ask(context, actor, ActionType.SEER_CHECK, targets)
+                    for actor, targets in requests
+                    if targets
+                )
+            )
+            for action in checks:
+                if action is not None:
+                    engine.submit_action(action)
         await _ask_all_alive(context, ActionType.PRIVATE_MESSAGE)
         return None
 
@@ -127,12 +149,14 @@ class EliminationPhase:
 
 
 class TraitorNightPhase:
-    """The traitor council talks, then picks the night victim.
+    """The traitor council talks, nominates, then picks the night victim.
 
     First every living traitor gets one message on the traitor channel
     so they can argue the merits (biggest threat versus most chaos, who
-    takes the blame), then the kill is a majority vote with an
-    earliest-choice tiebreak.
+    takes the blame). With `on_trial` on, they next nominate one player
+    each and the union of those names is the murder shortlist: only a
+    shortlisted player can die tonight. Then the kill is a majority vote
+    with an earliest-choice tiebreak.
     """
 
     name = "traitor_night"
@@ -153,13 +177,37 @@ class TraitorNightPhase:
             for action in council:
                 if action is not None:
                     engine.submit_action(action)
+        # The shortlist is frozen before any kill is requested, so the
+        # kill's legal targets (and the validator) see exactly who may
+        # die tonight.
+        if engine.config.game.on_trial:
+            requests = [
+                (actor, legal_targets(engine.state, actor, ActionType.NOMINATE))
+                for actor in traitors
+            ]
+            nominations = await asyncio.gather(
+                *(
+                    _ask(context, actor, ActionType.NOMINATE, targets)
+                    for actor, targets in requests
+                    if targets
+                )
+            )
+            for action in nominations:
+                if action is not None:
+                    engine.submit_action(action)
+            engine.resolve_nominations()
+        shortlist = engine.murder_shortlist if engine.config.game.on_trial else None
         # Same concurrent decision, submitted in id order so the
         # earliest-choice tiebreak stays deterministic.
         choices = await asyncio.gather(
             *(
                 _ask(context, actor, ActionType.TRAITOR_KILL, targets)
                 for actor in traitors
-                if (targets := legal_targets(engine.state, actor, ActionType.TRAITOR_KILL))
+                if (
+                    targets := legal_targets(
+                        engine.state, actor, ActionType.TRAITOR_KILL, shortlist=shortlist
+                    )
+                )
             )
         )
         for action in choices:

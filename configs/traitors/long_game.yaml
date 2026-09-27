@@ -21,6 +21,13 @@ game:
   finale_traitors: 3
   finale_faithful: 3
   finale_max_votes: 10
+  # Wave B mechanics: missions award one item per round (shield, then
+  # dagger, then seer), and the traitors nominate a murder shortlist so
+  # only those players can die at night.
+  shield: true
+  dagger: true
+  seer: true
+  on_trial: true
   player_names:
     - alice
     - bob

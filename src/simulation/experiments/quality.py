@@ -281,7 +281,9 @@ def analyse(events: list[Event]) -> dict[str, Any]:
         content = str(event.payload.get("content", ""))
         sender = event.actor or ""
         violations = 0
-        if sender:
+        # Only roster players are speakers: a host message (the seer's
+        # answer) is a system line, not a player's speech.
+        if sender and sender in roster:
             by_player.setdefault(sender, []).append(content)
         if content.strip():
             distinct_texts.add(_normalise(content))
