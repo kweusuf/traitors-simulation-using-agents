@@ -193,3 +193,71 @@ def test_phase_registry_covers_configured_phases() -> None:
     registry = env.phases()
     config = GameConfig()  # default ordering
     assert set(config.phases) <= set(registry)
+
+
+# ----------------------------------------------------------------------
+# Turns within a phase are decided concurrently
+# ----------------------------------------------------------------------
+
+
+def counting_callback(engine, delay: float = 0.0):
+    """Callback that tracks how many turns are in flight at once."""
+
+    async def callback(agent_id: str, action_type: ActionType, targets: list[str]):
+        callback.in_flight += 1
+        callback.peak = max(callback.peak, callback.in_flight)
+        try:
+            if delay:
+                await asyncio.sleep(delay)
+            if action_type is ActionType.PUBLIC_MESSAGE:
+                return Action(
+                    action=ActionType.PUBLIC_MESSAGE,
+                    actor_id=agent_id,
+                    content=f"{agent_id} speaks",
+                )
+            if action_type is ActionType.PRIVATE_MESSAGE:
+                target = targets[0]
+                return Action(
+                    action=ActionType.PRIVATE_MESSAGE,
+                    actor_id=agent_id,
+                    target=target,
+                    content=f"{agent_id} whispers to {target}",
+                )
+            return Action(action=action_type, actor_id=agent_id, target=targets[0])
+        finally:
+            callback.in_flight -= 1
+
+    callback.in_flight = 0
+    callback.peak = 0
+    return callback
+
+
+def test_public_discussion_asks_every_player_at_once() -> None:
+    env, _ = make_env(players=4, traitors=1)
+    engine = env.engine
+    callback = counting_callback(engine, delay=0.02)
+    context = PhaseContext(engine=engine, config=env.config, request_action=callback)
+
+    engine.begin_phase(GamePhase.PUBLIC_DISCUSSION)
+    asyncio.run(env.phases()["public_discussion"].run(context))
+
+    assert callback.peak == len(engine.state.alive_players)
+    actors = [
+        e.actor
+        for e in engine.sink.events
+        if e.type is EventType.PUBLIC_MESSAGE
+    ]
+    assert actors == sorted(actors)  # submissions stay in id order
+
+
+def test_night_kill_asks_traitors_concurrently() -> None:
+    env, _ = make_env(players=6, traitors=3)
+    engine = env.engine
+    callback = counting_callback(engine, delay=0.02)
+    context = PhaseContext(engine=engine, config=env.config, request_action=callback)
+
+    engine.begin_phase(GamePhase.TRAITOR_NIGHT)
+    result = asyncio.run(env.phases()["traitor_night"].run(context))
+
+    assert callback.peak == 3
+    assert result["victim"] is not None

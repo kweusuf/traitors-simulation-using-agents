@@ -21,6 +21,7 @@ import yaml
 from simulation.agents.agent import Agent
 from simulation.agents.goals import Goals
 from simulation.agents.persona import Persona, load_persona_bundle
+from simulation.agents.prompts import PromptBuilder
 from simulation.agents.runtime import AgentRuntime
 from simulation.engine.phase_engine import PhaseContext, PhaseEngine
 from simulation.engine.state import GameState, Role
@@ -179,6 +180,9 @@ class GameRunner:
             agents=agents,
             gateway=gateway,
             model_config=config.llm.to_model_config(),
+            prompt_builder=PromptBuilder(
+                transcript_limit=config.communication.transcript_messages_per_prompt
+            ),
             telemetry=telemetry,
         )
         context = PhaseContext(

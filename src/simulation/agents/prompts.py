@@ -28,6 +28,13 @@ ACTION_JSON_HINT = (
 )
 
 
+def _window(messages, limit: int) -> tuple[list, int]:
+    """Newest `limit` entries plus how many were dropped (0 = no limit)."""
+    if not limit or len(messages) <= limit:
+        return list(messages), 0
+    return list(messages[-limit:]), len(messages) - limit
+
+
 def action_json_hint(action_type: ActionType) -> str:
     """Example JSON for one action type.
 
@@ -52,6 +59,17 @@ def action_json_hint(action_type: ActionType) -> str:
 
 
 class PromptBuilder:
+    """Builds prompts, optionally showing only the tail of the transcript.
+
+    `transcript_limit` bounds how many transcript lines each prompt
+    carries (0 keeps everything). Late-game prompts reach tens of
+    thousands of characters and every one of them is re-evaluated on
+    every call, so this is the main lever on call latency.
+    """
+
+    def __init__(self, transcript_limit: int = 0) -> None:
+        self.transcript_limit = transcript_limit
+
     def build_system(
         self,
         agent_id: str,
@@ -125,20 +143,33 @@ class PromptBuilder:
             )
 
         if view.public_transcript:
+            shown, dropped = _window(
+                view.public_transcript, self.transcript_limit
+            )
             lines.append("")
             lines.append("Public transcript:")
-            for msg in view.public_transcript:
+            for msg in shown:
                 lines.append(f"  [{msg.round_number}] {msg.sender_id}: {msg.content}")
+            if dropped:
+                lines.append(
+                    f"  (earlier {dropped} public messages are omitted; "
+                    "eliminations are listed above)"
+                )
         if view.private_conversations:
+            shown, dropped = _window(
+                view.private_conversations, self.transcript_limit
+            )
             lines.append("")
             lines.append("Your private conversations:")
-            for msg in view.private_conversations:
+            for msg in shown:
                 peers = ", ".join(
                     r for r in msg.recipients if r != view.agent_id
                 ) or "everyone"
                 lines.append(
                     f"  [{msg.round_number}] {msg.sender_id} -> {peers}: {msg.content}"
                 )
+            if dropped:
+                lines.append(f"  (earlier {dropped} private messages are omitted)")
         if memory_items:
             lines.append("")
             lines.append("Your recent memories:")

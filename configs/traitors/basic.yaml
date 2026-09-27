@@ -23,6 +23,7 @@ phases:
 communication:
   public_messages_per_agent: 1
   private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40   # 0 keeps the whole transcript
 
 # Model selection and model details are config-driven (spec sections
 # 19 and 22). Machine-specific endpoints (e.g. a remote Ollama host)

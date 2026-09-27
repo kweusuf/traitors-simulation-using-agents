@@ -76,6 +76,10 @@ class GameSettings(StrictModel):
 class CommunicationSettings(StrictModel):
     public_messages_per_agent: int = Field(default=1, ge=0)
     private_messages_per_agent: int = Field(default=2, ge=0)
+    # How many transcript lines a prompt carries (newest last, 0 = all).
+    # The full transcript grows past forty thousand characters in a long
+    # game, and every extra token is prompt-evaluation time per call.
+    transcript_messages_per_prompt: int = Field(default=40, ge=0)
 
 
 class LLMSettings(StrictModel):

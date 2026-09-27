@@ -8,6 +8,7 @@ language themselves.
 
 from __future__ import annotations
 
+import asyncio
 from typing import Optional
 
 from simulation.actions.actions import ActionType
@@ -34,12 +35,29 @@ async def _ask(
 
 
 async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None:
-    """One action per alive player, in deterministic id order."""
+    """One action per alive player.
+
+    Turns are decided concurrently, capped by the gateway's
+    `max_concurrency`, instead of one model call after another: asking
+    twenty players serially is what made a round take an hour. Actions
+    are submitted afterwards in id order, and every prompt is built
+    from the phase-start state, so the event log keeps exactly the same
+    deterministic sequence the serial version produced.
+    """
     engine = context.engine
     allow_self = engine.config.game.allow_self_vote
-    for actor in sorted(engine.state.alive_players):
-        targets = legal_targets(engine.state, actor, action_type, allow_self)
-        action = await _ask(context, actor, action_type, targets)
+    actions = await asyncio.gather(
+        *(
+            _ask(
+                context,
+                actor,
+                action_type,
+                legal_targets(engine.state, actor, action_type, allow_self),
+            )
+            for actor in sorted(engine.state.alive_players)
+        )
+    )
+    for action in actions:
         if action is not None:
             engine.submit_action(action)
 
@@ -119,11 +137,16 @@ class TraitorNightPhase:
             p for p in engine.state.alive_players
             if engine.state.roles.get(p) is Role.TRAITOR
         )
-        for actor in traitors:
-            targets = legal_targets(engine.state, actor, ActionType.TRAITOR_KILL)
-            if not targets:
-                continue
-            action = await _ask(context, actor, ActionType.TRAITOR_KILL, targets)
+        # Same concurrent decision, submitted in id order so the
+        # earliest-choice tiebreak stays deterministic.
+        choices = await asyncio.gather(
+            *(
+                _ask(context, actor, ActionType.TRAITOR_KILL, targets)
+                for actor in traitors
+                if (targets := legal_targets(engine.state, actor, ActionType.TRAITOR_KILL))
+            )
+        )
+        for action in choices:
             if action is not None:
                 engine.submit_action(action)
         victim = engine.resolve_night()

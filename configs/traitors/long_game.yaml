@@ -60,6 +60,10 @@ phases:
 communication:
   public_messages_per_agent: 1
   private_messages_per_agent: 2
+  # Prompts carry only the newest transcript lines. The full late-game
+  # transcript is ~168k characters (~31k tokens) and is re-evaluated on
+  # every single call, which is what made rounds take over an hour.
+  transcript_messages_per_prompt: 40
 
 # Same model settings as basic.yaml; point at a remote host with
 # `--base-url http://<ip>:11434` on the CLI.
@@ -74,7 +78,9 @@ llm:
   # unloads after ~5 idle minutes, and a reload can take a while.
   timeout_seconds: 300
   retries: 3              # extra attempts for timeouts and 5xx
-  max_concurrency: 2
+  # Measured on the remote host: 4 concurrent calls give ~3.4x the
+  # throughput of serial calls (turns within a phase run together).
+  max_concurrency: 4
   options: {}
 
 seed: 42

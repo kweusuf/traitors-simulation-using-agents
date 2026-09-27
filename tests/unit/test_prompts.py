@@ -203,3 +203,29 @@ def test_view_labels_role_information_as_private() -> None:
         in rendered
     )
     assert "Known roles" not in rendered
+
+
+def test_transcript_window_keeps_only_the_newest_messages() -> None:
+    messages = [
+        Message(
+            message_id=f"m{n}",
+            sender_id="eve",
+            recipients=[],
+            channel=Channel.PUBLIC,
+            content=f"public line {n}",
+        )
+        for n in range(10)
+    ]
+    view = make_view(public_transcript=messages, private_conversations=[])
+
+    unlimited = PromptBuilder().build_user(view, ActionType.PUBLIC_MESSAGE, [])
+    assert "public line 0" in unlimited
+    assert "omitted" not in unlimited
+
+    capped = PromptBuilder(transcript_limit=3).build_user(
+        view, ActionType.PUBLIC_MESSAGE, []
+    )
+    assert "public line 9" in capped
+    assert "public line 7" in capped
+    assert "public line 6" not in capped
+    assert "earlier 7 public messages are omitted" in capped
