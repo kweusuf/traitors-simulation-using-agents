@@ -22,12 +22,18 @@ from simulation.experiments.ledger import is_holdout_seed
 from simulation.experiments.quality import analyse as analyse_quality
 from simulation.experiments.replay import ReplayState, load_events, render_transcript
 from simulation.experiments.runner import GameRunner, model_identity
+from simulation.experiments.season import (
+    benchmark_run,
+    load_season,
+    render_benchmark,
+)
 from simulation.persistence.database import Database
 from simulation.persistence.event_log import Event, EventType
 from simulation.persistence.repositories import SnapshotRepository
 
 DEFAULT_RUNS_DIR = "runs"
 DEFAULT_DB = "runs/simulation.db"
+DEFAULT_SEASON = "configs/seasons/the-traitors-uk-s01.yaml"
 
 
 # ----------------------------------------------------------------------
@@ -489,6 +495,31 @@ def cmd_diagnose(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_benchmark(args: argparse.Namespace) -> int:
+    """Score one finished run against a real season's ground truth."""
+    run_dir = open_run_dir(args.game_id, args.runs_dir)
+    season = load_season(args.season)
+    events = load_events(run_dir / "events.jsonl")
+    result = benchmark_run(events, season)
+
+    if args.json:
+        print(
+            json.dumps(
+                {"game_id": args.game_id, "season_id": season.id, **result},
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
+
+    # The file carries the provenance (the season name and its sources);
+    # the terminal gets the same table without that block.
+    print(render_benchmark(args.game_id, season, result, provenance=False), end="")
+    report = render_benchmark(args.game_id, season, result, provenance=True)
+    (run_dir / "benchmark.md").write_text(report, encoding="utf-8")
+    return 0
+
+
 def cmd_list_games(args: argparse.Namespace) -> int:
     rows = []
     for events_path in sorted(Path(args.runs_dir).glob("*/events.jsonl")):
@@ -631,6 +662,19 @@ def build_parser() -> argparse.ArgumentParser:
     diagnose.add_argument("game_id")
     diagnose.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
     diagnose.set_defaults(func=cmd_diagnose)
+
+    benchmark = sub.add_parser(
+        "benchmark", help="score a run against a real season's ground truth"
+    )
+    benchmark.add_argument("game_id")
+    benchmark.add_argument(
+        "--season", default=DEFAULT_SEASON, help="ground-truth season YAML"
+    )
+    benchmark.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
+    benchmark.add_argument(
+        "--json", action="store_true", help="dump the structured result"
+    )
+    benchmark.set_defaults(func=cmd_benchmark)
 
     return parser
 
