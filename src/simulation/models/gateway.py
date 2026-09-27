@@ -26,6 +26,12 @@ class LLMGateway:
         self.total_latency_ms = 0.0
         self.total_tokens = 0
 
+    @property
+    def provider(self) -> LLMProvider:
+        """The wrapped provider, so callers can read its own counters
+        (e.g. how many transport retries it spent)."""
+        return self._provider
+
     async def generate(
         self,
         messages: list[ChatMessage],

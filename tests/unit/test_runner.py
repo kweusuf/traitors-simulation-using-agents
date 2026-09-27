@@ -207,3 +207,60 @@ def test_model_identity_shape() -> None:
     assert label == "ollama/m:1"
     assert parameters["max_tokens"] == 512
     assert parameters["options"] == {}
+
+
+# ----------------------------------------------------------------------
+# LLM telemetry and quality metrics (Phase 15)
+# ----------------------------------------------------------------------
+
+
+def test_metrics_carry_per_call_telemetry(tmp_path) -> None:
+    runner = make_runner(tmp_path)
+    result = runner.run(game_id="game-001", seed=42)
+    llm = result.metrics["llm"]
+
+    for key in (
+        "input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "token_reported_calls",
+        "prompt_chars_total",
+        "latency_ms",
+        "by_action_type",
+        "failed_calls",
+        "transport_retries",
+        "failures",
+        "provider_calls",
+        "retries",
+        "model",
+    ):
+        assert key in llm, f"missing llm metric {key}"
+    assert llm["calls"] > 0
+    assert llm["provider_calls"] == llm["calls"]  # the fake provider never fails
+    assert llm["prompt_chars_total"] > 0
+    assert llm["total_tokens"] == llm["input_tokens"] + llm["output_tokens"]
+    assert "public_message" in llm["by_action_type"]
+
+    # The per-call log lives inside the run and matches the summary.
+    lines = (result.run_dir / "llm_calls.jsonl").read_text().splitlines()
+    assert len(lines) == llm["calls"]
+    first = json.loads(lines[0])
+    assert first["agent_id"]
+    assert first["action_type"]
+    assert first["ok"] is True
+    assert first["attempt"] == 1
+
+
+def test_metrics_carry_quality_signals(tmp_path) -> None:
+    runner = make_runner(tmp_path)
+    result = runner.run(game_id="game-001", seed=42)
+    quality = result.metrics["quality"]
+
+    assert quality["messages_checked"] > 0
+    assert 0.0 <= quality["hallucination_score"] <= 1.0
+    for section in ("hallucination", "secrecy", "diversity", "parsing"):
+        assert section in quality
+    # The fake provider writes templated messages: no contradictions and
+    # no role declarations are expected here.
+    assert quality["hallucination_score"] == 0.0
+    assert quality["secrecy"]["flags_total"] == 0

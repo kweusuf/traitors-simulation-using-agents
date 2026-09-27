@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Optional
 
 from simulation.experiments.config import GameConfig, load_config
+from simulation.experiments.quality import analyse as analyse_quality
 from simulation.experiments.replay import ReplayState, load_events, render_transcript
 from simulation.experiments.runner import GameRunner, model_identity
 from simulation.persistence.database import Database
@@ -263,6 +264,112 @@ def cmd_snapshot(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_metrics(args: argparse.Namespace) -> int:
+    """The360 view of one run: LLM operations plus quality signals."""
+    run_dir = open_run_dir(args.game_id, args.runs_dir)
+    metrics_path = run_dir / "metrics.json"
+
+    if not metrics_path.exists():
+        # An unfinished run has no metrics.json; never invent one, but
+        # its quality signals can still be read straight from events.
+        if not args.recompute:
+            raise ValueError(
+                f"no metrics.json in {run_dir}/; the run has not finished yet"
+            )
+        quality = analyse_quality(load_events(run_dir / "events.jsonl"))
+        print(f"{args.game_id} never finished, so metrics.json is missing.")
+        print("Quality computed from events.jsonl (not stored):")
+        print(json.dumps(quality, indent=2, sort_keys=True))
+        return 0
+
+    if args.recompute:
+        events = load_events(run_dir / "events.jsonl")
+        metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+        metrics["quality"] = analyse_quality(events)
+        metrics_path.write_text(
+            json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        print(f"recomputed quality in {metrics_path}")
+
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+
+    if args.json:
+        print(json.dumps(metrics, indent=2, sort_keys=True))
+        return 0
+
+    llm = metrics.get("llm", {})
+    quality = metrics.get("quality", {})
+    print(f"Game {args.game_id}  experiment {metrics.get('experiment_id', '?')}")
+    print(
+        f"Model: {metrics.get('model', '?')}  seed {metrics.get('random_seed', '?')}"
+    )
+    print(
+        f"Outcome: winner={metrics.get('winner')} rounds={metrics.get('rounds')} "
+        f"finale={metrics.get('finale')} solo={metrics.get('solo_traitor_win')} "
+        f"duration={metrics.get('duration_seconds')}s"
+    )
+
+    print("LLM operations:")
+    print(
+        f"  calls: {llm.get('calls')} (provider ok: {llm.get('provider_calls')}), "
+        f"failed: {llm.get('failed_calls')}, transport retries: {llm.get('transport_retries')}, "
+        f"parse retry calls: {llm.get('parse_retry_calls')}"
+    )
+    print(
+        f"  tokens: in={llm.get('input_tokens')} out={llm.get('output_tokens')} "
+        f"total={llm.get('total_tokens')} "
+        f"(reported on {llm.get('token_reported_calls')} of {llm.get('calls')} calls, "
+        f"avg in={llm.get('avg_input_tokens')} avg out={llm.get('avg_output_tokens')})"
+    )
+    latency = llm.get("latency_ms", {})
+    print(
+        "  latency ms: "
+        f"avg={latency.get('avg')} p50={latency.get('p50')} "
+        f"p95={latency.get('p95')} max={latency.get('max')} "
+        f"total={latency.get('total')}"
+    )
+    for action, stats in (llm.get("by_action_type") or {}).items():
+        print(
+            f"    {action}: calls={stats['calls']} failed={stats['failed']} "
+            f"in={stats['input_tokens']} out={stats['output_tokens']}"
+        )
+    for failure in (llm.get("failures") or [])[:5]:
+        print(f"    failed turn: {failure['agent_id']} {failure['action_type']}: {failure['error'][:80]}")
+
+    if not quality:
+        print("Quality: not recorded for this run (recompute with --recompute)")
+        return 0
+    hallucination = quality.get("hallucination", {})
+    secrecy = quality.get("secrecy", {})
+    diversity = quality.get("diversity", {})
+    parsing = quality.get("parsing", {})
+    print(
+        f"Quality: hallucination_score={quality.get('hallucination_score')} "
+        f"over {quality.get('messages_checked')} messages"
+    )
+    print(
+        f"  hallucination: contradictions={hallucination.get('messages_with_contradictions')} "
+        f"(fake eliminations={hallucination.get('fabricated_eliminations')}, "
+        f"alive after elim={hallucination.get('alive_after_elimination')}, "
+        f"invented rounds={hallucination.get('invented_rounds')})"
+    )
+    print(
+        f"  secrecy: traitor declarations={secrecy.get('traitor_public_declarations')} "
+        f"affiliation phrases={secrecy.get('traitor_affiliation_phrases')} "
+        f"named teammates={secrecy.get('traitor_named_teammates')} "
+        f"faithful claiming traitor={secrecy.get('false_role_claims')}"
+    )
+    print(
+        f"  diversity: duplicates={diversity.get('duplicate_messages')} "
+        f"rate={diversity.get('duplicate_rate')}"
+    )
+    print(
+        f"  parsing: rejected={parsing.get('rejected_actions')} "
+        f"unparseable={parsing.get('unparseable_actions')}"
+    )
+    return 0
+
+
 def cmd_list_games(args: argparse.Namespace) -> int:
     rows = []
     for events_path in sorted(Path(args.runs_dir).glob("*/events.jsonl")):
@@ -370,6 +477,19 @@ def build_parser() -> argparse.ArgumentParser:
     snapshot.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
     snapshot.add_argument("--db", default=DEFAULT_DB)
     snapshot.set_defaults(func=cmd_snapshot)
+
+    metrics = sub.add_parser(
+        "metrics", help="show a run's LLM operations and quality signals"
+    )
+    metrics.add_argument("game_id")
+    metrics.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
+    metrics.add_argument(
+        "--recompute",
+        action="store_true",
+        help="rebuild the quality block from events.jsonl (for older runs)",
+    )
+    metrics.add_argument("--json", action="store_true", help="dump raw metrics.json")
+    metrics.set_defaults(func=cmd_metrics)
 
     listing = sub.add_parser("list-games", help="list games under the runs directory")
     listing.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)

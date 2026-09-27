@@ -135,11 +135,15 @@ class OllamaProvider:
         if data.get("error"):
             raise OllamaError(f"Ollama error: {data['error']}")
         tokens = data.get("eval_count")
+        prompt_tokens = data.get("prompt_eval_count")
         return LLMResponse(
             content=message["content"],
             model=str(data.get("model", config.name)),
             latency_ms=(time.monotonic() - started) * 1000.0,
             tokens_used=int(tokens) if isinstance(tokens, int) else None,
+            input_tokens=(
+                int(prompt_tokens) if isinstance(prompt_tokens, int) else None
+            ),
         )
 
 

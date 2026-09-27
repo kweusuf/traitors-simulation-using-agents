@@ -37,7 +37,8 @@ class LLMResponse(StrictModel):
     content: str
     model: str = ""
     latency_ms: Optional[float] = None
-    tokens_used: Optional[int] = None
+    tokens_used: Optional[int] = None  # output tokens
+    input_tokens: Optional[int] = None  # prompt tokens
 
 
 class LLMProvider(Protocol):

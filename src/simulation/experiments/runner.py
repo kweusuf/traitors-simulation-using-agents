@@ -27,6 +27,8 @@ from simulation.engine.state import GameState, Role
 from simulation.environments.traitors.game import TraitorsEnvironment
 from simulation.experiments.config import GameConfig, LLMSettings
 from simulation.experiments.observability import NullTracer, build_tracer
+from simulation.experiments.quality import analyse as analyse_quality
+from simulation.experiments.telemetry import TelemetryRecorder
 from simulation.experiments.replay import build_transcript, render_transcript
 from simulation.models.fake import PromptScriptProvider
 from simulation.models.gateway import LLMGateway
@@ -56,6 +58,7 @@ ARTIFACTS = (
     "transcript.json",
     "transcript.txt",
     "metrics.json",
+    "llm_calls.jsonl",  # one line per model call: the run's LLM ops log
 )
 
 EventObserver = Callable[[Event], None]
@@ -171,10 +174,12 @@ class GameRunner:
         agents = self._build_agents(env)
         provider = self.provider or build_provider(config.llm)
         gateway = LLMGateway(provider, max_concurrency=config.llm.max_concurrency)
+        telemetry = TelemetryRecorder(config.llm.model, run_dir / "llm_calls.jsonl")
         runtime = AgentRuntime(
             agents=agents,
             gateway=gateway,
             model_config=config.llm.to_model_config(),
+            telemetry=telemetry,
         )
         context = PhaseContext(
             engine=env.engine,
@@ -197,6 +202,7 @@ class GameRunner:
             events=events,
             gateway=gateway,
             provider=provider,
+            telemetry=telemetry,
             elapsed=elapsed,
         )
         self._write_artifacts(
@@ -327,6 +333,7 @@ class GameRunner:
         events: list[Event],
         gateway: LLMGateway,
         provider: LLMProvider,
+        telemetry: TelemetryRecorder,
         elapsed: float,
     ) -> dict[str, Any]:
         """Run metrics plus the experiment identity (spec sections 27, 34)."""
@@ -397,12 +404,20 @@ class GameRunner:
             "rejected_actions": by_type.get(EventType.ACTION_REJECTED.value, 0),
             "llm": {
                 "provider": self.config.llm.provider,
-                "calls": gateway.calls,
+                "model": self.config.llm.model,
+                # Gateway counters: successful provider calls and the
+                # transport retries it spent.
+                "provider_calls": gateway.calls,
                 "retries": getattr(provider, "retries", 0),
-                "latency_ms_total": round(gateway.total_latency_ms, 1),
-                "tokens": gateway.total_tokens,
                 "in_flight_peak": gateway.in_flight_peak,
+                "latency_ms_total": round(gateway.total_latency_ms, 1),
+                "tokens": gateway.total_tokens,  # legacy key: output tokens
+                # Per-call telemetry: tokens in and out, latency
+                # percentiles, failures and per-action breakdown.
+                **telemetry.summary(),
             },
+            # Quality signals computed from this run's own messages.
+            "quality": analyse_quality(events),
         }
 
     def _write_artifacts(

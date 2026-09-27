@@ -58,8 +58,16 @@ events.jsonl      append-only event log, the replay source of truth
 game.json         final game state
 transcript.json   structured messages and eliminations
 transcript.txt    human-readable narrative
-metrics.json      outcome, activity counts, experiment identity
+metrics.json      outcome, experiment identity, LLM ops, quality signals
+llm_calls.jsonl   one line per model call: tokens in/out, latency, retries
 ```
+
+`metrics.json` gives each run a 360 degree view of the model
+operations: input and output tokens, latency percentiles, transport
+retries, per-action call breakdown, failed turns, and a quality block
+(hallucination score against the game record, secrecy violations,
+duplicate messages, parse failures) computed from that run's own
+messages.
 
 ## Inspect
 
@@ -69,6 +77,9 @@ python -m simulation replay game-001            # reconstruct from events
 python -m simulation replay game-001 --json
 python -m simulation inspect game-001 --agent alice   # one agent's view
 python -m simulation snapshot game-001 --round 1      # stored snapshot
+python -m simulation metrics game-001           # LLM ops + quality view
+python -m simulation metrics game-001 --json    # raw metrics.json
+python -m simulation metrics game-001 --recompute  # rebuild quality from events
 ```
 
 ## Test

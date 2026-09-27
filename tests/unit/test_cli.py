@@ -210,3 +210,65 @@ def test_progress_printer_reports_rejected_actions(capsys) -> None:
     )
     out = capsys.readouterr().out
     assert "alice: action rejected (self-vote not allowed)" in out
+
+
+# ----------------------------------------------------------------------
+# metrics command (LLM ops + quality, 360 view of a run)
+# ----------------------------------------------------------------------
+
+
+def play_fake(tmp_path, capsys) -> Path:
+    code, _ = run_cli(
+        ["run", CONFIG, "--provider", "fake", "--seed", "42", "--quiet"]
+        + base_args(tmp_path),
+        capsys,
+    )
+    assert code == 0
+    return tmp_path / "runs"
+
+
+def test_metrics_command_shows_llm_and_quality(tmp_path, capsys) -> None:
+    runs = play_fake(tmp_path, capsys)
+    code, out = run_cli(["metrics", "game-001", "--runs-dir", str(runs)], capsys)
+
+    assert code == 0
+    assert "LLM operations:" in out
+    assert "tokens: in=" in out
+    assert "latency ms:" in out
+    assert "public_message: calls=" in out
+    assert "Quality: hallucination_score=" in out
+    assert "secrecy: traitor declarations=" in out
+
+
+def test_metrics_recompute_restores_a_missing_quality_block(tmp_path, capsys) -> None:
+    runs = play_fake(tmp_path, capsys)
+    metrics_path = runs / "game-001" / "metrics.json"
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    del metrics["quality"]
+    metrics_path.write_text(json.dumps(metrics), encoding="utf-8")
+
+    code, out = run_cli(
+        ["metrics", "game-001", "--recompute", "--runs-dir", str(runs)], capsys
+    )
+    assert code == 0
+    assert "recomputed quality" in out
+    restored = json.loads(metrics_path.read_text(encoding="utf-8"))
+    assert "quality" in restored
+    assert restored["quality"]["messages_checked"] > 0
+
+
+def test_metrics_on_an_unfinished_run_never_invents_metrics(tmp_path, capsys) -> None:
+    runs = play_fake(tmp_path, capsys)
+    metrics_path = runs / "game-001" / "metrics.json"
+    metrics_path.unlink()
+
+    code, _ = run_cli(["metrics", "game-001", "--runs-dir", str(runs)], capsys)
+    assert code == 1
+
+    code, out = run_cli(
+        ["metrics", "game-001", "--recompute", "--runs-dir", str(runs)], capsys
+    )
+    assert code == 0
+    assert "never finished" in out
+    assert "hallucination_score" in out
+    assert not metrics_path.exists()  # no fake artifact for a dead run
