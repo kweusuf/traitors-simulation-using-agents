@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-23 complete, 329 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-27 complete, 378 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -49,6 +49,10 @@ and its commit lands.
 | 21 | Benchmark a run against a real season | complete | `9d9f658` |
 | 22 | Season replay: pinned traitors, cast personas, ground truth | complete | `d9317b5` |
 | 23 | Benchmark overlaps and index-aligned eliminations | complete | `f7bb705` |
+| 24 | Seasonal cadence for murders and banishments | complete | `cf9c984` |
+| 25 | Endgame end-or-banish vote with blind finale | complete | `c28d39c` |
+| 26 | Recruitment as a choice with ultimatum | complete | `53b5b89` |
+| 27 | Endgame trigger at the final five | complete | `pending` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -574,6 +578,36 @@ two banishments and a trial episode that replaced the murder.
 from 0.2302 to 0.3031, with banishment overlap 0.5714 and murder overlap
 0.5556.
 
+### Phases 24 to 27: making the events look like a real season
+
+Four changes so the run's event flow matches how the show actually
+plays, each behind a config flag defaulting off.
+
+- [x] **Cadence (24).** `quiet_murder_rounds` and `quiet_banishment_rounds`
+  skip a night or a round table, emitting `MURDER_SKIPPED` and
+  `BANISHMENT_SKIPPED`. The season replay uses round 1 for no murder and
+  round 8 for no banishment, mirroring Series 1, and the long game never
+  murders on night one.
+- [x] **Endgame vote (25).** `endgame_vote` turns the finale into the
+  show's loop: a unanimous `end` finishes the game, any single `banish`
+  forces another banishment, and it auto-ends at two players. Parity no
+  longer ends the game during such a finale. `blind_finale_banishments`
+  hides finale-time banishments from living players until the game ends.
+- [x] **Recruitment as a choice (26).** `recruit_choice` makes the
+  traitors vote recruit or murder, with a tie falling to murder; the
+  chosen target answers `accept` or `decline`; a decline wastes the
+  night, unless the offer came from a lone traitor, in which case it is
+  an ultimatum and the target is murdered instead.
+- [x] **Endgame trigger (27).** `finale_total` starts the finale at that
+  many living players whatever the split, because the faction pair
+  cannot fire once recruitment keeps the traitor count topped up. The
+  season replay uses five, as the show does.
+
+**Verification:** 378 tests green. A fake season game reaches the finale
+at five alive, runs end votes, and ends by auto-end at two players, with
+the faithful having banished three of their own while holding a four to
+one majority.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -622,3 +656,4 @@ from 0.2302 to 0.3031, with banishment overlap 0.5714 and murder overlap
 | 2026-09-27 | Phase 22 complete: pinned traitors, 22 UK Series 1 personas, season ground truth and the season_uk_s01 config; 322 tests passed. Live season run started as game-008. |
 | 2026-09-28 | Season replay game-008 finished: traitor win, wilf alone against one faithful, 841 calls, 4h 33m, hallucination 0, duplication 0.433. Benchmark against UK Series 1: overall 0.2302 positional, 0.3031 after the overlap work. |
 | 2026-09-28 | Phase 23 complete: benchmark set overlaps, elimination-index alignment and shield-blocked attempts excluded from murders; 329 tests passed. |
+| 2026-09-28 | Phases 24 to 27 complete: seasonal cadence (no murder on night one, quiet rounds), the end-or-banish endgame vote with blind finale banishments, recruitment as a choice with a lone-traitor ultimatum, and a finale trigger based on the living count; 378 tests passed. |

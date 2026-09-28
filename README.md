@@ -41,12 +41,18 @@ Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 {ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
 
 Game rules are config-driven as well: `game.players`, `game.traitors`,
-`game.max_rounds`, the `phases:` ordering, recruitment
-(`game.recruit_on_banish` converts a living faithful player when the
-round table banishes a traitor; `game.max_recruits` caps it, 0 means
-no cap), and the finale (`game.finale_traitors` / `game.finale_faithful`
-stop normal play at that split and let rapid-fire voting decide;
-`game.finale_max_votes` bounds a vote that keeps tying). Traitors carry
+`game.max_rounds`, the `phases:` ordering, seasonal cadence
+(`quiet_murder_rounds` and `quiet_banishment_rounds` skip a night or a
+round table, the show never murders on night one), the endgame
+(`finale_total` starts the finale at that many living players whatever
+the split, `finale_traitors`/`finale_faithful` still work as a pair,
+`endgame_vote` adds the end-or-banish-again vote and
+`blind_finale_banishments` hides finale-time banishments until the game
+ends), recruitment
+(`game.recruit_choice` makes the traitors choose recruit or murder,
+with the offer answered by the target and a lone traitor able to force
+it as an ultimatum; `game.recruit_on_banish` is the older automatic
+conversion; `game.max_recruits` caps how many times it can happen). Traitors carry
 a seeded solo or team ambition: they can win alone as the last traitor
 standing or together as a team. Before each night kill the living
 traitors get one message on a channel no faithful can read, to argue
