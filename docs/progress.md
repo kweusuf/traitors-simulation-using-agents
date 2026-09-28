@@ -53,7 +53,7 @@ and its commit lands.
 | 25 | Endgame end-or-banish vote with blind finale | complete | `c28d39c` |
 | 26 | Recruitment as a choice with ultimatum | complete | `53b5b89` |
 | 27 | Endgame trigger at the final five | complete | `26a2550` |
-| 28 | Hosted debate clock (audit fix, phase 1) | complete | `pending` (this doc) |
+| 28 | Hosted debate clock (audit fix, phase 1) | complete | `6b8dfe2` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
