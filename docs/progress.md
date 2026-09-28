@@ -54,6 +54,10 @@ and its commit lands.
 | 26 | Recruitment as a choice with ultimatum | complete | `53b5b89` |
 | 27 | Endgame trigger at the final five | complete | `26a2550` |
 | 28 | Hosted debate clock (audit fix, phase 1) | complete | `6b8dfe2` |
+| 29 | Round-table nomination, rebuttal, revote (audit fix, phase 2) | pending | `pending` |
+| 30 | Sequential traitor council (audit fix, phase 3) | pending | `pending` |
+| 31 | Private chats with pair history (audit fix, phase 4) | pending | `pending` |
+| 32 | Conflict personas and clash metrics (audit fix, phase 5) | pending | `pending` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -652,6 +656,28 @@ validator limit with and without the clock, quiet-round coexistence, the
 rendered transcript, and a full scripted game. A fake run of the basic
 config with the clock on produced 4 warnings, 4 closes, 44 public
 messages and zero rejected actions across all seven artifacts.
+
+### Remaining audit-fix phases (29 to 32): scope and estimate
+
+Four phases left from
+`docs/2026-09-28-rounds-vs-season-audit.md`. Estimates assume the same
+rhythm as phase 28 (one session per phase, tests and commit inside the
+session) and are effort, not calendar, commitments: each phase stops at
+its checkpoint for explicit approval before the next starts.
+
+| Phase | Audit item | Scope | Estimate |
+|-------|-----------|-------|----------|
+| 29 | Audit fix, phase 2 | Round-table nomination tally, defense messages, timed rebuttal, restricted revote on ties, secrecy carve-out for naming suspects with reasons. New events, prompt text, config already staged (`nomination_enabled`, `revote_enabled`) | 1 session (largest of the four: touches voting, prompts, and the validator) |
+| 30 | Audit fix, phase 3 | Sequential traitor council: round 1 proposals, round 2 hold-or-switch with reasons, majority of final picks wins instead of the earliest-submission tiebreak | 1 session (small: `TraitorNightPhase` plus one resolution helper) |
+| 31 | Audit fix, phase 4 | Private chats carry the pair's own recent messages in the prompt; per-pair counters in the quality metrics | 1 session (small: projector or prompt window plus a metrics block) |
+| 32 | Audit fix, phase 5 | Conflict personas (assertiveness and tunnel-vision weights from the Series 1 ground truth) plus clash metrics: accusation rate, revote stubbornness, council switch rate, traitor cohesion | 1 to 2 sessions (largest surface: 22 persona files plus new metrics and tests) |
+
+Total: 4 to 5 sessions after phase 28. If they run back to back, the
+audit fix lands within roughly a working week; the binding constraint is
+the approval checkpoint between phases, not the coding. Live Ollama
+verification runs (a fake-backend run per phase, plus one season replay
+for the benchmark) are included in each session's estimate; a full
+4-hour season replay is not.
 
 ------------------------------------------------------------------------
 
