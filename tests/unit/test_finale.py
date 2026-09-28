@@ -448,3 +448,26 @@ def test_replay_and_transcript_pick_up_the_finale() -> None:
     assert "Finale: rapid fire voting (1 traitors, 1 faithful)" in render_transcript(
         events
     )
+
+
+def test_finale_can_trigger_on_a_total_count() -> None:
+    # Four faithful against one traitor is the shape the faction pair
+    # rule cannot express, but the show's final five does.
+    engine = make_engine(
+        players=6, traitors=1, finale_total=5, max_rounds=5
+    )
+    assert engine.state.finale is False
+    engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="night")
+    assert engine.state.finale is True
+    started = [e for e in engine.sink.events if e.type is EventType.FINALE_STARTED]
+    assert len(started) == 1
+    assert len(started[0].payload["traitors"]) == 1
+    assert len(started[0].payload["faithful"]) == 4
+
+
+def test_total_trigger_needs_the_exact_count() -> None:
+    engine = make_engine(players=6, traitors=1, finale_total=4, max_rounds=5)
+    engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="night")
+    assert engine.state.finale is False  # five left, not four
+    engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="night")
+    assert engine.state.finale is True

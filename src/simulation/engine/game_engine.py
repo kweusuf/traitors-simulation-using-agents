@@ -765,7 +765,15 @@ class GameEngine:
         opens straight into rapid fire.
         """
         game = self.config.game
-        if not game.finale_traitors or self.state.finale:
+        if self.state.finale:
+            return False
+        if game.finale_total and len(self.state.alive_players) == game.finale_total:
+            self._start_finale(
+                [p for p in self.state.alive_players if self.state.roles[p] is Role.TRAITOR],
+                [p for p in self.state.alive_players if self.state.roles[p] is Role.FAITHFUL],
+            )
+            return True
+        if not game.finale_traitors:
             return False
         alive_traitors = [
             p for p in self.state.alive_players if self.state.roles[p] is Role.TRAITOR

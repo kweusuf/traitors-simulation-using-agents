@@ -11,7 +11,6 @@ game:
   players: 22
   traitors: 3
   traitor_names: [wilf, amanda, alyssa]
-  max_rounds: 12
   # Series 1 recruited twice, once declined and once by ultimatum, and it
   # never replaced a banished traitor with a converted faithful. Our
   # recruit-on-banish rule would refill the tower every time, which would
@@ -22,9 +21,16 @@ game:
   # offered player may refuse.
   recruit_on_banish: false
   recruit_choice: true
-  max_recruits: 0
+  # Series 1 made exactly two recruitment attempts: one declined and
+  # one accepted by ultimatum. Capping it also keeps the cadence
+  # close to the show, where most nights were a murder.
+  max_recruits: 2
   finale_traitors: 2
   finale_faithful: 3
+  # The real endgame began at the final five, whatever the split,
+  # so the total rule starts it there as well.
+  finale_total: 5
+  max_rounds: 18   # quiet rounds and recruited nights push the endgame later than 12
   finale_max_votes: 10
   # Series 1 cadence: episode 1 opened with no murder at all (the
   # traitors chose only at the end of the second night), and episode 8

@@ -24,6 +24,8 @@ game:
   # row, `round_limit_winner` is declared instead.
   finale_traitors: 3
   finale_faithful: 3
+  # Start the endgame at six living players, whatever the split.
+  finale_total: 6
   finale_max_votes: 10
   # The show never murders on the first night: the traitors only choose
   # after the first round table, so round 1's night does nothing.

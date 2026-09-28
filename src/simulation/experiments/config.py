@@ -53,6 +53,10 @@ class GameSettings(StrictModel):
     # parity win).
     finale_traitors: int = Field(default=0, ge=0)
     finale_faithful: int = Field(default=0, ge=0)
+    # The show starts its endgame at the final five, whatever the split,
+    # which the faction pair above cannot express once recruitment keeps
+    # the traitor count topped up. 0 disables the total rule.
+    finale_total: int = Field(default=0, ge=0)
     # How many consecutive rapid-fire rounds may pass with nobody
     # banished before `round_limit_winner` is declared instead.
     finale_max_votes: int = Field(default=10, ge=1)
@@ -101,6 +105,9 @@ class GameSettings(StrictModel):
         data["faithful"] = faithful
         if data.get("round_limit_winner", "faithful") not in {"faithful", "traitor"}:
             raise ValueError("round_limit_winner must be 'faithful' or 'traitor'")
+        finale_total = data.get("finale_total", 0)
+        if finale_total and finale_total < 2:
+            raise ValueError("finale_total must be at least 2 when set")
         if bool(data.get("finale_traitors", 0)) != bool(data.get("finale_faithful", 0)):
             raise ValueError(
                 "finale_traitors and finale_faithful must be set together (or both 0)"
