@@ -279,6 +279,13 @@ def render_transcript(events: list[Event]) -> str:
             )
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")
+        elif event.type is EventType.HOST_WARNING:
+            lines.append(
+                f"    Host: time is almost up ({event.payload.get('turns_left', '?')} "
+                "closing turns left), conclude your points"
+            )
+        elif event.type is EventType.DEBATE_CLOSED:
+            lines.append("    Host: debate closed, the vote is forced")
         elif event.type is EventType.END_VOTE_CAST:
             choice = event.payload.get("choice", "")
             lines.append(f"    End vote: {event.actor} answers {choice}")

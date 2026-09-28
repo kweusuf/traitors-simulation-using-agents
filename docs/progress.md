@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-27 complete, 384 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-28 complete, 396 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -53,6 +53,7 @@ and its commit lands.
 | 25 | Endgame end-or-banish vote with blind finale | complete | `c28d39c` |
 | 26 | Recruitment as a choice with ultimatum | complete | `53b5b89` |
 | 27 | Endgame trigger at the final five | complete | `26a2550` |
+| 28 | Hosted debate clock (audit fix, phase 1) | complete | `pending` (this doc) |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -615,6 +616,43 @@ one majority. With a three-traitor cast, the same game now plays through
 three against three at six alive and on to the final five instead of
 being called there by parity.
 
+### Phase 28: Hosted debate clock (audit fix, phase 1)
+
+First of the five phases approved with
+`docs/2026-09-28-rounds-vs-season-audit.md`: a deterministic host
+(engine code, not an LLM player) paces timed discussion instead of the
+cold one-message-each round table.
+
+- [x] Config `discussion_budget` (open speaking turns per debate, 0
+  disables the clock and keeps the old phases unchanged) and
+  `warning_turns` (closing waves after the host warns), both on
+  `GameSettings` with the clock off by default.
+- [x] `HOST_WARNING` (actor `host`, payload `turns_left`) fires when the
+  open turns run out; `DEBATE_CLOSED` (`forced_vote: true`) when the
+  closing turns are spent and the vote is forced. Both render in
+  `transcript.txt`.
+- [x] `PublicDiscussionPhase` spends the budget in round-robin waves
+  (even quota per player, deterministic cut when it does not divide),
+  then runs `warning_turns` closing waves for everyone.
+- [x] One timer line per turn reaches the prompt through
+  `PhaseContext.ask(..., extra_instruction)`; the two production
+  callbacks forward it to `AgentRuntime.decide`, and scripted
+  three-argument callbacks keep working untouched (the context probes
+  the signature once).
+- [x] `public_message_limit(config, alive_count)` in `engine/rules.py`
+  lets the validator accept exactly the scheduled closing turn while
+  still capping the phase; the baseline limit is unchanged with the
+  clock off.
+
+**Verification:** 396 tests green. New `tests/unit/test_host_debate.py`
+covers the clock off (byte-identical one-turn-each, no host events), the
+full open/warn/close sequence and ordering, the budget cut, the
+round-robin continuation, the timer lines, three-argument callbacks, the
+validator limit with and without the clock, quiet-round coexistence, the
+rendered transcript, and a full scripted game. A fake run of the basic
+config with the clock on produced 4 warnings, 4 closes, 44 public
+messages and zero rejected actions across all seven artifacts.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -665,3 +703,5 @@ being called there by parity.
 | 2026-09-28 | Phase 23 complete: benchmark set overlaps, elimination-index alignment and shield-blocked attempts excluded from murders; 329 tests passed. |
 | 2026-09-28 | Phases 24 to 27 complete: seasonal cadence (no murder on night one, quiet rounds), the end-or-banish endgame vote with blind finale banishments, recruitment as a choice with a lone-traitor ultimatum, and a finale trigger based on the living count; 378 tests passed. |
 | 2026-09-28 | Fix: a configured endgame (`finale_total` or `endgame_vote`) replaces the parity win. The season replay (game-009) reached three traitors against three faithful with six alive and parity closed it there, one player short of the final five, so the finale never opened; the count trigger also fires below its number now, for a cast that cannot land on it. The season config on the fake backend now reaches the finale at its final five (wilf against four faithful) and ends by end vote. The season config's `max_recruits: 2` is documented as intended. 384 tests passed. |
+| 2026-09-28 | Audit written (`docs/2026-09-28-rounds-vs-season-audit.md`): season replays versus UK Series 1, clash-free discussion, private chats echoing the public transcript, and every decision point that lacks a tie-breaker; five-phase fix plan approved. |
+| 2026-09-28 | Phase 28 complete (audit fix, phase 1): deterministic host with a debate clock, `HOST_WARNING`/`DEBATE_CLOSED` events, `discussion_budget`/`warning_turns` config, a per-turn timer line in prompts via `extra_instruction`, and a validator limit that admits the closing turn; clock off by default, 396 tests passed. |

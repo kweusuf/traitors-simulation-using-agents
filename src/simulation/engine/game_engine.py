@@ -378,6 +378,30 @@ class GameEngine:
         self._emit(EventType.BANISHMENT_SKIPPED, payload={"reason": "quiet_round"})
 
     # ------------------------------------------------------------------
+    # Deterministic host (audit fix, phase 1)
+    # ------------------------------------------------------------------
+    def host_warning(self, turns_left: int) -> None:
+        """The host warns that the debate is running out of time.
+
+        Engine narration, not an LLM player: `turns_left` is how many
+        closing turns remain before the debate closes and the vote is
+        forced (see `PublicDiscussionPhase`).
+        """
+        self._emit(
+            EventType.HOST_WARNING,
+            actor="host",
+            payload={"turns_left": turns_left},
+        )
+
+    def debate_closed(self) -> None:
+        """The host closes the debate; the vote that follows is forced."""
+        self._emit(
+            EventType.DEBATE_CLOSED,
+            actor="host",
+            payload={"forced_vote": True},
+        )
+
+    # ------------------------------------------------------------------
     # Endgame end-or-banish vote (finale, phase 25)
     # ------------------------------------------------------------------
     def end_vote_choices(self) -> dict[str, str]:

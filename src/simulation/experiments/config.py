@@ -72,12 +72,24 @@ class GameSettings(StrictModel):
     # which is how the show plays out its final round table.
     endgame_vote: bool = False
     blind_finale_banishments: bool = False
-    # Wave B mechanics (plan section 4), each off by default so existing
-    # configs and games play exactly as before:
+    # Hosted debate clock (audit fix, phase 1): how the deterministic
+    # host paces timed discussion. `discussion_budget` caps the open
+    # speaking turns of one debate; `warning_turns` is how many closing
+    # turns run after the host warns that time is almost up. 0 disables
+    # the clock and keeps the current one-turn-each phases unchanged.
+    discussion_budget: int = Field(default=0, ge=0)
+    warning_turns: int = Field(default=1, ge=0)
+    # Hosted round table (audit fix, phase 2): open nomination plus a
+    # restricted revote when the banishment ballot ties. Off by default
+    # so existing games keep the plain tally-then-tie behaviour.
+    nomination_enabled: bool = False
+    revote_enabled: bool = False
     # `shield`: a one-shot item that blocks the next murder on its holder.
     # `dagger`: a one-shot item whose holder's vote counts twice.
     # `seer`: a one-shot item that checks one player's true role in private.
     # `on_trial`: traitors nominate a murder shortlist before the kill.
+    # (Wave B mechanics from plan section 4, each off by default so
+    # existing configs and games play exactly as before.)
     shield: bool = False
     dagger: bool = False
     seer: bool = False

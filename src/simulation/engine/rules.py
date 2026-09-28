@@ -6,6 +6,7 @@ these before applying any action.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Optional, Sequence
 
@@ -33,6 +34,25 @@ PHASE_ALLOWED_ACTIONS: dict[GamePhase, frozenset[ActionType]] = {
     GamePhase.END_VOTE: frozenset({ActionType.END_VOTE}),
     GamePhase.GAME_END: frozenset(),
 }
+
+
+def public_message_limit(config: GameConfig, alive_count: int) -> int:
+    """How many public messages one agent may send in one debate phase.
+
+    With the debate clock off (`discussion_budget` 0) this is the plain
+    `communication.public_messages_per_agent`. With the clock on it is
+    what `PublicDiscussionPhase` schedules: up to an even share of the
+    open budget plus the closing turns after the host's warning, floored
+    at the configured baseline. The phase asks exactly this many times,
+    so the validator accepts every scheduled turn and still rejects a
+    stray extra one.
+    """
+    baseline = config.communication.public_messages_per_agent
+    game = config.game
+    if not game.discussion_budget or alive_count <= 0:
+        return baseline
+    open_quota = math.ceil(game.discussion_budget / alive_count)
+    return max(baseline, open_quota + game.warning_turns)
 
 
 @dataclass(frozen=True)
@@ -230,7 +250,7 @@ class RuleValidator:
                     return ValidationResult.rejected("cannot check yourself")
 
         # 6. Phase limits (per-agent usage within the current phase).
-        limit = self._action_limit(action)
+        limit = self._action_limit(action, state)
         if limit is not None:
             used = usage.get((action.actor_id, action.action), 0)
             if used >= limit:
@@ -240,10 +260,12 @@ class RuleValidator:
 
         return ValidationResult.accepted()
 
-    def _action_limit(self, action: Action) -> int | None:
+    def _action_limit(self, action: Action, state: GameState) -> int | None:
         comm = self._config.communication
         if action.action is ActionType.PUBLIC_MESSAGE:
-            return comm.public_messages_per_agent
+            # The hosted debate clock may schedule a closing turn on top
+            # of the configured baseline (audit fix, phase 1).
+            return public_message_limit(self._config, len(state.alive_players))
         if action.action is ActionType.PRIVATE_MESSAGE:
             return comm.private_messages_per_agent
         if action.action is ActionType.VOTE:

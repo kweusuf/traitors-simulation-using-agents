@@ -274,10 +274,14 @@ class GameRunner:
     ):
         """Wire AgentRuntime into the PhaseContext action callback."""
 
-        async def callback(agent_id, action_type, legal_targets):
+        async def callback(
+            agent_id, action_type, legal_targets, extra_instruction=None
+        ):
             self._sync_roles(env, agents)
             view = env.observe(agent_id)
-            return await runtime.decide(agent_id, view, action_type, legal_targets)
+            return await runtime.decide(
+                agent_id, view, action_type, legal_targets, extra_instruction
+            )
 
         return callback
 

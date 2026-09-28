@@ -17,6 +17,12 @@ from simulation.models.base import StrictModel
 
 class EventType(str, Enum):
     GAME_STARTED = "GAME_STARTED"
+    # Deterministic host (audit fix, phase 1): engine-code narration of
+    # the debate clock. `HOST_WARNING` fires when the open turns run
+    # out, `DEBATE_CLOSED` when the closing turns are spent and the
+    # vote is forced.
+    HOST_WARNING = "HOST_WARNING"
+    DEBATE_CLOSED = "DEBATE_CLOSED"
     ROLE_ASSIGNED = "ROLE_ASSIGNED"
     ROLE_RECRUITED = "ROLE_RECRUITED"
     ROUND_STARTED = "ROUND_STARTED"

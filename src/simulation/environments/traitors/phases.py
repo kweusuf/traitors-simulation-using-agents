@@ -9,6 +9,7 @@ language themselves.
 from __future__ import annotations
 
 import asyncio
+import math
 from typing import TYPE_CHECKING, Optional
 
 from simulation.actions.actions import ActionType
@@ -22,7 +23,11 @@ if TYPE_CHECKING:  # avoids importing the engine at module load time
 
 
 async def _ask(
-    context: PhaseContext, actor: str, action_type: ActionType, targets: list[str]
+    context: PhaseContext,
+    actor: str,
+    action_type: ActionType,
+    targets: list[str],
+    extra_instruction: Optional[str] = None,
 ):
     """Ask one agent for an action, tolerating exhausted output retries.
 
@@ -31,7 +36,7 @@ async def _ask(
     as a rejected action instead of ending the run (spec section 21).
     """
     try:
-        return await context.ask(actor, action_type, targets)
+        return await context.ask(actor, action_type, targets, extra_instruction)
     except ActionParseError as exc:
         context.engine.record_unparseable_action(actor, action_type, str(exc))
         return None
@@ -78,14 +83,98 @@ class MissionPhase:
 
 
 class PublicDiscussionPhase:
-    """Open discussion; also used for the round table."""
+    """Open discussion; also used for the round table.
+
+    With `game.discussion_budget` set, the deterministic host runs a
+    debate clock instead of the plain one-turn-each round: open turns up
+    to the budget (one even share per player), then `HOST_WARNING`, then
+    `warning_turns` closing turns for everyone, then `DEBATE_CLOSED`
+    before the phase ends and the vote is forced. Budget 0 keeps the
+    original single-turn behaviour exactly.
+    """
 
     def __init__(self, name: str = "public_discussion") -> None:
         self.name = name
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
-        await _ask_all_alive(context, ActionType.PUBLIC_MESSAGE)
+        game = context.config.game
+        if not game.discussion_budget:
+            await _ask_all_alive(context, ActionType.PUBLIC_MESSAGE)
+            return None
+        await _run_hosted_debate(context, game.discussion_budget, game.warning_turns)
         return None
+
+
+async def _ask_wave(
+    context: PhaseContext, actors: list[str], instruction: Optional[str]
+) -> None:
+    """One concurrent turn of `public_message` for each of `actors`.
+
+    Actions are submitted in id order afterwards, exactly like
+    `_ask_all_alive`, so the event log stays deterministic.
+    """
+    engine = context.engine
+    actions = await asyncio.gather(
+        *(
+            _ask(
+                context,
+                actor,
+                ActionType.PUBLIC_MESSAGE,
+                legal_targets(engine.state, actor, ActionType.PUBLIC_MESSAGE),
+                instruction,
+            )
+            for actor in actors
+        )
+    )
+    for action in actions:
+        if action is not None:
+            engine.submit_action(action)
+
+
+async def _run_hosted_debate(
+    context: PhaseContext, budget: int, warning_turns: int
+) -> None:
+    """Open turns, host warning, closing turns, forced vote.
+
+    Turns are spent in waves: each wave gives every player who still has
+    open-budget quota one turn, until the budget (or the round-robin
+    cut, when it does not divide evenly) stops it. The host then warns
+    with the number of closing turns left, runs `warning_turns` closing
+    waves for everyone, and closes the debate; the voting phase that
+    follows is the forced vote.
+    """
+    engine = context.engine
+    alive = sorted(engine.state.alive_players)
+    if not alive:
+        return
+    quota = math.ceil(budget / len(alive))
+    spoken = {actor: 0 for actor in alive}
+    turns_left = budget
+    while turns_left > 0:
+        wave = [actor for actor in alive if spoken[actor] < quota][:turns_left]
+        if not wave:
+            break
+        await _ask_wave(
+            context,
+            wave,
+            f"Host: the debate is open, {turns_left} speaking turns left. "
+            "Make your point count.",
+        )
+        for actor in wave:
+            spoken[actor] += 1
+        turns_left -= len(wave)
+
+    if warning_turns > 0:
+        engine.host_warning(warning_turns * len(alive))
+        for index in range(warning_turns):
+            remaining = (warning_turns - index) * len(alive)
+            await _ask_wave(
+                context,
+                alive,
+                f"Host: time is almost up ({remaining} closing turns left). "
+                "Give your final point; the debate closes after this.",
+            )
+    engine.debate_closed()
 
 
 class PrivateChatPhase:

@@ -7,7 +7,8 @@ soon as a winner is declared.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import inspect
+from dataclasses import dataclass, field
 from typing import Awaitable, Callable, Optional, Protocol
 
 from simulation.actions.actions import Action, ActionType
@@ -17,7 +18,9 @@ from simulation.experiments.config import GameConfig
 
 # Phases ask for one structured action from an agent. The callback is
 # supplied by whoever wires agents in (AgentRuntime in Phase 6,
-# scripted sources in tests).
+# scripted sources in tests). A callback may accept a fourth
+# `extra_instruction` argument (the host's timer line); ones that do
+# not simply run without it, so every scripted callback keeps working.
 ActionCallback = Callable[[str, ActionType, list[str]], Awaitable[Action]]
 
 
@@ -37,17 +40,50 @@ class PhaseContext:
     engine: GameEngine
     config: GameConfig
     request_action: Optional[ActionCallback] = None
+    # Whether the wired callback accepts an `extra_instruction` fourth
+    # argument. Probed once, because scripted callbacks in tests are
+    # three-argument functions and a TypeError mid-phase would abort
+    # the run.
+    _accepts_extra_instruction: bool = field(init=False, default=False)
+
+    def __post_init__(self) -> None:
+        if self.request_action is None:
+            return
+        try:
+            parameters = inspect.signature(self.request_action).parameters
+        except (TypeError, ValueError):  # builtins or C callables
+            return
+        positional = [
+            p
+            for p in parameters.values()
+            if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+        ]
+        self._accepts_extra_instruction = len(positional) >= 4 or any(
+            p.kind is inspect.Parameter.VAR_POSITIONAL
+            for p in parameters.values()
+        )
 
     async def ask(
         self,
         agent_id: str,
         action_type: ActionType,
         legal_targets: Optional[list[str]] = None,
+        extra_instruction: Optional[str] = None,
     ) -> Action:
-        """Request one structured action; raises if no callback is wired."""
+        """Request one structured action; raises if no callback is wired.
+
+        `extra_instruction` is the deterministic host's line for this
+        turn (the debate clock's timer); it reaches the prompt only when
+        the callback can forward it.
+        """
         if self.request_action is None:
             raise RuntimeError("no action callback wired into PhaseContext")
-        return await self.request_action(agent_id, action_type, legal_targets or [])
+        targets = legal_targets or []
+        if extra_instruction and self._accepts_extra_instruction:
+            return await self.request_action(  # type: ignore[call-arg]
+                agent_id, action_type, targets, extra_instruction
+            )
+        return await self.request_action(agent_id, action_type, targets)
 
 
 class PhaseEngine:

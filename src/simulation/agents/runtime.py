@@ -178,9 +178,14 @@ def make_action_callback(
     """Wire the runtime into a PhaseContext's action callback (spec section 7)."""
 
     async def callback(
-        agent_id: str, action_type: ActionType, legal_targets: list[str]
+        agent_id: str,
+        action_type: ActionType,
+        legal_targets: list[str],
+        extra_instruction: Optional[str] = None,
     ) -> Action:
         view = projector.project(engine.state, agent_id)
-        return await runtime.decide(agent_id, view, action_type, legal_targets)
+        return await runtime.decide(
+            agent_id, view, action_type, legal_targets, extra_instruction
+        )
 
     return callback
