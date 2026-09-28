@@ -58,7 +58,11 @@ class RuleValidator:
 
         `SEER_CHECK` and `NOMINATE` exist in the enum for every game but
         are only legal where their flag enables them, which keeps
-        default-off configs byte-for-byte identical in behaviour.
+        default-off configs byte-for-byte identical in behaviour. The
+        same goes for the recruit-as-a-choice actions: `RECRUIT`,
+        `RECRUIT_DECISION` and `RECRUIT_RESPONSE` enter the night only
+        while `recruit_choice` is on, so the traitor night keeps its old
+        vocabulary for every other game.
         """
         allowed = set(PHASE_ALLOWED_ACTIONS.get(phase, frozenset()))
         game = self._config.game
@@ -66,6 +70,14 @@ class RuleValidator:
             allowed.add(ActionType.SEER_CHECK)
         if game.on_trial and phase is GamePhase.TRAITOR_NIGHT:
             allowed.add(ActionType.NOMINATE)
+        if game.recruit_choice and phase is GamePhase.TRAITOR_NIGHT:
+            allowed.update(
+                {
+                    ActionType.RECRUIT,
+                    ActionType.RECRUIT_DECISION,
+                    ActionType.RECRUIT_RESPONSE,
+                }
+            )
         return frozenset(allowed)
 
     def validate(
@@ -76,6 +88,8 @@ class RuleValidator:
         *,
         shortlist: Optional[Sequence[str]] = None,
         seer_used: Optional[set[str]] = None,
+        recruit_window: bool = False,
+        recruit_offered: Optional[str] = None,
     ) -> ValidationResult:
         """Is this action legal for this agent, in this phase, right now?
 
@@ -83,6 +97,9 @@ class RuleValidator:
         round (only meaningful with `on_trial`); `seer_used` is the set
         of players who already spent their once-per-game seer check,
         because phase usage resets every phase and this limit does not.
+        `recruit_window` is True only on a night when a round-table
+        banishment opened a recruitment window, and `recruit_offered` is
+        the player currently weighing that window's offer.
         """
         # 1. Phase correctness.
         allowed = self.allowed_actions(state.phase)
@@ -102,7 +119,10 @@ class RuleValidator:
         if action.action is ActionType.TRAITOR_KILL and role is not Role.TRAITOR:
             return ValidationResult.rejected("only traitors may kill at night")
         if action.action is ActionType.RECRUIT:
-            if not self._config.game.recruit_on_banish:
+            if not (
+                self._config.game.recruit_on_banish
+                or self._config.game.recruit_choice
+            ):
                 return ValidationResult.rejected("recruitment is disabled for this game")
             if role is not Role.TRAITOR:
                 return ValidationResult.rejected("only traitors may recruit")
@@ -143,6 +163,35 @@ class RuleValidator:
             if choice not in ("end", "banish"):
                 return ValidationResult.rejected(
                     "end_vote content must be 'end' or 'banish'"
+                )
+
+        # 4b. Recruitment as a choice (phase 26): the traitors' vote needs
+        # the night phase, an open window and a traitor actor; the answer
+        # belongs to the offered player alone. The engine re-checks the
+        # content as the enforcement backstop to the pre-flight check.
+        if action.action is ActionType.RECRUIT_DECISION:
+            if role is not Role.TRAITOR:
+                return ValidationResult.rejected(
+                    "only traitors may decide on recruitment"
+                )
+            if not recruit_window:
+                return ValidationResult.rejected(
+                    "no recruitment window is open tonight"
+                )
+            choice = (action.content or "").strip().lower()
+            if choice not in ("recruit", "murder"):
+                return ValidationResult.rejected(
+                    "recruit_decision content must be 'recruit' or 'murder'"
+                )
+        if action.action is ActionType.RECRUIT_RESPONSE:
+            if recruit_offered is None or action.actor_id != recruit_offered:
+                return ValidationResult.rejected(
+                    "only the offered player may answer a recruitment offer"
+                )
+            choice = (action.content or "").strip().lower()
+            if choice not in ("accept", "decline"):
+                return ValidationResult.rejected(
+                    "recruit_response content must be 'accept' or 'decline'"
                 )
 
         # 5. Target checks.
@@ -206,6 +255,8 @@ class RuleValidator:
             ActionType.SEER_CHECK,
             ActionType.NOMINATE,
             ActionType.END_VOTE,
+            ActionType.RECRUIT_DECISION,
+            ActionType.RECRUIT_RESPONSE,
         ):
             return 1
         return None

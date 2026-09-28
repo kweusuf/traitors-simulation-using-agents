@@ -16,8 +16,12 @@ game:
   # never replaced a banished traitor with a converted faithful. Our
   # recruit-on-banish rule would refill the tower every time, which would
   # make a faithful win arithmetically impossible and distort any
-  # comparison with the real season, so it is off here.
+  # comparison with the real season, so it is off here. Recruitment as a
+  # choice mirrors what actually happened: the traitors only get a window
+  # after a banishment, they choose whether to recruit or murder, and the
+  # offered player may refuse.
   recruit_on_banish: false
+  recruit_choice: true
   max_recruits: 0
   finale_traitors: 2
   finale_faithful: 3

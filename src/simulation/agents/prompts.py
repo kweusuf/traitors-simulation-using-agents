@@ -27,6 +27,14 @@ ACTION_JSON_HINT = (
     '"content": "...", "confidence": 0.8}. No other text.'
 )
 
+# For an action whose content is a fixed answer rather than prose, the
+# example shows one of the accepted values instead of filler text.
+_CONTENT_EXAMPLE: dict[ActionType, str] = {
+    ActionType.END_VOTE: "end",
+    ActionType.RECRUIT_DECISION: "recruit",
+    ActionType.RECRUIT_RESPONSE: "accept",
+}
+
 
 def _window(messages, limit: int) -> tuple[list, int]:
     """Newest `limit` entries plus how many were dropped (0 = no limit)."""
@@ -48,9 +56,10 @@ def action_json_hint(action_type: ActionType) -> str:
     example: dict[str, object] = {"action": action_type.value}
     example["target"] = "bob" if action_type in ACTIONS_REQUIRING_TARGET else None
     if action_type in ACTIONS_REQUIRING_CONTENT:
-        # The end vote's content is its answer, not prose.
-        example["content"] = (
-            "end" if action_type is ActionType.END_VOTE else "your message here"
+        # The end vote's and the recruitment answers' content is their
+        # answer, not prose.
+        example["content"] = _CONTENT_EXAMPLE.get(
+            action_type, "your message here"
         )
     else:
         example["content"] = ""
@@ -163,10 +172,37 @@ class PromptBuilder:
                 "your team cannot afford to keep in front of the knife."
             )
         if action_type is ActionType.RECRUIT:
+            if view.phase is GamePhase.TRAITOR_NIGHT:
+                lines.append(
+                    "Recruitment window: tonight the traitors offer one "
+                    "living faithful player a place on the team instead of "
+                    "murdering. Name the player who most strengthens the "
+                    "traitors; they are told of the offer and may refuse."
+                )
+            else:
+                lines.append(
+                    "You are a banished traitor making one final choice: recruit a "
+                    "living faithful player onto the traitor team. They become a "
+                    "traitor immediately and are told their new role."
+                )
+        if action_type is ActionType.RECRUIT_DECISION:
             lines.append(
-                "You are a banished traitor making one final choice: recruit a "
-                "living faithful player onto the traitor team. They become a "
-                "traitor immediately and are told their new role."
+                "Recruitment decision: a traitor left the tower at the round "
+                "table, so the traitors may recruit one living faithful player "
+                "tonight instead of murdering. Recruiting costs tonight's "
+                "murder: nobody dies and the kill is not moved to anyone else. "
+                "A lone traitor can force a recruit even if the offer is "
+                "refused, because refusing a lone traitor's offer is fatal. "
+                "Answer with content 'recruit' or 'murder'."
+            )
+        if action_type is ActionType.RECRUIT_RESPONSE:
+            lines.append(
+                "The traitors have offered you a place among them. The offer "
+                "is real: accepting makes you a traitor immediately and you "
+                "win as one of them. You are allowed to decline. If the "
+                "traitors are down to a single player, refusing is fatal: "
+                "that lone traitor murders you tonight instead. Answer with "
+                "content 'accept' or 'decline'."
             )
         if action_type is ActionType.END_VOTE:
             lines.append(

@@ -293,6 +293,29 @@ def test_rejected_actions_are_counted_by_stage() -> None:
     assert result["parsing"]["unparseable_actions"] == 1
 
 
+def test_recruitment_choice_events_do_not_break_the_analysis() -> None:
+    # Phase 26 events carry no transcript text, so they must leave every
+    # quality signal alone instead of being misread as speech.
+    events = base_events() + [
+        ev(20, EventType.RECRUIT_CHOICE_MADE, round=1, choice="recruit",
+           votes={"alice": "recruit"}),
+        ev(21, EventType.RECRUIT_OFFERED, round=1, actor="alice",
+           targets=["charlie"], target="charlie", by="alice"),
+        ev(22, EventType.RECRUIT_ACCEPTED, round=1, actor="charlie",
+           targets=["alice"], by="alice"),
+        ev(23, EventType.ROLE_RECRUITED, round=1, actor="charlie", by="alice"),
+        ev(24, EventType.RECRUIT_DECLINED, round=1, actor="david",
+           targets=["alice"], by="alice"),
+        ev(25, EventType.ULTIMATUM_ISSUED, round=1, actor="alice",
+           targets=["david"], target="david", by="alice"),
+        message(26, "alice", "The tower is stronger after tonight."),
+    ]
+    result = analyse(events)
+    assert result["messages_checked"] == 3  # only real speech is scored
+    assert result["hallucination_score"] == 0.0
+    assert result["secrecy"]["flags_total"] == 0
+
+
 # ----------------------------------------------------------------------
 # Duplication score and cross-player speech similarity
 # ----------------------------------------------------------------------

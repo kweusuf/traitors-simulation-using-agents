@@ -167,6 +167,26 @@ class PromptScriptProvider(FakeLLMProvider):
                 "content": "end" if len(alive) <= 3 else "banish",
                 "confidence": 0.7,
             }
+        elif action_type is ActionType.RECRUIT_DECISION:
+            # Recruit-or-murder vote. Rule: always recruit, so a fake game
+            # is guaranteed to exercise the whole offer (offer, response,
+            # role flip, ROLE_RECRUITED, RECRUIT_ACCEPTED) instead of
+            # depending on where a random banishment happens to land. The
+            # game still terminates: every recruit moves the traitor count
+            # toward parity, and the round limit is the backstop.
+            payload = {
+                "action": "recruit_decision",
+                "content": "recruit",
+                "confidence": 0.7,
+            }
+        elif action_type is ActionType.RECRUIT_RESPONSE:
+            # Always accept, so a fake game exercises the whole offer
+            # (role flip, ROLE_RECRUITED, RECRUIT_ACCEPTED) and finishes.
+            payload = {
+                "action": "recruit_response",
+                "content": "accept",
+                "confidence": 0.7,
+            }
         else:
             # VOTE and TRAITOR_KILL: pile onto the first legal target.
             payload = {

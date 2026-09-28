@@ -89,6 +89,14 @@ class GameEngine:
         self.murder_shortlist: list[str] = []
         self._pending_recruit: Optional[str] = None
         self.recruits_used = 0
+        # Recruitment as a choice (phase 26): the window opens when a
+        # traitor is banished at the round table and stays open until the
+        # night spends it; the vote and offer live only for that night.
+        self._recruit_window = False
+        self._recruit_votes: dict[str, str] = {}
+        self._recruit_offers: list[Action] = []
+        self._recruit_offered: Optional[str] = None
+        self._recruit_offerer: Optional[str] = None
         # One seeded RNG for the whole game, held as an attribute: role
         # assignment draws first, item awards draw later, and a second
         # engine with the same seed reproduces the same draws.
@@ -158,6 +166,11 @@ class GameEngine:
         self._end_votes.clear()
         self.murder_shortlist = []
         self._pending_recruit = None
+        self._recruit_window = False
+        self._recruit_votes.clear()
+        self._recruit_offers.clear()
+        self._recruit_offered = None
+        self._recruit_offerer = None
         self._emit(EventType.ROUND_STARTED)
 
     def begin_phase(self, phase: GamePhase) -> None:
@@ -197,6 +210,8 @@ class GameEngine:
             self._usage,
             shortlist=self.murder_shortlist,
             seer_used=self.seer_checks_done,
+            recruit_window=self.recruit_window_open(),
+            recruit_offered=self._recruit_offered,
         )
         if not result.ok:
             self._emit(
@@ -252,10 +267,24 @@ class GameEngine:
             self.seer_checks_done.add(action.actor_id)
             self._deliver_seer_answer(action.actor_id, action.target)
         elif action.action is ActionType.RECRUIT:
-            # Held until the banishment resolves, so the conversion lands
-            # before the win check (see `eliminate`).
+            # The old path holds the target until the banishment resolves,
+            # so the conversion lands before the win check (see
+            # `eliminate`). The choice path instead collects every
+            # traitor's offer for tonight's window (see
+            # `resolve_recruit_offer`).
             assert action.target is not None
-            self._pending_recruit = action.target
+            if self.config.game.recruit_choice:
+                self._recruit_offers.append(action)
+            else:
+                self._pending_recruit = action.target
+        elif action.action is ActionType.RECRUIT_DECISION:
+            # The validator already guaranteed content is recruit/murder.
+            choice = (action.content or "").strip().lower()
+            self._recruit_votes[action.actor_id] = choice
+        elif action.action is ActionType.RECRUIT_RESPONSE:
+            # The validator already guaranteed content is accept/decline
+            # and that the actor is the offered player.
+            self._resolve_recruit_response(action)
         elif action.action is ActionType.END_VOTE:
             # The validator already guaranteed the content is end/banish.
             choice = (action.content or "").strip().lower()
@@ -411,6 +440,10 @@ class GameEngine:
         action from them.
         """
         game = self.config.game
+        if game.recruit_choice:
+            # The choice path owns recruitment whenever it is on, so the
+            # automatic banishment conversion never fires as well.
+            return False
         if not game.recruit_on_banish:
             return False
         if self.state.finale:
@@ -423,6 +456,128 @@ class GameEngine:
             p != player_id and self.state.roles.get(p) is Role.FAITHFUL
             for p in self.state.alive_players
         )
+
+    # ------------------------------------------------------------------
+    # Recruitment as a choice (phase 26)
+    # ------------------------------------------------------------------
+    def recruit_window_open(self) -> bool:
+        """May the traitors choose to recruit instead of murder tonight?
+
+        The show's rule: the window opens only on the night after a
+        traitor is banished at the round table (see `eliminate`). It also
+        needs a living faithful to offer to, a living traitor to make the
+        offer, and an unspent `max_recruits` budget.
+        """
+        game = self.config.game
+        if not game.recruit_choice or self.state.finale:
+            return False
+        if not self._recruit_window:
+            return False
+        if game.max_recruits and self.recruits_used >= game.max_recruits:
+            return False
+        roles = self.state.roles
+        alive = self.state.alive_players
+        if not any(roles.get(p) is Role.TRAITOR for p in alive):
+            return False
+        return any(roles.get(p) is Role.FAITHFUL for p in alive)
+
+    def spend_recruit_window(self) -> None:
+        """Close tonight's recruitment window, whichever way it went."""
+        self._recruit_window = False
+
+    @property
+    def recruit_offered(self) -> Optional[str]:
+        """The player currently weighing a recruitment offer, if any."""
+        return self._recruit_offered
+
+    def resolve_recruit_choice(self) -> str:
+        """Resolve the traitors' recruit-or-murder vote for tonight.
+
+        Majority wins; a tie (including an unanswered council) falls to
+        murder, so a split team keeps the night's kill. The choice and
+        every traitor's answer are recorded in one event.
+        """
+        counts = {"recruit": 0, "murder": 0}
+        for choice in self._recruit_votes.values():
+            counts[choice] = counts.get(choice, 0) + 1
+        choice = "recruit" if counts["recruit"] > counts["murder"] else "murder"
+        self._emit(
+            EventType.RECRUIT_CHOICE_MADE,
+            payload={"choice": choice, "votes": dict(self._recruit_votes)},
+        )
+        return choice
+
+    def resolve_recruit_offer(self) -> Optional[str]:
+        """Pick the traitors' recruitment target and record the offer.
+
+        Every living traitor gets one RECRUIT action; the majority target
+        wins and the earliest submission breaks a tie, exactly like the
+        night kill. Returns None when nobody offered.
+        """
+        if not self._recruit_offers:
+            return None
+        counts: dict[str, int] = {}
+        for offer in self._recruit_offers:
+            assert offer.target is not None
+            counts[offer.target] = counts.get(offer.target, 0) + 1
+        highest = max(counts.values())
+        tied = {target for target, count in counts.items() if count == highest}
+        chosen = next(o for o in self._recruit_offers if o.target in tied)
+        self._recruit_offered = chosen.target
+        self._recruit_offerer = chosen.actor_id
+        self._emit(
+            EventType.RECRUIT_OFFERED,
+            actor=chosen.actor_id,
+            targets=[chosen.target],
+            payload={"target": chosen.target, "by": chosen.actor_id},
+        )
+        return chosen.target
+
+    def _resolve_recruit_response(self, action: Action) -> None:
+        """Apply the offered player's answer to tonight's recruitment.
+
+        Accepting uses the same conversion as the banishment path; a
+        decline wastes the night unless the offer came from a lone
+        traitor, whose ultimatum murders the player instead.
+        """
+        offered = self._recruit_offered
+        offerer = self._recruit_offerer
+        # The validator guarantees the actor is the offered player and an
+        # offer is open, so this is an engine invariant, not user input.
+        assert offered is not None and offerer is not None
+        if (action.content or "").strip().lower() == "accept":
+            self._apply_recruit(offered, by=offerer)
+            self._emit(
+                EventType.RECRUIT_ACCEPTED,
+                actor=offered,
+                targets=[offerer],
+                payload={"by": offerer},
+            )
+            self.check_win()
+        else:
+            self._emit(
+                EventType.RECRUIT_DECLINED,
+                actor=offered,
+                targets=[offerer],
+                payload={"by": offerer},
+            )
+            alive_traitors = [
+                p
+                for p in self.state.alive_players
+                if self.state.roles.get(p) is Role.TRAITOR
+            ]
+            if len(alive_traitors) == 1:
+                # A lone traitor's offer is an ultimatum: a refusal is fatal.
+                self._emit(
+                    EventType.ULTIMATUM_ISSUED,
+                    actor=offerer,
+                    targets=[offered],
+                    payload={"target": offered, "by": offerer},
+                )
+                self._night_elimination(offered)
+        # The answer is spent: a second response has nothing to answer.
+        self._recruit_offered = None
+        self._recruit_offerer = None
 
     def resolve_votes(self) -> TallyResult:
         tally = self.tally_votes()
@@ -465,6 +620,15 @@ class GameEngine:
                 "counts": counts,
             },
         )
+        return self._night_elimination(victim)
+
+    def _night_elimination(self, victim: str) -> Optional[str]:
+        """Apply one night kill and return who died (None if shielded).
+
+        Shared by the traitors' majority murder and a lone traitor's
+        ultimatum so both go through the same shield rule and the same
+        `PLAYER_ELIMINATED` event.
+        """
         if "shield" in self.state.items.get(victim, []):
             # The shield eats the murder: nobody dies, the shield is
             # spent, and the traitors' choice stays used (no second pick).
@@ -536,6 +700,10 @@ class GameEngine:
                     f"recruitment '{recruit}' requested for non-traitor '{player_id}'"
                 )
             self._apply_recruit(recruit, by=player_id)
+        # The show's rule: a round-table banishment of a traitor opens
+        # tonight's recruitment window (see `recruit_window_open`).
+        if method == "vote" and self.state.roles.get(player_id) is Role.TRAITOR:
+            self._recruit_window = True
         self.check_win()
 
     def _apply_recruit(self, player_id: str, by: str) -> None:

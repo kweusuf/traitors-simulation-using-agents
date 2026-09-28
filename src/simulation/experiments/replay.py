@@ -282,6 +282,30 @@ def render_transcript(events: list[Event]) -> str:
         elif event.type is EventType.END_VOTE_CAST:
             choice = event.payload.get("choice", "")
             lines.append(f"    End vote: {event.actor} answers {choice}")
+        elif event.type is EventType.RECRUIT_CHOICE_MADE:
+            choice = event.payload.get("choice", "")
+            votes = event.payload.get("votes", {})
+            tally = ", ".join(f"{who}={how}" for who, how in sorted(votes.items()))
+            suffix = f" ({tally})" if tally else ""
+            lines.append(f"    Traitors choose to {choice} tonight{suffix}")
+        elif event.type is EventType.RECRUIT_OFFERED:
+            target = event.payload.get("target", "")
+            lines.append(
+                f"    Recruit offer: {target} is offered a place among the traitors"
+            )
+        elif event.type is EventType.RECRUIT_ACCEPTED:
+            lines.append(
+                f"    Recruit accepted: {event.actor} joins the traitors"
+            )
+        elif event.type is EventType.RECRUIT_DECLINED:
+            lines.append(
+                f"    Recruit declined: {event.actor} refuses to join the traitors"
+            )
+        elif event.type is EventType.ULTIMATUM_ISSUED:
+            target = event.payload.get("target", "")
+            lines.append(
+                f"    Ultimatum: {event.actor} murders {target} for refusing"
+            )
         elif event.type is EventType.MURDER_SKIPPED:
             reason = event.payload.get("reason", "quiet_round")
             lines.append(f"    Night skipped: no murder this round ({reason})")

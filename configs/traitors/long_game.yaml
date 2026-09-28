@@ -8,11 +8,15 @@ game:
   players: 21
   traitors: 3          # faithful is derived: 18
   max_rounds: 12
-  # A traitor banished at the round table converts one living faithful
-  # player on the way out, so the faithful cannot shrink the traitor
-  # team by voting alone. `max_recruits: 0` means no cap; set it to a
-  # positive number to give the faithful a path back.
-  recruit_on_banish: true
+  # Recruitment as a choice (phase 26): the tower only gets a window on
+  # the night after a traitor is banished at the round table, and the
+  # traitors vote to recruit one faithful player instead of murdering.
+  # A lone traitor's offer is an ultimatum. This replaces the automatic
+  # recruit-on-banish conversion, which would refill the tower on every
+  # banishment and make a faithful win arithmetically impossible. The
+  # vote is the real show rule, so it is the one we play.
+  recruit_on_banish: false
+  recruit_choice: true
   max_recruits: 0
   # Finale: normal play stops at exactly 3 traitors and 3 faithful and
   # rapid-fire voting (round table, side conversations, vote, banish)

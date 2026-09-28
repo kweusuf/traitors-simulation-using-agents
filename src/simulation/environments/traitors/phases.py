@@ -9,13 +9,16 @@ language themselves.
 from __future__ import annotations
 
 import asyncio
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from simulation.actions.actions import ActionType
 from simulation.actions.validator import ActionParseError
 from simulation.engine.phase_engine import PhaseContext, PhaseResult
 from simulation.engine.state import Role
 from simulation.environments.traitors.rules import legal_targets
+
+if TYPE_CHECKING:  # avoids importing the engine at module load time
+    from simulation.engine.game_engine import GameEngine
 
 
 async def _ask(
@@ -180,6 +183,12 @@ class TraitorNightPhase:
     each and the union of those names is the murder shortlist: only a
     shortlisted player can die tonight. Then the kill is a majority vote
     with an earliest-choice tiebreak.
+
+    With `recruit_choice` on and a recruitment window open (a traitor was
+    banished at the round table), the council instead votes to recruit or
+    murder. A recruit night skips the nomination and the kill entirely:
+    the traitors offer one living faithful player, who accepts or
+    declines before the window closes.
     """
 
     name = "traitor_night"
@@ -205,6 +214,11 @@ class TraitorNightPhase:
             for action in council:
                 if action is not None:
                     engine.submit_action(action)
+        if engine.recruit_window_open():
+            result = await _run_recruit_night(context, engine, traitors)
+            if result is not None:
+                return result
+            # The vote chose murder: fall through to the normal night.
         # The shortlist is frozen before any kill is requested, so the
         # kill's legal targets (and the validator) see exactly who may
         # die tonight.
@@ -243,3 +257,48 @@ class TraitorNightPhase:
                 engine.submit_action(action)
         victim = engine.resolve_night()
         return {"victim": victim}
+
+
+async def _run_recruit_night(
+    context: PhaseContext, engine: "GameEngine", traitors: list[str]
+) -> Optional[PhaseResult]:
+    """Run a night's recruit-or-murder choice.
+
+    Returns a phase result when the traitors chose to recruit (the night
+    has no murder), or None when they chose to murder, so the caller runs
+    the normal night. The window is spent either way.
+    """
+    decisions = await asyncio.gather(
+        *(_ask(context, actor, ActionType.RECRUIT_DECISION, []) for actor in traitors)
+    )
+    for action in decisions:
+        if action is not None:
+            engine.submit_action(action)
+    if engine.resolve_recruit_choice() != "recruit":
+        engine.spend_recruit_window()
+        return None
+    offers = await asyncio.gather(
+        *(
+            _ask(
+                context,
+                actor,
+                ActionType.RECRUIT,
+                legal_targets(engine.state, actor, ActionType.RECRUIT),
+            )
+            for actor in traitors
+        )
+    )
+    for action in offers:
+        if action is not None:
+            engine.submit_action(action)
+    target = engine.resolve_recruit_offer()
+    victim: Optional[str] = None
+    if target is not None:
+        response = await _ask(context, target, ActionType.RECRUIT_RESPONSE, [])
+        if response is not None:
+            engine.submit_action(response)
+        if target not in engine.state.alive_players:
+            # A lone traitor's ultimatum landed: report the night's death.
+            victim = target
+    engine.spend_recruit_window()
+    return {"victim": victim}

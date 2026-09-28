@@ -60,6 +60,16 @@ def make_progress_printer():
             print(f"  Eliminated: {event.actor}{suffix}")
         elif event.type is EventType.ROLE_RECRUITED:
             print(f"  Recruited: {event.actor} (by {event.payload.get('by', '?')})")
+        elif event.type is EventType.RECRUIT_CHOICE_MADE:
+            print(f"  Traitors choose: {event.payload.get('choice', '?')} tonight")
+        elif event.type is EventType.RECRUIT_OFFERED:
+            print(f"  Recruit offer to {event.payload.get('target', '?')}")
+        elif event.type is EventType.RECRUIT_ACCEPTED:
+            print(f"  Recruit accepted: {event.actor}")
+        elif event.type is EventType.RECRUIT_DECLINED:
+            print(f"  Recruit declined: {event.actor}")
+        elif event.type is EventType.ULTIMATUM_ISSUED:
+            print(f"  Ultimatum: {event.actor} murders {event.payload.get('target', '?')}")
         elif event.type is EventType.FINALE_STARTED:
             traitors = len(event.payload.get("traitors", []))
             faithful = len(event.payload.get("faithful", []))

@@ -80,6 +80,14 @@ def check_action_constraints(
         choice = (action.content or "").strip().lower()
         if choice not in ("end", "banish"):
             return "end_vote content must be 'end' or 'banish'"
+    if action.action is ActionType.RECRUIT_DECISION:
+        choice = (action.content or "").strip().lower()
+        if choice not in ("recruit", "murder"):
+            return "recruit_decision content must be 'recruit' or 'murder'"
+    if action.action is ActionType.RECRUIT_RESPONSE:
+        choice = (action.content or "").strip().lower()
+        if choice not in ("accept", "decline"):
+            return "recruit_response content must be 'accept' or 'decline'"
     if legal_targets is not None and action.target is not None:
         if action.target not in legal_targets:
             return (

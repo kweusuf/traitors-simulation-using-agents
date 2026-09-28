@@ -33,6 +33,11 @@ class ActionType(str, Enum):
     # Finale end-or-banish vote (phase 25): targetless, content is
     # `end` or `banish`, and only legal inside the finale.
     END_VOTE = "end_vote"
+    # Recruitment as a choice (phase 26): the traitors vote to recruit or
+    # murder on the night after a banishment, and the offered player
+    # answers. Both are targetless and carry their answer in `content`.
+    RECRUIT_DECISION = "recruit_decision"
+    RECRUIT_RESPONSE = "recruit_response"
 
 
 # MVP supports only these actions (spec section 8).
@@ -70,6 +75,10 @@ ACTIONS_REQUIRING_CONTENT = frozenset(
         ActionType.WITHHOLD_INFORMATION,
         # The end vote carries its answer in `content` ("end"/"banish").
         ActionType.END_VOTE,
+        # Recruitment answers also ride in `content` ("recruit"/"murder"
+        # and "accept"/"decline").
+        ActionType.RECRUIT_DECISION,
+        ActionType.RECRUIT_RESPONSE,
     }
 )
 

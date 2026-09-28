@@ -38,6 +38,15 @@ class GameSettings(StrictModel):
     # can never empty the traitor team by voting alone.
     recruit_on_banish: bool = False
     max_recruits: int = Field(default=0, ge=0)
+    # Recruitment as a choice (phase 26): recruitment only opens on the
+    # night after a traitor is banished at the round table, and the
+    # traitors vote whether to recruit instead of murder. A tie falls to
+    # murder. On a recruit night the traitors offer one living faithful
+    # player, who may accept or decline; a lone traitor's offer is an
+    # ultimatum (a decline is fatal). Off by default so existing configs
+    # keep the plain `recruit_on_banish` behaviour, which this flag
+    # overrides when both are set.
+    recruit_choice: bool = False
     # Finale: normal play stops when exactly `finale_traitors` traitors
     # and `finale_faithful` faithful are alive, and rapid-fire voting
     # decides the winner (0/0 disables the finale and keeps the plain

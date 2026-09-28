@@ -85,6 +85,19 @@ class TraitorsEnvironment:
                 # One-shot per game: an already-used check is gone.
                 if agent_id in self.engine.seer_checks_done:
                     continue
+            if action_type is ActionType.RECRUIT_DECISION:
+                # Traitors only, and only while tonight's window is open.
+                if (
+                    state.roles.get(agent_id) is Role.TRAITOR
+                    and self.engine.recruit_window_open()
+                ):
+                    result[action_type] = []
+                continue
+            if action_type is ActionType.RECRUIT_RESPONSE:
+                # Only the player currently weighing the offer may answer.
+                if agent_id == self.engine.recruit_offered:
+                    result[action_type] = []
+                continue
             if action_type in (
                 ActionType.TRAITOR_KILL,
                 ActionType.RECRUIT,
