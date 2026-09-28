@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-22 complete, 322 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-23 complete, 329 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -48,6 +48,7 @@ and its commit lands.
 | 20 | Shield, seer, dagger and the murder shortlist | complete | `0df713e` |
 | 21 | Benchmark a run against a real season | complete | `9d9f658` |
 | 22 | Season replay: pinned traitors, cast personas, ground truth | complete | `d9317b5` |
+| 23 | Benchmark overlaps and index-aligned eliminations | complete | `pending` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
@@ -551,6 +552,28 @@ finale, and two different winners, with zero rejected actions.
 season config opens with alyssa, amanda and wilf as traitors and
 completes.
 
+### Phase 23: Benchmark overlaps and index-aligned eliminations
+
+The first season benchmark scored game-008 at 0.2302 and hid the real
+similarity, because it lined the run's round N up against season episode
+N while the real season had two episodes with no elimination, one with
+two banishments and a trial episode that replaced the murder.
+
+- [x] Elimination-index alignment: the run's k-th banishment is paired
+  with the season's k-th, episodes with nobody removed are skipped, and
+  surplus eliminations on either side are excluded rather than scored.
+- [x] `banishment_overlap` and `murder_overlap`: order independent set
+  precision, recall and F1 over the whole game, with the shared,
+  run-only and season-only names listed.
+- [x] Shield-blocked attempts are not murders. They killed nobody, and
+  counting them inflated the run side; they are reported as
+  `blocked_attempts`.
+- [x] Twelve weighted components, summing to 1.00.
+
+**Verification:** 329 tests green. Overall alignment for game-008 rose
+from 0.2302 to 0.3031, with banishment overlap 0.5714 and murder overlap
+0.5556.
+
 ------------------------------------------------------------------------
 
 ## Later milestones (tracked, not yet scheduled)
@@ -597,3 +620,5 @@ completes.
 | 2026-09-27 | Phase 20 complete: shield, seer, dagger and the murder shortlist behind default-off config flags, enabled in long_game.yaml; 307 tests passed. |
 | 2026-09-27 | Phase 21 complete: season benchmark with ten weighted components and a `benchmark` command writing `benchmark.md`; 319 tests passed. |
 | 2026-09-27 | Phase 22 complete: pinned traitors, 22 UK Series 1 personas, season ground truth and the season_uk_s01 config; 322 tests passed. Live season run started as game-008. |
+| 2026-09-28 | Season replay game-008 finished: traitor win, wilf alone against one faithful, 841 calls, 4h 33m, hallucination 0, duplication 0.433. Benchmark against UK Series 1: overall 0.2302 positional, 0.3031 after the overlap work. |
+| 2026-09-28 | Phase 23 complete: benchmark set overlaps, elimination-index alignment and shield-blocked attempts excluded from murders; 329 tests passed. |

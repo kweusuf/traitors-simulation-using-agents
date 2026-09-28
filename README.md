@@ -106,9 +106,13 @@ traitors to match the real final five, and recruitment off because the
 season never refilled the tower by conversion. The ground truth for it
 lives in `configs/seasons/the-traitors-uk-s01.yaml`, and
 `simulation benchmark <game_id> --season <file>` scores a finished run
-against it on outcome, traitor roster, banishment and murder alignment,
-traitor hit rate, survival curve, final counts, finale, recruitments and
-exit order, writing `benchmark.md` into the run directory.
+against it on twelve components, writing `benchmark.md` into the run
+directory: outcome, traitor roster, banishment and murder alignment (the
+run's k-th elimination against the season's k-th, so episodes with no
+elimination are skipped rather than counted as misses), banishment and
+murder set overlap with precision, recall and F1, traitor hit rate,
+survival curve, final counts, finale, recruitments and exit order.
+Shield-blocked attempts are listed but not counted as murders.
 
 ## Test
 
