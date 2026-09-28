@@ -52,7 +52,7 @@ and its commit lands.
 | 24 | Seasonal cadence for murders and banishments | complete | `cf9c984` |
 | 25 | Endgame end-or-banish vote with blind finale | complete | `c28d39c` |
 | 26 | Recruitment as a choice with ultimatum | complete | `53b5b89` |
-| 27 | Endgame trigger at the final five | complete | `pending` |
+| 27 | Endgame trigger at the final five | complete | `26a2550` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
