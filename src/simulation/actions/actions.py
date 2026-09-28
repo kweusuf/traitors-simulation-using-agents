@@ -30,6 +30,9 @@ class ActionType(str, Enum):
     # and the on-trial murder nomination.
     SEER_CHECK = "seer_check"
     NOMINATE = "nominate"
+    # Finale end-or-banish vote (phase 25): targetless, content is
+    # `end` or `banish`, and only legal inside the finale.
+    END_VOTE = "end_vote"
 
 
 # MVP supports only these actions (spec section 8).
@@ -65,6 +68,8 @@ ACTIONS_REQUIRING_CONTENT = frozenset(
         ActionType.DEFEND,
         ActionType.SHARE_INFORMATION,
         ActionType.WITHHOLD_INFORMATION,
+        # The end vote carries its answer in `content` ("end"/"banish").
+        ActionType.END_VOTE,
     }
 )
 

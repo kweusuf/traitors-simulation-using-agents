@@ -24,6 +24,10 @@ game:
   # The show never murders on the first night: the traitors only choose
   # after the first round table, so round 1's night does nothing.
   quiet_murder_rounds: [1]
+  # Endgame: the finale runs the real end-or-banish vote, and a finale
+  # banishment keeps its role hidden until the game is over.
+  endgame_vote: true
+  blind_finale_banishments: true
   # Wave B mechanics: missions award one item per round (shield, then
   # dagger, then seer), and the traitors nominate a murder shortlist so
   # only those players can die at night.

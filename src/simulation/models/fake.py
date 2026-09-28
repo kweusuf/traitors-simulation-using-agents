@@ -20,6 +20,7 @@ from simulation.models.llm import LLMResponse, ModelConfig
 _AGENT_RE = re.compile(r"You are ([a-zA-Z0-9_]+),")
 _ACTION_RE = re.compile(r"Required action type: (\w+)")
 _TARGETS_RE = re.compile(r"^Legal targets: (.+)$", re.MULTILINE)
+_ALIVE_RE = re.compile(r"^Alive players: (.+)$", re.MULTILINE)
 DEFAULT_QUEUE = "__default__"
 
 
@@ -149,6 +150,22 @@ class PromptScriptProvider(FakeLLMProvider):
                 "action": action_type.value,
                 "target": targets[0],
                 "confidence": 0.9,
+            }
+        elif action_type is ActionType.END_VOTE:
+            # Deterministic endgame rule: keep forcing banishments while
+            # more than three players remain, then end. The prompt's
+            # "Alive players:" line is the only count available here, and
+            # it lets fake games finish without scripting every turn.
+            alive_match = _ALIVE_RE.search(user)
+            alive = (
+                [p.strip() for p in alive_match.group(1).split(",")]
+                if alive_match
+                else []
+            )
+            payload = {
+                "action": "end_vote",
+                "content": "end" if len(alive) <= 3 else "banish",
+                "confidence": 0.7,
             }
         else:
             # VOTE and TRAITOR_KILL: pile onto the first legal target.

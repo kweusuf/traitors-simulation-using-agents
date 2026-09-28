@@ -14,8 +14,12 @@ from simulation.models.llm import ModelConfig
 
 # Phase names that make up the configurable round loop (spec section 7).
 # SETUP opens the game and GAME_END closes it, so neither is configurable.
+# END_VOTE is driven by the finale loop only, so it is not configurable
+# either: listing it in a config's `phases` is an error.
 CONFIGURABLE_PHASES = frozenset(
-    p.value for p in GamePhase if p not in (GamePhase.SETUP, GamePhase.GAME_END)
+    p.value
+    for p in GamePhase
+    if p not in (GamePhase.SETUP, GamePhase.GAME_END, GamePhase.END_VOTE)
 )
 
 
@@ -48,6 +52,13 @@ class GameSettings(StrictModel):
     # on nobody. Empty by default, so default games are unchanged.
     quiet_murder_rounds: list[int] = Field(default_factory=list)
     quiet_banishment_rounds: list[int] = Field(default_factory=list)
+    # Endgame (phase 25): with `endgame_vote` on, each finale iteration
+    # ends with every living player answering `end` (finish the game) or
+    # `banish` (force another vote). `blind_finale_banishments` hides the
+    # roles of players banished during the finale until the game ends,
+    # which is how the show plays out its final round table.
+    endgame_vote: bool = False
+    blind_finale_banishments: bool = False
     # Wave B mechanics (plan section 4), each off by default so existing
     # configs and games play exactly as before:
     # `shield`: a one-shot item that blocks the next murder on its holder.

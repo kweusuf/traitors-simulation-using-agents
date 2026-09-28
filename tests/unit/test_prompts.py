@@ -346,3 +346,28 @@ def test_action_json_hint_covers_the_new_actions() -> None:
     assert '"action": "nominate"' in nominate
     assert '"target": "bob"' in nominate
     assert '"content": ""' in nominate
+
+
+# ----------------------------------------------------------------------
+# Endgame: the end-or-banish vote
+# ----------------------------------------------------------------------
+
+
+def test_end_vote_prompt_explains_the_choice() -> None:
+    builder = PromptBuilder()
+    view = make_view(phase=GamePhase.END_VOTE)
+    user = builder.build_user(view, ActionType.END_VOTE, [])
+
+    assert "Required action type: end_vote." in user
+    assert "you may end the game now, or force one more banishment" in user
+    assert "Ending is only right when you are confident" in user
+    assert "'end' or 'banish'" in user
+    assert "Legal targets: none" in user
+
+
+def test_end_vote_json_hint_uses_the_answers() -> None:
+    hint = action_json_hint(ActionType.END_VOTE)
+    assert '"action": "end_vote"' in hint
+    assert '"target": null' in hint
+    assert '"content": "end"' in hint
+

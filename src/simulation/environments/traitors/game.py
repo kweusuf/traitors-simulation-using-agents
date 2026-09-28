@@ -16,6 +16,7 @@ from simulation.engine.phase_engine import Phase
 from simulation.engine.state import GamePhase, GameState, Role
 from simulation.environments.traitors.phases import (
     EliminationPhase,
+    EndVotePhase,
     MissionPhase,
     PrivateChatPhase,
     PublicDiscussionPhase,
@@ -38,7 +39,10 @@ class TraitorsEnvironment:
     ) -> None:
         self.config = config
         self.engine = GameEngine(config, sink, db=db, seed=seed)
-        self.projector = InformationProjector(self.engine.router)
+        self.projector = InformationProjector(
+            self.engine.router,
+            blind_finale_banishments=config.game.blind_finale_banishments,
+        )
 
     # -- Environment interface (spec section 38) -----------------------
 
@@ -55,6 +59,7 @@ class TraitorsEnvironment:
             "voting": VotingPhase(),
             "elimination": EliminationPhase(),
             "traitor_night": TraitorNightPhase(),
+            "end_vote": EndVotePhase(),
         }
 
     def legal_actions(self, agent_id: str) -> dict[ActionType, list[str]]:

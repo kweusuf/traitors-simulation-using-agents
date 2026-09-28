@@ -80,6 +80,9 @@ class GameEngine:
         self._usage: dict[tuple[str, ActionType], int] = {}
         self._night_choices: list[Action] = []
         self._nominations: list[Action] = []
+        # Endgame end-or-banish votes for the current finale round:
+        # player_id -> "end" or "banish". Cleared every round.
+        self._end_votes: dict[str, str] = {}
         # The murder shortlist (on_trial): who may be killed this night.
         # Empty while off or unresolved; cleared every round with the
         # night choices so a stale shortlist can never leak across rounds.
@@ -152,6 +155,7 @@ class GameEngine:
         self._vote_weights.clear()
         self._night_choices.clear()
         self._nominations.clear()
+        self._end_votes.clear()
         self.murder_shortlist = []
         self._pending_recruit = None
         self._emit(EventType.ROUND_STARTED)
@@ -252,6 +256,15 @@ class GameEngine:
             # before the win check (see `eliminate`).
             assert action.target is not None
             self._pending_recruit = action.target
+        elif action.action is ActionType.END_VOTE:
+            # The validator already guaranteed the content is end/banish.
+            choice = (action.content or "").strip().lower()
+            self._end_votes[action.actor_id] = choice
+            self._emit(
+                EventType.END_VOTE_CAST,
+                actor=action.actor_id,
+                payload={"choice": choice},
+            )
 
         return ValidationResult.accepted()
 
@@ -334,6 +347,47 @@ class GameEngine:
     def skip_banishment(self) -> None:
         """Record that the round table voted on nobody this round."""
         self._emit(EventType.BANISHMENT_SKIPPED, payload={"reason": "quiet_round"})
+
+    # ------------------------------------------------------------------
+    # Endgame end-or-banish vote (finale, phase 25)
+    # ------------------------------------------------------------------
+    def end_vote_choices(self) -> dict[str, str]:
+        """This round's end vote: player_id -> "end" or "banish"."""
+        return dict(self._end_votes)
+
+    def end_vote_unanimous(self) -> bool:
+        """True when every living player answered `end`.
+
+        A skipped turn counts as a missing answer, not as consent, so a
+        partial vote can never finish the game by accident.
+        """
+        if len(self._end_votes) < len(self.state.alive_players):
+            return False
+        return all(choice == "end" for choice in self._end_votes.values())
+
+    def end_vote_requests_banishment(self) -> bool:
+        """True when at least one player answered `banish`."""
+        return any(choice == "banish" for choice in self._end_votes.values())
+
+    def resolve_end_vote(self) -> bool:
+        """Finish the game on a unanimous `end`; True when it did.
+
+        The traitors take the win if any of them survived (solo when
+        exactly one did); otherwise the faithful do. Any `banish` sends
+        the game on to the normal voting and elimination phases, after
+        which the finale loop runs another end vote.
+        """
+        if not self.end_vote_unanimous():
+            return False
+        survivors = [
+            p
+            for p in self.state.alive_players
+            if self.state.roles[p] is Role.TRAITOR
+        ]
+        self._declare_winner(
+            Role.TRAITOR if survivors else Role.FAITHFUL, reason="endgame"
+        )
+        return True
 
     # ------------------------------------------------------------------
     # Elimination and win conditions
@@ -459,6 +513,10 @@ class GameEngine:
         self.state.players[player_id].alive = False
         self.state.alive_players.discard(player_id)
         self.state.eliminated_players.add(player_id)
+        if self.state.finale:
+            # Tracked for the blind finale: a player eliminated after the
+            # finale started keeps their role hidden until the game ends.
+            self.state.finale_eliminated.add(player_id)
         self._emit(
             EventType.PLAYER_ELIMINATED,
             actor=player_id,
@@ -509,14 +567,25 @@ class GameEngine:
         alive_faithful = [
             p for p in self.state.alive_players if self.state.roles[p] is Role.FAITHFUL
         ]
+        endgame_vote = self.state.finale and self.config.game.endgame_vote
         winner: Optional[Role] = None
         if not alive_traitors:
             winner = Role.FAITHFUL
-        elif len(alive_traitors) >= len(alive_faithful):
+        elif not alive_faithful:
+            winner = Role.TRAITOR
+        elif endgame_vote and len(self.state.alive_players) <= 2:
+            # The show stops at the final two: the surviving traitor, if
+            # any, takes the prize.
+            winner = Role.TRAITOR
+        elif not endgame_vote and len(alive_traitors) >= len(alive_faithful):
+            # Plain parity win. With the endgame vote on, parity no
+            # longer ends the game; only extinction does.
             winner = Role.TRAITOR
         if winner is None:
             return False
-        self._declare_winner(winner, reason="elimination")
+        self._declare_winner(
+            winner, reason="endgame" if endgame_vote else "elimination"
+        )
         return True
 
     def _check_finale_trigger(self) -> bool:

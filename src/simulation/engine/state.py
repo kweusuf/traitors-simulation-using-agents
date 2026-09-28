@@ -28,6 +28,9 @@ class GamePhase(str, Enum):
     VOTING = "voting"
     ELIMINATION = "elimination"
     TRAITOR_NIGHT = "traitor_night"
+    # Finale-only end-or-banish vote (phase 25). Driven by the finale
+    # loop, never listed in a config's phase ordering.
+    END_VOTE = "end_vote"
     GAME_END = "game_end"
 
 
@@ -57,6 +60,9 @@ class GameState(StrictModel):
     winning_team: Optional[Role] = None
     # Rapid-fire finale is running (config `finale_traitors`/`finale_faithful`).
     finale: bool = False
+    # Players eliminated after the finale started. With the blind finale
+    # flag on, their roles stay hidden until the game has a winner.
+    finale_eliminated: set[str] = Field(default_factory=set)
     # Seeded per-player disposition: "solo" wants to be the last traitor
     # standing, "team" wants the traitor faction to win together. Hidden
     # information: it reaches prompts through Goals, never through views.

@@ -26,6 +26,11 @@ PHASE_ALLOWED_ACTIONS: dict[GamePhase, frozenset[ActionType]] = {
     GamePhase.VOTING: frozenset({ActionType.VOTE}),
     GamePhase.ELIMINATION: frozenset({ActionType.RECRUIT}),
     GamePhase.TRAITOR_NIGHT: frozenset({ActionType.TRAITOR_KILL, ActionType.TRAITOR_MESSAGE}),
+    # END_VOTE exists in this phase for every game; the validator's own
+    # endgame checks decide whether it is legal right now, so the
+    # rejection message can name the flag, the finale and the two
+    # accepted values instead of only the phase mismatch.
+    GamePhase.END_VOTE: frozenset({ActionType.END_VOTE}),
     GamePhase.GAME_END: frozenset(),
 }
 
@@ -124,7 +129,23 @@ class RuleValidator:
             if seer_used and action.actor_id in seer_used:
                 return ValidationResult.rejected("seer check already used")
 
-        # 4. Target checks.
+        # 4. Endgame vote (phase 25): only during the finale, only with
+        # the flag on, and only ever `end` or `banish`. The message names
+        # both accepted values so the correction retry can fix the reply.
+        if action.action is ActionType.END_VOTE:
+            if not self._config.game.endgame_vote:
+                return ValidationResult.rejected("end_vote is disabled for this game")
+            if not state.finale:
+                return ValidationResult.rejected(
+                    "end_vote is only allowed while the finale is running"
+                )
+            choice = (action.content or "").strip().lower()
+            if choice not in ("end", "banish"):
+                return ValidationResult.rejected(
+                    "end_vote content must be 'end' or 'banish'"
+                )
+
+        # 5. Target checks.
         if action.target is not None:
             if action.target not in state.players:
                 return ValidationResult.rejected(f"unknown target '{action.target}'")
@@ -159,7 +180,7 @@ class RuleValidator:
                 if action.target == action.actor_id:
                     return ValidationResult.rejected("cannot check yourself")
 
-        # 5. Phase limits (per-agent usage within the current phase).
+        # 6. Phase limits (per-agent usage within the current phase).
         limit = self._action_limit(action)
         if limit is not None:
             used = usage.get((action.actor_id, action.action), 0)
@@ -184,6 +205,7 @@ class RuleValidator:
             ActionType.TRAITOR_MESSAGE,
             ActionType.SEER_CHECK,
             ActionType.NOMINATE,
+            ActionType.END_VOTE,
         ):
             return 1
         return None

@@ -48,7 +48,10 @@ def action_json_hint(action_type: ActionType) -> str:
     example: dict[str, object] = {"action": action_type.value}
     example["target"] = "bob" if action_type in ACTIONS_REQUIRING_TARGET else None
     if action_type in ACTIONS_REQUIRING_CONTENT:
-        example["content"] = "your message here"
+        # The end vote's content is its answer, not prose.
+        example["content"] = (
+            "end" if action_type is ActionType.END_VOTE else "your message here"
+        )
     else:
         example["content"] = ""
     example["confidence"] = 0.8
@@ -164,6 +167,14 @@ class PromptBuilder:
                 "You are a banished traitor making one final choice: recruit a "
                 "living faithful player onto the traitor team. They become a "
                 "traitor immediately and are told their new role."
+            )
+        if action_type is ActionType.END_VOTE:
+            lines.append(
+                "The endgame vote: you may end the game now, or force one "
+                "more banishment. Ending is only right when you are "
+                "confident that no traitor remains among you; if you still "
+                "suspect anyone, force the banishment. Answer with content "
+                "'end' or 'banish'."
             )
         if action_type is ActionType.PUBLIC_MESSAGE:
             lines.append(

@@ -74,6 +74,12 @@ def check_action_constraints(
             f"action '{action.action.value}' not allowed; "
             f"use one of: {sorted(a.value for a in allowed)}"
         )
+    if action.action is ActionType.END_VOTE:
+        # Structural check so the correction retry can fix a bad answer;
+        # the engine's validator re-checks it as the enforcement backstop.
+        choice = (action.content or "").strip().lower()
+        if choice not in ("end", "banish"):
+            return "end_vote content must be 'end' or 'banish'"
     if legal_targets is not None and action.target is not None:
         if action.target not in legal_targets:
             return (

@@ -279,6 +279,9 @@ def render_transcript(events: list[Event]) -> str:
             )
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")
+        elif event.type is EventType.END_VOTE_CAST:
+            choice = event.payload.get("choice", "")
+            lines.append(f"    End vote: {event.actor} answers {choice}")
         elif event.type is EventType.MURDER_SKIPPED:
             reason = event.payload.get("reason", "quiet_round")
             lines.append(f"    Night skipped: no murder this round ({reason})")

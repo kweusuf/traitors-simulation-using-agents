@@ -53,13 +53,20 @@ class PhaseContext:
 class PhaseEngine:
     # One rapid-fire finale iteration: talk, side conversations, vote.
     FINALE_PHASES = ("round_table", "private_chat", "voting", "elimination")
+    # One endgame-vote iteration: talk, side conversations, then the
+    # end-or-banish vote. The normal voting and elimination phases only
+    # run when somebody asks for a banishment.
+    ENDGAME_PHASES = ("round_table", "private_chat", "end_vote")
 
     def __init__(self, config: GameConfig, engine: GameEngine, phases: dict[str, Phase]) -> None:
         unknown = [name for name in config.phases if name not in phases]
         if unknown:
             raise ValueError(f"no implementation registered for phases: {unknown}")
         if config.game.finale_traitors:
-            missing = [n for n in self.FINALE_PHASES if n not in phases]
+            needed = list(self.FINALE_PHASES)
+            if config.game.endgame_vote:
+                needed.append("end_vote")
+            missing = [n for n in needed if n not in phases]
             if missing:
                 raise ValueError(f"finale needs phase implementations for: {missing}")
         self.config = config
@@ -100,7 +107,13 @@ class PhaseEngine:
         nobody and the vote simply runs again. After `finale_max_votes`
         consecutive rounds without a banishment, `round_limit_winner`
         is declared instead.
+
+        With `endgame_vote` on, the vote is replaced by the end-or-banish
+        vote (see `_run_endgame_finale`).
         """
+        if self.config.game.endgame_vote:
+            await self._run_endgame_finale(context)
+            return
         stalled = 0
         while not self.engine.is_over and stalled < self.config.game.finale_max_votes:
             before = len(self.engine.state.alive_players)
@@ -111,6 +124,37 @@ class PhaseEngine:
                 self.engine.end_phase()
                 if self.engine.is_over:
                     return
+            stalled = 0 if len(self.engine.state.alive_players) < before else stalled + 1
+        if not self.engine.is_over:
+            self.engine.apply_round_limit(reason="finale_vote_limit")
+
+    async def _run_endgame_finale(self, context: PhaseContext) -> None:
+        """Finale with the end-or-banish vote (phase 25).
+
+        Each iteration runs the round table and private chat, then one
+        `end_vote` phase where every living player answers `end` or
+        `banish`. A unanimous `end` finishes the game inside the phase;
+        any `banish` runs the normal voting and elimination phases and
+        the loop repeats. The game also ends on its own when only two
+        players remain, which the engine's win check handles.
+        """
+        stalled = 0
+        while not self.engine.is_over and stalled < self.config.game.finale_max_votes:
+            before = len(self.engine.state.alive_players)
+            self.engine.start_round()
+            for name in self.ENDGAME_PHASES:
+                self.engine.begin_phase(_phase_enum(name))
+                await self.phases[name].run(context)
+                self.engine.end_phase()
+                if self.engine.is_over:
+                    return
+            if self.engine.end_vote_requests_banishment():
+                for name in ("voting", "elimination"):
+                    self.engine.begin_phase(_phase_enum(name))
+                    await self.phases[name].run(context)
+                    self.engine.end_phase()
+                    if self.engine.is_over:
+                        return
             stalled = 0 if len(self.engine.state.alive_players) < before else stalled + 1
         if not self.engine.is_over:
             self.engine.apply_round_limit(reason="finale_vote_limit")

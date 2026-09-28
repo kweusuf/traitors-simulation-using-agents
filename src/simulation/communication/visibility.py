@@ -68,10 +68,14 @@ class InformationProjector:
         router: MessageRouter,
         reveal_on_elimination: bool = True,
         reveal_on_end: bool = True,
+        blind_finale_banishments: bool = False,
     ) -> None:
         self._router = router
         self._reveal_on_elimination = reveal_on_elimination
         self._reveal_on_end = reveal_on_end
+        # With the blind finale on, a player banished during the finale
+        # keeps their role hidden while the game has no winner.
+        self._blind_finale = blind_finale_banishments
 
     def project(self, state: GameState, agent_id: str) -> AgentView:
         if agent_id not in state.players:
@@ -111,6 +115,12 @@ class InformationProjector:
         # Publicly eliminated players reveal their roles by default.
         if self._reveal_on_elimination:
             for pid in state.eliminated_players:
+                if (
+                    self._blind_finale
+                    and state.winner is None
+                    and pid in state.finale_eliminated
+                ):
+                    continue  # blind finale: role stays hidden for now
                 known[pid] = state.roles[pid]
 
         if self._reveal_on_end and state.winner is not None:

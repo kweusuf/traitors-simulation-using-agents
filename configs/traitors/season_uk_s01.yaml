@@ -28,6 +28,11 @@ game:
   # and the host let them stop.
   quiet_murder_rounds: [1]
   quiet_banishment_rounds: [8]
+  # Series 1 ended with the real endgame: the finalists chose whether to
+  # stop or banish again, and a banishment revealed nothing until the
+  # game was over. Both flags mirror that.
+  endgame_vote: true
+  blind_finale_banishments: true
   # Series 1 used the shield and a one-off on-trial murder restriction.
   # It never had a seer or a dagger.
   shield: true

@@ -129,6 +129,23 @@ class VotingPhase:
         return None
 
 
+class EndVotePhase:
+    """Finale end-or-banish vote: every living player answers.
+
+    Targetless; the answer rides in `content` (`end` or `banish`). One
+    `banish` from anyone moves the game on to the normal voting and
+    elimination phases, and only a unanimous `end` finishes it here.
+    """
+
+    name = "end_vote"
+
+    async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
+        engine = context.engine
+        await _ask_all_alive(context, ActionType.END_VOTE)
+        engine.resolve_end_vote()
+        return None
+
+
 class EliminationPhase:
     """Resolve the tally; ties eliminate nobody (spec section 29).
 
