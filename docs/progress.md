@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-27 complete, 378 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-27 complete, 384 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -601,12 +601,19 @@ plays, each behind a config flag defaulting off.
 - [x] **Endgame trigger (27).** `finale_total` starts the finale at that
   many living players whatever the split, because the faction pair
   cannot fire once recruitment keeps the traitor count topped up. The
-  season replay uses five, as the show does.
+  season replay uses five, as the show does. A configured endgame
+  (`finale_total` or `endgame_vote`) replaces the parity win outright:
+  parity closed the season replay (game-009) at three traitors against
+  three faithful with six alive, one player short of the final five, so
+  the finale never opened. Extinction still ends the game whatever is
+  configured; only parity is dropped.
 
-**Verification:** 378 tests green. A fake season game reaches the finale
+**Verification:** 384 tests green. A fake season game reaches the finale
 at five alive, runs end votes, and ends by auto-end at two players, with
 the faithful having banished three of their own while holding a four to
-one majority.
+one majority. With a three-traitor cast, the same game now plays through
+three against three at six alive and on to the final five instead of
+being called there by parity.
 
 ------------------------------------------------------------------------
 
@@ -657,3 +664,4 @@ one majority.
 | 2026-09-28 | Season replay game-008 finished: traitor win, wilf alone against one faithful, 841 calls, 4h 33m, hallucination 0, duplication 0.433. Benchmark against UK Series 1: overall 0.2302 positional, 0.3031 after the overlap work. |
 | 2026-09-28 | Phase 23 complete: benchmark set overlaps, elimination-index alignment and shield-blocked attempts excluded from murders; 329 tests passed. |
 | 2026-09-28 | Phases 24 to 27 complete: seasonal cadence (no murder on night one, quiet rounds), the end-or-banish endgame vote with blind finale banishments, recruitment as a choice with a lone-traitor ultimatum, and a finale trigger based on the living count; 378 tests passed. |
+| 2026-09-28 | Fix: a configured endgame (`finale_total` or `endgame_vote`) replaces the parity win. The season replay (game-009) reached three traitors against three faithful with six alive and parity closed it there, one player short of the final five, so the finale never opened; the count trigger also fires below its number now, for a cast that cannot land on it. The season config on the fake backend now reaches the finale at its final five (wilf against four faithful) and ends by end vote. The season config's `max_recruits: 2` is documented as intended. 384 tests passed. |

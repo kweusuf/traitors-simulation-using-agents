@@ -163,7 +163,12 @@ def test_show_configs_use_recruitment_as_a_choice() -> None:
         assert config.game.recruit_choice is True, path
         # The automatic banishment conversion is off: the vote owns it.
         assert config.game.recruit_on_banish is False, path
-        assert config.game.max_recruits == 0  # no cap on the vote either
+        # The cap applies to the choice window as well. The long game
+        # leaves it open; the season replay caps it at the two attempts
+        # Series 1 actually made, so recruitment cannot refill the tower
+        # ahead of the endgame.
+        expected = 2 if "season_uk_s01" in path else 0
+        assert config.game.max_recruits == expected, path
 
 
 def test_recruit_targets_are_living_faithful_only() -> None:

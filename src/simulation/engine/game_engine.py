@@ -745,9 +745,14 @@ class GameEngine:
             # The show stops at the final two: the surviving traitor, if
             # any, takes the prize.
             winner = Role.TRAITOR
-        elif not endgame_vote and len(alive_traitors) >= len(alive_faithful):
-            # Plain parity win. With the endgame vote on, parity no
-            # longer ends the game; only extinction does.
+        elif (
+            not endgame_vote
+            and not self._endgame_configured()
+            and len(alive_traitors) >= len(alive_faithful)
+        ):
+            # Plain parity win. A configured endgame replaces parity,
+            # because the show has no parity rule and closing the game
+            # at equal counts is what stopped the finale being reached.
             winner = Role.TRAITOR
         if winner is None:
             return False
@@ -756,18 +761,27 @@ class GameEngine:
         )
         return True
 
-    def _check_finale_trigger(self) -> bool:
-        """Start the finale when the configured split is reached.
+    def _endgame_configured(self) -> bool:
+        """Is an endgame configured, either by count or by end vote?
 
-        Normal play stops there instead of a parity win: the rapid-fire
-        vote decides from 3 against 3. Called on every win check and
+        When it is, parity no longer ends the game, so the final five is
+        actually reached and the endgame decides the winner.
+        """
+        game = self.config.game
+        return bool(game.endgame_vote or game.finale_total)
+
+    def _check_finale_trigger(self) -> bool:
+        """Start the finale once the configured endgame counts are met.
+
+        Either the faction pair is reached exactly, or the living count
+        falls to `finale_total` or below. Called on every win check and
         once at game start, so a game configured at the finale counts
-        opens straight into rapid fire.
+        opens straight into the endgame.
         """
         game = self.config.game
         if self.state.finale:
             return False
-        if game.finale_total and len(self.state.alive_players) == game.finale_total:
+        if game.finale_total and len(self.state.alive_players) <= game.finale_total:
             self._start_finale(
                 [p for p in self.state.alive_players if self.state.roles[p] is Role.TRAITOR],
                 [p for p in self.state.alive_players if self.state.roles[p] is Role.FAITHFUL],

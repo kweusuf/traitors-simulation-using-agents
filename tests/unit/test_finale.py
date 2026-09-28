@@ -1,10 +1,13 @@
-"""Finale: normal play stops at 3 traitors and 3 faithful, then
-rapid-fire voting decides. Also covers the seeded solo/team ambitions
-and the individual outcomes they drive."""
+"""Finale: normal play stops at 3 traitors and 3 faithful, or at the
+configured living count, then rapid-fire voting decides. A configured
+endgame replaces the parity win, so extinction is the only elimination
+victory left. Also covers the seeded solo/team ambitions and the
+individual outcomes they drive."""
 
 from __future__ import annotations
 
 import asyncio
+import json
 from pathlib import Path
 
 import pytest
@@ -465,9 +468,137 @@ def test_finale_can_trigger_on_a_total_count() -> None:
     assert len(started[0].payload["faithful"]) == 4
 
 
-def test_total_trigger_needs_the_exact_count() -> None:
+def test_total_trigger_fires_at_or_below_the_count() -> None:
     engine = make_engine(players=6, traitors=1, finale_total=4, max_rounds=5)
     engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="night")
-    assert engine.state.finale is False  # five left, not four
+    assert engine.state.finale is False  # five left, above the count
     engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="night")
     assert engine.state.finale is True
+
+
+def test_total_trigger_fires_when_the_cast_is_below_the_count() -> None:
+    # A trigger the cast can never land on exactly (the count is above
+    # every possible living total) opens the endgame at game start,
+    # rather than leaving the game to be decided by parity or the round
+    # limit.
+    engine = make_engine(players=6, traitors=1, finale_total=8, max_rounds=5)
+    assert engine.state.finale is True
+
+
+# ----------------------------------------------------------------------
+# A configured endgame replaces parity
+# ----------------------------------------------------------------------
+
+
+def test_parity_does_not_end_a_game_with_a_configured_endgame() -> None:
+    # Three against three is a traitor win under parity, which is what
+    # ended the season run at six alive, one short of the final five the
+    # real season reached.
+    engine = make_engine(
+        players=6, traitors=3, finale_total=5, max_rounds=8
+    )
+    engine.check_win()
+    assert engine.state.winner is None  # parity declined at three-three
+    engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="vote")
+    assert engine.state.winner is None  # still declined, five remain
+    assert engine.state.finale is True
+
+
+def test_extinction_still_ends_a_game_with_a_configured_endgame() -> None:
+    # The endgame replaces parity, not extinction: losing the last
+    # traitor still hands the game to the faithful.
+    engine = make_engine(players=4, traitors=1, finale_total=2, max_rounds=5)
+    engine.eliminate(alive_roles(engine, Role.TRAITOR)[0], method="vote")
+    assert engine.state.winner == "faithful"
+    assert engine.state.finale is False
+
+
+def test_parity_still_applies_without_a_configured_endgame() -> None:
+    engine = make_engine(players=5, traitors=2, max_rounds=5)
+    assert engine.state.winner is None  # two against three is not parity
+    engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="vote")
+    assert engine.state.winner == "traitor"  # two against two is
+
+
+def test_endgame_vote_alone_also_suppresses_parity() -> None:
+    # The end vote flag on its own is enough: the show's endgame is
+    # configured, so an equal split is played out rather than called.
+    engine = make_engine(
+        players=5, traitors=2, endgame_vote=True, max_rounds=5
+    )
+    engine.eliminate(alive_roles(engine, Role.FAITHFUL)[0], method="night")
+    assert engine.state.winner is None  # two against two, not called
+    assert engine.state.finale is False  # no finale count configured
+
+    # The same cast without the flag is a plain parity win.
+    plain = make_engine(players=5, traitors=2, max_rounds=5)
+    plain.eliminate(alive_roles(plain, Role.FAITHFUL)[0], method="night")
+    assert plain.state.winner == "traitor"
+
+
+def test_a_fake_season_shaped_game_reaches_the_final_five(
+    tmp_path: Path,
+) -> None:
+    """The season shape end to end, on the fake backend.
+
+    Three traitors reach parity at six alive, the configured endgame
+    keeps the game going to the final five, and the end-or-banish loop
+    decides it. Seed 3 is the regression case: under the plain parity
+    rule the same run was declared a traitor win at six alive, with no
+    finale at all, which is how the season replay (game-009) ended
+    early.
+    """
+    config = GameConfig(
+        game={
+            "players": 8,
+            "traitors": 3,
+            "finale_total": 5,
+            "endgame_vote": True,
+            "blind_finale_banishments": True,
+            "max_rounds": 10,
+        },
+        seed=3,
+    )
+    config.llm.provider = "fake"
+    result = GameRunner(
+        config,
+        runs_dir=tmp_path,
+        db=Database(),
+        personas_dir=Path("configs/personas"),
+    ).run(game_id="game-001", seed=3)
+    events = [
+        json.loads(line)
+        for line in (result.run_dir / "events.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+
+    started = [e for e in events if e["type"] == "FINALE_STARTED"]
+    assert len(started) == 1
+    opening = started[0]["payload"]
+    # Five alive, and the split is already at parity strength: the sort
+    # of board the old rule closed before the finale could open.
+    assert len(opening["traitors"]) == 3
+    assert len(opening["faithful"]) == 2
+    # Exactly the three eliminations that took eight players down to the
+    # configured five happened first.
+    assert (
+        len(
+            [
+                e
+                for e in events
+                if e["type"] == "PLAYER_ELIMINATED"
+                and e["sequence"] < started[0]["sequence"]
+            ]
+        )
+        == 3
+    )
+
+    won = [e for e in events if e["type"] == "GAME_WON"]
+    assert len(won) == 1
+    assert won[0]["payload"]["reason"] == "endgame"
+    assert won[0]["payload"]["finale"] is True
+    # The end vote is what finished it, not an elimination victory.
+    assert any(e["type"] == "END_VOTE_CAST" for e in events)
+    assert result.metrics["status"] == "completed"
+    assert result.metrics["finale"] is True
