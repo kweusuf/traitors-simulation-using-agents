@@ -22,6 +22,12 @@ game:
   finale_traitors: 2
   finale_faithful: 3
   finale_max_votes: 10
+  # Series 1 cadence: episode 1 opened with no murder at all (the
+  # traitors chose only at the end of the second night), and episode 8
+  # had no round-table banishment, because the players refused to vote
+  # and the host let them stop.
+  quiet_murder_rounds: [1]
+  quiet_banishment_rounds: [8]
   # Series 1 used the shield and a one-off on-trial murder restriction.
   # It never had a seer or a dagger.
   shield: true

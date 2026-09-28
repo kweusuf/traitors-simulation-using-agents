@@ -119,6 +119,12 @@ class VotingPhase:
     name = "voting"
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
+        engine = context.engine
+        if engine.banishment_is_quiet():
+            # Seasonal cadence: the round table votes on nobody, so no
+            # votes are requested at all and the tally stays empty.
+            engine.skip_banishment()
+            return None
         await _ask_all_alive(context, ActionType.VOTE)
         return None
 
@@ -163,6 +169,11 @@ class TraitorNightPhase:
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
         engine = context.engine
+        if engine.murder_is_quiet():
+            # Seasonal cadence: the traitor night does nothing at all,
+            # which means no council, no nomination and no kill.
+            engine.skip_night_murder()
+            return {"victim": None}
         traitors = sorted(
             p for p in engine.state.alive_players
             if engine.state.roles.get(p) is Role.TRAITOR

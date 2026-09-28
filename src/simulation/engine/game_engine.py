@@ -317,6 +317,25 @@ class GameEngine:
             self.router.deliver(message)
 
     # ------------------------------------------------------------------
+    # Seasonal cadence (quiet rounds)
+    # ------------------------------------------------------------------
+    def murder_is_quiet(self) -> bool:
+        """True when this round is configured to skip the traitor night."""
+        return self.state.round_number in self.config.game.quiet_murder_rounds
+
+    def banishment_is_quiet(self) -> bool:
+        """True when this round is configured to skip the round-table vote."""
+        return self.state.round_number in self.config.game.quiet_banishment_rounds
+
+    def skip_night_murder(self) -> None:
+        """Record that the traitor night did nothing this round."""
+        self._emit(EventType.MURDER_SKIPPED, payload={"reason": "quiet_round"})
+
+    def skip_banishment(self) -> None:
+        """Record that the round table voted on nobody this round."""
+        self._emit(EventType.BANISHMENT_SKIPPED, payload={"reason": "quiet_round"})
+
+    # ------------------------------------------------------------------
     # Elimination and win conditions
     # ------------------------------------------------------------------
     def tally_votes(self) -> TallyResult:

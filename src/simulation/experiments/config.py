@@ -43,6 +43,11 @@ class GameSettings(StrictModel):
     # How many consecutive rapid-fire rounds may pass with nobody
     # banished before `round_limit_winner` is declared instead.
     finale_max_votes: int = Field(default=10, ge=1)
+    # Seasonal cadence: round numbers on which the traitors do not
+    # murder at all, and round numbers on which the round table votes
+    # on nobody. Empty by default, so default games are unchanged.
+    quiet_murder_rounds: list[int] = Field(default_factory=list)
+    quiet_banishment_rounds: list[int] = Field(default_factory=list)
     # Wave B mechanics (plan section 4), each off by default so existing
     # configs and games play exactly as before:
     # `shield`: a one-shot item that blocks the next murder on its holder.

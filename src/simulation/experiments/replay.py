@@ -279,6 +279,14 @@ def render_transcript(events: list[Event]) -> str:
             )
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")
+        elif event.type is EventType.MURDER_SKIPPED:
+            reason = event.payload.get("reason", "quiet_round")
+            lines.append(f"    Night skipped: no murder this round ({reason})")
+        elif event.type is EventType.BANISHMENT_SKIPPED:
+            reason = event.payload.get("reason", "quiet_round")
+            lines.append(
+                f"    Round table skipped: no banishment this round ({reason})"
+            )
         elif event.type is EventType.GAME_WON:
             team = event.payload.get("team", "")
             reason = event.payload.get("reason", "")
