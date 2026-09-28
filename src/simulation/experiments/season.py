@@ -26,20 +26,25 @@ from simulation.persistence.event_log import Event, EventType
 # shape of the game (who was banished, who was murdered, how the living
 # counts tracked the season) carry the most weight, because those are
 # what a viewer would notice; the bookkeeping components (roster,
-# recruits, exit order) matter, but drift there is less visible. The
-# weights sum to 1.0 and only the components that produced a score are
-# used: a skipped component's weight is redistributed over the rest.
+# recruits, exit order) matter, but drift there is less visible. The two
+# set-overlap components sit beside the order-sensitive alignment ones so
+# a run that reaches the same people in a different sequence still earns
+# credit for the people it got right. The weights sum to 1.0 and only the
+# components that produced a score are used: a skipped component's weight
+# is redistributed over the rest.
 COMPONENT_WEIGHTS: dict[str, float] = {
-    "outcome": 0.20,
-    "traitor_roster": 0.10,
-    "banishment_alignment": 0.12,
-    "murder_alignment": 0.10,
+    "outcome": 0.18,
+    "traitor_roster": 0.08,
+    "banishment_alignment": 0.10,
+    "banishment_overlap": 0.10,
+    "murder_alignment": 0.08,
+    "murder_overlap": 0.08,
     "traitor_hit_rate": 0.08,
-    "survival_curve": 0.12,
-    "final_counts": 0.08,
-    "finale": 0.08,
-    "recruitments": 0.06,
-    "exit_order": 0.06,
+    "survival_curve": 0.10,
+    "final_counts": 0.06,
+    "finale": 0.06,
+    "recruitments": 0.04,
+    "exit_order": 0.04,
 }
 
 
@@ -244,6 +249,7 @@ class _RunFacts:
     roles: dict[str, str] = field(default_factory=dict)
     banishments: dict[int, str] = field(default_factory=dict)  # round -> player
     night_victims: dict[int, str] = field(default_factory=dict)  # round -> player
+    blocked: set[tuple[int, str]] = field(default_factory=set)  # (round, player)
     eliminations: dict[str, int] = field(default_factory=dict)  # player -> round
     finale: Optional[dict[str, list[str]]] = None
     winner: Optional[str] = None
@@ -251,8 +257,11 @@ class _RunFacts:
 
 
 def _fold(events: list[Event]) -> _RunFacts:
-    """Read the run-side facts; a night kill is the eliminated player
-    when the shield did not block it, otherwise the traitors' choice."""
+    """Read the run-side facts.
+
+    A night victim is the traitors' choice, except when a shield blocked
+    it: a blocked attempt kills nobody, so it must not count as a murder
+    or it would inflate the run side of the comparison."""
     facts = _RunFacts()
     for event in events:
         payload = event.payload
@@ -278,6 +287,8 @@ def _fold(events: list[Event]) -> _RunFacts:
                 facts.banishments[event.round] = event.actor
         elif event.type is EventType.TRAITOR_KILL and event.targets:
             facts.night_victims.setdefault(event.round, event.targets[0])
+        elif event.type is EventType.SHIELD_BLOCKED and event.targets:
+            facts.blocked.add((event.round, event.targets[0]))
         elif event.type is EventType.FINALE_STARTED and facts.finale is None:
             facts.finale = {
                 "traitors": list(payload.get("traitors", [])),
@@ -292,6 +303,9 @@ def _fold(events: list[Event]) -> _RunFacts:
                 facts.rounds = max(facts.rounds, rounds)
             if facts.winner is None and payload.get("winner") is not None:
                 facts.winner = str(payload["winner"])
+    for round_number, victim in list(facts.night_victims.items()):
+        if (round_number, victim) in facts.blocked:
+            del facts.night_victims[round_number]
     return facts
 
 
@@ -390,42 +404,48 @@ def _traitor_roster(facts: _RunFacts, season: Season) -> dict[str, Any]:
 
 def _alignment(
     run_side: dict[int, str],
-    season_side: dict[int, Any],
+    season_side: list[tuple[int, str]],
     *,
     method: str,
 ) -> dict[str, Any]:
-    """Pair the run's per-round eliminations with the season's episode
-    entries; episodes the season leaves empty are excluded."""
+    """Pair the run's k-th elimination with the season's k-th elimination.
+
+    The season lists only the episodes that actually eliminated someone
+    (episodes with no banishment or no murder simply contribute no entry),
+    so an empty episode shifts nothing: it is skipped rather than spent on
+    a phantom pair. Either side running out of entries leaves the surplus
+    unpaired and out of the match rate, so a run with more eliminations
+    than the season is never penalised for the extra ones.
+    """
+    run_items = [(round_number, run_side[round_number]) for round_number in sorted(run_side)]
     pairs: list[dict[str, Any]] = []
-    for round_number in sorted(run_side):
-        expected = season_side.get(round_number)
-        if expected is None or expected == () or expected == "":
-            pairs.append(
-                {
-                    "round": round_number,
-                    "run": run_side[round_number],
-                    "season": None,
-                    "matched": None,
-                }
-            )
-            continue
-        expected_list = list(expected) if isinstance(expected, (list, tuple)) else [
-            expected
-        ]
+    for index in range(1, max(len(run_items), len(season_side)) + 1):
+        run_round, run_value = (
+            run_items[index - 1] if index <= len(run_items) else (None, None)
+        )
+        season_episode, season_value = (
+            season_side[index - 1] if index <= len(season_side) else (None, None)
+        )
+        if run_value is None or season_value is None:
+            matched: Optional[bool] = None
+        else:
+            matched = run_value == season_value
         pairs.append(
             {
-                "round": round_number,
-                "run": run_side[round_number],
-                "season": expected_list,
-                "matched": run_side[round_number] in expected_list,
+                "index": index,
+                "run_round": run_round,
+                "season_episode": season_episode,
+                "run": run_value,
+                "season": season_value,
+                "matched": matched,
             }
         )
     comparable = [pair for pair in pairs if pair["matched"] is not None]
     matched_count = sum(1 for pair in comparable if pair["matched"])
     match_rate = matched_count / len(comparable) if comparable else None
     return {
-        "run": [pair["run"] for pair in pairs],
-        "season": [pair["season"] for pair in pairs],
+        "run": [pair["run"] for pair in pairs if pair["run"] is not None],
+        "season": [pair["season"] for pair in pairs if pair["season"] is not None],
         "pairs": pairs,
         "comparable_rounds": len(comparable),
         "matched_rounds": matched_count,
@@ -436,36 +456,113 @@ def _alignment(
 
 
 def _banishment_alignment(facts: _RunFacts, season: Season) -> dict[str, Any]:
-    season_banishments = {
-        entry.episode: entry.banishment
-        for entry in season.eliminations
-        if entry.banishment
-    }
+    season_banishments = [
+        (entry.episode, player)
+        for entry in sorted(season.eliminations, key=lambda item: item.episode)
+        for player in entry.banishment
+    ]
     return _alignment(
         facts.banishments,
         season_banishments,
         method=(
-            "each round-table banishment paired by round index with the season "
-            "banishment for that episode; episodes the season leaves empty are "
-            "excluded from the match rate"
+            "each round-table banishment paired by elimination index with the "
+            "season's k-th banishment, so episodes with no banishment are "
+            "skipped and a pair with no counterpart on either side is excluded "
+            "from the match rate"
         ),
     )
 
 
 def _murder_alignment(facts: _RunFacts, season: Season) -> dict[str, Any]:
-    season_victims = {
-        entry.episode: entry.night_victim
-        for entry in season.eliminations
+    season_victims = [
+        (entry.episode, entry.night_victim)
+        for entry in sorted(season.eliminations, key=lambda item: item.episode)
         if entry.night_victim
-    }
+    ]
     return _alignment(
         facts.night_victims,
         season_victims,
         method=(
-            "each night victim paired by round index with the season night "
-            "victim for that episode; episodes without a murder are excluded"
+            "each night victim paired by elimination index with the season's "
+            "k-th night victim, so episodes without a murder are skipped and a "
+            "pair with no counterpart on either side is excluded from the match "
+            "rate"
         ),
     )
+
+
+def _overlap(
+    run_set: set[str],
+    season_set: set[str],
+    *,
+    method: str,
+) -> dict[str, Any]:
+    """Set precision, recall and F1 over a whole game, ignoring order.
+
+    Shared names are the players both sides removed; the run-only and
+    season-only lists show what each side removed that the other did not,
+    so a reader can see exactly which names matched without reading the
+    pair list. When either side removed no one there is nothing to score,
+    so the component is skipped and its weight is redistributed.
+    """
+    shared = sorted(run_set & season_set)
+    run_only = sorted(run_set - season_set)
+    season_only = sorted(season_set - run_set)
+    precision = len(shared) / len(run_set) if run_set else None
+    recall = len(shared) / len(season_set) if season_set else None
+    if precision is None or recall is None:
+        f1 = None
+    elif precision + recall == 0:
+        f1 = 0.0
+    else:
+        f1 = 2 * precision * recall / (precision + recall)
+    return {
+        "run": sorted(run_set),
+        "season": sorted(season_set),
+        "shared": shared,
+        "run_only": run_only,
+        "season_only": season_only,
+        "precision": _round4(precision),
+        "recall": _round4(recall),
+        "f1": _round4(f1),
+        "score": _round4(f1),
+        "method": method,
+    }
+
+
+def _banishment_overlap(facts: _RunFacts, season: Season) -> dict[str, Any]:
+    run_banished = set(facts.banishments.values())
+    season_banished = {
+        player for entry in season.eliminations for player in entry.banishment
+    }
+    return _overlap(
+        run_banished,
+        season_banished,
+        method=(
+            "set precision, recall and F1 between the players the run banished "
+            "at the round table and the players the season banished; score is "
+            "the F1"
+        ),
+    )
+
+
+def _murder_overlap(facts: _RunFacts, season: Season) -> dict[str, Any]:
+    run_victims = set(facts.night_victims.values())
+    season_victims = {
+        entry.night_victim for entry in season.eliminations if entry.night_victim
+    }
+    component = _overlap(
+        run_victims,
+        season_victims,
+        method=(
+            "set precision, recall and F1 between the players the run murdered "
+            "at night and the players the season murdered; score is the F1. "
+            "Shield-blocked attempts killed nobody and are listed separately, "
+            "not counted as murders"
+        ),
+    )
+    component["blocked_attempts"] = sorted({player for _, player in facts.blocked})
+    return component
 
 
 def _traitor_hit_rate(facts: _RunFacts, season: Season) -> dict[str, Any]:
@@ -667,7 +764,9 @@ def benchmark_run(events: list[Event], season: Season) -> dict[str, Any]:
         "outcome": _outcome(facts, season),
         "traitor_roster": _traitor_roster(facts, season),
         "banishment_alignment": _banishment_alignment(facts, season),
+        "banishment_overlap": _banishment_overlap(facts, season),
         "murder_alignment": _murder_alignment(facts, season),
+        "murder_overlap": _murder_overlap(facts, season),
         "traitor_hit_rate": _traitor_hit_rate(facts, season),
         "survival_curve": _survival_curve(facts, season),
         "final_counts": _final_counts(facts, season),
