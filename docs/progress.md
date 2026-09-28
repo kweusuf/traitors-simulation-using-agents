@@ -48,7 +48,7 @@ and its commit lands.
 | 20 | Shield, seer, dagger and the murder shortlist | complete | `0df713e` |
 | 21 | Benchmark a run against a real season | complete | `9d9f658` |
 | 22 | Season replay: pinned traitors, cast personas, ground truth | complete | `d9317b5` |
-| 23 | Benchmark overlaps and index-aligned eliminations | complete | `pending` |
+| 23 | Benchmark overlaps and index-aligned eliminations | complete | `f7bb705` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
 six-player game on the fake backend with proven information boundaries.
