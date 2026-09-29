@@ -23,6 +23,12 @@ class EventType(str, Enum):
     # vote is forced.
     HOST_WARNING = "HOST_WARNING"
     DEBATE_CLOSED = "DEBATE_CLOSED"
+    # Hosted round table (audit fix, phase 2): the host names the
+    # nominated suspects, announces who faces the revote, and reports
+    # its result.
+    NOMINATION_TALLY = "NOMINATION_TALLY"
+    REVOTE_CALLED = "REVOTE_CALLED"
+    REVOTE_RESOLVED = "REVOTE_RESOLVED"
     ROLE_ASSIGNED = "ROLE_ASSIGNED"
     ROLE_RECRUITED = "ROLE_RECRUITED"
     ROUND_STARTED = "ROUND_STARTED"

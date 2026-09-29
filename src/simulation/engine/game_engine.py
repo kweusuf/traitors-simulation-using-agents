@@ -80,6 +80,25 @@ class GameEngine:
         self._usage: dict[tuple[str, ActionType], int] = {}
         self._night_choices: list[Action] = []
         self._nominations: list[Action] = []
+        # The hosted round-table nomination (audit fix, phase 2): the
+        # current round's open accusations, one per accuser, plus the
+        # suspects the tally kept standing. Both are cleared every round
+        # with the votes they precede.
+        self._accusations: list[Action] = []
+        self._round_table_nominees: list[str] = []
+        # The restricted revote's ballots: voter_id -> target. Kept
+        # apart from `state.votes`, so the first ballot's tally stays in
+        # the record while the revote is being collected.
+        self._revote_votes: dict[str, str] = {}
+        self._revote_weights: dict[str, int] = {}
+        # The tied suspects the open revote is restricted to, and its
+        # result once it resolves (None until then).
+        self._revote_targets: list[str] = []
+        self._revote_result: Optional[TallyResult] = None
+        # The sequential council's final kill picks (audit fix, phase
+        # 3): traitor_id -> victim. Round 2 may overwrite round 1's pick
+        # in place, so a hold keeps the proposal and a switch moves it.
+        self._council_picks: dict[str, str] = {}
         # Endgame end-or-banish votes for the current finale round:
         # player_id -> "end" or "banish". Cleared every round.
         self._end_votes: dict[str, str] = {}
@@ -164,6 +183,13 @@ class GameEngine:
         self._night_choices.clear()
         self._nominations.clear()
         self._end_votes.clear()
+        self._accusations.clear()
+        self._round_table_nominees = []
+        self._revote_votes.clear()
+        self._revote_weights.clear()
+        self._revote_targets = []
+        self._revote_result = None
+        self._council_picks.clear()
         self.murder_shortlist = []
         self._pending_recruit = None
         self._recruit_window = False
@@ -212,6 +238,8 @@ class GameEngine:
             seer_used=self.seer_checks_done,
             recruit_window=self.recruit_window_open(),
             recruit_offered=self._recruit_offered,
+            round_table_nominees=self._round_table_nominees,
+            revote_targets=self._revote_ballot_targets(),
         )
         if not result.ok:
             self._emit(
@@ -235,6 +263,16 @@ class GameEngine:
             ActionType.TRAITOR_MESSAGE,
         ):
             self._record_message(action)
+        elif action.action is ActionType.ACCUSE:
+            # The hosted round-table nomination: one open accusation per
+            # accuser, named suspect plus reasons, recorded as a public
+            # message so the room can react to it.
+            self._accusations.append(action)
+            self._record_message(action)
+        elif action.action is ActionType.REBUT:
+            # A nominated suspect's defense: one public reply to the
+            # accusation, on the record like the nomination itself.
+            self._record_message(action)
         elif action.action is ActionType.VOTE:
             assert action.target is not None
             weight = 1
@@ -248,6 +286,24 @@ class GameEngine:
                     actor=action.actor_id,
                     payload={"player": action.actor_id},
                 )
+            if self._revote_targets:
+                # The restricted revote (audit fix, phase 2): the ballot
+                # is kept apart from the first one so the record shows
+                # both tallies, and the event carries a `ballot` marker
+                # so replay and the clash metrics can tell them apart.
+                self._revote_votes[action.actor_id] = action.target
+                self._revote_weights[action.actor_id] = weight
+                self._emit(
+                    EventType.VOTE_CAST,
+                    actor=action.actor_id,
+                    targets=[action.target],
+                    payload={
+                        "confidence": action.confidence,
+                        "weight": weight,
+                        "ballot": "revote",
+                    },
+                )
+                return ValidationResult.accepted()
             self.state.votes[action.actor_id] = action.target
             self._vote_weights[action.actor_id] = weight
             self._emit(
@@ -327,7 +383,14 @@ class GameEngine:
                 for p in self.state.alive_players
                 if p != action.actor_id and self.state.roles.get(p) is Role.TRAITOR
             )
-        elif action.action is ActionType.PUBLIC_MESSAGE:
+        elif action.action in (
+            ActionType.PUBLIC_MESSAGE,
+            ActionType.ACCUSE,
+            ActionType.REBUT,
+        ):
+            # ACCUSE and REBUT ride the public channel: the nomination
+            # names a suspect for the room, and the defense answers it
+            # where everyone can hear.
             channel = Channel.PUBLIC
             recipients = []
         else:
@@ -400,6 +463,168 @@ class GameEngine:
             actor="host",
             payload={"forced_vote": True},
         )
+
+    # ------------------------------------------------------------------
+    # Hosted round table: nominations, rebuttals, restricted revote
+    # (audit fix, phase 2)
+    # ------------------------------------------------------------------
+    def accusations(self) -> list[Action]:
+        """This round's open nominations, in submission order."""
+        return list(self._accusations)
+
+    def round_table_nominees(self) -> list[str]:
+        """The suspects still standing after the nomination tally."""
+        return list(self._round_table_nominees)
+
+    def tally_accusations(self, keep: int = 2) -> list[str]:
+        """Tally the open nominations and freeze who faces the room.
+
+        Every living player may name one suspect. The `keep` most-named
+        suspects stay standing to answer the accusation (a lone nominee
+        is kept too, so a room that agrees still hears a defence), and
+        the host records the full tally. Ties at the cut are broken by
+        name so the shortlist is deterministic from the event log.
+        """
+        counts: dict[str, int] = {}
+        for action in self._accusations:
+            if action.target:
+                counts[action.target] = counts.get(action.target, 0) + 1
+        ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+        nominees = [name for name, _ in ranked[: max(1, keep)]]
+        self._round_table_nominees = nominees
+        self._emit(
+            EventType.NOMINATION_TALLY,
+            actor="host",
+            targets=nominees,
+            payload={
+                "counts": counts,
+                "nominees": nominees,
+                "accusations": {
+                    a.actor_id: a.target for a in self._accusations if a.target
+                },
+            },
+        )
+        return nominees
+
+    def revote_available(self, tally: TallyResult) -> bool:
+        """Is a restricted revote the next step for this tied ballot?
+
+        Needs the flag, a real tie, more than one living player, and at
+        least one voter who is not themselves tied (otherwise nobody
+        could vote at all).
+        """
+        if not self.config.game.revote_enabled or not tally.tie:
+            return False
+        if len(self.state.alive_players) <= 1:
+            return False
+        return bool(self.revote_voters_for(tally.top))
+
+    def revote_voters_for(self, targets: list[str]) -> list[str]:
+        """Who may vote in a revote among `targets`.
+
+        Everyone living who is not tied. If that leaves nobody (a tie
+        between every remaining player), the tied players keep their own
+        ballot so the game can never stall here.
+        """
+        tied = set(targets)
+        voters = sorted(self.state.alive_players - tied)
+        if not voters:
+            voters = sorted(self.state.alive_players)
+        return voters
+
+    def call_revote(self, targets: list[str]) -> None:
+        """Open the restricted revote among the tied suspects.
+
+        The tied players may not vote in it, and every voter must choose
+        from `targets`. The one-vote-per-phase limit is reset for the
+        voters, because their first ballot was already spent on the
+        ballot that tied.
+        """
+        self._revote_targets = sorted(targets)
+        for voter in self.revote_voters_for(self._revote_targets):
+            self._usage.pop((voter, ActionType.VOTE), None)
+        self._emit(
+            EventType.REVOTE_CALLED,
+            actor="host",
+            targets=list(self._revote_targets),
+            payload={
+                "targets": list(self._revote_targets),
+                "voters": self.revote_voters_for(self._revote_targets),
+            },
+        )
+
+    def revote_targets(self) -> list[str]:
+        """The tied suspects the open revote is restricted to."""
+        return list(self._revote_targets)
+
+    def _revote_ballot_targets(self) -> Optional[list[str]]:
+        """The revote restriction for the validator, or None when moot.
+
+        When every living player is tied (the final two, say) there is
+        nobody left to judge the tie, so the tied players vote after all
+        and the restriction is dropped rather than rejecting every
+        ballot on the table.
+        """
+        if not self._revote_targets:
+            return None
+        if not (self.state.alive_players - set(self._revote_targets)):
+            return None
+        return self._revote_targets
+
+    def revote_voters(self) -> list[str]:
+        """Who may still cast a revote ballot."""
+        if not self._revote_targets:
+            return []
+        return [
+            voter
+            for voter in self.revote_voters_for(self._revote_targets)
+            if voter not in self._revote_votes
+        ]
+
+    def resolve_revote(self) -> TallyResult:
+        """Count the revote and record whether it settled the tie."""
+        counts: dict[str, int] = {}
+        for voter, target in self._revote_votes.items():
+            counts[target] = counts.get(target, 0) + self._revote_weights.get(voter, 1)
+        if not counts:
+            result = TallyResult(counts={}, top=[], tie=True)
+        else:
+            highest = max(counts.values())
+            top = sorted(t for t, c in counts.items() if c == highest)
+            result = TallyResult(counts=counts, top=top, tie=len(top) > 1)
+        self._revote_result = result
+        self._emit(
+            EventType.REVOTE_RESOLVED,
+            actor="host",
+            targets=list(result.top),
+            payload={
+                "counts": result.counts,
+                "top": list(result.top),
+                "tie": result.tie,
+            },
+        )
+        return result
+
+    def revote_result(self) -> Optional[TallyResult]:
+        """The resolved revote for this round, if one ran."""
+        return self._revote_result
+
+    def pending_banishment(self) -> Optional[str]:
+        """Who this round is about to banish, before the tally resolves.
+
+        The round-table leader when the first ballot is clear, the
+        settled revote's winner when the first ballot tied, and None
+        when the tie stands and nobody leaves. Asked before
+        `resolve_votes` so a traitor about to go can still be offered
+        the recruit-or-go choice.
+        """
+        tally = self.tally_votes()
+        if tally.counts and not tally.tie:
+            return tally.top[0]
+        revote = self._revote_result
+        if revote is not None and not revote.tie and revote.top:
+            return revote.top[0]
+        return None
 
     # ------------------------------------------------------------------
     # Endgame end-or-banish vote (finale, phase 25)
@@ -615,6 +840,20 @@ class GameEngine:
                 weights=self._vote_weights,
             )
         if tally.tie:
+            revote, self._revote_result = self._revote_result, None
+            if revote is not None and not revote.tie and revote.top:
+                # The restricted revote settled the tie: the room banished
+                # one of the suspects it could not decide between. It is
+                # still a round-table banishment, so the recruitment
+                # window opens exactly as it would after a first ballot.
+                recruit, self._pending_recruit = self._pending_recruit, None
+                self.eliminate(
+                    revote.top[0],
+                    method="vote",
+                    votes=revote.counts,
+                    recruit=recruit,
+                )
+                return revote
             self._pending_recruit = None
             self._emit(EventType.VOTE_TIE, targets=tally.top, payload={"counts": tally.counts})
             return tally

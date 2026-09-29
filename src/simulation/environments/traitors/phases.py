@@ -70,6 +70,29 @@ async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None
             engine.submit_action(action)
 
 
+# The host's line for a nominated suspect's one defence, so the answer
+# lands on the record the room is reacting to.
+_REBUTTAL_INSTRUCTION = (
+    "Host: you have been nominated. Answer the room's accusation directly "
+    "in this message: say why the case against you is wrong, and name who "
+    "you think the real traitor is and why."
+)
+
+
+async def _run_debate(context: PhaseContext) -> None:
+    """The speech part of one debate.
+
+    With the clock off this is the plain one-message-each round. With it
+    on the host paces the turns: open waves up to the budget, a warning,
+    then the closing waves (see `_run_hosted_debate`).
+    """
+    game = context.config.game
+    if not game.discussion_budget:
+        await _ask_all_alive(context, ActionType.PUBLIC_MESSAGE)
+        return
+    await _run_hosted_debate(context, game.discussion_budget, game.warning_turns)
+
+
 class MissionPhase:
     """Basic mission abstraction: the group attempt resolves successfully."""
 
@@ -97,11 +120,52 @@ class PublicDiscussionPhase:
         self.name = name
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
+        await _run_debate(context)
+        return None
+
+
+class RoundTablePhase:
+    """The show's round table: debate, nomination, defence, then the vote.
+
+    With `nomination_enabled` off this is the plain debate the
+    `public_discussion` phase runs. With it on, the debate is followed by
+    one open nomination per living player, the host's tally (which keeps
+    `nomination_keep` suspects standing), and one defence from each of
+    them, so a suspect answers the room before the ballot rather than
+    reading about it afterwards.
+    """
+
+    name = "round_table"
+
+    async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
+        engine = context.engine
         game = context.config.game
-        if not game.discussion_budget:
-            await _ask_all_alive(context, ActionType.PUBLIC_MESSAGE)
+        await _run_debate(context)
+        if not game.nomination_enabled:
             return None
-        await _run_hosted_debate(context, game.discussion_budget, game.warning_turns)
+        # One nomination each, concurrently, submitted in id order so the
+        # tally is deterministic.
+        await _ask_all_alive(context, ActionType.ACCUSE)
+        nominees = engine.tally_accusations(game.nomination_keep)
+        if not nominees:
+            return None
+        # Only the nominated suspects are asked to answer, so a defence
+        # never turns into a rejected action.
+        actions = await asyncio.gather(
+            *(
+                _ask(
+                    context,
+                    nominee,
+                    ActionType.REBUT,
+                    [],
+                    _REBUTTAL_INSTRUCTION,
+                )
+                for nominee in sorted(nominees)
+            )
+        )
+        for action in actions:
+            if action is not None:
+                engine.submit_action(action)
         return None
 
 
@@ -208,6 +272,15 @@ class PrivateChatPhase:
 
 
 class VotingPhase:
+    """The banishment ballot, plus the show's restricted revote on a tie.
+
+    With `revote_enabled` on, a tied first ballot is followed by a second
+    ballot restricted to the tied suspects: nobody who is tied votes, and
+    every other voter must choose from the tied names. The elimination
+    phase then banishes the revote's winner, or records that the table
+    could not decide if the revote ties as well.
+    """
+
     name = "voting"
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
@@ -218,7 +291,39 @@ class VotingPhase:
             engine.skip_banishment()
             return None
         await _ask_all_alive(context, ActionType.VOTE)
+        tally = engine.tally_votes()
+        if engine.revote_available(tally):
+            engine.call_revote(tally.top)
+            await _ask_revote(context)
         return None
+
+
+async def _ask_revote(context: PhaseContext) -> None:
+    """One restricted ballot from every voter who is not tied.
+
+    The tied players are not asked, because the validator would reject
+    their ballot anyway; every other living player is asked once, with
+    only the tied suspects as legal targets.
+    """
+    engine = context.engine
+    targets = engine.revote_targets()
+    voters = engine.revote_voters()
+    instruction = (
+        "Host: the vote is tied between "
+        + " and ".join(targets)
+        + ". You are not one of them, so you decide it: name one of them "
+        "as your final choice. There is no further round after this."
+    )
+    actions = await asyncio.gather(
+        *(
+            _ask(context, voter, ActionType.VOTE, list(targets), instruction)
+            for voter in voters
+        )
+    )
+    for action in actions:
+        if action is not None:
+            engine.submit_action(action)
+    engine.resolve_revote()
 
 
 class EndVotePhase:
@@ -250,15 +355,13 @@ class EliminationPhase:
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
         engine = context.engine
-        tally = engine.tally_votes()
-        if not tally.tie and tally.top:
-            banished = tally.top[0]
-            if engine.recruitment_opportunity(banished):
-                targets = legal_targets(engine.state, banished, ActionType.RECRUIT)
-                if targets:
-                    action = await _ask(context, banished, ActionType.RECRUIT, targets)
-                    if action is not None:
-                        engine.submit_action(action)
+        banished = engine.pending_banishment()
+        if banished is not None and engine.recruitment_opportunity(banished):
+            targets = legal_targets(engine.state, banished, ActionType.RECRUIT)
+            if targets:
+                action = await _ask(context, banished, ActionType.RECRUIT, targets)
+                if action is not None:
+                    engine.submit_action(action)
         tally = engine.resolve_votes()
         return {"counts": tally.counts, "tie": tally.tie}
 

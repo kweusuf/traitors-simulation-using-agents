@@ -76,6 +76,18 @@ def make_progress_printer():
             print(f"\nFinale: rapid fire voting ({traitors} traitors, {faithful} faithful)")
         elif event.type is EventType.VOTE_TIE:
             print("  Vote tied: nobody eliminated")
+        elif event.type is EventType.NOMINATION_TALLY:
+            nominees = event.payload.get("nominees", [])
+            print(f"  Nominations tallied, facing the room: {', '.join(nominees)}")
+        elif event.type is EventType.REVOTE_CALLED:
+            targets = event.payload.get("targets", list(event.targets))
+            print(f"  Revote: {' and '.join(targets)} must be chosen between")
+        elif event.type is EventType.REVOTE_RESOLVED:
+            if event.payload.get("tie"):
+                print("  Revote tied again: nobody eliminated")
+            else:
+                target = (event.payload.get("top") or ["?"])[0]
+                print(f"  Revote banished: {target}")
         elif event.type is EventType.TRAITOR_KILL:
             target = event.targets[0] if event.targets else "?"
             print(f"  Traitors selected: {target}")

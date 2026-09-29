@@ -81,6 +81,11 @@ class ReplayState:
                     )
                 )
             elif event.type is EventType.VOTE_CAST and event.actor:
+                if event.payload.get("ballot") == "revote":
+                    # A revote ballot is a second ballot inside the same
+                    # round; the first ballot stays the round's record,
+                    # and the clash metrics read both off the event log.
+                    continue
                 state.votes.setdefault(event.round, {})[event.actor] = (
                     event.targets[0] if event.targets else ""
                 )
@@ -279,6 +284,34 @@ def render_transcript(events: list[Event]) -> str:
             )
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")
+        elif event.type is EventType.NOMINATION_TALLY:
+            counts = event.payload.get("counts", {})
+            tally = ", ".join(
+                f"{name} ({votes})" for name, votes in sorted(counts.items())
+            )
+            lines.append(f"    Host: nominations tallied - {tally or 'none'}")
+            nominees = event.payload.get("nominees", [])
+            if nominees:
+                lines.append(
+                    "    Host: facing the room - " + ", ".join(nominees)
+                )
+        elif event.type is EventType.REVOTE_CALLED:
+            targets = event.payload.get("targets", list(event.targets))
+            lines.append(
+                "    Host: the vote is tied, "
+                + " and ".join(targets)
+                + " face a revote"
+            )
+        elif event.type is EventType.REVOTE_RESOLVED:
+            if event.payload.get("tie"):
+                lines.append("    Revote tied again; nobody eliminated")
+            else:
+                target = (event.payload.get("top") or [None])[0]
+                counts = event.payload.get("counts", {})
+                tally = ", ".join(
+                    f"{name} ({votes})" for name, votes in sorted(counts.items())
+                )
+                lines.append(f"    Revote: {target} is banished ({tally})")
         elif event.type is EventType.HOST_WARNING:
             lines.append(
                 f"    Host: time is almost up ({event.payload.get('turns_left', '?')} "

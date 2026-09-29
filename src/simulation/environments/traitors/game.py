@@ -20,6 +20,7 @@ from simulation.environments.traitors.phases import (
     MissionPhase,
     PrivateChatPhase,
     PublicDiscussionPhase,
+    RoundTablePhase,
     TraitorNightPhase,
     VotingPhase,
 )
@@ -54,7 +55,7 @@ class TraitorsEnvironment:
         return {
             "mission": MissionPhase(),
             "public_discussion": PublicDiscussionPhase("public_discussion"),
-            "round_table": PublicDiscussionPhase("round_table"),
+            "round_table": RoundTablePhase(),
             "private_chat": PrivateChatPhase(),
             "voting": VotingPhase(),
             "elimination": EliminationPhase(),

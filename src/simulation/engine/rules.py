@@ -72,6 +72,11 @@ class ValidationResult:
 class RuleValidator:
     def __init__(self, config: GameConfig) -> None:
         self._config = config
+        # The hosted round-table nomination (audit fix, phase 2): the
+        # suspects with standing to rebut. Set by the phase after the
+        # tally resolves, so the validator can admit exactly their
+        # defenses while the round table stays on.
+        self._round_table_nominees: frozenset[str] = frozenset()
 
     def allowed_actions(self, phase: GamePhase) -> frozenset[ActionType]:
         """The action vocabulary for a phase under this config.
@@ -82,12 +87,17 @@ class RuleValidator:
         same goes for the recruit-as-a-choice actions: `RECRUIT`,
         `RECRUIT_DECISION` and `RECRUIT_RESPONSE` enter the night only
         while `recruit_choice` is on, so the traitor night keeps its old
-        vocabulary for every other game.
+        vocabulary for every other game. The hosted round table's
+        `ACCUSE` and `REBUT` widen the round-table vocabulary with the
+        same default-off discipline, and the engine's own checks decide
+        who may answer them.
         """
         allowed = set(PHASE_ALLOWED_ACTIONS.get(phase, frozenset()))
         game = self._config.game
         if game.seer and phase is GamePhase.PRIVATE_CHAT:
             allowed.add(ActionType.SEER_CHECK)
+        if game.nomination_enabled and phase is GamePhase.ROUND_TABLE:
+            allowed.update({ActionType.ACCUSE, ActionType.REBUT})
         if game.on_trial and phase is GamePhase.TRAITOR_NIGHT:
             allowed.add(ActionType.NOMINATE)
         if game.recruit_choice and phase is GamePhase.TRAITOR_NIGHT:
@@ -110,6 +120,8 @@ class RuleValidator:
         seer_used: Optional[set[str]] = None,
         recruit_window: bool = False,
         recruit_offered: Optional[str] = None,
+        round_table_nominees: Optional[Sequence[str]] = None,
+        revote_targets: Optional[Sequence[str]] = None,
     ) -> ValidationResult:
         """Is this action legal for this agent, in this phase, right now?
 
@@ -120,6 +132,11 @@ class RuleValidator:
         `recruit_window` is True only on a night when a round-table
         banishment opened a recruitment window, and `recruit_offered` is
         the player currently weighing that window's offer.
+        `round_table_nominees` is the open nomination for rebuttal
+        checking; when given it wins over the validator's stored set.
+        `revote_targets` is the tied shortlist a second ballot is
+        restricted to (audit fix, phase 2): a tied suspect may not vote
+        in their own revote, and every other voter must choose from it.
         """
         # 1. Phase correctness.
         allowed = self.allowed_actions(state.phase)
@@ -185,6 +202,54 @@ class RuleValidator:
                     "end_vote content must be 'end' or 'banish'"
                 )
 
+        # 4c. Hosted round table (audit fix, phase 2): the open
+        # nomination names any living player except yourself; the
+        # rebuttal is one defense from each nominated suspect (a lone
+        # nominee is also defended, so one suspect never walks in
+        # unanswered). Both are timed by the host, not by free phases.
+        # The phase passes the open nomination in, so the validator
+        # itself stays a pure function over its arguments.
+        nominees = (
+            frozenset(round_table_nominees)
+            if round_table_nominees is not None
+            else self._round_table_nominees
+        )
+        if action.action is ActionType.ACCUSE:
+            if state.phase is not GamePhase.ROUND_TABLE:
+                return ValidationResult.rejected(
+                    "nomination is only allowed at the round table"
+                )
+        if action.action is ActionType.REBUT:
+            if state.phase is not GamePhase.ROUND_TABLE:
+                return ValidationResult.rejected(
+                    "rebuttal is only allowed at the round table"
+                )
+            if not nominees:
+                return ValidationResult.rejected(
+                    "no nomination is open to rebut"
+                )
+            if action.actor_id not in nominees:
+                return ValidationResult.rejected(
+                    f"actor '{action.actor_id}' is not a nominated suspect"
+                )
+
+        # 4d. Restricted revote (audit fix, phase 2): the second ballot
+        # is open only to players who are not themselves tied, and only
+        # the tied suspects can be voted for. That is the show's rule and
+        # it is the whole point of the revote: the room must choose among
+        # the suspects it just could not decide between.
+        tied = frozenset(revote_targets or ())
+        if action.action is ActionType.VOTE and tied:
+            if action.actor_id in tied:
+                return ValidationResult.rejected(
+                    "a tied suspect may not vote in their own revote"
+                )
+            if (action.target or "") not in tied:
+                return ValidationResult.rejected(
+                    "a revote must land on one of the tied suspects: "
+                    + ", ".join(sorted(tied))
+                )
+
         # 4b. Recruitment as a choice (phase 26): the traitors' vote needs
         # the night phase, an open window and a traitor actor; the answer
         # belongs to the offered player alone. The engine re-checks the
@@ -223,6 +288,12 @@ class RuleValidator:
             if action.action is ActionType.VOTE and action.target == action.actor_id:
                 if not self._config.game.allow_self_vote:
                     return ValidationResult.rejected("self-vote is not allowed")
+            if action.action is ActionType.ACCUSE:
+                # Either role may name a suspect: the accusation is a
+                # read, never a role claim. Traitors frame an innocent;
+                # a traitor naming a fellow traitor is switching sides.
+                if action.target == action.actor_id:
+                    return ValidationResult.rejected("cannot nominate yourself")
             if action.action is ActionType.TRAITOR_KILL:
                 if action.target == action.actor_id:
                     return ValidationResult.rejected("cannot kill self")
@@ -271,6 +342,8 @@ class RuleValidator:
         if action.action is ActionType.VOTE:
             return 1  # one vote per agent per round
         if action.action in (
+            ActionType.ACCUSE,
+            ActionType.REBUT,
             ActionType.TRAITOR_KILL,
             ActionType.RECRUIT,
             ActionType.TRAITOR_MESSAGE,

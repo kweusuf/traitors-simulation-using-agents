@@ -42,7 +42,9 @@ def test_mvp_action_subset() -> None:
     # RECRUIT_RESPONSE.
     assert ActionType.RECRUIT not in MVP_ACTIONS
     assert ActionType.TRAITOR_MESSAGE not in MVP_ACTIONS
-    assert len(ActionType) == 15
+    # Audit fix, phase 2 adds one more action: the rebuttal. ACCUSE,
+    # DEFEND and the two SHARE/WITHHOLD actions stay reserved.
+    assert len(ActionType) == 16
 
 
 def test_vote_requires_target() -> None:

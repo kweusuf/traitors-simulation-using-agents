@@ -30,6 +30,12 @@ def legal_targets(
     if action_type is ActionType.PUBLIC_MESSAGE:
         return []
 
+    if action_type is ActionType.ACCUSE:
+        # The open nomination (audit fix, phase 2): name one living player
+        # who is not you. Either role may name a suspect; the accusation
+        # is a read, never a role claim.
+        return [p for p in alive if p != actor_id]
+
     if action_type is ActionType.PRIVATE_MESSAGE:
         return [p for p in alive if p != actor_id]
 

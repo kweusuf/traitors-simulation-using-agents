@@ -24,6 +24,7 @@ class ActionType(str, Enum):
     RECRUIT = "recruit"
     ACCUSE = "accuse"
     DEFEND = "defend"
+    REBUT = "rebut"
     SHARE_INFORMATION = "share_information"
     WITHHOLD_INFORMATION = "withhold_information"
     # Wave B mechanics (plan section 4): a one-shot private role check
@@ -71,6 +72,7 @@ ACTIONS_REQUIRING_CONTENT = frozenset(
         ActionType.TRAITOR_MESSAGE,
         ActionType.ACCUSE,
         ActionType.DEFEND,
+        ActionType.REBUT,
         ActionType.SHARE_INFORMATION,
         ActionType.WITHHOLD_INFORMATION,
         # The end vote carries its answer in `content` ("end"/"banish").

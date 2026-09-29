@@ -13,7 +13,11 @@ import json
 import re
 from typing import Any, Optional
 
-from simulation.actions.actions import Action, ActionType
+from simulation.actions.actions import (
+    ACTIONS_REQUIRING_CONTENT,
+    Action,
+    ActionType,
+)
 from simulation.models.base import ChatMessage
 from simulation.models.llm import LLMResponse, ModelConfig
 
@@ -105,7 +109,14 @@ class PromptScriptProvider(FakeLLMProvider):
     ) -> LLMResponse:
         self.calls.append(messages)
         agent_id = self._agent_id(messages)
-        user = next(m for m in reversed(messages) if m.role == "user").content
+        # The first user message is the prompt itself. Correction retries
+        # append a short hint as the last user message, so parsing from
+        # the head keeps the action type and the legal targets available
+        # on every attempt.
+        prompts = [m.content for m in messages if m.role == "user"]
+        if not prompts:
+            raise RuntimeError("prompt must state the required action type")
+        user = prompts[0]
 
         action_match = _ACTION_RE.search(user)
         if action_match is None:
@@ -151,6 +162,19 @@ class PromptScriptProvider(FakeLLMProvider):
                 "target": targets[0],
                 "confidence": 0.9,
             }
+        elif action_type in (ActionType.ACCUSE, ActionType.REBUT):
+            # The round-table nomination and the defence it forces: both
+            # are public record, so both carry a reason, and only the
+            # nomination takes a target (the defence answers its case).
+            payload = {
+                "action": action_type.value,
+                "target": targets[0] if action_type is ActionType.ACCUSE else None,
+                "content": (
+                    f"[{agent_id}#{n}] the story does not add up: what they "
+                    "said last night does not match how they voted today."
+                ),
+                "confidence": 0.7,
+            }
         elif action_type is ActionType.END_VOTE:
             # Deterministic endgame rule: keep forcing banishments while
             # more than three players remain, then end. The prompt's
@@ -195,4 +219,9 @@ class PromptScriptProvider(FakeLLMProvider):
                 "confidence": 0.8,
                 "reason_summary": "first legal target",
             }
+            if action_type in ACTIONS_REQUIRING_CONTENT:
+                # A content-taking action the script does not know about
+                # still carries a reason, so the constraint check passes
+                # on the first attempt instead of burning a retry.
+                payload["content"] = f"[{agent_id}#{n}] my read on the table."
         return LLMResponse(content=json.dumps(payload), model="fake")

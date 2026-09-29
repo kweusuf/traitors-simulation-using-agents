@@ -82,8 +82,11 @@ class GameSettings(StrictModel):
     # Hosted round table (audit fix, phase 2): open nomination plus a
     # restricted revote when the banishment ballot ties. Off by default
     # so existing games keep the plain tally-then-tie behaviour.
+    # `nomination_keep` is how many of the most-nominated suspects stay
+    # standing to answer the room (and, on a tie, to face the revote).
     nomination_enabled: bool = False
     revote_enabled: bool = False
+    nomination_keep: int = Field(default=2, ge=1)
     # `shield`: a one-shot item that blocks the next murder on its holder.
     # `dagger`: a one-shot item whose holder's vote counts twice.
     # `seer`: a one-shot item that checks one player's true role in private.

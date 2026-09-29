@@ -49,6 +49,55 @@ def test_run_prints_progress_by_default(tmp_path, capsys) -> None:
     assert "Game complete." in out
 
 
+def test_progress_printer_reports_the_hosted_round_table(capsys) -> None:
+    """The live host lines: who faces the room, and what the revote did."""
+    observe = make_progress_printer()
+    observe(
+        Event(
+            event_id="evt-1",
+            game_id="game-001",
+            sequence=1,
+            type=EventType.NOMINATION_TALLY,
+            targets=["alice", "bob"],
+            payload={"nominees": ["alice", "bob"], "counts": {"alice": 3, "bob": 2}},
+        )
+    )
+    observe(
+        Event(
+            event_id="evt-2",
+            game_id="game-001",
+            sequence=2,
+            type=EventType.REVOTE_CALLED,
+            targets=["alice", "bob"],
+            payload={"targets": ["alice", "bob"]},
+        )
+    )
+    observe(
+        Event(
+            event_id="evt-3",
+            game_id="game-001",
+            sequence=3,
+            type=EventType.REVOTE_RESOLVED,
+            targets=["alice"],
+            payload={"top": ["alice"], "tie": False, "counts": {"alice": 1}},
+        )
+    )
+    observe(
+        Event(
+            event_id="evt-4",
+            game_id="game-001",
+            sequence=4,
+            type=EventType.REVOTE_RESOLVED,
+            payload={"top": [], "tie": True, "counts": {}},
+        )
+    )
+    out = capsys.readouterr().out
+    assert "Nominations tallied, facing the room: alice, bob" in out
+    assert "Revote: alice and bob must be chosen between" in out
+    assert "Revote banished: alice" in out
+    assert "Revote tied again: nobody eliminated" in out
+
+
 def test_run_rejects_unknown_config(tmp_path, capsys) -> None:
     code, _ = run_cli(
         ["run", "configs/traitors/nope.yaml", "--quiet"] + base_args(tmp_path),

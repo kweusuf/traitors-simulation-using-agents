@@ -103,6 +103,13 @@ class PromptBuilder:
             "repeat the roles you privately know as if the group could see "
             "them. Never claim a role you were not given.",
             "",
+            "Accusation is the game, secrecy is about knowledge. You may "
+            "and should name one suspect and argue in public why their "
+            "behaviour looks like a traitor's, and you must answer an "
+            "accusation made against you. The line is knowledge, not "
+            "suspicion: say what you think and why, never that you know, "
+            "and never reveal or hint at your own role.",
+            "",
             "Originality (hard rule): every message must be yours alone. "
             "React to one specific thing a named player actually said or "
             "did, take a position on it, and never repeat or rephrase "
@@ -211,6 +218,26 @@ class PromptBuilder:
                 "confident that no traitor remains among you; if you still "
                 "suspect anyone, force the banishment. Answer with content "
                 "'end' or 'banish'."
+            )
+        if action_type is ActionType.ACCUSE:
+            lines.append(
+                "The open nomination: name the one living player you most "
+                "suspect, and say in the content why their behaviour reads "
+                "as a traitor to you. This goes on the public record and "
+                "the room will answer it, so make the reason specific: a "
+                "claim they made that does not hold up, a vote that did "
+                "not fit what they had been saying, or a contradiction "
+                "between their public and private words. Take a position; "
+                "a hedged nomination wastes the round table."
+            )
+        if action_type is ActionType.REBUT:
+            lines.append(
+                "You have been nominated. Answer the room in this message: "
+                "state directly why the case against you is wrong, then "
+                "name the suspect you think is the real traitor and why, "
+                "so the room has somewhere else to look. Do not repeat "
+                "what you already said in the debate, and do not reveal "
+                "or hint at your own role."
             )
         if action_type is ActionType.PUBLIC_MESSAGE:
             lines.append(
