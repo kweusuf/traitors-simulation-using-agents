@@ -229,8 +229,9 @@ class GameEngine:
     # ------------------------------------------------------------------
     # Actions
     # ------------------------------------------------------------------
-    def submit_action(self, action: Action) -> ValidationResult:
-        result = self.validator.validate(
+    def _validate(self, action: Action) -> ValidationResult:
+        """Pre-flight legality of one action under this round's state."""
+        return self.validator.validate(
             action,
             self.state,
             self._usage,
@@ -241,21 +242,32 @@ class GameEngine:
             round_table_nominees=self._round_table_nominees,
             revote_targets=self._revote_ballot_targets(),
         )
-        if not result.ok:
-            self._emit(
-                EventType.ACTION_REJECTED,
-                actor=action.actor_id,
-                payload={
-                    "action": action.action.value,
-                    "target": action.target,
-                    "reason": result.reason,
-                },
-            )
-            return result
 
+    def _reject(self, action: Action, result: ValidationResult) -> None:
+        """Put one refused action on the event log (spec section 21)."""
+        self._emit(
+            EventType.ACTION_REJECTED,
+            actor=action.actor_id,
+            payload={
+                "action": action.action.value,
+                "target": action.target,
+                "reason": result.reason,
+            },
+        )
+
+    def _spend(self, action: Action) -> None:
+        """Charge this action against the phase's per-agent limit."""
         self._usage[(action.actor_id, action.action)] = (
             self._usage.get((action.actor_id, action.action), 0) + 1
         )
+
+    def submit_action(self, action: Action) -> ValidationResult:
+        result = self._validate(action)
+        if not result.ok:
+            self._reject(action, result)
+            return result
+
+        self._spend(action)
 
         if action.action in (
             ActionType.PUBLIC_MESSAGE,
@@ -352,6 +364,74 @@ class GameEngine:
             )
 
         return ValidationResult.accepted()
+
+    def record_council_proposal(self, action: Action) -> ValidationResult:
+        """Round 1 of the sequential council (audit fix, phase 3).
+
+        A traitor's proposed victim, validated exactly like the kill it
+        will become, frozen as this traitor's proposal instead of a
+        ballot entry so round 2 can hold or switch it. The proposal is
+        put on the traitor channel as it lands, which is the whole point:
+        the next traitor to be asked writes having read it.
+        """
+        result = self._validate(action)
+        if not result.ok:
+            self._reject(action, result)
+            return result
+        self._spend(action)
+        assert action.target is not None
+        self._council_picks[action.actor_id] = action.target
+        self._emit(
+            EventType.COUNCIL_PROPOSAL,
+            actor=action.actor_id,
+            targets=[action.target],
+            payload={
+                "target": action.target,
+                "reason": action.content or "",
+                "confidence": action.confidence,
+            },
+        )
+        self._deliver_council_proposal(action)
+        return ValidationResult.accepted()
+
+    def _deliver_council_proposal(self, action: Action) -> None:
+        """Put the proposal's reason on the traitor channel.
+
+        Every living traitor but the proposer reads it, so round 2 is a
+        decision made after the council spoke rather than three more
+        blind picks, and no faithful player can see it.
+        """
+        recipients = sorted(
+            p
+            for p in self.state.alive_players
+            if p != action.actor_id and self.state.roles.get(p) is Role.TRAITOR
+        )
+        message = Message(
+            message_id=f"{self.state.game_id}-msg-{self.sink.next_sequence:05d}",
+            sender_id=action.actor_id,
+            recipients=recipients,
+            channel=Channel.ROLE_PRIVATE,
+            content=action.content or "",
+            round_number=self.state.round_number,
+            phase=self.state.phase.value,
+        )
+        if self.router is not None:
+            self.router.deliver(message)
+
+    def council_proposals(self) -> dict[str, str]:
+        """This night's round-1 proposals: traitor_id -> proposed victim."""
+        return dict(self._council_picks)
+
+    def open_council_round_two(self) -> None:
+        """Let every proposer cast the final pick (audit fix, phase 3).
+
+        The proposal spent the one-kill-per-phase limit, but round 2 is
+        the ballot that actually resolves the night, so the limit is
+        released for the proposers the same way `call_revote` releases
+        the vote limit.
+        """
+        for traitor in self._council_picks:
+            self._usage.pop((traitor, ActionType.TRAITOR_KILL), None)
 
     def record_unparseable_action(
         self, actor: str, action_type: ActionType, reason: str
@@ -862,7 +942,14 @@ class GameEngine:
         return tally
 
     def resolve_night(self) -> Optional[str]:
-        """Majority traitor choice; ties fall to the earliest submitted choice."""
+        """Majority traitor choice; ties fall to the earliest submitted choice.
+
+        When the sequential council ran (audit fix, phase 3) the payload
+        also reports how the team converged: each final pick's round-1
+        proposal, who switched, who dissents from the victim, whether the
+        pick was unanimous, and whether a tie had to fall to the
+        earliest-submission rule instead of a majority.
+        """
         if not self._night_choices:
             return None
         counts: dict[str, int] = {}
@@ -875,15 +962,59 @@ class GameEngine:
             c.target for c in self._night_choices if c.target in tied
         )
         assert victim is not None
+        payload: dict = {
+            "choices": [c.target for c in self._night_choices],
+            "counts": counts,
+        }
+        if self._council_picks:
+            payload.update(self._council_verdict(victim, counts, tied))
         self._emit(
             EventType.TRAITOR_KILL,
             targets=[victim],
-            payload={
-                "choices": [c.target for c in self._night_choices],
-                "counts": counts,
-            },
+            payload=payload,
         )
         return self._night_elimination(victim)
+
+    def _council_verdict(
+        self, victim: str, counts: dict[str, int], tied: set[str]
+    ) -> dict:
+        """Did the council converge, and who argued otherwise?
+
+        A `majority` needs more than half the final picks on the victim;
+        `unanimous` needs all of them. `dissent` is everyone whose final
+        pick is not the victim, `switched` maps every traitor who moved
+        off their round-1 proposal to where they moved, and `tiebreak`
+        names the earliest-submission rule only when it, and no majority,
+        chose tonight's victim.
+        """
+        final = {
+            choice.actor_id: choice.target
+            for choice in self._night_choices
+            if choice.target
+        }
+        proposals = dict(self._council_picks)
+        switched = {
+            actor: {"from": proposals[actor], "to": target}
+            for actor, target in final.items()
+            if actor in proposals and proposals[actor] != target
+        }
+        voters = len(final)
+        return {
+            "proposals": proposals,
+            "final": final,
+            "switched": switched,
+            "holds": sorted(
+                actor
+                for actor, target in final.items()
+                if proposals.get(actor) == target
+            ),
+            "dissent": sorted(
+                actor for actor, target in final.items() if target != victim
+            ),
+            "unanimous": voters > 1 and counts[victim] == voters,
+            "majority": counts[victim] * 2 > voters,
+            "tiebreak": "earliest_submission" if tied else None,
+        }
 
     def _night_elimination(self, victim: str) -> Optional[str]:
         """Apply one night kill and return who died (None if shielded).

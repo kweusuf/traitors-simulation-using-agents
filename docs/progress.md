@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-29 complete, 413 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-30 complete, 419 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -55,7 +55,7 @@ and its commit lands.
 | 27 | Endgame trigger at the final five | complete | `26a2550` |
 | 28 | Hosted debate clock (audit fix, phase 1) | complete | `6b8dfe2` |
 | 29 | Round-table nomination, rebuttal, revote (audit fix, phase 2) | complete | `8c46d5b` |
-| 30 | Sequential traitor council (audit fix, phase 3) | pending | `pending` |
+| 30 | Sequential traitor council (audit fix, phase 3) | complete | `pending` |
 | 31 | Private chats with pair history (audit fix, phase 4) | pending | `pending` |
 | 32 | Conflict personas and clash metrics (audit fix, phase 5) | pending | `pending` |
 
@@ -702,22 +702,57 @@ lose them. A fake six-player run with both flags on produced 10
 nominations, 4 defences, 2 nomination tallies and zero rejected actions
 across all seven artifacts.
 
-### Remaining audit-fix phases (30 to 32): scope and estimate
+### Phase 30: Sequential traitor council (audit fix, phase 3)
 
-Three phases left from
-`docs/2026-09-28-rounds-vs-season-audit.md`. Estimates assume the same
-rhythm as phases 28 and 29 (one session per phase, tests and commit
-inside the session) and are effort, not calendar, commitments. Phases
-30 to 32 were approved to run back to back, without a checkpoint
-between them.
+Third of the five audit phases: the traitors now decide the night's kill
+the way the show does it - one proposal at a time in turn, then
+everybody holds or switches from the same moment.
+
+- [x] Config `council_deliberation` on `GameSettings`, default off; with
+  it off the night is the old single concurrent ballot. A lone traitor
+  skips the council entirely (there is nobody to argue with), and a
+  recruit night keeps the old free-for-all message line, because
+  arguing recruit versus murder is all that round is for.
+- [x] `TraitorNightPhase` runs two rounds when the flag is on and more
+  than one traitor is alive. Round 1 asks one traitor at a time and
+  freezes each pick as a `COUNCIL_PROPOSAL` on the traitor channel, so
+  the second and third traitor write having read the others instead of
+  guessing at them. The blind `TRAITOR_MESSAGE` free-for-all is dropped
+  in this mode; the proposal is the argument.
+- [x] Round 2 collects every final pick from that same moment - a
+  ballot, not a bandwagon - with each host line naming every proposal
+  and that traitor's own. `resolve_night` counts it, so the majority of
+  the final picks wins and a tie still falls back to the earliest
+  submission, which is now a stated outcome rather than a silent
+  artefact of submission order.
+- [x] The outcome record carries the switches, the dissent and whether
+  the council was unanimous, and both surfaces render it:
+  `transcript.txt` narrates "charlie proposes bob" and the verdict line
+  with the picks, and the live progress printer has the matching lines.
+
+**Verification:** 419 tests green. New `tests/unit/test_council.py` (6
+tests) covers round 1 running one traitor at a time in id order with the
+earlier proposals in each later host line and no blind message, the
+proposals landing on the traitor channel and reaching no faithful, each
+round-2 line naming every proposal and that traitor's own, a switch
+moving the pick, the unanimous case and the lone-traitor skip. A fake
+nine-player run with the flag on produced 5 council proposals, 2 council
+verdicts and zero rejected actions across all seven artifacts.
+
+### Remaining audit-fix phases (31 to 32): scope and estimate
+
+Two phases left from
+`docs/2026-09-28-rounds-vs-season-audit.md`, on the same rhythm as phases
+28 to 30 (one session per phase, tests and commit inside the session).
+These are effort, not calendar, commitments. They were approved to run
+back to back, without a checkpoint between them.
 
 | Phase | Audit item | Scope | Estimate |
 |-------|-----------|-------|----------|
-| 30 | Audit fix, phase 3 | Sequential traitor council: round 1 proposals, round 2 hold-or-switch with reasons, majority of final picks wins instead of the earliest-submission tiebreak | 1 session (small: `TraitorNightPhase` plus one resolution helper) |
 | 31 | Audit fix, phase 4 | Private chats carry the pair's own recent messages in the prompt; per-pair counters in the quality metrics | 1 session (small: projector or prompt window plus a metrics block) |
 | 32 | Audit fix, phase 5 | Conflict personas (assertiveness and tunnel-vision weights from the Series 1 ground truth) plus clash metrics: accusation rate, revote stubbornness, council switch rate, traitor cohesion | 1 to 2 sessions (largest surface: 22 persona files plus new metrics and tests) |
 
-Total: 3 to 4 sessions after phase 29, running back to back, so the
+Total: 2 to 3 sessions after phase 30, running back to back, so the
 audit fix lands within roughly a working week. Live Ollama verification
 runs (a fake-backend run per phase, plus one season replay for the
 benchmark) are included in each session's estimate; a full 4-hour
@@ -776,3 +811,4 @@ season replay is not.
 | 2026-09-28 | Audit written (`docs/2026-09-28-rounds-vs-season-audit.md`): season replays versus UK Series 1, clash-free discussion, private chats echoing the public transcript, and every decision point that lacks a tie-breaker; five-phase fix plan approved. |
 | 2026-09-28 | Phase 28 complete (audit fix, phase 1): deterministic host with a debate clock, `HOST_WARNING`/`DEBATE_CLOSED` events, `discussion_budget`/`warning_turns` config, a per-turn timer line in prompts via `extra_instruction`, and a validator limit that admits the closing turn; clock off by default, 396 tests passed. |
 | 2026-09-29 | Phase 29 complete (audit fix, phase 2): hosted round table with `ACCUSE`/`REBUT`, a `NOMINATION_TALLY` from everyone's accusation (`keep` nominations on top), a restricted revote on a tied ballot whose second tie bansishes nobody, the secrecy carve-out for a reasoned accusation, and `pending_banishment()` so the recruit choice still reaches a traitor whose exit the revote decided; `nomination_enabled`/`revote_enabled` default off, fake provider fixed to play the phase; 413 tests passed. |
+| 2026-09-29 | Phase 30 complete (audit fix, phase 3): sequential traitor council behind `council_deliberation` (default off) - round 1 proposes one traitor at a time as a `COUNCIL_PROPOSAL` on the traitor channel so each writes having read the others, round 2 takes a concurrent hold-or-switch ballot where the majority of final picks wins, and the outcome records switches, dissent and unanimity on both render surfaces; a lone traitor and a recruit night skip it; 419 tests passed. |

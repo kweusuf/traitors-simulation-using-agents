@@ -87,6 +87,14 @@ class GameSettings(StrictModel):
     nomination_enabled: bool = False
     revote_enabled: bool = False
     nomination_keep: int = Field(default=2, ge=1)
+    # Sequential traitor council (audit fix, phase 3): the night's kill
+    # is decided in two rounds instead of one blind ballot. Round 1 is a
+    # proposal from each traitor in turn - each one lands on the traitor
+    # channel before the next traitor writes - and round 2 is every
+    # traitor holding or switching at the same time, where the majority
+    # of the final picks wins. Off by default so existing games keep the
+    # single concurrent choice.
+    council_deliberation: bool = False
     # `shield`: a one-shot item that blocks the next murder on its holder.
     # `dagger`: a one-shot item whose holder's vote counts twice.
     # `seer`: a one-shot item that checks one player's true role in private.

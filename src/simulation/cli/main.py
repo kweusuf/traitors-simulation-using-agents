@@ -88,6 +88,9 @@ def make_progress_printer():
             else:
                 target = (event.payload.get("top") or ["?"])[0]
                 print(f"  Revote banished: {target}")
+        elif event.type is EventType.COUNCIL_PROPOSAL:
+            target = event.targets[0] if event.targets else "?"
+            print(f"  Council: {event.actor} proposes {target}")
         elif event.type is EventType.TRAITOR_KILL:
             target = event.targets[0] if event.targets else "?"
             print(f"  Traitors selected: {target}")

@@ -371,10 +371,17 @@ class TraitorNightPhase:
 
     First every living traitor gets one message on the traitor channel
     so they can argue the merits (biggest threat versus most chaos, who
-    takes the blame). With `on_trial` on, they next nominate one player
-    each and the union of those names is the murder shortlist: only a
-    shortlisted player can die tonight. Then the kill is a majority vote
-    with an earliest-choice tiebreak.
+    takes the blame) - unless the sequential council is on, where round
+    1 of the proposals is that argument. With `on_trial` on, they next
+    nominate one player each and the union of those names is the murder
+    shortlist: only a shortlisted player can die tonight. Then the kill
+    is a majority vote with an earliest-choice tiebreak.
+
+    With `council_deliberation` on and more than one traitor alive, the
+    kill itself becomes two rounds instead of one blind ballot: round 1
+    is a proposal from each traitor in turn (each landing on the traitor
+    channel before the next is asked), round 2 is everyone holding or
+    switching at once, and the majority of the final picks wins.
 
     With `recruit_choice` on and a recruitment window open (a traitor was
     banished at the round table), the council instead votes to recruit or
@@ -396,7 +403,15 @@ class TraitorNightPhase:
             p for p in engine.state.alive_players
             if engine.state.roles.get(p) is Role.TRAITOR
         )
-        if len(traitors) > 1:
+        open_council = len(traitors) > 1
+        if open_council and engine.config.game.council_deliberation:
+            # Round 1 of the sequential council replaces the blind
+            # free-for-all: each traitor argues with the proposal they
+            # make, in turn, instead of everyone speaking at once with
+            # nobody listening. A recruit night keeps the free line,
+            # because arguing recruit versus murder is all it is for.
+            open_council = engine.recruit_window_open()
+        if open_council:
             council = await asyncio.gather(
                 *(
                     _ask(context, actor, ActionType.TRAITOR_MESSAGE, [])
@@ -431,6 +446,10 @@ class TraitorNightPhase:
                     engine.submit_action(action)
             engine.resolve_nominations()
         shortlist = engine.murder_shortlist if engine.config.game.on_trial else None
+        if engine.config.game.council_deliberation and len(traitors) > 1:
+            # Audit fix, phase 3: two rounds instead of one blind ballot.
+            victim = await _run_council(context, engine, traitors, shortlist)
+            return {"victim": victim}
         # Same concurrent decision, submitted in id order so the
         # earliest-choice tiebreak stays deterministic.
         choices = await asyncio.gather(
@@ -449,6 +468,102 @@ class TraitorNightPhase:
                 engine.submit_action(action)
         victim = engine.resolve_night()
         return {"victim": victim}
+
+
+async def _run_council(
+    context: PhaseContext,
+    engine: "GameEngine",
+    traitors: list[str],
+    shortlist: Optional[list[str]],
+) -> Optional[str]:
+    """The night's kill in two rounds: proposals, then hold-or-switch.
+
+    Round 1 asks one traitor at a time and freezes each pick as a
+    proposal on the traitor channel, so the second and third traitor
+    write having read the others instead of guessing at them. Round 2
+    collects every final pick from that same moment - a ballot, not a
+    bandwagon - and `resolve_night` counts it, reporting the switches,
+    the dissent and any tie it had to break.
+    """
+    for actor in traitors:
+        targets = legal_targets(
+            engine.state, actor, ActionType.TRAITOR_KILL, shortlist=shortlist
+        )
+        if not targets:
+            continue
+        action = await _ask(
+            context,
+            actor,
+            ActionType.TRAITOR_KILL,
+            targets,
+            _proposal_instruction(engine),
+        )
+        if action is not None:
+            engine.record_council_proposal(action)
+    engine.open_council_round_two()
+    proposals = engine.council_proposals()
+    choices = await asyncio.gather(
+        *(
+            _ask(
+                context,
+                actor,
+                ActionType.TRAITOR_KILL,
+                targets,
+                _verdict_instruction(engine, actor, proposals),
+            )
+            for actor in traitors
+            if (
+                targets := legal_targets(
+                    engine.state, actor, ActionType.TRAITOR_KILL, shortlist=shortlist
+                )
+            )
+        )
+    )
+    for action in choices:
+        if action is not None:
+            engine.submit_action(action)
+    return engine.resolve_night()
+
+
+def _proposal_line(engine: "GameEngine") -> str:
+    """What the council has already put on the table, in actor order."""
+    proposals = engine.council_proposals()
+    return ", ".join(
+        f"{traitor} proposes {target}"
+        for traitor, target in sorted(proposals.items())
+    )
+
+
+def _proposal_instruction(engine: "GameEngine") -> str:
+    """Round 1's host line: propose with a reason, it is not final yet."""
+    line = (
+        "Council, round 1: propose tonight's victim by naming one player "
+        "and put your reason in the content. This is a proposal, not the "
+        "final call - in round 2 you hold it or change it after hearing "
+        "the others."
+    )
+    heard = _proposal_line(engine)
+    if heard:
+        return f"{line} So far tonight: {heard}."
+    return f"{line} You speak first, so the argument is yours to open."
+
+
+def _verdict_instruction(
+    engine: "GameEngine", actor: str, proposals: dict[str, str]
+) -> str:
+    """Round 2's host line: hold or switch, and the majority wins."""
+    listed = ", ".join(
+        f"{traitor} proposes {target}"
+        for traitor, target in sorted(proposals.items())
+    )
+    mine = proposals.get(actor)
+    hold = f" Your own proposal was {mine}." if mine else ""
+    return (
+        "Council, round 2: everyone has spoken. Hold your proposal or "
+        "switch to another name, and say why in the content - every "
+        "traitor answers at the same time and the majority of the final "
+        f"picks wins.{hold} On the table: {listed or 'no proposals'}."
+    )
 
 
 async def _run_recruit_night(

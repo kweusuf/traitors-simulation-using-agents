@@ -41,6 +41,10 @@ class EventType(str, Enum):
     DAGGER_USED = "DAGGER_USED"
     SEER_CHECK = "SEER_CHECK"
     MURDER_SHORTLIST = "MURDER_SHORTLIST"
+    # Sequential traitor council (audit fix, phase 3): one round-1
+    # proposal per traitor, each carrying the name they put forward and
+    # the reason they gave for it.
+    COUNCIL_PROPOSAL = "COUNCIL_PROPOSAL"
     PUBLIC_MESSAGE = "PUBLIC_MESSAGE"
     PRIVATE_MESSAGE = "PRIVATE_MESSAGE"
     VOTE_CAST = "VOTE_CAST"

@@ -282,6 +282,30 @@ def render_transcript(events: list[Event]) -> str:
                 f"({len(event.payload.get('traitors', []))} traitors, "
                 f"{len(event.payload.get('faithful', []))} faithful)"
             )
+        elif event.type is EventType.COUNCIL_PROPOSAL:
+            target = (event.targets or ["?"])[0]
+            lines.append(f"    Traitor council: {event.actor} proposes {target}")
+        elif event.type is EventType.TRAITOR_KILL and event.payload.get(
+            "proposals"
+        ):
+            # The sequential council's verdict (audit fix, phase 3):
+            # every final pick, who moved off their proposal, and who
+            # dissents from the victim the count chose.
+            victim = (event.targets or ["?"])[0]
+            final = event.payload.get("final", {})
+            tally = ", ".join(
+                f"{who} picks {pick}" for who, pick in sorted(final.items())
+            )
+            lines.append(f"    Council verdict: {tally} -> {victim}")
+            for who, move in sorted(
+                (event.payload.get("switched") or {}).items()
+            ):
+                lines.append(f"    {who} switched: {move['from']} -> {move['to']}")
+            dissent = event.payload.get("dissent") or []
+            if dissent:
+                lines.append("    Dissent: " + ", ".join(dissent))
+            elif event.payload.get("unanimous"):
+                lines.append("    The council was unanimous")
         elif event.type is EventType.VOTE_TIE:
             lines.append("    Vote tied; nobody eliminated")
         elif event.type is EventType.NOMINATION_TALLY:
