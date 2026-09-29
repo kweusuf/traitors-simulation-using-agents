@@ -56,7 +56,7 @@ and its commit lands.
 | 28 | Hosted debate clock (audit fix, phase 1) | complete | `6b8dfe2` |
 | 29 | Round-table nomination, rebuttal, revote (audit fix, phase 2) | complete | `8c46d5b` |
 | 30 | Sequential traitor council (audit fix, phase 3) | complete | `415b9a3` |
-| 31 | Private chats with pair history (audit fix, phase 4) | complete | `a02cba2` |
+| 31 | Private chats with pair history (audit fix, phase 4) | complete | `087e80a` |
 | 32 | Conflict personas and clash metrics (audit fix, phase 5) | pending | `pending` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
