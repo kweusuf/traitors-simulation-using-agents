@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-28 complete, 396 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-29 complete, 413 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -54,7 +54,7 @@ and its commit lands.
 | 26 | Recruitment as a choice with ultimatum | complete | `53b5b89` |
 | 27 | Endgame trigger at the final five | complete | `26a2550` |
 | 28 | Hosted debate clock (audit fix, phase 1) | complete | `6b8dfe2` |
-| 29 | Round-table nomination, rebuttal, revote (audit fix, phase 2) | pending | `pending` |
+| 29 | Round-table nomination, rebuttal, revote (audit fix, phase 2) | complete | `8c46d5b` |
 | 30 | Sequential traitor council (audit fix, phase 3) | pending | `pending` |
 | 31 | Private chats with pair history (audit fix, phase 4) | pending | `pending` |
 | 32 | Conflict personas and clash metrics (audit fix, phase 5) | pending | `pending` |
@@ -657,27 +657,71 @@ rendered transcript, and a full scripted game. A fake run of the basic
 config with the clock on produced 4 warnings, 4 closes, 44 public
 messages and zero rejected actions across all seven artifacts.
 
-### Remaining audit-fix phases (29 to 32): scope and estimate
+### Phase 29: Round-table nomination, rebuttal, revote (audit fix, phase 2)
 
-Four phases left from
+Second of the five phases approved with
+`docs/2026-09-28-rounds-vs-season-audit.md`: the round table plays like
+the show's. Somebody is named, the accused answers, and a table that
+cannot decide votes again on those suspects only.
+
+- [x] Config `nomination_enabled` and `revote_enabled` on
+  `GameSettings`, both default off; with them off the ballot is exactly
+  what it was.
+- [x] New `REBUT` action (16 action types now, `test_models` updated),
+  `ACCUSE`/`REBUT` riding the public channel, and the secrecy rule
+  rewritten so naming a suspect with a reason is allowed while roles
+  stay hidden. The prompt carries one line for the nomination and one
+  for the defence.
+- [x] `RoundTablePhase`: debate, then one `ACCUSE` from everyone, then
+  `tally_accusations(keep)` emitting `NOMINATION_TALLY` with counts and
+  the accusations behind them, then one `REBUT` from each nominee before
+  the vote. With nomination off the phase is the old plain debate.
+- [x] Restricted revote: a tied ballot opens `REVOTE_CALLED` among the
+  tied suspects only (nobody tied may vote, one ballot each),
+  `REVOTE_RESOLVED` reports the counts, and `resolve_votes` banishes
+  the revote's winner. A revote that ties again banishes nobody rather
+  than recording a dead round, and when every living player is tied the
+  restriction drops so the ballot cannot stall on itself.
+- [x] `pending_banishment()` says who is about to leave: the first
+  ballot's leader, or the settled revote's winner. `EliminationPhase`
+  asks it before resolving, so a traitor whose exit was decided by the
+  revote still gets the recruit-or-go choice.
+- [x] Rendering on both surfaces: `transcript.txt` narrates
+  "Host: nominations tallied", "face a revote" and who is banished, and
+  the live progress printer has the matching host lines.
+
+**Verification:** 413 tests green. New
+`tests/unit/test_round_table.py` (16 tests) covers nomination off, the
+tally and its `keep` rule, the secrecy carve-out for a reasoned
+accusation, the defence turn, the restricted ballot and its target
+rules, the double tie, recruitment after a revote, and a full scripted
+game with both flags on. The fake prompt provider was part of the fix:
+it answers `accuse`/`rebut` with a reason and reads the action type and
+legal targets from the original prompt, so a correction retry cannot
+lose them. A fake six-player run with both flags on produced 10
+nominations, 4 defences, 2 nomination tallies and zero rejected actions
+across all seven artifacts.
+
+### Remaining audit-fix phases (30 to 32): scope and estimate
+
+Three phases left from
 `docs/2026-09-28-rounds-vs-season-audit.md`. Estimates assume the same
-rhythm as phase 28 (one session per phase, tests and commit inside the
-session) and are effort, not calendar, commitments: each phase stops at
-its checkpoint for explicit approval before the next starts.
+rhythm as phases 28 and 29 (one session per phase, tests and commit
+inside the session) and are effort, not calendar, commitments. Phases
+30 to 32 were approved to run back to back, without a checkpoint
+between them.
 
 | Phase | Audit item | Scope | Estimate |
 |-------|-----------|-------|----------|
-| 29 | Audit fix, phase 2 | Round-table nomination tally, defense messages, timed rebuttal, restricted revote on ties, secrecy carve-out for naming suspects with reasons. New events, prompt text, config already staged (`nomination_enabled`, `revote_enabled`) | 1 session (largest of the four: touches voting, prompts, and the validator) |
 | 30 | Audit fix, phase 3 | Sequential traitor council: round 1 proposals, round 2 hold-or-switch with reasons, majority of final picks wins instead of the earliest-submission tiebreak | 1 session (small: `TraitorNightPhase` plus one resolution helper) |
 | 31 | Audit fix, phase 4 | Private chats carry the pair's own recent messages in the prompt; per-pair counters in the quality metrics | 1 session (small: projector or prompt window plus a metrics block) |
 | 32 | Audit fix, phase 5 | Conflict personas (assertiveness and tunnel-vision weights from the Series 1 ground truth) plus clash metrics: accusation rate, revote stubbornness, council switch rate, traitor cohesion | 1 to 2 sessions (largest surface: 22 persona files plus new metrics and tests) |
 
-Total: 4 to 5 sessions after phase 28. If they run back to back, the
-audit fix lands within roughly a working week; the binding constraint is
-the approval checkpoint between phases, not the coding. Live Ollama
-verification runs (a fake-backend run per phase, plus one season replay
-for the benchmark) are included in each session's estimate; a full
-4-hour season replay is not.
+Total: 3 to 4 sessions after phase 29, running back to back, so the
+audit fix lands within roughly a working week. Live Ollama verification
+runs (a fake-backend run per phase, plus one season replay for the
+benchmark) are included in each session's estimate; a full 4-hour
+season replay is not.
 
 ------------------------------------------------------------------------
 
@@ -731,3 +775,4 @@ for the benchmark) are included in each session's estimate; a full
 | 2026-09-28 | Fix: a configured endgame (`finale_total` or `endgame_vote`) replaces the parity win. The season replay (game-009) reached three traitors against three faithful with six alive and parity closed it there, one player short of the final five, so the finale never opened; the count trigger also fires below its number now, for a cast that cannot land on it. The season config on the fake backend now reaches the finale at its final five (wilf against four faithful) and ends by end vote. The season config's `max_recruits: 2` is documented as intended. 384 tests passed. |
 | 2026-09-28 | Audit written (`docs/2026-09-28-rounds-vs-season-audit.md`): season replays versus UK Series 1, clash-free discussion, private chats echoing the public transcript, and every decision point that lacks a tie-breaker; five-phase fix plan approved. |
 | 2026-09-28 | Phase 28 complete (audit fix, phase 1): deterministic host with a debate clock, `HOST_WARNING`/`DEBATE_CLOSED` events, `discussion_budget`/`warning_turns` config, a per-turn timer line in prompts via `extra_instruction`, and a validator limit that admits the closing turn; clock off by default, 396 tests passed. |
+| 2026-09-29 | Phase 29 complete (audit fix, phase 2): hosted round table with `ACCUSE`/`REBUT`, a `NOMINATION_TALLY` from everyone's accusation (`keep` nominations on top), a restricted revote on a tied ballot whose second tie bansishes nobody, the secrecy carve-out for a reasoned accusation, and `pending_banishment()` so the recruit choice still reaches a traitor whose exit the revote decided; `nomination_enabled`/`revote_enabled` default off, fake provider fixed to play the phase; 413 tests passed. |
