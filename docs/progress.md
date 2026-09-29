@@ -1,7 +1,7 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
-**Status:** MILESTONE 2 REACHED (Phases 0-30 complete, 419 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-31 complete, 432 tests green)
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
@@ -56,7 +56,7 @@ and its commit lands.
 | 28 | Hosted debate clock (audit fix, phase 1) | complete | `6b8dfe2` |
 | 29 | Round-table nomination, rebuttal, revote (audit fix, phase 2) | complete | `8c46d5b` |
 | 30 | Sequential traitor council (audit fix, phase 3) | complete | `415b9a3` |
-| 31 | Private chats with pair history (audit fix, phase 4) | pending | `pending` |
+| 31 | Private chats with pair history (audit fix, phase 4) | complete | `a02cba2` |
 | 32 | Conflict personas and clash metrics (audit fix, phase 5) | pending | `pending` |
 
 Phase 9 completing is **Milestone 1** (spec §33): a full deterministic
@@ -739,24 +739,75 @@ moving the pick, the unanimous case and the lone-traitor skip. A fake
 nine-player run with the flag on produced 5 council proposals, 2 council
 verdicts and zero rejected actions across all seven artifacts.
 
-### Remaining audit-fix phases (31 to 32): scope and estimate
+### Phase 31: Private chats with pair history (audit fix, phase 4)
 
-Two phases left from
+Fourth of the five audit phases: the audit counted 186 private messages
+across 69 pairs, called that healthy, and then read them. They were
+one-to-ones quoting a third player's public post. The prompt already said
+to "continue something the two of you actually said", but nothing in the
+prompt showed the two of them anything they had said, so the model used
+the only history in front of it.
+
+- [x] `AgentView.pair_threads()` groups this player's private traffic by
+  counterpart. A private message has exactly two people in it, so the
+  counterpart is unambiguous: the recipient when this player wrote it,
+  the sender when they received it. The traitor channel is a group, not a
+  pair, so it stays out and keeps using the flat list.
+- [x] The `private_message` prompt renders those as labelled threads
+  ("Your conversation with bob:", then each line as `bob:` or `you:`), so
+  the pair reads as a two-way exchange rather than a list of notes. The
+  transcript budget is divided across the threads, so one busy pair
+  cannot push the others off the end of the prompt.
+- [x] The instruction now says to pick a thread and reply inside it -
+  answer what that player last said, or push something the two of them
+  raised earlier - and explicitly not to start a new topic from the
+  room. It appears only when there is a thread to reply into, so a
+  player's first private message does not get told to continue a
+  conversation that does not exist yet.
+- [x] A `private_chats` block in the quality metrics: pairs, messages,
+  two-way pairs, `reciprocity_rate`, mean messages per pair, longest
+  thread, length buckets and per-player totals. Reciprocity is the number
+  that matters, because a pair count cannot tell a conversation from a
+  broadcast. The pair key is direction-independent, so `alice -> bob` and
+  `bob -> alice` are one pair. Group private lines (the seer's answer)
+  are not counted as a pair, though they still count as private messages.
+- [x] `simulation metrics` renders the block.
+
+**Verification:** 432 tests green. New `tests/unit/test_private_chats.py`
+(13 tests) covers the thread reaching the prompt with both sides
+labelled, one thread's lines never appearing under another's heading, the
+reply-inside-the-thread instruction, a first-timer with no thread block,
+the role-private channel falling back to the flat list, public turns
+keeping the flat list, the budget split protecting a quiet thread, and
+the metric block: reciprocity separating a thread from a broadcast,
+direction-independent pair keys, length buckets and their 5+ cap, the
+zero case, and group lines not inventing a pair. A fake six-player run
+put 10 private messages across 8 pairs and reported reciprocity 0.25 -
+six one-sided broadcasts, the audit's symptom reproduced in a number,
+which is the point of measuring it.
+
+### Remaining audit-fix phase (32): scope and estimate
+
+One phase left from
 `docs/2026-09-28-rounds-vs-season-audit.md`, on the same rhythm as phases
-28 to 30 (one session per phase, tests and commit inside the session).
-These are effort, not calendar, commitments. They were approved to run
-back to back, without a checkpoint between them.
+28 to 31 (one session per phase, tests and commit inside the session).
+This is effort, not calendar, and it was approved to run back to back
+with the others, without a checkpoint.
 
 | Phase | Audit item | Scope | Estimate |
 |-------|-----------|-------|----------|
-| 31 | Audit fix, phase 4 | Private chats carry the pair's own recent messages in the prompt; per-pair counters in the quality metrics | 1 session (small: projector or prompt window plus a metrics block) |
 | 32 | Audit fix, phase 5 | Conflict personas (assertiveness and tunnel-vision weights from the Series 1 ground truth) plus clash metrics: accusation rate, revote stubbornness, council switch rate, traitor cohesion | 1 to 2 sessions (largest surface: 22 persona files plus new metrics and tests) |
 
-Total: 2 to 3 sessions after phase 30, running back to back, so the
-audit fix lands within roughly a working week. Live Ollama verification
-runs (a fake-backend run per phase, plus one season replay for the
-benchmark) are included in each session's estimate; a full 4-hour
-season replay is not.
+Three of the four clash metrics already have the events they need
+recorded, from phases 29 and 30: accusation rate from the nomination
+tally, revote stubbornness from the restricted revote ballots, council
+switch rate from the council verdict. The work is the persona weights
+and the metrics block that reads them.
+
+So the whole audit fix lands one session after phase 30, running back to
+back as approved. Live Ollama verification runs (a fake-backend run per
+phase, plus one season replay for the benchmark) are included in each
+session; a full 4-hour season replay is not.
 
 ------------------------------------------------------------------------
 
@@ -812,3 +863,4 @@ season replay is not.
 | 2026-09-28 | Phase 28 complete (audit fix, phase 1): deterministic host with a debate clock, `HOST_WARNING`/`DEBATE_CLOSED` events, `discussion_budget`/`warning_turns` config, a per-turn timer line in prompts via `extra_instruction`, and a validator limit that admits the closing turn; clock off by default, 396 tests passed. |
 | 2026-09-29 | Phase 29 complete (audit fix, phase 2): hosted round table with `ACCUSE`/`REBUT`, a `NOMINATION_TALLY` from everyone's accusation (`keep` nominations on top), a restricted revote on a tied ballot whose second tie bansishes nobody, the secrecy carve-out for a reasoned accusation, and `pending_banishment()` so the recruit choice still reaches a traitor whose exit the revote decided; `nomination_enabled`/`revote_enabled` default off, fake provider fixed to play the phase; 413 tests passed. |
 | 2026-09-29 | Phase 30 complete (audit fix, phase 3): sequential traitor council behind `council_deliberation` (default off) - round 1 proposes one traitor at a time as a `COUNCIL_PROPOSAL` on the traitor channel so each writes having read the others, round 2 takes a concurrent hold-or-switch ballot where the majority of final picks wins, and the outcome records switches, dissent and unanimity on both render surfaces; a lone traitor and a recruit night skip it; 419 tests passed. |
+| 2026-09-29 | Phase 31 complete (audit fix, phase 4): the private-message prompt now carries the player's own per-pair threads (`AgentView.pair_threads`, a recipient/sender-derived counterpart, role-private group traffic excluded) with the transcript budget split across threads so one busy pair cannot crowd out the rest, plus a `private_chats` metrics block counting pairs, two-way pairs, `reciprocity_rate`, thread length buckets and per-player totals; 432 tests passed. |

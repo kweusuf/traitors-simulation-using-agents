@@ -254,6 +254,21 @@ class PromptBuilder:
                 "and continue something the two of you actually said; do not "
                 "reuse phrasing from the public transcript."
             )
+        if action_type is ActionType.PRIVATE_MESSAGE:
+            # Without this block the model reaches for the public
+            # transcript, because that is the only history in front of
+            # it: a one-to-one that quotes a third player's post is the
+            # observable symptom of a private chat that never happened.
+            threads = view.pair_threads()
+            if threads:
+                lines.append(
+                    "Each thread below is your own private history with that "
+                    "one player and nobody else can read it. Pick one thread "
+                    "and reply inside it: answer what that player last said "
+                    "to you or push something you two raised earlier. Do not "
+                    "start a new topic from the room, and do not mention "
+                    "anyone the thread does not already involve."
+                )
         if action_type is ActionType.TRAITOR_MESSAGE:
             lines.append(
                 "Traitors only, no faithful player can read this. Argue the "
@@ -309,7 +324,35 @@ class PromptBuilder:
                     f"  (earlier {dropped} public messages are omitted; "
                     "eliminations are listed above)"
                 )
-        if view.private_conversations:
+        threads = (
+            view.pair_threads()
+            if action_type is ActionType.PRIVATE_MESSAGE
+            else {}
+        )
+        if threads:
+            # A thread's lines are windowed on their own so one busy pair
+            # cannot crowd the others out of the prompt.
+            per_thread = (
+                max(1, self.transcript_limit // len(threads))
+                if self.transcript_limit
+                else 0
+            )
+            lines.append("")
+            lines.append("Your private conversations, one thread per player:")
+            for peer, thread in sorted(threads.items()):
+                lines.append(f"  Your conversation with {peer}:")
+                shown, dropped = _window(thread, per_thread)
+                for msg in shown:
+                    who = "you" if msg.sender_id == view.agent_id else peer
+                    lines.append(
+                        f"    [{msg.round_number}] {who}: {msg.content}"
+                    )
+                if dropped:
+                    lines.append(
+                        f"    (earlier {dropped} messages in this thread "
+                        "are omitted)"
+                    )
+        elif view.private_conversations:
             shown, dropped = _window(
                 view.private_conversations, self.transcript_limit
             )

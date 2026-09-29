@@ -61,6 +61,28 @@ class AgentView(StrictModel):
             lines.append(f"Game over. Winner: {self.winner}")
         return "\n".join(lines)
 
+    def pair_threads(self) -> dict[str, list[Message]]:
+        """This player's private conversations, grouped by counterpart.
+
+        One thread per person, oldest first. A private message has exactly
+        two people in it, so the counterpart is unambiguous: the recipient
+        when this player wrote it, the sender when they received it. The
+        traitor channel is a group rather than a pair and is left out,
+        since a per-pair thread is what a one-to-one chat needs.
+        """
+        threads: dict[str, list[Message]] = {}
+        for msg in self.private_conversations:
+            if msg.channel is not Channel.PRIVATE:
+                continue
+            if msg.sender_id == self.agent_id:
+                peers = [r for r in msg.recipients if r != self.agent_id]
+            else:
+                peers = [msg.sender_id]
+            if len(peers) != 1:
+                continue
+            threads.setdefault(peers[0], []).append(msg)
+        return threads
+
 
 class InformationProjector:
     def __init__(

@@ -423,6 +423,15 @@ def cmd_metrics(args: argparse.Namespace) -> int:
             f"most alike: {pair[0]} ~ {pair[1]} "
             f"(content {content.get('max')}, phrasing {phrasing.get('max')})"
         )
+    chats = quality.get("private_chats", {})
+    if chats:
+        print(
+            f"  private chats: {chats.get('pairs')} pairs, "
+            f"{chats.get('two_way_pairs')} two-way "
+            f"(reciprocity={chats.get('reciprocity_rate')}), "
+            f"mean per pair={chats.get('mean_messages_per_pair')}, "
+            f"longest={chats.get('longest_thread')}"
+        )
     print(
         f"  parsing: rejected={parsing.get('rejected_actions')} "
         f"unparseable={parsing.get('unparseable_actions')}"

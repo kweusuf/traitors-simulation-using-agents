@@ -204,6 +204,66 @@ def _declares_role(text: str) -> bool:
     return bool(_matches(_SELF_DECLARATION, text))
 
 
+def _pair_chats(messages: list[Event]) -> dict[str, Any]:
+    """Per-pair counters over the run's one-to-one private traffic.
+
+    The audit's complaint about private chats is that they echo the
+    public transcript instead of being 1-on-1s, and a pair count cannot
+    see that: 186 messages across 69 pairs looks healthy either way. What
+    separates a real conversation from a broadcast is *reciprocity* -
+    both people going back and forth - so that is what is counted, along
+    with how long the conversations actually run and whether the same
+    people keep talking to each other (a stable pair is a bloc forming,
+    a scatter of one-offs is not).
+    """
+    exchanges: dict[frozenset, Counter] = {}
+    for event in messages:
+        if event.type is not EventType.PRIVATE_MESSAGE:
+            continue
+        sender = event.actor or ""
+        peers = {r for r in event.targets if r and r != sender}
+        if not sender or len(peers) != 1:
+            continue  # a group message, or the seer's system answer
+        pair = frozenset((sender, next(iter(peers))))
+        direction = exchanges.setdefault(pair, Counter())
+        direction[sender] += 1
+
+    if not exchanges:
+        return {
+            "pairs": 0,
+            "messages": 0,
+            "two_way_pairs": 0,
+            "reciprocity_rate": 0.0,
+            "mean_messages_per_pair": 0.0,
+            "longest_thread": 0,
+            "pairs_by_length": {},
+            "per_player": {},
+        }
+
+    lengths = {pair: sum(counts.values()) for pair, counts in exchanges.items()}
+    two_way = sum(1 for counts in exchanges.values() if len(counts) > 1)
+    by_length = Counter()
+    for pair, length in lengths.items():
+        by_length[min(length, 5)] += 1  # 5 or more is "5+"
+    per_player: Counter = Counter()
+    for pair, length in lengths.items():
+        for player in pair:
+            per_player[player] += length
+
+    return {
+        "pairs": len(exchanges),
+        "messages": sum(lengths.values()),
+        "two_way_pairs": two_way,
+        # How many pairs are actually two-way. 0.0 means every private
+        # message was a one-sided broadcast into the void.
+        "reciprocity_rate": round(two_way / len(exchanges), 4),
+        "mean_messages_per_pair": round(sum(lengths.values()) / len(exchanges), 4),
+        "longest_thread": max(lengths.values()),
+        "pairs_by_length": {str(k): v for k, v in sorted(by_length.items())},
+        "per_player": dict(sorted(per_player.items())),
+    }
+
+
 def analyse(events: list[Event]) -> dict[str, Any]:
     """Score a run's messages against its own record."""
     roster: list[str] = []
@@ -453,6 +513,7 @@ def analyse(events: list[Event]) -> dict[str, Any]:
             else 0.0,
         },
         "speech_similarity": _speech_similarity(by_player),
+        "private_chats": _pair_chats(messages),
         "parsing": {
             "rejected_actions": rejected,
             "unparseable_actions": unparseable,
