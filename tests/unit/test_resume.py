@@ -142,6 +142,63 @@ def test_a_completed_elimination_stays_banished() -> None:
     assert point.state.eliminated_players == {"ben"}
 
 
+def traitor_banished_log_with_role() -> list[Event]:
+    return [
+        ev(0, EventType.GAME_STARTED, payload={"players": ["ana", "ben", "cara"]}),
+        ev(1, EventType.ROLE_ASSIGNED, actor="ana", payload={"role": "faithful"}),
+        ev(2, EventType.ROLE_ASSIGNED, actor="ben", payload={"role": "traitor"}),
+        ev(3, EventType.ROLE_ASSIGNED, actor="cara", payload={"role": "faithful"}),
+        ev(4, EventType.PHASE_STARTED, payload={"phase": "mission"}),
+        ev(5, EventType.ROUND_STARTED),
+        ev(6, EventType.PHASE_STARTED, payload={"phase": "round_table"}),
+        ev(7, EventType.PHASE_ENDED, payload={"phase": "round_table"}),
+        ev(8, EventType.PLAYER_ELIMINATED, actor="ben", payload={"method": "vote"}),
+        ev(9, EventType.PHASE_ENDED, payload={"phase": "round_table"}),
+    ]
+
+
+def test_resume_keeps_an_open_recruitment_window() -> None:
+    """A crash between a traitor's banishment and that night keeps the window.
+
+    Without this the engine starts with the flag unset, the traitor night
+    never asks the traitors to choose, and the window is silently lost.
+    """
+    point = find_resume_point(traitor_banished_log_with_role(), PHASES)
+
+    assert point.recruit_window is True
+
+
+def test_resume_spends_the_window_the_log_already_used() -> None:
+    """Once the traitors have chosen, the window is closed again."""
+    events = traitor_banished_log_with_role() + [
+        ev(10, EventType.PHASE_STARTED, payload={"phase": "private_chat"}),
+        ev(11, EventType.RECRUIT_CHOICE_MADE, payload={"choice": "murder"}),
+        ev(12, EventType.PHASE_ENDED, payload={"phase": "private_chat"}),
+    ]
+    point = find_resume_point(events, PHASES)
+
+    assert point.recruit_window is False
+
+
+def test_resume_leaves_the_window_closed_after_a_faithful_banishment() -> None:
+    """Only a traitor's banishment opens it."""
+    events = traitor_banished_log_with_role()
+    events = [
+        e.model_copy(
+            update={
+                "actor": "cara",
+                "payload": {"method": "vote"},
+            }
+        )
+        if e.sequence == 8
+        else e
+        for e in events
+    ]
+    point = find_resume_point(events, PHASES)
+
+    assert point.recruit_window is False
+
+
 def test_resume_refuses_a_finished_game() -> None:
     events = opening() + [ev(6, EventType.GAME_ENDED)]
     with pytest.raises(ResumeError, match="already finished"):

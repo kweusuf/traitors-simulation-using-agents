@@ -61,6 +61,7 @@ class ResumePoint:
     phase_index: int  # index into the phase order to resume at
     state: GameState
     recruits_used: int = 0
+    recruit_window: bool = False
     seer_checks_done: set[str] = field(default_factory=set)
     awarded_round: int = -1
     award_index: int = 0
@@ -258,6 +259,22 @@ def _fold_bookkeeping(events: list[Event], point: ResumePoint) -> None:
             awarded += 1
             point.awarded_round = max(point.awarded_round, event.round)
     point.award_index = awarded % len(ITEM_ORDER)
+    # The recruitment window opens on a traitor's banishment by vote and
+    # closes the night the traitors use it. A crash between the two
+    # leaves the flag unset on a fresh engine, so the choice would be
+    # silently skipped; rebuild it from the log instead.
+    window = False
+    for event in events:
+        if event.type is EventType.RECRUIT_CHOICE_MADE:
+            window = False
+        elif (
+            event.type is EventType.PLAYER_ELIMINATED
+            and event.actor
+            and event.payload.get("method") == "vote"
+            and point.state.roles.get(event.actor) is Role.TRAITOR
+        ):
+            window = True
+    point.recruit_window = window
     # A player whose ROLE_ASSIGNED predates the ambition field cannot
     # have it rebuilt. Say so rather than inventing one.
     point.lost_ambitions = sorted(
@@ -292,7 +309,7 @@ def load_point(
         raise ResumeError(
             f"{path} was written {int(idle)}s ago, which is under the "
             f"{idle_seconds}s idle threshold; this run still looks alive. "
-            "Stop it first, or pass a longer idle_seconds."
+            "Stop it first, or pass a longer --idle-seconds."
         )
     events = EventLog(path).read_all()
     point = find_resume_point(events, phase_order)

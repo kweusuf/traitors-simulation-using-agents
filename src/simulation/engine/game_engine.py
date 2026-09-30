@@ -198,6 +198,7 @@ class GameEngine:
         self.state = state
         self._started = True
         self.recruits_used = point.recruits_used
+        self._recruit_window = point.recruit_window
         self.seer_checks_done = set(point.seer_checks_done)
         self._awarded_round = point.awarded_round
         self._award_index = point.award_index
@@ -828,25 +829,44 @@ class GameEngine:
     # ------------------------------------------------------------------
     # Recruitment as a choice (phase 26)
     # ------------------------------------------------------------------
+    @property
+    def traitor_capacity(self) -> int:
+        """The most traitors that may be alive at once.
+
+        A recruit may only ever fill a slot a banishment opened, so the
+        ceiling is the number the game dealt, not `len(traitor_names)`
+        once a pin has been dropped by a conversion.
+        """
+        pinned = self.config.game.traitor_names
+        return len(pinned) if pinned else self.config.game.traitors
+
     def recruit_window_open(self) -> bool:
         """May the traitors choose to recruit instead of murder tonight?
 
-        The show's rule: the window opens only on the night after a
-        traitor is banished at the round table (see `eliminate`). It also
-        needs a living faithful to offer to, a living traitor to make the
-        offer, and an unspent `max_recruits` budget.
+        With `recruit_window` on (the default) the show's rule applies:
+        the window opens only on the night after a traitor is banished at
+        the round table (see `eliminate`). With it off the choice is
+        offered every traitor night, so a vacancy can be held open
+        indefinitely and filled whenever the team likes.
+
+        Either way it needs a living faithful to offer to, a living
+        traitor to make the offer, a traitor vacancy to fill, and an
+        unspent `max_recruits` budget.
         """
         game = self.config.game
         if not game.recruit_choice or self.state.finale:
             return False
-        if not self._recruit_window:
+        if game.recruit_window and not self._recruit_window:
             return False
         if game.max_recruits and self.recruits_used >= game.max_recruits:
             return False
         roles = self.state.roles
         alive = self.state.alive_players
-        if not any(roles.get(p) is Role.TRAITOR for p in alive):
+        living = [p for p in alive if roles.get(p) is Role.TRAITOR]
+        if not living:
             return False
+        if len(living) >= self.traitor_capacity:
+            return False  # the tower is full; only a murder is left
         return any(roles.get(p) is Role.FAITHFUL for p in alive)
 
     def spend_recruit_window(self) -> None:

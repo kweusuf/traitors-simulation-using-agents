@@ -1,3 +1,6 @@
+# Third UK Series 1 replay: same cast and rules as uk-s01-r2, with
+# max_concurrency doubled from 8 to 16. Runs alongside r2 on the same
+# remote host, so combined load is 24 in-flight calls.
 # Season replay: The Traitors (UK), Series 1 (BBC One, 2022).
 #
 # Ground truth lives in configs/seasons/the-traitors-uk-s01.yaml and the
@@ -52,6 +55,15 @@ game:
   # Series 1 used the shield and a one-off on-trial murder restriction.
   # It never had a seer or a dagger.
   shield: true
+  # Audit fidelity phases 1-4 (host debate clock, round-table
+  # nomination and rebuttal, tie revote, sequential council).
+  # Default-off in GameSettings for backward compatibility; a
+  # season replay wants them on.
+  discussion_budget: 2
+  warning_turns: 1
+  nomination_enabled: true
+  revote_enabled: true
+  council_deliberation: true
   seer: false
   dagger: false
   on_trial: false
@@ -121,13 +133,13 @@ communication:
 llm:
   provider: ollama
   model: hauhau-qwen:latest
-  base_url: http://localhost:11434
+  base_url: http://HOST_A:11434  # override per machine
   temperature: 0.7
   max_tokens: 512
   reasoning_effort: none
   timeout_seconds: 300
   retries: 3
-  max_concurrency: 4
+  max_concurrency: 16
   options: {}
 
 seed: 42

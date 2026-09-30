@@ -156,6 +156,7 @@ class GameRunner:
         experiment_id: Optional[str] = None,
         observer: Optional[EventObserver] = None,
         resume: bool = False,
+        idle_seconds: Optional[int] = None,
     ) -> RunResult:
         """Play one full game and write `runs/<game_id>/` artifacts.
 
@@ -185,7 +186,12 @@ class GameRunner:
             # telemetry on the very attempt meant to recover it.
             saved = self._resume_identity(run_dir, seed, experiment_id)
             seed, experiment_id = saved
-            point, last_sequence = load_point(run_dir, list(config.phases))
+            point_kwargs = (
+                {"idle_seconds": idle_seconds} if idle_seconds is not None else {}
+            )
+            point, last_sequence = load_point(
+                run_dir, list(config.phases), **point_kwargs
+            )
             # The roster as dealt, which is the order `start()` drew the
             # ambitions in and the only order the seed replay assumes.
             point.recover_ambitions(

@@ -31,6 +31,12 @@ game:
   # offered player may refuse.
   recruit_on_banish: false
   recruit_choice: true
+  # Both Series 1 recruitment attempts came the night after one of
+  # the traitors was banished (episode 7 after Alyssa, episode 11
+  # after Amanda), which is exactly the banishment window. Turning
+  # this off offers the choice every traitor night instead, which
+  # is a departure from the season being replayed.
+  recruit_window: true
   # Series 1 made exactly two recruitment attempts: one declined and
   # one accepted by ultimatum. Capping it also keeps the cadence
   # close to the show, where most nights were a murder.

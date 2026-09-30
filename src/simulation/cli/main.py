@@ -191,6 +191,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             seed=args.seed,
             observer=observer,
             resume=bool(getattr(args, "resume", False)),
+            idle_seconds=getattr(args, "idle_seconds", None),
         )
 
     print(f"\nWinner: {result.winner} after {result.rounds} round(s)")
@@ -630,6 +631,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--provider", default=None, choices=["ollama", "fake"], help="override llm.provider"
     )
     run.add_argument("--model", default=None, help="override llm.model")
+    run.add_argument(
+        "--idle-seconds",
+        type=int,
+        default=None,
+        help=(
+            "with --resume, how long the log must be untouched before it is "
+            "treated as dead (default 300). Lower it when you have just "
+            "stopped the run yourself and are resuming on purpose"
+        ),
+    )
     run.add_argument(
         "--base-url",
         default=None,

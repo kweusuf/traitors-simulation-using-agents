@@ -620,6 +620,65 @@ def test_recruit_decision_rejects_bad_content() -> None:
     assert engine.recruit_offered is None
 
 
+def test_window_closed_when_tower_is_full() -> None:
+    """No banishment yet, so the window mode refuses the choice."""
+    engine = make_engine(players=8, traitors=3, recruit_choice=True)
+    assert len(roles_of(engine, Role.TRAITOR)) == 3 == engine.traitor_capacity
+    assert not engine.recruit_window_open()
+
+
+def test_capacity_is_the_starting_traitor_count() -> None:
+    engine = make_engine(players=8, traitors=3, recruit_choice=True)
+    assert engine.traitor_capacity == 3
+    banish_traitor(engine)
+    assert len(roles_of(engine, Role.TRAITOR)) == 2
+    # A vacancy opened, so the window has something to fill.
+    assert engine.recruit_window_open()
+
+
+def test_window_off_needs_no_banishment() -> None:
+    """The switch drops the banishment gate entirely.
+
+    Nothing has been banished, so the default mode refuses; the point of
+    the switch is that the traitors get the choice on any traitor night.
+    """
+    gated = make_engine(players=8, traitors=3, recruit_choice=True)
+    assert not gated.recruit_window_open()
+
+    free = make_engine(
+        players=8, traitors=3, recruit_choice=True, recruit_window=False
+    )
+    # Still no vacancy to fill, so it is refused for the other reason.
+    assert not free.recruit_window_open()
+
+    banish_traitor(gated)
+    banish_traitor(free)
+    assert gated.recruit_window_open()
+    assert free.recruit_window_open()
+
+
+def test_recruit_refills_to_capacity_then_closes() -> None:
+    """A recruit tops the tower back up and the choice is withdrawn.
+
+    The ceiling is the count the game dealt, so a converted faithful can
+    only ever fill a slot a banishment opened - never grow the team past
+    where it started.
+    """
+    engine = make_engine(
+        players=8, traitors=3, recruit_choice=True, recruit_window=False
+    )
+    banish_traitor(engine)
+    faithful = roles_of(engine, Role.FAITHFUL)[0]
+
+    run_night(engine, night_callback(engine, offer_to=faithful, response="accept"))
+
+    assert engine.state.roles[faithful] is Role.TRAITOR
+    assert len(roles_of(engine, Role.TRAITOR)) == 3 == engine.traitor_capacity
+    assert engine.recruits_used == 1
+    # Tower full again, so no further offer even with the window off.
+    assert not engine.recruit_window_open()
+
+
 def test_recruit_decision_tie_falls_to_murder() -> None:
     engine = make_engine(players=8, traitors=3, recruit_choice=True)
     banish_traitor(engine)

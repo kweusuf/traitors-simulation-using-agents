@@ -47,6 +47,16 @@ class GameSettings(StrictModel):
     # keep the plain `recruit_on_banish` behaviour, which this flag
     # overrides when both are set.
     recruit_choice: bool = False
+    # Whether `recruit_choice` needs the banishment window at all. True
+    # (the default) reproduces the show: the traitors get to choose
+    # recruit-or-murder only on the night after one of their own was
+    # banished by vote, and the window is spent that night whether they
+    # recruit or kill. False drops the gate and offers the choice on
+    # every traitor night - they can hold a vacancy open as long as
+    # they like and convert whenever they choose. Either way the living
+    # traitor count may never exceed the number the game started with,
+    # so a recruit can only ever fill a slot a banishment opened.
+    recruit_window: bool = True
     # Finale: normal play stops when exactly `finale_traitors` traitors
     # and `finale_faithful` faithful are alive, and rapid-fire voting
     # decides the winner (0/0 disables the finale and keeps the plain
