@@ -7,6 +7,11 @@ Traitors*.
 **Spec:** `02-framework-requirements-and-scaffolding-spec.md`
 **Progress tracker:** `docs/progress.md`
 
+**New here?** Read [Rules of the game](#rules-of-the-game) for how a game
+is set up, played and won, and
+[Design decisions worth knowing](#design-decisions-worth-knowing) for the
+choices behind those rules and why they were made.
+
 ## Status
 
 Milestone 1 (deterministic fake-backend game) and Milestone 2 (CLI,
@@ -40,7 +45,174 @@ python -m simulation batch configs/traitors/basic.yaml --games 10 --seed 100 --p
 Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 {ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
 
-### Resuming a crashed run
+## Rules of the game
+
+Everything below is config-driven from the `game:` block. Defaults are
+chosen so a bare config plays the plain game; every optional mechanic is
+off unless a config turns it on.
+
+### Setup
+
+`players` and `traitors` decide the roster; `faithful` is always
+`players - traitors` and is validated rather than configured. Roles are
+drawn from the run seed, **or** pinned by name with `traitor_names` when
+replaying a real season where the traitors are known. Every player is
+also seeded a `solo` or `team` ambition; traitors keep their ambition as
+a goal, so one may play to be the last traitor standing rather than to
+win as a group. `personas` assigns behaviour files round-robin.
+
+### The round
+
+A round runs the `phases:` list in order. The default order, which the
+season config extends with a third mission, is:
+
+| Phase | What happens |
+| --- | --- |
+| `mission` | a team task; how many run per round is just how many times the phase is listed |
+| `public_discussion` | everyone speaks in the open |
+| `private_chat` | side conversations, plus a traitors-only channel |
+| `round_table` | open nomination of suspects |
+| `voting` | everyone votes; the most-voted player is banished |
+| `elimination` | the banishment resolves and the role is revealed |
+| `traitor_night` | the traitors argue on their private channel, pick a victim, and the night plays out |
+
+An incomplete phase is always replayed from its start, so a crash during
+an elimination cannot banish the same player twice.
+
+### Winning
+
+- **No traitors left** → the faithful win.
+- **No faithful left** → the traitors win.
+- **Parity** → traitors win when living traitors are at least as many as
+  living faithful. This is the default and it is deliberately blunt.
+- **A configured endgame replaces parity.** With `finale_traitors` and
+  `finale_faithful` set, the finale opens at exactly those counts; with
+  `finale_total` it opens at that many living players whatever the
+  split. Once a finale is configured, parity no longer ends the game,
+  which is what lets the real final five actually be reached.
+- **`endgame_vote`** ends each finale round with every living player
+  answering `end` (finish) or `banish` (vote again). At the final two the
+  traitors win automatically.
+- **`blind_finale_banishments`** keeps a finale banishment's role hidden
+  until the game ends, as the show plays its last round table.
+- **`max_rounds`** is a backstop: on exhaustion `round_limit_winner`
+  decides, so a stalemate cannot hang.
+- **`finale_max_votes`** bounds the finale itself: after that many
+  consecutive rapid-fire rounds with nobody banished, `round_limit_winner`
+  is declared instead. The show's final five can deadlock on a tie, and a
+  run must still terminate.
+
+### Recruitment
+
+Recruitment is the mechanic with the most moving parts, and the part of
+the rules most easily misread, so it is worth stating plainly.
+
+- **`recruit_choice`** turns on the choice mechanic. When it is on, the
+  traitors vote *recruit* or *murder* each time the night offers them
+  the choice. A tie falls to murder. It fully overrides
+  `recruit_on_banish`, so the two never both fire.
+- **`recruit_window`** decides when that choice is on offer.
+  - `true` (the default): only on the night after a traitor is banished
+    by vote. The window is spent that night either way. This is the
+    show's rule and the one the UK S01 configs use.
+  - `false`: on every traitor night. A vacancy can be held open as long
+    as the team likes and filled whenever they choose.
+- **`traitor_capacity`** is a hard invariant in both modes: the living
+  traitor count may never exceed the number the game dealt. A recruit can
+  only ever fill a slot a banishment opened, never grow the team past
+  where it started.
+- **`max_recruits`** caps how many times it can happen all game (`0` is
+  no cap). Without a cap the faithful can never empty the traitor team by
+  voting alone.
+- The offered player answers `accept` or `decline`. With a single
+  traitor left the offer is an **ultimatum**: declining is fatal.
+- **`recruit_on_banish`** is the older, simpler rule: a traitor banished
+  at the table converts one living faithful before leaving. It is off by
+  default and, on, would refill the tower on every traitor banishment,
+  which makes a faithful win arithmetically impossible.
+
+### Optional mechanics
+
+All off by default, all independent:
+
+- `shield` — one-shot item that blocks the next murder on its holder.
+- `dagger` — one-shot item whose holder's vote counts twice.
+- `seer` — one-shot item that checks one player's true role in private.
+- `on_trial` — traitors nominate a murder shortlist before the kill.
+- `nomination_enabled` — open nomination at the round table, keeping the
+  `nomination_keep` most-nominated suspects to answer the room.
+- `revote_enabled` — a restricted revote when the banishment ballot ties.
+- `council_deliberation` — the night's kill is decided in two rounds:
+  sequential proposals, then a simultaneous hold-or-switch where the
+  majority of final picks wins.
+- `discussion_budget` / `warning_turns` — a hosted discussion clock;
+  `0` disables it and keeps one-turn-each phases.
+
+### Seasonal cadence
+
+`quiet_murder_rounds` lists rounds where the traitors do not murder at
+all, and `quiet_banishment_rounds` lists rounds where the round table
+votes on nobody. Both exist so a replay can match a real season's
+rhythm, including episodes that were quiet for structural reasons rather
+than dramatic ones.
+
+### Pacing and prompt context
+
+The `communication:` block caps how much each player says
+(`public_messages_per_agent`, `private_messages_per_agent`) and how much
+of the transcript an agent sees (`transcript_messages_per_prompt`; `0`
+keeps the whole thing). These matter for model cost as much as for play,
+since a 22-player game with an unbounded transcript is the single
+biggest driver of token spend.
+
+## Design decisions worth knowing
+
+Choices that are not obvious from the code, including one claim that was
+made and then withdrawn.
+
+**The banishment window is not an artefact.** The obvious reading of the
+show is that the traitors may recruit on any night they like, and that is
+how later seasons play. But The Traitors UK Series 1 — the season this
+project replays — made exactly two recruitment attempts, and both came
+the night after one of the traitors was banished: episode 7 after Alyssa
+was voted out, episode 11 after Amanda was. The `recruit_window: true`
+default reproduces that. The free-choice rule is available behind
+`recruit_window: false`, but it departs from the season being replayed,
+so the S01 configs pin the window explicitly and say why.
+
+**Recruitment is a faithful rule, not a balance knob.** The earlier
+`recruit_on_banish` conversion would refill the tower on every traitor
+banishment, making a faithful win arithmetically impossible and any
+comparison with a real season meaningless. It is off in every season
+config for that reason.
+
+**A correction worth recording.** During this work it was claimed that
+Series 1 had no recruitment mechanic at all, on the strength of a single
+secondary article about Series 2's format changes. That was wrong:
+Kieran was a recruited traitor and Series 1 made two attempts, exactly as
+the ground truth in `configs/seasons/the-traitors-uk-s01.yaml` records.
+The rule survived that scrutiny only because the two real events happen
+to match the banishment window — a property of the season, not evidence
+that the rule was right. Single-sourced claims about show format did not
+get checked properly the first time.
+
+**Traitor count is capped at the starting number, not by a round
+count.** `traitor_capacity` derives from what the game dealt, so a
+conversion can only refill a vacancy. Without it, a run with recruitment
+on could grow the traitor team and the faithful could never catch up.
+
+**Resume replays rather than restores.** `--resume` rebuilds the engine
+from the event log instead of re-dealing, so roles, ambitions and the
+board are the ones players were actually told about. Anything the log
+does not record cannot be invented: an ambition missing from a legacy log
+is refused rather than guessed, unless the traitors were pinned by name,
+in which case the seeded draw replays exactly.
+
+**Every optional mechanic defaults to off.** A feature that changes the
+game is only enabled deliberately by a config, so an existing config
+keeps playing the same game when a new flag is added.
+
+## Resuming a crashed run
 
 A long replay can die on a transport timeout and take hours of model
 calls with it. `--resume` continues the run from its own event log
@@ -52,32 +224,25 @@ uv run python -m simulation run configs/traitors/season_uk_s01.r2.yaml \
 ```
 
 The log is truncated back to its last completed phase and the engine is
-rebuilt from what remains: roles, board, items, recruitment count and
-the seeded ambitions all come from the log rather than being redealt. A
-phase that never finished is redone from its start, so a crash during an
-elimination cannot banish the same player twice.
+rebuilt from what remains: roles, board, items, the recruitment count and
+window, and the seeded ambitions all come from the log rather than being
+redealt. A phase that never finished is redone from its start, so a crash
+during an elimination cannot banish the same player twice.
 
 Resume refuses to touch a log written in the last five minutes, since
-that usually means the original run is still going.
+that usually means the original run is still going. Pass
+`--idle-seconds N` to shorten that wait when you have just stopped the
+run yourself and are resuming deliberately:
 
-Game rules are config-driven as well: `game.players`, `game.traitors`,
-`game.max_rounds`, the `phases:` ordering, seasonal cadence
-(`quiet_murder_rounds` and `quiet_banishment_rounds` skip a night or a
-round table, the show never murders on night one), the endgame
-(`finale_total` starts the finale at that many living players whatever
-the split, `finale_traitors`/`finale_faithful` still work as a pair,
-`endgame_vote` adds the end-or-banish-again vote and
-`blind_finale_banishments` hides finale-time banishments until the game
-ends), recruitment
-(`game.recruit_choice` makes the traitors choose recruit or murder,
-with the offer answered by the target and a lone traitor able to force
-it as an ultimatum; `game.recruit_on_banish` is the older automatic
-conversion; `game.max_recruits` caps how many times it can happen). Traitors carry
-a seeded solo or team ambition: they can win alone as the last traitor
-standing or together as a team. Before each night kill the living
-traitors get one message on a channel no faithful can read, to argue
-who dies and whose name takes the blame, and at the round table they
-are told to build the case against a specific innocent.
+```bash
+uv run python -m simulation run configs/traitors/season_uk_s01.r2.yaml \
+  --game-id uk-s01-r2 --resume --idle-seconds 5
+```
+
+Before each night kill the living traitors get one message on a channel no
+faithful can read, to argue who dies and whose name takes the blame, and at
+the round table they are told to build the case against a specific
+innocent.
 
 Each game writes `runs/<game_id>/`:
 
@@ -128,9 +293,14 @@ promotion decision.
 22 players with personas written from the cast's on-screen behaviour
 (`configs/personas/uk_s01/`), the three original traitors pinned by name
 (`game.traitor_names`), the finale counted at three faithful against two
-traitors to match the real final five, and recruitment off because the
-season never refilled the tower by conversion. The ground truth for it
-lives in `configs/seasons/the-traitors-uk-s01.yaml`, and
+traitors to match the real final five, and the season's quiet rounds
+reproduced. Recruitment follows what the season actually did — two
+attempts, one declined and one by ultimatum, each the night after a
+traitor was banished — via `recruit_choice` with `recruit_window: true`
+and `max_recruits: 2`, while the automatic `recruit_on_banish`
+conversion stays off because it would refill the tower every time and
+make a faithful win impossible. The ground truth for it lives in
+`configs/seasons/the-traitors-uk-s01.yaml`, and
 `simulation benchmark <game_id> --season <file>` scores a finished run
 against it on twelve components, writing `benchmark.md` into the run
 directory: outcome, traitor roster, banishment and murder alignment (the
