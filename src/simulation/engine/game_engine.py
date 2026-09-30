@@ -168,13 +168,52 @@ class GameEngine:
             self.state.roles[pid] = role
             self.state.ambitions[pid] = "solo" if rng.random() < 0.5 else "team"
             self._emit(
-                EventType.ROLE_ASSIGNED, actor=pid, payload={"role": role.value}
+                EventType.ROLE_ASSIGNED,
+                actor=pid,
+                payload={
+                    "role": role.value,
+                    # Seeded once and derived from nothing else, so the
+                    # event log alone can rebuild it when a crashed run
+                    # is resumed (audit fix, phase 5).
+                    "ambition": self.state.ambitions[pid],
+                },
             )
             if self._agents is not None:
                 self._agents.upsert(
                     self.state.game_id, pid, pid.capitalize(), role.value, persona={}
                 )
         self._check_finale_trigger()  # a config can open at the finale counts
+
+    def restore_resume(self, point) -> None:
+        """Rehydrate the board from a resumed run's event log.
+
+        `start()` is deliberately not called: roles, the board and the
+        seeded ambitions are all restored from what the log already
+        recorded, so a resumed game continues the same game rather than
+        dealing a new one behind it. Only the counters the engine keeps
+        outside `GameState` come from the resume point.
+        """
+        state = point.state
+        state.game_id = self.sink.game_id
+        self.state = state
+        self._started = True
+        self.recruits_used = point.recruits_used
+        self.seer_checks_done = set(point.seer_checks_done)
+        self._awarded_round = point.awarded_round
+        self._award_index = point.award_index
+        if self._agents is not None:
+            # The agent table is a projection of the board, so a resumed
+            # run re-asserts it wholesale: upsert creates the row where
+            # an UPDATE would silently match nothing on a fresh database.
+            for pid, role in state.roles.items():
+                self._agents.upsert(
+                    state.game_id,
+                    pid,
+                    state.players[pid].name,
+                    role.value,
+                    persona={},
+                    alive=pid in state.alive_players,
+                )
 
     def start_round(self) -> None:
         self.state.round_number += 1

@@ -30,6 +30,7 @@ from simulation.experiments.config import GameConfig, LLMSettings
 from simulation.experiments.ledger import append_run as append_ledger
 from simulation.experiments.observability import NullTracer, build_tracer
 from simulation.experiments.quality import analyse as analyse_quality
+from simulation.experiments.resume import load_point
 from simulation.experiments.telemetry import TelemetryRecorder
 from simulation.experiments.replay import build_transcript, render_transcript
 from simulation.models.fake import PromptScriptProvider
@@ -154,8 +155,17 @@ class GameRunner:
         seed: Optional[int] = None,
         experiment_id: Optional[str] = None,
         observer: Optional[EventObserver] = None,
+        resume: bool = False,
     ) -> RunResult:
-        """Play one full game and write `runs/<game_id>/` artifacts."""
+        """Play one full game and write `runs/<game_id>/` artifacts.
+
+        With `resume`, the run continues a crashed one instead of
+        starting over: the event log is truncated back to its last
+        completed phase, the engine is rehydrated from what is left, and
+        the phase order picks up where the crash happened. The seed and
+        experiment id come from the crashed run's own saved config, so a
+        resumed game keeps the identity already recorded for it.
+        """
         config = self.config
         seed = config.seed if seed is None else seed
         game_id = game_id or self.next_game_id()
@@ -164,14 +174,33 @@ class GameRunner:
         run_dir = self.runs_dir / game_id
         run_dir.mkdir(parents=True, exist_ok=True)
         events_path = run_dir / "events.jsonl"
-        if events_path.exists():
+
+        resume_at: Optional[tuple[int, int]] = None
+        point = None
+        if resume:
+            saved = self._resume_identity(run_dir, seed, experiment_id)
+            seed, experiment_id = saved
+            point, last_sequence = load_point(run_dir, list(config.phases))
+            # The roster as dealt, which is the order `start()` drew the
+            # ambitions in and the only order the seed replay assumes.
+            point.recover_ambitions(
+                seed,
+                list(point.state.players),
+                list(config.game.traitor_names or []),
+            )
+            resume_at = (point.round_number, point.phase_index)
+        elif events_path.exists():
             events_path.unlink()  # the JSONL log is append-only
 
         sink = EventSink(
             game_id, jsonl_path=events_path, db=self.db, observer=observer
         )
         env = TraitorsEnvironment(config, sink, db=self.db, seed=seed)
-        env.initialize()
+        if point is not None:
+            env.engine.restore_resume(point)
+            sink.continue_after(last_sequence)
+        else:
+            env.initialize()
 
         agents = self._build_agents(env)
         provider = self.provider or build_provider(config.llm)
@@ -194,7 +223,9 @@ class GameRunner:
 
         self.tracer.record("game_started", game_id=game_id, seed=seed)
         started = time.monotonic()
-        asyncio.run(PhaseEngine(config, env.engine, env.phases()).run(context))
+        asyncio.run(
+            PhaseEngine(config, env.engine, env.phases()).run(context, resume_at)
+        )
         elapsed = time.monotonic() - started
 
         # Read the log back so artifacts come from the persisted source.
@@ -262,6 +293,27 @@ class GameRunner:
                 )
             )
         return results
+
+    @staticmethod
+    def _resume_identity(
+        run_dir: Path, seed: int, experiment_id: str
+    ) -> tuple[int, str]:
+        """Seed and experiment id of the crashed run, when it saved them.
+
+        The run writes `config.yaml` (with the seed resolved) and the
+        database row carrying the experiment id. A resumed game has to
+        keep both or the ledger ends up with two different games under
+        one id. Anything missing falls back to what the caller passed.
+        """
+        config_path = run_dir / "config.yaml"
+        if config_path.exists():
+            try:
+                data = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+            except Exception:
+                data = None
+            if isinstance(data, dict) and isinstance(data.get("seed"), int):
+                seed = int(data["seed"])
+        return seed, experiment_id
 
     # ------------------------------------------------------------------
     # Internals

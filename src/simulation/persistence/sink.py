@@ -67,3 +67,14 @@ class EventSink:
     @property
     def next_sequence(self) -> int:
         return self._sequence
+
+    def continue_after(self, last_sequence: int) -> None:
+        """Resume numbering after an existing log.
+
+        A resumed run appends to the same event file, and the sequence is
+        what replay orders on, so the counter has to pick up where the
+        previous run stopped rather than restarting at zero and writing
+        a second `evt-00000` into the file.
+        """
+        self._sequence = last_sequence + 1
+        self.events.clear()

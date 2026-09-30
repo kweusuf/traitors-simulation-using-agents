@@ -181,8 +181,16 @@ def cmd_run(args: argparse.Namespace) -> int:
             personas_dir=personas_dir_for(args.config),
         )
         observer = None if args.quiet else make_progress_printer()
+        if getattr(args, "resume", False):
+            if not args.game_id:
+                print("Resume needs --game-id so it knows which run to continue")
+                return 2
+            print(f"Resuming {args.game_id} from its event log")
         result = runner.run(
-            game_id=args.game_id, seed=args.seed, observer=observer
+            game_id=args.game_id,
+            seed=args.seed,
+            observer=observer,
+            resume=bool(getattr(args, "resume", False)),
         )
 
     print(f"\nWinner: {result.winner} after {result.rounds} round(s)")
@@ -613,6 +621,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("config", help="path to a YAML game config")
     run.add_argument("--seed", type=int, default=None, help="override the config seed")
     run.add_argument("--game-id", default=None, help="explicit game id")
+    run.add_argument(
+        "--resume",
+        action="store_true",
+        help="continue a crashed run from its event log (needs --game-id)",
+    )
     run.add_argument(
         "--provider", default=None, choices=["ollama", "fake"], help="override llm.provider"
     )

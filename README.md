@@ -40,6 +40,26 @@ python -m simulation batch configs/traitors/basic.yaml --games 10 --seed 100 --p
 Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 {ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
 
+### Resuming a crashed run
+
+A long replay can die on a transport timeout and take hours of model
+calls with it. `--resume` continues the run from its own event log
+instead of starting over:
+
+```
+uv run python -m simulation run configs/traitors/season_uk_s01.r2.yaml \
+  --game-id uk-s01-r2 --resume
+```
+
+The log is truncated back to its last completed phase and the engine is
+rebuilt from what remains: roles, board, items, recruitment count and
+the seeded ambitions all come from the log rather than being redealt. A
+phase that never finished is redone from its start, so a crash during an
+elimination cannot banish the same player twice.
+
+Resume refuses to touch a log written in the last five minutes, since
+that usually means the original run is still going.
+
 Game rules are config-driven as well: `game.players`, `game.traitors`,
 `game.max_rounds`, the `phases:` ordering, seasonal cadence
 (`quiet_murder_rounds` and `quiet_banishment_rounds` skip a night or a
