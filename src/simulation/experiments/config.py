@@ -57,6 +57,15 @@ class GameSettings(StrictModel):
     # traitor count may never exceed the number the game started with,
     # so a recruit can only ever fill a slot a banishment opened.
     recruit_window: bool = True
+    # The language every agent speaks in. The instructions stay English;
+    # only what an agent says changes. `hinglish` is Roman-script Hindi
+    # mixed with English, the way the Indian contestants talk. Any action
+    # whose `content` the engine reads as a machine token (`recruit`,
+    # `murder`, `accept`, `decline`, `end`, `banish`) must stay that
+    # exact English word or the validator rejects it - only free prose is
+    # translated, which is why this is a prompt directive and not a
+    # translation pass over the response.
+    language: str = "english"
     # Finale: normal play stops when exactly `finale_traitors` traitors
     # and `finale_faithful` faithful are alive, and rapid-fire voting
     # decides the winner (0/0 disables the finale and keeps the plain

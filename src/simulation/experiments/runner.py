@@ -222,7 +222,8 @@ class GameRunner:
             gateway=gateway,
             model_config=config.llm.to_model_config(),
             prompt_builder=PromptBuilder(
-                transcript_limit=config.communication.transcript_messages_per_prompt
+                transcript_limit=config.communication.transcript_messages_per_prompt,
+                language=config.game.language,
             ),
             telemetry=telemetry,
         )

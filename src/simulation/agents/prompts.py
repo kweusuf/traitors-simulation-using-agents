@@ -35,6 +35,11 @@ _CONTENT_EXAMPLE: dict[ActionType, str] = {
     ActionType.RECRUIT_RESPONSE: "accept",
 }
 
+# Values of `game.language` that mean "no language rule at all". Anything
+# else adds the directive, so a config only has to name a language to get
+# it and the default keeps every existing game byte-for-byte identical.
+_ENGLISH = frozenset({"", "english", "en", "none", "default"})
+
 
 def _window(messages, limit: int) -> tuple[list, int]:
     """Newest `limit` entries plus how many were dropped (0 = no limit)."""
@@ -79,8 +84,40 @@ class PromptBuilder:
     every call, so this is the main lever on call latency.
     """
 
-    def __init__(self, transcript_limit: int = 0) -> None:
+    def __init__(
+        self,
+        transcript_limit: int = 0,
+        language: str = "english",
+    ) -> None:
         self.transcript_limit = transcript_limit
+        self.language = language
+
+    def _language_rule(self) -> list[str]:
+        """The directive that moves an agent's speech into another language.
+
+        Only free prose moves. The engine reads `content` as a machine
+        token on several actions (recruit/murder, accept/decline,
+        end/banish) and rejects anything else, so the rule names those
+        words explicitly and tells the agent to leave them in English.
+        """
+        if self.language.strip().lower() in _ENGLISH:
+            return []
+        return [
+            "",
+            "Language (hard rule): speak only in "
+            f"{self.language} - Roman script, natural code-switching "
+            "between Hindi and English, the way the contestants talk. "
+            "Never reply in pure English or in Devanagari. Keep your "
+            "reasoning to yourself; this applies to what you say to the "
+            "other players, including your first line.",
+            "",
+            "Exception (harder rule): when an action's `content` is a "
+            "single decision word, it must stay exactly that English "
+            "word and nothing else - `recruit`, `murder`, `accept`, "
+            "`decline`, `end` or `banish`. Any explanation goes in a "
+            "different field or is left out entirely. This applies "
+            "even though you are speaking Hinglish everywhere else.",
+        ]
 
     def build_system(
         self,
@@ -116,6 +153,8 @@ class PromptBuilder:
             "wording already visible in the transcript above. A generic "
             "observation about caution, patience or how noisy the group "
             "is could have been written by anyone and tells you nothing.",
+            "",
+            *self._language_rule(),
             "",
         ]
         if role is Role.TRAITOR:

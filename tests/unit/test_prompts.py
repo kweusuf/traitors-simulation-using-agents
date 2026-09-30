@@ -175,6 +175,56 @@ def test_faithful_prompt_has_no_traitor_alliance_paragraph() -> None:
     assert "switch sides" not in system
 
 
+# ----------------------------------------------------------------------
+# Language (game.language moves an agent's speech, not its instructions)
+# ----------------------------------------------------------------------
+
+
+def test_english_adds_no_language_rule() -> None:
+    """The default must leave every existing game byte-for-byte identical."""
+    for value in ("english", "en", "", "none"):
+        system = PromptBuilder(language=value).build_system(
+            "alice", Role.FAITHFUL, Persona(description="Careful."), Goals()
+        )
+        assert "Language (hard rule)" not in system
+        assert "Exception (harder rule)" not in system
+
+
+def test_hinglish_adds_the_language_rule() -> None:
+    system = PromptBuilder(language="hinglish").build_system(
+        "alice", Role.FAITHFUL, Persona(description="Careful."), Goals()
+    )
+    assert "speak only in hinglish" in system
+    assert "Roman script" in system
+    # The rules that keep the game honest stay in force alongside it.
+    assert "Role secrecy (hard rule)" in system
+    assert "Originality (hard rule)" in system
+
+
+def test_language_rule_names_the_machine_tokens() -> None:
+    """The decision words the engine parses must be excluded by name.
+
+    `recruit_decision`, `recruit_response` and `end_vote` are validated
+    against exact English words, so a directive that translated
+    everything would silently break those three actions.
+    """
+    system = PromptBuilder(language="hinglish").build_system(
+        "alice", Role.TRAITOR, Persona(description="Careful."), Goals()
+    )
+    exception = system.split("Exception (harder rule)")[1]
+    for token in ("recruit", "murder", "accept", "decline", "end", "banish"):
+        assert f"`{token}`" in exception
+
+
+def test_language_rule_reaches_both_roles() -> None:
+    builder = PromptBuilder(language="hinglish")
+    persona = Persona(description="Careful player.")
+    for role in (Role.FAITHFUL, Role.TRAITOR):
+        assert "speak only in hinglish" in builder.build_system(
+            "alice", role, persona, Goals()
+        )
+
+
 def test_public_message_prompt_repeats_the_secrecy_reminder() -> None:
     builder = PromptBuilder()
     public = builder.build_user(make_view(), ActionType.PUBLIC_MESSAGE, [])

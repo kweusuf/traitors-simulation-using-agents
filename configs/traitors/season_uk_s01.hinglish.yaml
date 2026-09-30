@@ -1,0 +1,125 @@
+# UK Series 1 replay with every agent speaking Hinglish instead of
+# English. Nothing else changes: same cast, same pinned traitors, same
+# personas, same ground truth, same rules, same seed family. That makes
+# it a single-variable experiment against uk-s01-r1/r2/r3 - the only
+# difference is the language the speech is generated in, so any movement
+# in the benchmark is attributable to it.
+#
+# The personas stay in English on purpose. They are behavioural
+# instructions; translating them too would vary two things at once. The
+# language rule moves only what the agents say.
+#
+# Generated from season_uk_s01.run.yaml.
+
+game:
+  name: season_uk_s01_hinglish
+  players: 22
+  traitors: 3
+  traitor_names: [wilf, amanda, alyssa]
+  recruit_on_banish: false
+  recruit_choice: true
+  recruit_window: true
+  max_recruits: 2
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  max_rounds: 18
+  finale_max_votes: 10
+  quiet_murder_rounds: [1]
+  quiet_banishment_rounds: [8]
+  endgame_vote: true
+  blind_finale_banishments: true
+  shield: true
+  seer: false
+  dagger: false
+  on_trial: false
+  # Every agent's speech is generated in Hinglish (Roman-script
+  # Hindi-English). The engine's decision words stay English.
+  language: hinglish
+  player_names:
+    - aaron
+    - hannah
+    - meryl
+    - wilf
+    - kieran
+    - maddy
+    - andrea
+    - amanda
+    - fay
+    - theo
+    - amos
+    - alex
+    - rayan
+    - alyssa
+    - matt
+    - tom
+    - john
+    - ivan
+    - imran
+    - claire
+    - nicky
+    - aisha
+  personas:
+    - uk_s01/aaron
+    - uk_s01/hannah
+    - uk_s01/meryl
+    - uk_s01/wilf
+    - uk_s01/kieran
+    - uk_s01/maddy
+    - uk_s01/andrea
+    - uk_s01/amanda
+    - uk_s01/fay
+    - uk_s01/theo
+    - uk_s01/amos
+    - uk_s01/alex
+    - uk_s01/rayan
+    - uk_s01/alyssa
+    - uk_s01/matt
+    - uk_s01/tom
+    - uk_s01/john
+    - uk_s01/ivan
+    - uk_s01/imran
+    - uk_s01/claire
+    - uk_s01/nicky
+    - uk_s01/aisha
+
+phases:
+  - mission
+  - mission
+  - mission
+  - public_discussion
+  - private_chat
+  - round_table
+  - voting
+  - elimination
+  - traitor_night
+
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://HOST_A:11434  # override per machine
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  # Chosen deliberately at 16 on a known-good host. Evidence: 8 in
+  # flight has always been clean, 24 wedged the host and killed two
+  # runs outright, and 16 alone finished a whole season badly degraded
+  # (p95 558s, 85 failed calls). Past what the host serves in parallel
+  # this does not add throughput, it only queues requests into the
+  # 300s timeout. If this run stalls, `--resume --idle-seconds 5`
+  # picks it up where it stopped.
+  max_concurrency: 16
+  options: {}
+
+seed: 42
+
+observability:
+  enabled: false
+  provider: langfuse
