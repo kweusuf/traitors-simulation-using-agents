@@ -178,6 +178,11 @@ class GameRunner:
         resume_at: Optional[tuple[int, int]] = None
         point = None
         if resume:
+            # Every check that can refuse has to happen before the run
+            # touches the directory. `TelemetryRecorder` truncates
+            # `llm_calls.jsonl` on construction, so building it before
+            # the resume point is settled would erase a crashed run's
+            # telemetry on the very attempt meant to recover it.
             saved = self._resume_identity(run_dir, seed, experiment_id)
             seed, experiment_id = saved
             point, last_sequence = load_point(run_dir, list(config.phases))

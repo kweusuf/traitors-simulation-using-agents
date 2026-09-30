@@ -427,6 +427,31 @@ def test_resume_does_not_reuse_event_ids(tmp_path) -> None:
     assert len(set(ids)) == len(ids), "resumed events collided with the old log"
 
 
+def test_a_refused_resume_leaves_the_telemetry_log_untouched(tmp_path) -> None:
+    """A failed resume must not touch the run directory at all.
+
+    The telemetry recorder truncates `llm_calls.jsonl` when it is built,
+    so anything that can refuse a resume has to run before the recorder
+    exists. Otherwise the attempt to recover a crashed run destroys the
+    telemetry that explains how it crashed.
+    """
+    config = fake_config()
+    with pytest.raises(Exception):
+        make_runner(tmp_path, config, provider=CrashingProvider(25)).run(
+            game_id="game-001", seed=42
+        )
+    run_dir = tmp_path / "runs" / "game-001"
+    events = (run_dir / "events.jsonl").read_text()
+    calls = (run_dir / "llm_calls.jsonl").read_text()
+    assert calls, "the crashed run should have recorded some calls"
+
+    with pytest.raises(ResumeError, match="still looks alive"):
+        make_runner(tmp_path, config).run(game_id="game-001", seed=42, resume=True)
+
+    assert (run_dir / "events.jsonl").read_text() == events
+    assert (run_dir / "llm_calls.jsonl").read_text() == calls
+
+
 def test_resume_refuses_to_rewrite_a_log_that_is_still_being_written(tmp_path) -> None:
     """Two writers on one log would interleave events and corrupt replay."""
     config = fake_config()
