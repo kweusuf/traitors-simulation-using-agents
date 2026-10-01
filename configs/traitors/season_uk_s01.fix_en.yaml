@@ -139,7 +139,12 @@ llm:
   model: hauhau-qwen:latest
   base_url: http://HOST_A:11434  # override per machine
   temperature: 0.7
-  max_tokens: 512
+  # 768, raised from 512. Hinglish output runs long: in the paired run it
+  # p50'd at 313 tokens and p99'd at exactly the old 512 cap, with 11
+  # replies truncated mid-sentence and lost to a JSON parse error. 768
+  # clears the observed p99 with headroom without doubling the tail
+  # latency, since only ~2% of replies go past 512.
+  max_tokens: 768
   reasoning_effort: none
   timeout_seconds: 300
   retries: 3
