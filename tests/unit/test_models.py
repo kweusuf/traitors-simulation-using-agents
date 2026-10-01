@@ -7,7 +7,13 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from simulation.actions.actions import MVP_ACTIONS, Action, ActionType
+from simulation.actions.actions import (
+    MVP_ACTIONS,
+    CONTENT_CHOICES,
+    Action,
+    ActionType,
+    action_schema,
+)
 from simulation.communication.channels import Channel, Message
 from simulation.engine.state import GamePhase, GameState, PlayerState, Role
 from simulation.persistence.event_log import Event, EventType
@@ -57,6 +63,35 @@ def test_message_actions_require_content() -> None:
         Action(action=ActionType.PUBLIC_MESSAGE, actor_id="alice")
     with pytest.raises(ValidationError):
         Action(action=ActionType.PRIVATE_MESSAGE, actor_id="alice", target="bob")
+
+
+def test_closed_choice_content_is_constrained_by_the_schema() -> None:
+    """A fixed-answer action gets an enum, so the model cannot drift.
+
+    The field has no default to copy and prose is impossible, which is
+    what keeps a closed answer the agent's own (see CONTENT_CHOICES).
+    """
+    for action_type, choices in CONTENT_CHOICES.items():
+        schema = action_schema(action_type).model_json_schema()
+        assert schema["properties"]["content"]["enum"] == list(choices)
+        # The required list still covers everything a reply needs.
+        assert schema["required"] == ["action", "target", "content"]
+
+
+def test_free_text_actions_keep_an_unconstrained_content_field() -> None:
+    schema = action_schema(ActionType.PUBLIC_MESSAGE).model_json_schema()
+    assert "enum" not in schema["properties"]["content"]
+    # An action with no fixed answer gets the plain schema back.
+    assert action_schema(ActionType.VOTE) is Action
+
+
+def test_closed_choice_schema_still_validates_as_an_action() -> None:
+    schema = action_schema(ActionType.END_VOTE)
+    parsed = schema(action="end_vote", actor_id="alice", content="banish")
+    assert isinstance(parsed, Action)
+    assert parsed.content == "banish"
+    with pytest.raises(ValidationError):
+        schema(action="end_vote", actor_id="alice", content="stop")
 
 
 def test_confidence_bounds_enforced() -> None:

@@ -201,6 +201,45 @@ count.** `traitor_capacity` derives from what the game dealt, so a
 conversion can only refill a vacancy. Without it, a run with recruitment
 on could grow the traitor team and the faithful could never catch up.
 
+**The end vote was being decided by a hard-coded prompt default.** For a
+closed-choice action the model answers with whatever value the prompt's
+worked example holds, because it copies the example. The end vote's
+example held `"content": "end"`, and every season run ended its finale
+the same way: all five players — four faithful and the traitor alike —
+answered `end`. A unanimous `end` stops the game, so a surviving traitor
+takes the prize. That is the whole mechanism behind the run of traitor
+wins. Measured on the real r1 final five with everything else held
+constant: example `"end"` gave `end` 6 of 6, example `"banish"` gave
+`banish` 4 of 4. The two recruitment answers carried the same default in
+the same direction (`recruit`, `accept`).
+
+The fix is two halves and both are needed. The response schema pins
+`content` to an enum of the accepted answers (`action_schema`,
+`CONTENT_CHOICES`), and the worked example shows `?`, plainly not an
+answer. The enum is the half that matters: with a free `content` field the
+model replies in prose, which the engine rejects and retries, and the
+correction retry re-shows the example. Constrained to a token, the roles
+answer for their own reasons — the traitor, which wins by stopping,
+answered `end` 10 times of 10.
+
+**The honest limit: the lean is only partly corrected.** Across three
+faithful players, ten samples each, a faithful still answered `end` 22
+times of 30 even though keeping a traitor alive is what loses it the
+game. The hard-coded bias is gone — a final five is no longer settled by
+a string in a prompt, and the game can now actually play on into
+banishments instead of stopping at the first end vote — but the model's
+disposition still favours ending, and a faithful majority that stops with
+a traitor alive still hands it the win. An earlier six-sample probe
+suggested the enum moved faithful players decisively towards `banish`;
+ten samples each did not bear that out, and the smaller result was noise.
+Closing that gap is prompt and behaviour work, not a mechanical bias: the
+answer is no longer forced, and it is now genuinely the agents' own.
+
+Two tests had the old behaviour baked in — they asserted the hint contains
+`"content": "end"`, `"content": "recruit"` and `"content": "accept"` —
+which is why it survived review. They now assert that the example holds no
+answer at all, and that the schema pins the accepted tokens.
+
 **Resume replays rather than restores.** `--resume` rebuilds the engine
 from the event log instead of re-dealing, so roles, ambitions and the
 board are the ones players were actually told about. Anything the log

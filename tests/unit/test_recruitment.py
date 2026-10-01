@@ -933,18 +933,25 @@ def test_recruitment_prompts_explain_the_choice() -> None:
     assert "'accept' or 'decline'" in response
 
 
-def test_recruitment_json_hints_use_the_answers() -> None:
+def test_recruitment_json_hints_offer_no_answer_of_their_own() -> None:
     from simulation.agents.prompts import action_json_hint
 
+    # As with the end vote: the example holds a placeholder, not an
+    # accepted answer. `recruit`/`accept` in these slots pushed the tower's
+    # way, and showing one answer is what the model copies.
     decision = action_json_hint(ActionType.RECRUIT_DECISION)
     assert '"action": "recruit_decision"' in decision
     assert '"target": null' in decision
-    assert '"content": "recruit"' in decision
+    assert '"content": "?"' in decision
+    assert '"content": "recruit"' not in decision
+    assert '"content": "murder"' not in decision
 
     response = action_json_hint(ActionType.RECRUIT_RESPONSE)
     assert '"action": "recruit_response"' in response
     assert '"target": null' in response
-    assert '"content": "accept"' in response
+    assert '"content": "?"' in response
+    assert '"content": "accept"' not in response
+    assert '"content": "decline"' not in response
 
 
 def test_prompt_script_provider_answers_the_recruitment_turns() -> None:

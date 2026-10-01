@@ -415,9 +415,21 @@ def test_end_vote_prompt_explains_the_choice() -> None:
     assert "Legal targets: none" in user
 
 
-def test_end_vote_json_hint_uses_the_answers() -> None:
+def test_end_vote_json_hint_offers_no_answer_of_its_own() -> None:
     hint = action_json_hint(ActionType.END_VOTE)
     assert '"action": "end_vote"' in hint
     assert '"target": null' in hint
-    assert '"content": "end"' in hint
+    # The example must not hold either answer: the model copies whatever
+    # value sits here, and `end` in this slot made the end vote a unanimous
+    # `end` in every season run, which stops the game on any surviving
+    # traitor's terms. The accepted values live in the instruction and in
+    # the enum on the response schema, not in the example.
+    assert '"content": "?"' in hint
+    assert '"content": "end"' not in hint
+    assert '"content": "banish"' not in hint
+    # And the instruction is what names them.
+    user = PromptBuilder().build_user(
+        make_view(phase=GamePhase.END_VOTE), ActionType.END_VOTE, []
+    )
+    assert "'end' or 'banish'" in user
 

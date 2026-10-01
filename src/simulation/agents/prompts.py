@@ -14,6 +14,7 @@ from typing import Optional
 from simulation.actions.actions import (
     ACTIONS_REQUIRING_CONTENT,
     ACTIONS_REQUIRING_TARGET,
+    CONTENT_CHOICES,
     ActionType,
 )
 from simulation.agents.goals import Goals
@@ -26,14 +27,6 @@ ACTION_JSON_HINT = (
     'Respond with JSON only, e.g. {"action": "...", "target": "...", '
     '"content": "...", "confidence": 0.8}. No other text.'
 )
-
-# For an action whose content is a fixed answer rather than prose, the
-# example shows one of the accepted values instead of filler text.
-_CONTENT_EXAMPLE: dict[ActionType, str] = {
-    ActionType.END_VOTE: "end",
-    ActionType.RECRUIT_DECISION: "recruit",
-    ActionType.RECRUIT_RESPONSE: "accept",
-}
 
 # Values of `game.language` that mean "no language rule at all". Anything
 # else adds the directive, so a config only has to name a language to get
@@ -61,10 +54,15 @@ def action_json_hint(action_type: ActionType) -> str:
     example: dict[str, object] = {"action": action_type.value}
     example["target"] = "bob" if action_type in ACTIONS_REQUIRING_TARGET else None
     if action_type in ACTIONS_REQUIRING_CONTENT:
-        # The end vote's and the recruitment answers' content is their
-        # answer, not prose.
-        example["content"] = _CONTENT_EXAMPLE.get(
-            action_type, "your message here"
+        # A closed-choice action shows a placeholder that is plainly not an
+        # answer, never one of the accepted values. The model copies
+        # whatever sits in this example, so an example holding "end" made
+        # the end vote a unanimous `end` in every season run - which ends
+        # the game on any surviving traitor's terms. The response schema
+        # constrains the field to the accepted tokens (CONTENT_CHOICES), so
+        # the answer is the agent's own and prose cannot appear here.
+        example["content"] = (
+            "?" if action_type in CONTENT_CHOICES else "your message here"
         )
     else:
         example["content"] = ""

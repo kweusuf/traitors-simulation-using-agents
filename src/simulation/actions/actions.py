@@ -8,9 +8,9 @@ exists.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
-from pydantic import Field, model_validator
+from pydantic import Field, create_model, model_validator
 
 from simulation.models.base import StrictModel
 
@@ -84,6 +84,26 @@ ACTIONS_REQUIRING_CONTENT = frozenset(
     }
 )
 
+# Actions whose `content` is one of a fixed set of answers rather than
+# prose. The engine reads these as bare tokens, so the response schema
+# pins the field to exactly the set below.
+#
+# Why this is spelled out rather than left implicit: for a closed-choice
+# field the model answers with whatever value the prompt's worked example
+# holds, because it copies the example. The end vote's example held
+# "end", and every season run ended its finale with all five players -
+# four faithful and the traitor alike - answering `end`. On a unanimous
+# `end` the game stops, so a surviving traitor takes the prize. The two
+# recruitment answers carried the same default in the same direction
+# ("recruit", "accept"). These answers now reach the model as an enum on
+# the schema (see `action_schema`) and as text in the instruction, never
+# as a worked value.
+CONTENT_CHOICES: dict[ActionType, tuple[str, ...]] = {
+    ActionType.END_VOTE: ("end", "banish"),
+    ActionType.RECRUIT_DECISION: ("recruit", "murder"),
+    ActionType.RECRUIT_RESPONSE: ("accept", "decline"),
+}
+
 
 class Action(StrictModel):
     """A single structured decision from an agent."""
@@ -120,3 +140,31 @@ class Action(StrictModel):
         ):
             raise ValueError(f"action '{self.action.value}' requires content")
         return self
+
+
+def action_schema(action_type: ActionType) -> type[Action]:
+    """The JSON schema handed to the model for one action.
+
+    A closed-choice action gets a schema whose `content` is an enum of its
+    accepted answers. Two things follow, and both are the point:
+
+    - the field has no default for the model to copy, so the answer comes
+      from the agent rather than from the worked example, and
+    - prose is impossible there. Left free, the model answers a
+      closed-choice field with a paragraph, which the engine rejects and
+      retries; the enum keeps the reply on the accepted tokens.
+
+    Every other action keeps the plain schema, so nothing changes for the
+    free-text turns.
+    """
+    choices = CONTENT_CHOICES.get(action_type)
+    if not choices:
+        return Action
+    # `Literal[tuple]` is `Literal` over the tuple's members (PEP 586), so
+    # the enum is built from the same tuple the prompt hint renders.
+    name = "".join(part.title() for part in action_type.value.split("_"))
+    return create_model(
+        f"{name}Action",
+        __base__=Action,
+        content=(Literal[choices], ...),
+    )

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from simulation.actions.actions import Action, ActionType
+from simulation.actions.actions import Action, ActionType, action_schema
 from simulation.actions.validator import ActionParseError, check_action_constraints, parse_action
 from simulation.agents.agent import Agent
 from simulation.agents.prompts import PromptBuilder, action_json_hint
@@ -77,7 +77,7 @@ class AgentRuntime:
             retries_before = self._transport_retries()
             try:
                 response = await self.gateway.generate(
-                    messages, Action, self.model_config
+                    messages, action_schema(action_type), self.model_config
                 )
             except Exception as exc:
                 # Transport failures still belong in the run's telemetry.
