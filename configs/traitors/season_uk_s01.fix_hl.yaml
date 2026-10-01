@@ -35,6 +35,10 @@ game:
   traitor_names: [wilf, amanda, alyssa]
   recruit_on_banish: false
   recruit_choice: true
+  # Agent memory: decaying, per-observer. Now the default, stated here so
+  # this config records what the run actually did, and kept identical to
+  # the English config so the pair still differs by language alone.
+  agent_memory: true
   recruit_window: true
   max_recruits: 2
   finale_traitors: 2

@@ -28,6 +28,11 @@ game:
   # offered player may refuse.
   recruit_on_banish: false
   recruit_choice: true
+  # Agent memory: decaying, per-observer. Now the default, stated here so
+  # this config records what the run actually did. A resumed run rebuilds
+  # its memory from the event log, so the rounds before the interruption
+  # are not lost.
+  agent_memory: true
   # Both Series 1 recruitment attempts came the night after one of
   # the traitors was banished (episode 7 after Alyssa, episode 11
   # after Amanda), which is exactly the banishment window. Turning
