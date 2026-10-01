@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -18,6 +20,7 @@ import pytest
 
 from simulation.engine.state import Role
 from simulation.experiments.config import GameConfig, load_config
+from simulation.experiments.lock import RunLock, RunLockedError
 from simulation.experiments.resume import (
     DEFAULT_IDLE_SECONDS,
     ResumeError,
@@ -34,6 +37,7 @@ from simulation.persistence.database import Database
 from simulation.persistence.event_log import Event, EventType
 
 PERSONAS_DIR = Path("configs/personas")
+SRC = str(Path("src").resolve())
 PHASES = ["mission", "public_discussion", "round_table", "private_chat", "voting"]
 
 
@@ -83,8 +87,96 @@ def opening() -> list[Event]:
 
 
 # ----------------------------------------------------------------------
-# Finding the resume point
+# One writer per run directory
 # ----------------------------------------------------------------------
+
+
+def test_a_second_run_cannot_take_a_live_runs_lock(tmp_path) -> None:
+    """The failure that corrupted uk-s01-r3.
+
+    Two processes on one run directory rewrite each other's log and then
+    append with independent sequence counters. The idle-time guard could
+    not prevent it because a slow run looks abandoned, so the lock is
+    what has to hold.
+    """
+    run_dir = tmp_path / "uk-s01-r3"
+    first = RunLock(run_dir).acquire()
+    try:
+        with pytest.raises(RunLockedError, match="locked by another process"):
+            RunLock(run_dir).acquire()
+    finally:
+        first.release()
+
+
+def test_the_lock_is_reusable_once_released(tmp_path) -> None:
+    run_dir = tmp_path / "game-001"
+    RunLock(run_dir).acquire().release()
+    # A crashed run must not lock its own directory forever.
+    RunLock(run_dir).acquire().release()
+
+
+def test_the_lock_names_the_holder_pid(tmp_path) -> None:
+    run_dir = tmp_path / "game-001"
+    first = RunLock(run_dir).acquire()
+    try:
+        with pytest.raises(RunLockedError, match=str(os.getpid())):
+            RunLock(run_dir).acquire()
+    finally:
+        first.release()
+
+
+def test_a_locked_run_is_refused_before_its_log_is_rewritten(tmp_path) -> None:
+    """A resume must fail before `truncate_to` touches anything.
+
+    The lock is held by a real second process, not this one, so this
+    exercises the cross-process exclusion that matters: a live run on
+    another machine-clock cannot have its log rewritten underneath it.
+    """
+    run_dir = tmp_path / "uk-s01-r2"
+    run_dir.mkdir()
+    log = run_dir / "events.jsonl"
+    line = ev(0, EventType.GAME_STARTED, payload={"players": ["ana"]})
+    log.write_text(line.model_dump_json() + "\n", encoding="utf-8")
+    before = log.read_text(encoding="utf-8")
+
+    holder = subprocess.Popen(
+        [sys.executable, "-c",
+         "import sys, time;"
+         f"sys.path.insert(0, {str(SRC)!r});"
+         "from simulation.experiments.lock import RunLock;"
+         f"RunLock({str(run_dir)!r}).acquire();"
+         "time.sleep(30)"],
+    )
+    try:
+        deadline = time.time() + 10
+        while time.time() < deadline and not (run_dir / ".run.lock").exists():
+            time.sleep(0.05)
+        time.sleep(0.4)  # let the child take the lock
+        with pytest.raises(RunLockedError):
+            load_point(run_dir, ["mission"], idle_seconds=0)
+    finally:
+        holder.terminate()
+        holder.wait(timeout=10)
+
+    assert log.read_text(encoding="utf-8") == before
+
+
+def test_resume_while_a_run_is_live_is_refused(tmp_path) -> None:
+    """End to end: a resume cannot start against a live run."""
+    config = fake_config()
+    config.llm.provider = "fake"
+    runner = make_runner(tmp_path, config)
+    run_dir = tmp_path / "runs" / "game-001"
+    run_dir.mkdir(parents=True)
+    (run_dir / "events.jsonl").write_text("", encoding="utf-8")
+
+    held = RunLock(run_dir).acquire()
+    try:
+        with pytest.raises(RunLockedError):
+            runner.run(game_id="game-001", resume=True, idle_seconds=0)
+    finally:
+        held.release()
+
 
 
 def test_resume_point_is_the_last_completed_phase() -> None:

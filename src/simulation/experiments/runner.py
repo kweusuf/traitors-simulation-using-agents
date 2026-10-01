@@ -30,6 +30,7 @@ from simulation.experiments.config import GameConfig, LLMSettings
 from simulation.experiments.ledger import append_run as append_ledger
 from simulation.experiments.observability import NullTracer, build_tracer
 from simulation.experiments.quality import analyse as analyse_quality
+from simulation.experiments.lock import RunLock
 from simulation.experiments.resume import load_point
 from simulation.experiments.telemetry import TelemetryRecorder
 from simulation.experiments.replay import build_transcript, render_transcript
@@ -173,7 +174,37 @@ class GameRunner:
         experiment_id = experiment_id or make_experiment_id(config.game.name)
 
         run_dir = self.runs_dir / game_id
-        run_dir.mkdir(parents=True, exist_ok=True)
+        # Taken before anything reads or rewrites the log, and held until
+        # this run returns. Two writers on one log is the one failure
+        # that destroys a run outright, and a slow run cannot be told
+        # apart from a dead one by watching its idle time.
+        lock = RunLock(run_dir).acquire()
+        try:
+            return self._run_locked(
+                config=config,
+                game_id=game_id,
+                seed=seed,
+                experiment_id=experiment_id,
+                observer=observer,
+                resume=resume,
+                idle_seconds=idle_seconds,
+                run_dir=run_dir,
+            )
+        finally:
+            lock.release()
+
+    def _run_locked(
+        self,
+        *,
+        config: GameConfig,
+        game_id: str,
+        seed: int,
+        experiment_id: str,
+        observer: Optional[EventObserver],
+        resume: bool,
+        idle_seconds: Optional[int],
+        run_dir: Path,
+    ) -> RunResult:
         events_path = run_dir / "events.jsonl"
 
         resume_at: Optional[tuple[int, int]] = None

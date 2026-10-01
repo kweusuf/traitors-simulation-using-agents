@@ -28,6 +28,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+from simulation.experiments.lock import RunLock
 from simulation.engine.state import (
     GamePhase,
     GameState,
@@ -304,6 +305,11 @@ def load_point(
     path = Path(run_dir) / "events.jsonl"
     if not path.exists():
         raise ResumeError(f"no event log at {path}")
+    # A live run holds the directory. Rewriting its log underneath the
+    # writer is what produced a run with two contradictory endings, and
+    # the idle clock below cannot catch it: these phases run for longer
+    # than the threshold often enough that a healthy run looks abandoned.
+    RunLock.check_free(run_dir)
     idle = time.time() - path.stat().st_mtime
     if idle < idle_seconds:
         raise ResumeError(
