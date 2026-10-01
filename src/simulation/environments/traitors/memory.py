@@ -254,7 +254,14 @@ def writes_for(
     if kind == "NOMINATION_TALLY":
         accusations = payload.get("accusations") or {}
         counts = payload.get("counts") or {}
+        # Counted once per nominee, not once per accusation. Looping per
+        # accuser wrote the same tally line N times, and the N copies tied
+        # on salience and so filled the whole top-6 of the prompt.
+        tally: dict[str, int] = {}
+        for _accuser, nominee in accusations.items():
+            tally[nominee] = tally.get(nominee, 0) + 1
         for accuser, nominee in sorted(accusations.items()):
+            # The accuser's own act, in their own voice.
             out.append(
                 MemoryWrite(
                     content=f"You named {nominee} for the round table.",
@@ -262,22 +269,32 @@ def writes_for(
                     subjects=(nominee,),
                     salience=ACCUSATION,
                     audience=NAMED,
-                    named=frozenset({accuser, nominee}),
+                    named=frozenset({accuser}),
                 )
             )
-            others = sum(
-                1
-                for other, target in accusations.items()
-                if target == nominee and other != accuser
+        for nominee, count in sorted(tally.items()):
+            total = counts.get(nominee, count)
+            # The nominee's side of it, phrased for them. Telling a nominee
+            # "you named <themselves>" was both wrong and the single
+            # loudest thing in their prompt.
+            out.append(
+                MemoryWrite(
+                    content=(
+                        f"{count} player(s) named you for the round table; "
+                        f"the nominations ran {total}."
+                    ),
+                    kind="nominated",
+                    subjects=(nominee,),
+                    salience=ACCUSATION,
+                    audience=NAMED,
+                    named=frozenset({nominee}),
+                )
             )
-            if others:
+            # And the room's view, which is the same fact with the number.
+            if count > 1:
                 out.append(
                     MemoryWrite(
-                        content=(
-                            f"{others} other player(s) named {nominee} too; "
-                            f"the nominations ran {counts.get(nominee, 0)} "
-                            f"to them."
-                        ),
+                        content=f"{nominee} led the nominations, {total} in all.",
                         kind="nomination_count",
                         subjects=(nominee,),
                         salience=PUBLIC_RECORD,

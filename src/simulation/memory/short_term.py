@@ -90,10 +90,19 @@ class ShortTermMemory:
         # Strongest first; a tie falls to the more recent memory, so two
         # equally weighted memories still read in the order they happened.
         scored.sort(key=lambda row: (-row[0], -row[1]))
-        return [
-            {**item, "strength": round(strength, 3)}
-            for strength, _, item in scored[:limit]
-        ]
+        # One line per distinct memory. Repeating a sentence tells an agent
+        # nothing, and because copies tie on salience they sort together and
+        # would fill the whole list. Keep the strongest instance of each.
+        seen: set[str] = set()
+        out: list[dict[str, Any]] = []
+        for strength, _seq, item in scored:
+            if item["content"] in seen:
+                continue
+            seen.add(item["content"])
+            out.append({**item, "strength": round(strength, 3)})
+            if len(out) >= limit:
+                break
+        return out
 
     async def retrieve(self, query: str, limit: int = 10) -> list[dict[str, Any]]:
         items = self._items

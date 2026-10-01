@@ -10,7 +10,7 @@ from __future__ import annotations
 import asyncio
 
 from simulation.engine.state import GameState, PlayerState, Role
-from simulation.environments.traitors.memory import public_rivals, writes_for
+from simulation.environments.traitors.memory import ALL, public_rivals, writes_for
 from simulation.memory.short_term import ShortTermMemory
 
 FAITHFUL = ["ann", "bea", "cal"]
@@ -197,6 +197,78 @@ def test_public_rivals_needs_public_evidence() -> None:
         }
     ]
     assert public_rivals(state, named, "bea", 3) == ["ann"]
+
+
+def test_a_nominee_is_told_they_were_named_not_that_they_named() -> None:
+    """The nominee's memory has to be phrased for them.
+
+    It used to be addressed to the accuser, so a player nobody liked was
+    told "You named wilf for the round table" about themselves, once per
+    player who named them.
+    """
+    state = make_state()
+    tally = {
+        "type": "NOMINATION_TALLY",
+        "actor": "host",
+        "targets": ["tara"],
+        "round": 2,
+        "payload": {
+            "counts": {"tara": 4},
+            "nominees": ["tara"],
+            "accusations": {"ann": "tara", "cal": "tara", "tom": "tara"},
+        },
+    }
+    seen = visible(state, tally, ["tara", "ann", "bea"])
+    joined = " ".join(seen["tara"])
+    assert "named you" in joined, f"the nominee was not told: {joined}"
+    assert "You named tara" not in joined, "the nominee was told they named themselves"
+    # The accuser still gets their own act, exactly once, alongside the
+    # room's tally (they are in the room too).
+    assert seen["ann"].count("You named tara for the round table.") == 1
+    assert "tara led the nominations" in " ".join(seen["ann"])
+
+
+def test_a_heavily_nominated_player_gets_a_diverse_memory_block() -> None:
+    """17 people naming one player must not produce 17 identical lines.
+
+    This is the case that broke the feature: the copies tied on salience,
+    sorted together, and filled the whole top-6 of the prompt with one
+    sentence.
+    """
+    state = make_state()
+    players = ["ann", "bea", "cal", "tom"] + TRAITORS
+    tally = {
+        "type": "NOMINATION_TALLY",
+        "actor": "host",
+        "targets": ["wilf"],
+        "round": 2,
+        "payload": {
+            "counts": {"wilf": 17},
+            "nominees": ["wilf"],
+            "accusations": {p: "wilf" for p in players if p != "wilf"},
+        },
+    }
+    writes = writes_for(state, tally, [])
+    for pid in ("wilf", "ann"):
+        texts = [w.content for w in writes if w.visible_to(pid, state)]
+        assert len(texts) == len(set(texts)), f"{pid} got duplicate memories"
+    # And the room hears it once, not seventeen times.
+    room = [w.content for w in writes if w.audience == ALL]
+    assert len(room) == 1, f"the room got {len(room)} copies"
+
+
+def test_recall_never_repeats_a_line() -> None:
+    memory = ShortTermMemory("g", "ann")
+    for _ in range(5):
+        asyncio.run(
+            memory.remember(
+                {"content": "tom was named for the round table", "round": 1, "salience": 3.0}
+            )
+        )
+    asyncio.run(memory.remember({"content": "bea was murdered", "round": 1, "salience": 4.0}))
+    top = memory.recalled(now_round=1, limit=6)
+    assert len({i["content"] for i in top}) == len(top)
+    assert len(top) == 2, f"expected two distinct memories, got {len(top)}"
 
 
 def test_recall_forgets_trivia_and_keeps_the_weight() -> None:
