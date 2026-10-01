@@ -406,9 +406,18 @@ class PromptBuilder:
                 lines.append(f"  (earlier {dropped} private messages are omitted)")
         if memory_items:
             lines.append("")
-            lines.append("Your recent memories:")
+            lines.append("What you remember:")
             for item in memory_items:
-                lines.append(f"  - {item['content']}")
+                # The subject's status is stated inline so a memory about
+                # someone who has left the game can never be mistaken for
+                # someone still in it.
+                status = ""
+                subject = item.get("subjects") or ()
+                if subject and subject[0] in (view.eliminated_players or ()):
+                    status = " (eliminated)"
+                elif subject and subject[0] in (view.alive_players or ()):
+                    status = " (still playing)"
+                lines.append(f"  - {item['content']}{status}")
 
         if extra_instruction:
             lines.append("")

@@ -26,6 +26,7 @@ from simulation.agents.runtime import AgentRuntime
 from simulation.engine.phase_engine import PhaseContext, PhaseEngine
 from simulation.engine.state import GameState, Role
 from simulation.environments.traitors.game import TraitorsEnvironment
+from simulation.environments.traitors.memory import writes_for
 from simulation.experiments.config import GameConfig, LLMSettings
 from simulation.experiments.ledger import append_run as append_ledger
 from simulation.experiments.observability import NullTracer, build_tracer
@@ -134,6 +135,10 @@ class GameRunner:
         self.provider = provider
         self.personas_dir = Path(personas_dir) if personas_dir else None
         self.tracer = tracer or build_tracer(config.observability)
+        # How far into the event log the agents' memories have been filled.
+        # Reset per run, so a resumed game re-derives them from the log
+        # rather than starting half-remembered.
+        self._memory_cursor = 0
 
     # ------------------------------------------------------------------
     # Identifiers
@@ -245,6 +250,7 @@ class GameRunner:
             env.initialize()
 
         agents = self._build_agents(env)
+        self._memory_cursor = 0
         provider = self.provider or build_provider(config.llm)
         gateway = LLMGateway(provider, max_concurrency=config.llm.max_concurrency)
         telemetry = TelemetryRecorder(config.llm.model, run_dir / "llm_calls.jsonl")
@@ -257,6 +263,10 @@ class GameRunner:
                 language=config.game.language,
             ),
             telemetry=telemetry,
+            memory_enabled=config.game.agent_memory,
+            memory_decay=config.game.memory_decay,
+            memory_floor=config.game.memory_floor,
+            memory_items_limit=config.game.memory_items_in_prompt,
         )
         context = PhaseContext(
             engine=env.engine,
@@ -373,12 +383,86 @@ class GameRunner:
             agent_id, action_type, legal_targets, extra_instruction=None
         ):
             self._sync_roles(env, agents)
+            await self._sync_memory(env, agents)
             view = env.observe(agent_id)
             return await runtime.decide(
                 agent_id, view, action_type, legal_targets, extra_instruction
             )
 
         return callback
+
+    async def _sync_memory(self, env, agents) -> None:
+        """Drain new events into the agents' memories.
+
+        Runs before every decision, so an agent is asked only after the
+        board has caught up with what just happened. What each player is
+        allowed to remember is decided by `writes_for`, not here: the
+        traitor council in particular must never reach a faithful player.
+        """
+        if not self.config.game.agent_memory:
+            return
+        history = [event.model_dump(mode="json") for event in env.engine.sink.events]
+        fresh = history[self._memory_cursor :]
+        if not fresh:
+            return
+        self._memory_cursor = len(history)
+        for event in fresh:
+            round_number = int(event.get("round") or 0)
+            sequence = int(event.get("sequence") or 0)
+            for write in writes_for(env.state, event, history):
+                for pid, agent in agents.items():
+                    if write.visible_to(pid, env.state):
+                        await agent.remember(
+                            content=write.content,
+                            kind=write.kind,
+                            round_number=round_number,
+                            sequence=sequence,
+                            subjects=write.subjects,
+                            salience=write.salience,
+                        )
+            self._bump_relationships(env, agents, event, history)
+
+    @staticmethod
+    def _bump_relationships(self, env, agents, event, history) -> None:
+        """How one event moves one player's read of another.
+
+        This is what makes the memory per-observer rather than shared:
+        being named raises suspicion, a private word raises trust, and a
+        rival left suddenly under suspicion raises suspicion of whoever
+        put them there.
+        """
+        kind = event["type"]
+        payload = event.get("payload") or {}
+        targets = event.get("targets") or []
+        if kind == "NOMINATION_TALLY":
+            for accuser, nominee in (payload.get("accusations") or {}).items():
+                agent = agents.get(accuser)
+                if agent is None:
+                    continue
+                rel = agent.relationships.get(nominee)
+                agent.relationships.update(
+                    nominee, suspicion=min(1.0, rel.suspicion + 0.4)
+                )
+        elif kind == "PRIVATE_MESSAGE":
+            sender = event.get("actor")
+            for peer in targets:
+                for pid in (sender, peer):
+                    agent = agents.get(pid)
+                    if agent is None:
+                        continue
+                    other = peer if pid == sender else sender
+                    rel = agent.relationships.get(other)
+                    agent.relationships.update(other, trust=min(1.0, rel.trust + 0.2))
+        elif kind == "PLAYER_ELIMINATED":
+            for write in writes_for(env.state, event, history):
+                if write.kind != "attention":
+                    continue
+                rival = (write.subjects or ("",))[0]
+                for agent in agents.values():
+                    rel = agent.relationships.get(rival)
+                    agent.relationships.update(
+                        rival, suspicion=min(1.0, rel.suspicion + 0.3)
+                    )
 
     @staticmethod
     def _sync_roles(env: TraitorsEnvironment, agents: dict[str, Agent]) -> None:

@@ -14,3 +14,5 @@ ollama-model/
 *.gguf
 # Local, machine-specific configs (remote Ollama endpoint etc.)
 *.local.yaml
+# Exported chat transcripts, which are session scratch rather than source
+cursor_*.md

@@ -15,7 +15,7 @@ from simulation.agents.goals import Goals, inject_role_goals
 from simulation.agents.persona import Persona
 from simulation.agents.relationships import Relationships
 from simulation.engine.state import Role
-from simulation.memory.short_term import ShortTermMemory
+from simulation.memory.short_term import DEFAULT_DECAY, DEFAULT_FLOOR, ShortTermMemory
 
 
 class Agent:
@@ -56,6 +56,8 @@ class Agent:
         kind: str = "event",
         round_number: int = 0,
         sequence: int = 0,
+        subjects: tuple[str, ...] = (),
+        salience: float = 1.0,
     ) -> None:
         await self.memory.remember(
             {
@@ -63,11 +65,44 @@ class Agent:
                 "kind": kind,
                 "round": round_number,
                 "sequence": sequence,
+                "subjects": subjects,
+                "salience": salience,
             }
         )
 
     async def recall(self, query: str, limit: int = 10) -> list[dict[str, Any]]:
         return await self.memory.retrieve(query, limit)
+
+    def memory_items(
+        self,
+        now_round: int,
+        limit: int = 6,
+        decay: float = DEFAULT_DECAY,
+        floor: float = DEFAULT_FLOOR,
+    ) -> list[dict[str, Any]]:
+        """What this agent still remembers, weighted by who it is about.
+
+        The per-observer factor is the point: a player remembers what a
+        friend told them and discounts what someone they are at odds with
+        said. `Relationships` carries that read, so the same event weighs
+        differently in two different heads.
+        """
+
+        def factor(subject: str, round_number: int) -> float:
+            rel = self.relationships.get(subject)
+            # A close relationship keeps a memory alive; a hostile one
+            # silences it. An indifferent observer sits at 1.0, which is
+            # where the plain decay curve already lands.
+            closeness = rel.trust - rel.suspicion
+            return max(0.0, min(1.5, 1.0 + 0.5 * closeness))
+
+        return self.memory.recalled(
+            now_round=now_round,
+            limit=limit,
+            decay=decay,
+            floor=floor,
+            factor=factor,
+        )
 
     @property
     def role_value(self) -> str:

@@ -247,6 +247,32 @@ does not record cannot be invented: an ambition missing from a legacy log
 is refused rather than guessed, unless the traitors were pinned by name,
 in which case the seeded draw replays exactly.
 
+**Agent memory decays, and it is per-observer.** `agent_memory` (off by
+default) gives every player a memory of the other participants that fades
+as the rounds pass: strength is `salience * memory_decay ** age`, scaled
+by how close that observer is to the subject. Trivia is gone in two
+rounds; a named accusation, a private bequest, or a murder survives far
+longer. The same event therefore weighs differently in two different
+heads, which is the point - a friend remembers what you said, someone you
+are at odds with discounts it.
+
+Two rules make it safe to put in a prompt. First, nothing is deleted, so
+decay is retunable without replaying a game. Second, what a player may
+remember is scoped by the show, not by the log: the night murder is
+public as a fact, the council that chose the victim is traitor-only, and
+the motive a faithful player holds is reconstructed from public
+nominations rather than from the deliberation. `TRAITOR_KILL.payload`
+keys its `proposals` by traitor name, so ingesting a raw payload would
+hand the whole tower to every faithful player; ingestion writes from a
+per-event whitelist instead.
+
+When a player is eliminated, anyone the room has seen at odds with them
+comes under scrutiny - the feud is a motive, and it was public. That is
+the one write that points suspicion at somebody still playing, which is
+why it is the most likely of these to help the illegal-target problem
+rather than worsen it. Design in
+`docs/2026-10-01-agent-memory-design.md`.
+
 **Every optional mechanic defaults to off.** A feature that changes the
 game is only enabled deliberately by a config, so an existing config
 keeps playing the same game when a new flag is added.

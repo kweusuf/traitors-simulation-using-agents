@@ -15,6 +15,7 @@ from simulation.agents.agent import Agent
 from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.visibility import AgentView, InformationProjector
 from simulation.engine.game_engine import GameEngine
+from simulation.memory.short_term import DEFAULT_DECAY, DEFAULT_FLOOR
 from simulation.models.base import ChatMessage
 from simulation.models.gateway import LLMGateway
 from simulation.models.llm import ModelConfig
@@ -37,6 +38,10 @@ class AgentRuntime:
         prompt_builder: Optional[PromptBuilder] = None,
         max_retries: int = 2,
         telemetry: Optional["TelemetryRecorder"] = None,
+        memory_enabled: bool = False,
+        memory_decay: float = DEFAULT_DECAY,
+        memory_floor: float = DEFAULT_FLOOR,
+        memory_items_limit: int = 6,
     ) -> None:
         self.agents = agents
         self.gateway = gateway
@@ -44,6 +49,12 @@ class AgentRuntime:
         self.prompt_builder = prompt_builder or PromptBuilder()
         self.telemetry = telemetry
         self.max_retries = max_retries  # extra attempts after the first
+        # Agent memory (decaying, per-observer). Off by default so an
+        # existing config plays exactly as it did before.
+        self.memory_enabled = memory_enabled
+        self.memory_decay = memory_decay
+        self.memory_floor = memory_floor
+        self.memory_items_limit = memory_items_limit
 
     async def decide(
         self,
@@ -58,7 +69,7 @@ class AgentRuntime:
         if agent.role is None:
             raise RuntimeError(f"agent '{agent_id}' has no assigned role")
 
-        memory_items = await agent.recall("", limit=10)
+        memory_items = self._memory_items(agent, view)
         messages = self.prompt_builder.build(
             agent_id=agent_id,
             role=agent.role,
@@ -137,6 +148,20 @@ class AgentRuntime:
             return action
 
         raise AssertionError("unreachable")
+
+    def _memory_items(self, agent: Agent, view: AgentView) -> list:
+        """What this agent still remembers, or nothing when memory is off.
+
+        Default off, so an existing game plays exactly as it did before.
+        """
+        if not self.memory_enabled:
+            return []
+        return agent.memory_items(
+            now_round=view.round_number,
+            limit=self.memory_items_limit,
+            decay=self.memory_decay,
+            floor=self.memory_floor,
+        )
 
     def _transport_retries(self) -> int:
         """Provider-level transport retries spent so far, if it reports them."""
