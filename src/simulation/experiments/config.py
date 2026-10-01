@@ -58,15 +58,17 @@ class GameSettings(StrictModel):
     # so a recruit can only ever fill a slot a banishment opened.
     recruit_window: bool = True
     # Agent memory: a decaying, per-observer memory of the other players.
-    # Off by default, so an existing config plays exactly as it did. With
-    # it on, an agent is shown only the memories still worth having:
-    # salience decays by `memory_decay` per round and is scaled by how
-    # close the observer is to the subject, so trivia fades in a couple of
-    # rounds while a named accusation or a private bequest stays. What a
-    # player may remember is scoped by the show's own rules - see
+    # On by default, because an agent that cannot remember the round table
+    # plays a different and much weaker game. With it on, an agent is shown
+    # only the memories still worth having: salience decays by
+    # `memory_decay` per round and is scaled by how close the observer is to
+    # the subject, so trivia fades in a couple of rounds while a named
+    # accusation or a private bequest stays. What a player may remember is
+    # scoped by the show's own rules - see
     # environments/traitors/memory.py, and in particular the traitor
-    # council, which never reaches a faithful player.
-    agent_memory: bool = False
+    # council, which never reaches a faithful player. Set it false to run
+    # a memoryless control.
+    agent_memory: bool = True
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)

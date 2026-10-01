@@ -139,6 +139,8 @@ class GameRunner:
         # Reset per run, so a resumed game re-derives them from the log
         # rather than starting half-remembered.
         self._memory_cursor = 0
+        self._memory_history: Optional[list[dict]] = None
+        self._memory_seq = -1
 
     # ------------------------------------------------------------------
     # Identifiers
@@ -251,6 +253,8 @@ class GameRunner:
 
         agents = self._build_agents(env)
         self._memory_cursor = 0
+        self._memory_history = None
+        self._memory_seq = -1
         provider = self.provider or build_provider(config.llm)
         gateway = LLMGateway(provider, max_concurrency=config.llm.max_concurrency)
         telemetry = TelemetryRecorder(config.llm.model, run_dir / "llm_calls.jsonl")
@@ -398,10 +402,35 @@ class GameRunner:
         board has caught up with what just happened. What each player is
         allowed to remember is decided by `writes_for`, not here: the
         traitor council in particular must never reach a faithful player.
+
+        The history is the whole log, not `sink.events`. `continue_after`
+        clears that list on a resume, so a run that read from it would
+        start its agents off having forgotten every round that happened
+        before the interruption - and `public_rivals` would stop finding
+        the earlier nominations and ballots that make the animosity effect
+        work at all. A resumed game therefore replays the log into
+        everyone's memory once, and then follows along live.
         """
         if not self.config.game.agent_memory:
             return
-        history = [event.model_dump(mode="json") for event in env.engine.sink.events]
+        if self._memory_history is None:
+            # Everything already on disk predates this process.
+            self._memory_history = [
+                event.model_dump(mode="json")
+                for event in env.engine.sink.prior_events()
+            ]
+            self._memory_seq = max(
+                (int(e.get("sequence", -1)) for e in self._memory_history), default=-1
+            )
+        for event in env.engine.sink.events:
+            # Sequences are monotonic and unique, so this is a cheap way to
+            # take only what is new. The log already holds the events this
+            # process emitted before the first call, hence the resume seed.
+            if event.sequence <= self._memory_seq:
+                continue
+            self._memory_history.append(event.model_dump(mode="json"))
+            self._memory_seq = event.sequence
+        history = self._memory_history
         fresh = history[self._memory_cursor :]
         if not fresh:
             return
@@ -422,7 +451,6 @@ class GameRunner:
                         )
             self._bump_relationships(env, agents, event, history)
 
-    @staticmethod
     def _bump_relationships(self, env, agents, event, history) -> None:
         """How one event moves one player's read of another.
 

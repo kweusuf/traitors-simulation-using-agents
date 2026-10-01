@@ -1,9 +1,10 @@
 # Agent memory: decaying, relationship-weighted, per-observer
 
-**Status:** implemented (`agent_memory`, default off). `TRAITOR_KILL` is
-traitor-only and a faithful player's motive is reconstructed from the
-public record, as agreed. The animosity effect went in as option (a): a
-room-wide attention shift toward a living player.
+**Status:** implemented, `agent_memory` **on by default** (set it false
+for a memoryless control). `TRAITOR_KILL` is traitor-only and a faithful
+player's motive is reconstructed from the public record, as agreed. The
+animosity effect went in as option (a): a room-wide attention shift toward
+a living player.
 **Motivation:** the illegal-target failure (`target 'alex' is not legal`,
 naming an already-eliminated player) is not a missing-information problem.
 Every prompt already carries `Alive players:`, `Eliminated:` and

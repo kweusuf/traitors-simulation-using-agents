@@ -247,14 +247,20 @@ does not record cannot be invented: an ambition missing from a legacy log
 is refused rather than guessed, unless the traitors were pinned by name,
 in which case the seeded draw replays exactly.
 
-**Agent memory decays, and it is per-observer.** `agent_memory` (off by
-default) gives every player a memory of the other participants that fades
-as the rounds pass: strength is `salience * memory_decay ** age`, scaled
-by how close that observer is to the subject. Trivia is gone in two
-rounds; a named accusation, a private bequest, or a murder survives far
-longer. The same event therefore weighs differently in two different
-heads, which is the point - a friend remembers what you said, someone you
-are at odds with discounts it.
+**Agent memory decays, and it is per-observer.** On by default, because an
+agent that cannot remember the round table plays a different and much
+weaker game. `memory_decay` and `memory_floor` give every player a memory
+of the other participants that fades as the rounds pass: strength is
+`salience * memory_decay ** age`, scaled by how close that observer is to
+the subject. Trivia is gone in two rounds; a named accusation, a private
+bequest, or a murder survives far longer. The same event therefore weighs
+differently in two different heads, which is the point - a friend
+remembers what you said, someone you are at odds with discounts it. Set
+`agent_memory: false` for a memoryless control.
+
+A resumed run rebuilds its memory from the event log rather than starting
+amnesiac, which matters because `continue_after` clears the in-memory
+event list. `EventSink.prior_events` is the accessor for the whole log.
 
 Two rules make it safe to put in a prompt. First, nothing is deleted, so
 decay is retunable without replaying a game. Second, what a player may
@@ -273,9 +279,12 @@ why it is the most likely of these to help the illegal-target problem
 rather than worsen it. Design in
 `docs/2026-10-01-agent-memory-design.md`.
 
-**Every optional mechanic defaults to off.** A feature that changes the
+**Most optional mechanics default to off.** A feature that changes the
 game is only enabled deliberately by a config, so an existing config
-keeps playing the same game when a new flag is added.
+keeps playing the same game when a new flag is added. Agent memory is the
+one deliberate exception: it is on by default, because an agent that
+cannot remember the round table plays a different and weaker game, and a
+memoryless run is only wanted as an explicit control.
 
 ## Resuming a crashed run
 

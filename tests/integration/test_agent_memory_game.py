@@ -25,6 +25,7 @@ from simulation.models.fake import PromptScriptProvider
 from simulation.models.gateway import LLMGateway
 from simulation.models.llm import ModelConfig
 from simulation.persistence.sink import EventSink
+from simulation.persistence.event_log import EventType
 
 
 def play_with_memory(tmp_path: Path, seed: int = 5):
@@ -58,11 +59,22 @@ def play_with_memory(tmp_path: Path, seed: int = 5):
     )
     projector = InformationProjector(env.engine.router)
     views: list[AgentView] = []
+    history: list[dict] = []
     cursor = {"at": 0}
 
     async def callback(agent_id, action_type, legal_targets, extra_instruction=None):
-        # The same drain the runner does, so this exercises the real path.
-        history = [e.model_dump(mode="json") for e in sink.events]
+        # The same drain the runner does, including the resume seed: a
+        # resumed process starts with `sink.events` cleared, so the history
+        # has to come from the log.
+        if not history:
+            history.extend(
+                e.model_dump(mode="json") for e in sink.prior_events()
+            )
+        seen = max((int(e.get("sequence", -1)) for e in history), default=-1)
+        for event in sink.events:
+            if event.sequence > seen:
+                history.append(event.model_dump(mode="json"))
+                seen = event.sequence
         for event in history[cursor["at"] :]:
             for write in writes_for(env.state, event, history):
                 for pid, agent in agents.items():
@@ -84,7 +96,6 @@ def play_with_memory(tmp_path: Path, seed: int = 5):
     context = PhaseContext(engine=env.engine, config=config, request_action=callback)
     asyncio.run(phase_engine.run(context))
     return env, agents, views, [e.model_dump(mode="json") for e in sink.events]
-
 
 def test_memory_is_actually_filled_during_a_game(tmp_path) -> None:
     env, agents, views, events = play_with_memory(tmp_path)
@@ -137,3 +148,77 @@ def test_memory_records_the_deaths_that_happened(tmp_path) -> None:
     )
     for pid in dead:
         assert pid in remembered, f"nobody remembered {pid} leaving"
+
+
+def test_prior_events_survives_a_resume(tmp_path) -> None:
+    """`continue_after` clears `events`; the log must still have it all.
+
+    This is the mechanism a resumed game depends on. If `prior_events`
+    only returned the new process's events, every agent would start the
+    resumed run having forgotten the rounds before the interruption.
+    """
+    log = tmp_path / "events.jsonl"
+    first = EventSink("game-001", jsonl_path=log)
+    for i in range(3):
+        first.emit(EventType.PHASE_STARTED, round_number=1, phase=f"p{i}")
+    assert len(first.events) == 3
+
+    last_sequence = first.events[-1].sequence
+    second = EventSink("game-001", jsonl_path=log)
+    second.continue_after(last_sequence)
+    assert second.events == [], "continue_after is meant to clear the list"
+    assert len(second.prior_events()) == 3, "the log lost the earlier events"
+    assert [e.sequence for e in second.prior_events()] == [0, 1, 2]
+
+
+def test_a_resumed_game_remembers_the_rounds_before_the_resume(tmp_path) -> None:
+    """Memory is rebuilt from the log, so a resume is not amnesiac."""
+    log = tmp_path / "events.jsonl"
+    first = EventSink("game-001", jsonl_path=log)
+    state = None
+    for round_number in (1, 2):
+        first.emit(EventType.ROUND_STARTED, round_number=round_number, phase="round_table")
+        first.emit(
+            EventType.PLAYER_ELIMINATED,
+            round_number=round_number,
+            phase="elimination",
+            actor=f"p{round_number}",
+            payload={"method": "night", "votes": {}},
+        )
+    last_sequence = first.events[-1].sequence
+
+    # A fresh process picks up the same log, exactly as a resume does.
+    second = EventSink("game-001", jsonl_path=log)
+    second.continue_after(last_sequence)
+    history = [e.model_dump(mode="json") for e in second.prior_events()]
+
+    from simulation.engine.state import GameState, PlayerState, Role
+
+    state = GameState(game_id="g", phase="round_table")
+    for pid in ("p1", "p2", "p3"):
+        state.players[pid] = PlayerState(player_id=pid, name=pid)
+        state.alive_players.add(pid)
+        state.roles[pid] = Role.FAITHFUL
+    state.alive_players.discard("p1")
+    state.alive_players.discard("p2")
+
+    agent = Agent("p3", "P3", Persona(description="p3 persona."))
+    asyncio.run(_replay_into(agent, state, history))
+    texts = " ".join(item["content"] for item in agent.memory.items)
+    assert "p1 was murdered" in texts, "round 1 was lost across the resume"
+    assert "p2 was murdered" in texts, "round 2 was lost across the resume"
+
+
+async def _replay_into(agent, state, history) -> None:
+    for event in history:
+        for write in writes_for(state, event, history):
+            if write.visible_to(agent.agent_id, state):
+                await agent.remember(
+                    content=write.content,
+                    kind=write.kind,
+                    round_number=int(event.get("round") or 0),
+                    sequence=int(event.get("sequence") or 0),
+                    subjects=write.subjects,
+                    salience=write.salience,
+                )
+

@@ -68,6 +68,22 @@ class EventSink:
     def next_sequence(self) -> int:
         return self._sequence
 
+    def prior_events(self) -> list[Event]:
+        """Everything already in the log, including a previous process's.
+
+        `continue_after` clears `self.events` so a resumed run appends
+        rather than rewriting, which leaves the in-memory list holding only
+        what this process emitted. Anything that needs the *whole* history
+        - replay, or rebuilding an agent's memory of rounds that happened
+        before the resume - has to read the log, not the list.
+        """
+        if self._log is None:
+            return list(self.events)
+        try:
+            return list(self._log.read_all())
+        except FileNotFoundError:
+            return list(self.events)
+
     def continue_after(self, last_sequence: int) -> None:
         """Resume numbering after an existing log.
 
