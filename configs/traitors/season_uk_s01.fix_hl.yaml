@@ -1,0 +1,152 @@
+# Hinglish control for the end-vote fix (commit d3cec12), run against its
+# English twin in a different language.
+#
+# Generated from season_uk_s01.hinglish.yaml, which stays as the baseline.
+# Identical to the English control in every setting except `language` and
+# the host, so the pair is a single-variable experiment: any difference
+# between them is the language, and any difference against uk-s01-r1/r2/r3
+# is the end-vote fix.
+#
+# The personas stay in English on purpose. They are behavioural
+# instructions; translating them too would vary two things at once. The
+# language rule moves only what the agents say, and the engine's decision
+# words stay English.
+#
+# Pinned to HOST_A, the same host as the English control.
+#
+# HOST_B was tried first and rejected on evidence: it drops
+# connections under load. Four concurrent calls with ~4k prompts gave 4/4
+# RemoteDisconnected, at concurrency 3 two of three failed, and at
+# concurrency 1 it failed on a cold model. Only concurrency 2 survived,
+# far too slow for 22 players. The run died twice there in the opening
+# public discussion wave.
+#
+# Both runs now sit on one host at the same concurrency, so the pair
+# differs by `language` alone. That also matters because the two hosts
+# carry *different weights* under the identical tag hauhau-qwen:latest -
+# same 9.0B qwen3.5 Q4_K_M and same size, but digest DIGEST_B... on HOST_B
+# against DIGEST_A... on .15. A split-host pair could never have isolated
+# language.
+
+game:
+  name: season_uk_s01_hinglish_fix
+  players: 22
+  traitors: 3
+  traitor_names: [wilf, amanda, alyssa]
+  recruit_on_banish: false
+  recruit_choice: true
+  recruit_window: true
+  max_recruits: 2
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  max_rounds: 18
+  finale_max_votes: 10
+  quiet_murder_rounds: [1]
+  quiet_banishment_rounds: [8]
+  endgame_vote: true
+  blind_finale_banishments: true
+  shield: true
+  # Copied from the English control so the pair differs by language alone.
+  # The Hinglish baseline this was generated from left all four off, so
+  # the earlier uk-s01-hl run was not a single-variable experiment against
+  # r1/r2/r3 despite what that config's header claimed: the hosted debate
+  # clock, open nomination and rebuttal, the tie revote and the
+  # sequential council were all silently disabled in it.
+  discussion_budget: 2
+  warning_turns: 1
+  nomination_enabled: true
+  revote_enabled: true
+  council_deliberation: true
+  seer: false
+  dagger: false
+  on_trial: false
+  # Every agent's speech is generated in Hinglish (Roman-script
+  # Hindi-English). The engine's decision words stay English.
+  language: hinglish
+  player_names:
+    - aaron
+    - hannah
+    - meryl
+    - wilf
+    - kieran
+    - maddy
+    - andrea
+    - amanda
+    - fay
+    - theo
+    - amos
+    - alex
+    - rayan
+    - alyssa
+    - matt
+    - tom
+    - john
+    - ivan
+    - imran
+    - claire
+    - nicky
+    - aisha
+  personas:
+    - uk_s01/aaron
+    - uk_s01/hannah
+    - uk_s01/meryl
+    - uk_s01/wilf
+    - uk_s01/kieran
+    - uk_s01/maddy
+    - uk_s01/andrea
+    - uk_s01/amanda
+    - uk_s01/fay
+    - uk_s01/theo
+    - uk_s01/amos
+    - uk_s01/alex
+    - uk_s01/rayan
+    - uk_s01/alyssa
+    - uk_s01/matt
+    - uk_s01/tom
+    - uk_s01/john
+    - uk_s01/ivan
+    - uk_s01/imran
+    - uk_s01/claire
+    - uk_s01/nicky
+    - uk_s01/aisha
+
+phases:
+  - mission
+  - mission
+  - mission
+  - public_discussion
+  - private_chat
+  - round_table
+  - voting
+  - elimination
+  - traitor_night
+
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://HOST_A:11434  # override per machine
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  # 4 in flight, matching the English control so the pair differs by
+  # language alone. Two runs at 4 is 8 in flight on the host, the level
+  # these configs record as always clean; 16 finished a season but badly
+  # degraded (p95 674s, 23% failed calls), because past what a host
+  # serves in parallel this only queues requests into the 300s timeout.
+  # If a run stalls: --resume --idle-seconds 5
+  max_concurrency: 4
+  options: {}
+
+seed: 42
+
+observability:
+  enabled: false
+  provider: langfuse
