@@ -59,6 +59,83 @@ def _clear_target_for_targetless_action(data: dict[str, Any]) -> None:
         data["target"] = None
 
 
+def _fold(name: str) -> str:
+    return name.strip().casefold()
+
+
+def _edit_distance(a: str, b: str, cap: int = 2) -> int:
+    """Damerau-Levenshtein, abandoned once it exceeds `cap`."""
+    if abs(len(a) - len(b)) > cap:
+        return cap + 1
+    prev2: list[int] = []
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(
+                min(
+                    prev[j] + 1,
+                    cur[j - 1] + 1,
+                    prev[j - 1] + (ca != cb),
+                )
+            )
+            # transposition, the error that turns "clare" into "caler"
+            if i > 1 and j > 1 and ca == b[j - 2] and a[i - 2] == cb:
+                cur[-1] = min(cur[-1], prev2[j - 2] + 1)
+        prev2, prev = prev, cur
+    return prev[-1]
+
+
+def resolve_target(
+    action: Action, legal_targets: Optional[list[str]]
+) -> tuple[Action, Optional[str]]:
+    """Map a near-miss target onto the player the model obviously meant.
+
+    Returns the (possibly rewritten) action and a note describing the
+    repair, or `None` when nothing changed.
+
+    The model writes 'Meryl' against a lowercase legal list, or 'clare'
+    for claire, and each of those costs a failed turn with three attempts
+    at minutes apiece. But the correction must never be *ambiguous*: if
+    two legal targets are equally close, the model did not really say
+    which one, so nothing is rewritten and the ordinary rejection
+    stands. Guessing between two real players is worse than asking again.
+    """
+    if not legal_targets or action.target is None:
+        return action, None
+    target = action.target
+    if target in legal_targets:
+        return action, None
+
+    folded = _fold(target)
+    lowered = {_fold(name): name for name in legal_targets}
+
+    # Case and surrounding whitespace only.
+    if folded in lowered:
+        return _with_target(action, lowered[folded]), (
+            f"target '{target}' corrected to '{lowered[folded]}' (case)"
+        )
+
+    # A single-character slip, and only when exactly one legal target is
+    # that close. Short names are excluded: at four characters a typo is
+    # as likely to be a different player as a different spelling.
+    if len(folded) >= 5:
+        close = [
+            name
+            for name in legal_targets
+            if _edit_distance(folded, _fold(name), cap=1) <= 1
+        ]
+        if len(close) == 1:
+            return _with_target(action, close[0]), (
+                f"target '{target}' corrected to '{close[0]}' (one-character slip)"
+            )
+    return action, None
+
+
+def _with_target(action: Action, target: str) -> Action:
+    return action.model_copy(update={"target": target})
+
+
 def check_action_constraints(
     action: Action,
     allowed_types: Iterable[ActionType],

@@ -11,7 +11,80 @@ from simulation.actions.validator import (
     ActionParseError,
     check_action_constraints,
     parse_action,
+    resolve_target,
 )
+
+
+def _resolved(target: str, legal: list[str]) -> tuple[str, object]:
+    action = parse_action(
+        {"action": "private_message", "target": target, "content": "hi"}, "alice"
+    )
+    fixed, note = resolve_target(action, legal)
+    return fixed.target, note
+
+
+def test_capitalised_target_is_repaired() -> None:
+    target, note = _resolved("Meryl", ["meryl", "wilf"])
+    assert target == "meryl"
+    assert note and "case" in note
+
+
+def test_transposed_letter_is_repaired() -> None:
+    # The real failure from the Hinglish run: 'clare' for claire.
+    target, note = _resolved("clare", ["claire", "wilf", "amos"])
+    assert target == "claire"
+    assert note and "slip" in note
+
+
+def test_dropped_letter_is_repaired() -> None:
+    assert _resolved("clire", ["claire", "wilf"])[0] == "claire"
+
+
+def test_surrounding_whitespace_is_repaired() -> None:
+    assert _resolved("  wilf  ", ["matt", "wilf"])[0] == "wilf"
+
+
+def test_an_already_legal_target_is_left_alone() -> None:
+    target, note = _resolved("wilf", ["matt", "wilf"])
+    assert target == "wilf"
+    assert note is None
+
+
+def test_a_genuinely_unknown_target_is_not_repaired() -> None:
+    """The important negative: a name that is nobody must still fail."""
+    target, note = _resolved("ivan", ["matt", "wilf", "amos"])
+    assert target == "ivan", "an unknown name was silently rewritten"
+    assert note is None
+
+
+def test_an_ambiguous_typo_is_left_for_the_rejection() -> None:
+    """Two legal targets one edit apart means the model did not say which.
+
+    Rewriting here would pick a real player at random, which is worse
+    than making the model answer again.
+    """
+    target, note = _resolved("clare", ["clare", "claire"])
+    assert target == "clare"
+    assert note is None
+
+
+def test_short_names_are_not_fuzzy_matched() -> None:
+    """At four characters a typo is as likely to be a different player."""
+    assert _resolved("wiif", ["wilf"])[0] == "wiif"
+
+
+def test_repair_survives_the_legality_check() -> None:
+    """The point of the whole thing: a repaired target then passes."""
+    action = parse_action({"action": "vote", "target": "Meryl"}, "alice")
+    fixed, _note = resolve_target(action, ["matt", "meryl"])
+    assert check_action_constraints(fixed, {ActionType.VOTE}, ["matt", "meryl"]) is None
+
+
+def test_the_sentinel_target_is_still_rejected() -> None:
+    """'none' is not a near-miss for any player, so it must still fail."""
+    target, note = _resolved("none", ["matt", "wilf"])
+    assert target == "none"
+    assert note is None
 
 
 def test_parse_json_string() -> None:

@@ -10,7 +10,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from simulation.actions.actions import Action, ActionType, action_schema
-from simulation.actions.validator import ActionParseError, check_action_constraints, parse_action
+from simulation.actions.validator import (
+    ActionParseError,
+    check_action_constraints,
+    parse_action,
+    resolve_target,
+)
 from simulation.agents.agent import Agent
 from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.visibility import AgentView, InformationProjector
@@ -55,6 +60,23 @@ class AgentRuntime:
         self.memory_decay = memory_decay
         self.memory_floor = memory_floor
         self.memory_items_limit = memory_items_limit
+        # Targets repaired before the legality check, for the run summary.
+        self._repair_log: list[str] = []
+
+    @property
+    def repairs(self) -> int:
+        """How many near-miss targets were mapped onto a legal player."""
+        return len(self._repair_log)
+
+    @property
+    def repair_log(self) -> list[str]:
+        """Each repair, in order, for the run summary.
+
+        Kept in memory rather than pushed through the call recorder: that
+        would mean a new field on `CallRecord` and on every metrics file,
+        and this counter only needs to survive to the end of the run.
+        """
+        return list(self._repair_log)
 
     async def decide(
         self,
@@ -105,6 +127,13 @@ class AgentRuntime:
             retries_spent = self._transport_retries() - retries_before
             try:
                 action = parse_action(response.content, agent_id)
+                # A near-miss name ('Meryl', 'clare') is the same player the
+                # model meant. Repair it before the legality check, but only
+                # when the match is unambiguous, and keep the note so the
+                # repair shows up in telemetry instead of vanishing.
+                action, repair = resolve_target(action, legal_targets)
+                if repair is not None:
+                    self._repair_log.append(f"{agent_id}: {repair}")
                 reason = check_action_constraints(action, {action_type}, legal_targets)
                 if reason is not None:
                     raise ActionParseError(reason)
