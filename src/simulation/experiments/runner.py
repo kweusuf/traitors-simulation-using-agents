@@ -257,7 +257,13 @@ class GameRunner:
         self._memory_seq = -1
         provider = self.provider or build_provider(config.llm)
         gateway = LLMGateway(provider, max_concurrency=config.llm.max_concurrency)
-        telemetry = TelemetryRecorder(config.llm.model, run_dir / "llm_calls.jsonl")
+        telemetry = TelemetryRecorder(
+            config.llm.model,
+            run_dir / "llm_calls.jsonl",
+            # A resumed run continues its own telemetry rather than
+            # replacing it; a new run starts with an empty log.
+            resume=point is not None,
+        )
         runtime = AgentRuntime(
             agents=agents,
             gateway=gateway,

@@ -50,14 +50,43 @@ def _percentile(values: list[float], fraction: float) -> Optional[float]:
 class TelemetryRecorder:
     """Collects every model call of one game run."""
 
-    def __init__(self, model: str, path: Optional[Path] = None) -> None:
+    def __init__(
+        self, model: str, path: Optional[Path] = None, resume: bool = False
+    ) -> None:
         self.model = model
         self.path = Path(path) if path is not None else None
         self.records: list[CallRecord] = []
         if self.path is not None:
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            # Append-only log of this run only; start clean on a re-run.
-            self.path.write_text("", encoding="utf-8")
+            if resume and self.path.exists():
+                # A resumed run continues this run's telemetry. Those calls
+                # happened and cost real time, and `resume` documents this
+                # file as append-only, so wiping it here threw away the
+                # history of every interrupted run - metrics.json ended up
+                # reporting only the calls made since the last resume, which
+                # is how a 1549-event game reported 24 calls. Read them back
+                # so the summary covers the whole run.
+                self.records = self._read_existing()
+            else:
+                # A genuinely new run: start clean.
+                self.path.write_text("", encoding="utf-8")
+
+    def _read_existing(self) -> list[CallRecord]:
+        """Rehydrate earlier calls, skipping any line that will not parse."""
+        records: list[CallRecord] = []
+        try:
+            with self.path.open("r", encoding="utf-8") as handle:
+                for line in handle:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        records.append(CallRecord(**json.loads(line)))
+                    except Exception:
+                        continue
+        except OSError:
+            return []
+        return records
 
     def record(
         self,
