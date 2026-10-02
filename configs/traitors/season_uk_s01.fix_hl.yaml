@@ -2,43 +2,32 @@
 # English twin in a different language.
 #
 # Generated from season_uk_s01.hinglish.yaml, which stays as the baseline.
-# Identical to the English control in every setting except `language` and
-# (from round 6) the host, so the pair was a single-variable experiment
-# through round 5: any difference between them was the language. The host
-# split breaks that from round 6 on - see the note below.
+# Identical to the English control in every setting except `language`, so the
+# pair is a single-variable experiment: any difference between them is the
+# language.
 #
 # The personas stay in English on purpose. They are behavioural
 # instructions; translating them too would vary two things at once. The
 # language rule moves only what the agents say, and the engine's decision
 # words stay English.
 #
-# Host: HOST_A, the same host as the English control.
+# Host: the same one as the English control, and model-matched to it.
 #
-# HOST_B has now failed three times, and each was worse than the last.
-# It was rejected once for dropping connections under load (four concurrent
-# calls with ~4k prompts gave 4/4 RemoteDisconnected; at concurrency 3 two of
-# three failed; at concurrency 1 it failed on a cold model). It was tried a
-# second time at round 6 of the Hinglish run and killed that run: it answered
-# a single call fine (valid JSON, a healthy-looking rate), so a smoke test looked
-# healthy, but it dropped the first concurrent wave, exhausted the three
-# retries, and took the process down twenty minutes in.
+# Three findings from splitting this pair across two hosts, worth keeping
+# because each one cost a run:
 #
-# Third assessment, after both games finished: the host is not usable at all.
-# /api/tags times out at 10s, one chat call times out, and four concurrent
-# chat calls fail 0/4. Ping is intermittent - two of three replies, one lost -
-# while HOST_A answers the same probe 4/4 in under 9s. So the machine is up but
-# the Ollama port is not accepting connections, and the path to it is lossy.
-# That is a different failure from the two before, and it needs a person with
-# access to that machine rather than another experiment.
-#
-# A fourth attempt should not be a game. Check the host is powered, that
-# Ollama is running, and that the port is listening; then re-run the staged
-# probe - reachability, one call at a realistic prompt size, then four
-# concurrent - before anything is pointed at it. Start at concurrency 2,
-# where the original notes say it does survive.
-#
-# Its digest is also still DIGEST_B... against HOST_A's DIGEST_A..., so even a
-# healthy HOST_B would break the language-only comparison.
+# 1. A single-call smoke test is the wrong instrument for a host whose
+#    failure only appears under concurrency. One call returned valid JSON
+#    and a healthy-looking rate, then the first four-in-flight wave dropped
+#    every connection and exhausted the retries. Size the host at the
+#    concurrency you will actually run, not at one.
+# 2. The same model tag does not imply the same weights. The two hosts
+#    carried different digests under an identical tag, so a split-host pair
+#    could never have isolated language anyway. Verify the digest on every
+#    host before treating a pair as single-variable.
+# 3. Past what a host serves in parallel, extra concurrency only queues work
+#    into the request timeout rather than surfacing an error. High
+#    concurrency looks like it runs; it just runs badly and slowly.
 #
 # Consequence worth fixing separately: a transport failure kills an
 # eight-hour run outright instead of skipping one action. The resume
@@ -151,7 +140,7 @@ communication:
 llm:
   provider: ollama
   model: hauhau-qwen:latest
-  base_url: http://HOST_A:11434  # HOST_B killed this run twice; see the header note
+  base_url: http://HOST_A:11434  # override per machine; see the header note
   temperature: 0.7
   # 768, raised from 512. Hinglish output runs long: in this very run it
   # p50'd at 313 tokens and p99'd at exactly the old 512 cap, with 11

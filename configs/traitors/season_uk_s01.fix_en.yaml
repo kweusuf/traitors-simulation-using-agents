@@ -7,11 +7,11 @@
 # decided by a unanimous `end`, which the old prompt default forced in
 # every one of those runs.
 #
-# Both controls run on HOST_A at concurrency 4. They were first
-# split across two hosts, but HOST_B drops connections under load
-# (4/4 concurrent calls failed) and the two hosts carry different weights
-# under the identical model tag, so a split-host pair could not have
-# isolated language. See season_uk_s01.fix_hl.yaml for the evidence.
+# Both controls run on the same model-matched host at concurrency 4. They
+# were first split across two hosts, but the second host could not take the
+# load (4/4 concurrent calls failed) and the two carried different weights
+# under the identical model tag, so a split-host pair could not have isolated
+# language. See season_uk_s01.fix_hl.yaml for the evidence.
 
 game:
   name: season_uk_s01_fix

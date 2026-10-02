@@ -30,7 +30,7 @@ communication:
 # belong in an uncommitted `*.local.yaml` copy of this file.
 llm:
   provider: ollama
-  model: hauhau-qwen:latest        # from `ollama list`: DIGEST_A, 5.6 GB
+  model: hauhau-qwen:latest        # from `ollama list`; pin the digest when comparing hosts
   base_url: http://localhost:11434
   temperature: 0.7
   max_tokens: 512
