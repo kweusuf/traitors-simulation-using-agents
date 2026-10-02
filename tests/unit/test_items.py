@@ -605,8 +605,11 @@ def test_private_chat_asks_the_seer_holder_once() -> None:
 
     assert asked[0] == (holder, ActionType.SEER_CHECK)
     assert engine.seer_checks_done == {holder}
-    privates = [a for _, a in asked if a is ActionType.PRIVATE_MESSAGE]
-    assert len(privates) == len(engine.state.alive_players)
+    # The seer check is asked once, up front; the private chat then runs its
+    # opening wave and its reply wave, so the number of private asks is no
+    # longer one per player. What matters here is that nothing is rejected.
+    assert asked.count((holder, ActionType.SEER_CHECK)) == 1
+    assert ActionType.PRIVATE_MESSAGE in {a for _, a in asked}
     assert not [
         e for e in engine.sink.events if e.type is EventType.ACTION_REJECTED
     ]

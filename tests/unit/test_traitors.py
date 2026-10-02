@@ -219,7 +219,16 @@ def test_private_messages_routed_with_isolation() -> None:
     asyncio.run(env.phases()["private_chat"].run(context))
 
     privates = [m for m in engine.router.messages if m.channel.value == "private"]
-    assert len(privates) == 4  # one per alive player
+    # Two waves now: everyone opens, then everyone who received something
+    # answers it, so a private chat is a conversation rather than a series
+    # of messages sent into the void. The exact count depends on who was
+    # written to, so assert the shape and the cap instead.
+    senders = {m.sender_id for m in privates}
+    assert senders == set(engine.state.alive_players), "someone never spoke"
+    limit = env.config.communication.private_messages_per_agent
+    for sender in senders:
+        count = sum(1 for m in privates if m.sender_id == sender)
+        assert count <= limit, f"{sender} sent {count}, over the cap of {limit}"
     for message in privates:
         others = [
             pid for pid in engine.state.alive_players if pid not in (

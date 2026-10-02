@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Optional
 
 from simulation.actions.actions import ActionType
 from simulation.actions.validator import ActionParseError
+from simulation.communication.channels import Channel
 from simulation.engine.phase_engine import PhaseContext, PhaseResult
 from simulation.engine.state import Role
 from simulation.environments.traitors.rules import legal_targets
@@ -68,6 +69,62 @@ async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None
     for action in actions:
         if action is not None:
             engine.submit_action(action)
+
+
+async def _ask_replies(context: PhaseContext) -> None:
+    """Second wave of the private chat: answer the message you just received.
+
+    The opening wave composes every player's messages from the
+    phase-start state, so nobody can read what the person they are writing
+    to just said - reply is impossible inside a single wave. That left
+    reciprocity at 0.23: three quarters of private messages were one-sided
+    and the other player had no opportunity to answer.
+
+    This wave runs after the first has been submitted, so the prompt now
+    carries the thread that was just created and `pair_threads` has
+    something to show. Players who received nothing in this phase are not
+    asked, which keeps the cost at the configured two private messages
+    each rather than doubling it.
+    """
+    engine = context.engine
+    allow_self = engine.config.game.allow_self_vote
+    actors = []
+    for actor in sorted(engine.state.alive_players):
+        if any(
+            actor in (message.recipients or [])
+            and message.sender_id != actor
+            for message in engine.router.messages
+            if message.channel is Channel.PRIVATE
+        ):
+            actors.append(actor)
+    if not actors:
+        return
+    actions = await asyncio.gather(
+        *(
+            _ask(
+                context,
+                actor,
+                ActionType.PRIVATE_MESSAGE,
+                legal_targets(engine.state, actor, ActionType.PRIVATE_MESSAGE, allow_self),
+                _REPLY_INSTRUCTION,
+            )
+            for actor in actors
+        )
+    )
+    for action in actions:
+        if action is not None:
+            engine.submit_action(action)
+
+
+# Asked in the second wave of the private chat, once the first wave's
+# messages exist and can be read.
+_REPLY_INSTRUCTION = (
+    "You have just received a private message in this phase. Read it in "
+    "your private thread above and answer that player directly: say whether "
+    "you agree, what you want in return, or what you disagree with. Do not "
+    "open a new subject and do not ignore what they actually said. If you "
+    "received several, answer the one you have the most to say about."
+)
 
 
 # The host's line for a nominated suspect's one defence, so the answer
@@ -268,6 +325,7 @@ class PrivateChatPhase:
                 if action is not None:
                     engine.submit_action(action)
         await _ask_all_alive(context, ActionType.PRIVATE_MESSAGE)
+        await _ask_replies(context)
         return None
 
 
