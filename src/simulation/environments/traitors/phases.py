@@ -71,8 +71,8 @@ async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None
             engine.submit_action(action)
 
 
-async def _ask_replies(context: PhaseContext) -> None:
-    """Second wave of the private chat: answer the message you just received.
+async def _ask_replies(context: PhaseContext, opening_from: int) -> None:
+    """Second wave of the private chat: answer the people who wrote to you.
 
     The opening wave composes every player's messages from the
     phase-start state, so nobody can read what the person they are writing
@@ -80,24 +80,32 @@ async def _ask_replies(context: PhaseContext) -> None:
     reciprocity at 0.23: three quarters of private messages were one-sided
     and the other player had no opportunity to answer.
 
-    This wave runs after the first has been submitted, so the prompt now
-    carries the thread that was just created and `pair_threads` has
-    something to show. Players who received nothing in this phase are not
-    asked, which keeps the cost at the configured two private messages
-    each rather than doubling it.
+    This wave runs after the opening wave has been submitted, so the thread
+    exists and `pair_threads` has something to show.
+
+    The target list is the part that actually matters. Offering the whole
+    room produced reply messages that only went back to their original
+    sender 19% of the time - the model had no reason to route into the
+    thread it had just been asked about. Restricting the choices to the
+    players who actually wrote in this phase keeps the model's choice
+    between correspondents while making "answer the person who messaged
+    you" the only kind of message available.
+
+    `opening_from` is an index into the router's message list, so only what
+    this phase produced counts: a correspondence from an earlier round is
+    not an inbox.
     """
     engine = context.engine
     allow_self = engine.config.game.allow_self_vote
-    actors = []
-    for actor in sorted(engine.state.alive_players):
-        if any(
-            actor in (message.recipients or [])
-            and message.sender_id != actor
-            for message in engine.router.messages
-            if message.channel is Channel.PRIVATE
-        ):
-            actors.append(actor)
-    if not actors:
+    inbox: dict[str, list[str]] = {}
+    for message in engine.router.messages[opening_from:]:
+        if message.channel is not Channel.PRIVATE:
+            continue
+        for recipient in message.recipients or []:
+            if recipient != message.sender_id:
+                inbox.setdefault(recipient, []).append(message.sender_id)
+
+    if not inbox:
         return
     actions = await asyncio.gather(
         *(
@@ -105,10 +113,14 @@ async def _ask_replies(context: PhaseContext) -> None:
                 context,
                 actor,
                 ActionType.PRIVATE_MESSAGE,
-                legal_targets(engine.state, actor, ActionType.PRIVATE_MESSAGE, allow_self),
+                # Only the correspondents, in the order they wrote.
+                sorted(set(senders), key=senders.index),
                 _REPLY_INSTRUCTION,
             )
-            for actor in actors
+            for actor, senders in sorted(inbox.items())
+            if actor in engine.state.alive_players and legal_targets(
+                engine.state, actor, ActionType.PRIVATE_MESSAGE, allow_self
+            )
         )
     )
     for action in actions:
@@ -116,14 +128,17 @@ async def _ask_replies(context: PhaseContext) -> None:
             engine.submit_action(action)
 
 
-# Asked in the second wave of the private chat, once the first wave's
+# Asked in the second wave of the private chat, once the opening wave's
 # messages exist and can be read.
+# Asked in the second wave of the private chat, where the only legal targets
+# are the players who wrote first.
 _REPLY_INSTRUCTION = (
-    "You have just received a private message in this phase. Read it in "
-    "your private thread above and answer that player directly: say whether "
+    "You have just received a private message in this phase. The only "
+    "players you can write to now are the ones who wrote to you, so read "
+    "your private thread above and answer that person directly: say whether "
     "you agree, what you want in return, or what you disagree with. Do not "
-    "open a new subject and do not ignore what they actually said. If you "
-    "received several, answer the one you have the most to say about."
+    "open a new subject, do not change the subject, and do not ignore what "
+    "they actually said. This is a reply, not another approach."
 )
 
 
@@ -324,8 +339,9 @@ class PrivateChatPhase:
             for action in checks:
                 if action is not None:
                     engine.submit_action(action)
+        opening_from = len(engine.router.messages)
         await _ask_all_alive(context, ActionType.PRIVATE_MESSAGE)
-        await _ask_replies(context)
+        await _ask_replies(context, opening_from)
         return None
 
 

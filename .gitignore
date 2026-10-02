@@ -16,3 +16,7 @@ ollama-model/
 *.local.yaml
 # Exported chat transcripts, which are session scratch rather than source
 cursor_*.md
+# Local agent notes. These record machine-specific findings by design, so
+# they stay out of a public repo.
+AGENTS.md
+CLAUDE.md
