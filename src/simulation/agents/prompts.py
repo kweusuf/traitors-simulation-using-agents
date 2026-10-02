@@ -117,12 +117,39 @@ class PromptBuilder:
             "even though you are speaking Hinglish everywhere else.",
         ]
 
+    def _converted_rule(self, converted: bool) -> list[str]:
+        """Coaching for a player converted mid-game.
+
+        Without this, every recruit in both runs was banished within a
+        round or two. They were open, accusing faithful players until the
+        night they were offered the team, and then had to start deceiving
+        with no cover to hide behind. The room reads that change instantly.
+        """
+        if not converted:
+            return []
+        return [
+            "You were a faithful player until the traitors recruited you, "
+            "and the room watched you say so in public. Nothing on the "
+            "record has changed: keep believing and saying what you already "
+            "said, and keep accusing the players you were already accusing. "
+            "A sudden change in who you vote for, who you defend, or how "
+            "much you speak is the single most obvious tell there is.",
+            "",
+            "Play your cover, not the truth. Keep naming a suspect and keep "
+            "arguing against them exactly as before. Do not go quiet, do not "
+            "suddenly defend someone you attacked, and do not start agreeing "
+            "with everyone. You now have a team, but for one more round at "
+            "least you should be indistinguishable from the faithful player "
+            "the room already knows.",
+        ]
+
     def build_system(
         self,
         agent_id: str,
         role: Role,
         persona: Persona,
         goals: Goals,
+        converted: bool = False,
     ) -> str:
         lines = [
             f"You are {agent_id}, a player in a text-based social deduction game.",
@@ -151,6 +178,8 @@ class PromptBuilder:
             "wording already visible in the transcript above. A generic "
             "observation about caution, patience or how noisy the group "
             "is could have been written by anyone and tells you nothing.",
+            "",
+            *self._converted_rule(converted),
             "",
             *self._language_rule(),
             "",
@@ -467,11 +496,20 @@ class PromptBuilder:
         legal_targets: Optional[list[str]] = None,
         memory_items: Optional[list[dict]] = None,
         extra_instruction: Optional[str] = None,
+        agent: Optional["Agent"] = None,
     ) -> list[ChatMessage]:
         return [
             ChatMessage(
                 role="system",
-                content=self.build_system(agent_id, role, persona, goals),
+                content=self.build_system(
+                    agent_id,
+                    role,
+                    persona,
+                    goals,
+                    converted=bool(
+                        getattr(agent, "converted_round", None) is not None
+                    ),
+                ),
             ),
             ChatMessage(
                 role="user",

@@ -34,6 +34,10 @@ class Agent:
         self.role: Optional[Role] = None
         self.ambition: Optional[str] = None
         self.goals = self.base_goals
+        # Set when the engine flips this player from faithful to traitor
+        # mid-game. A converted player needs different coaching: they have
+        # been an open, accusing faithful player until tonight.
+        self.converted_round: Optional[int] = None
         self.memory = memory or ShortTermMemory(game_id="", agent_id=agent_id)
         self.beliefs = Beliefs()
         self.relationships = Relationships()
@@ -46,6 +50,10 @@ class Agent:
         `ambition` is the seeded solo/team disposition; it only affects
         traitors and never enters an observation.
         """
+        previous = self.role
+        if role is Role.TRAITOR and previous is Role.FAITHFUL:
+            # A live flip, not the initial assignment.
+            self.converted_round = 0
         self.role = role
         self.ambition = ambition
         self.goals = inject_role_goals(self.base_goals, role, ambition)

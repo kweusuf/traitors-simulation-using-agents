@@ -94,6 +94,7 @@ class AgentRuntime:
         memory_items = self._memory_items(agent, view)
         messages = self.prompt_builder.build(
             agent_id=agent_id,
+            agent=agent,
             role=agent.role,
             persona=agent.persona,
             goals=agent.goals,

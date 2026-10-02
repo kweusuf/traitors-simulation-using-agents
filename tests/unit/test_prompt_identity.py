@@ -9,6 +9,7 @@ others had.
 from __future__ import annotations
 
 from simulation.actions.actions import ActionType
+from simulation.agents.agent import Agent
 from simulation.agents.goals import Goals
 from simulation.agents.persona import Persona
 from simulation.agents.prompts import PromptBuilder
@@ -67,6 +68,64 @@ def test_transcript_marks_nothing_when_there_is_no_reader() -> None:
     )
     assert "ivan: Something." in prompt
     assert "ivan (you)" not in prompt
+
+
+def test_a_converted_player_is_told_to_keep_their_cover() -> None:
+    """Every recruit in both finished runs was out within two rounds.
+
+    They had been open, accusing faithful players until the night of the
+    offer, then had to start deceiving with no cover. The system prompt
+    now says to keep behaving exactly as before.
+    """
+    agent = Agent("matt", "Matt", Persona(description="outspoken"))
+    agent.assign_role(Role.FAITHFUL)
+    assert agent.converted_round is None
+    prompt = PromptBuilder().build_system(
+        "matt", Role.FAITHFUL, agent.persona, agent.goals
+    )
+    assert "recruited you" not in prompt
+
+    agent.assign_role(Role.TRAITOR)
+    assert agent.converted_round is not None, "the live flip was not noticed"
+    prompt = PromptBuilder().build_system(
+        "matt",
+        Role.TRAITOR,
+        agent.persona,
+        agent.goals,
+        converted=agent.converted_round is not None,
+    )
+    assert "You were a faithful player until the traitors recruited you" in prompt
+    assert "Nothing on the record has changed" in prompt
+
+
+def test_the_initial_role_assignment_is_not_a_conversion() -> None:
+    """The first assign_role call is not a recruitment."""
+    agent = Agent("wilf", "Wilf", Persona(description="charming"))
+    agent.assign_role(Role.TRAITOR)
+    assert agent.converted_round is None
+    prompt = PromptBuilder().build_system(
+        "wilf", Role.TRAITOR, agent.persona, agent.goals, converted=False
+    )
+    assert "recruited you" not in prompt
+
+
+def test_build_passes_the_conversion_flag_through() -> None:
+    """The full path, so the coaching cannot silently stop arriving."""
+    agent = Agent("matt", "Matt", Persona(description="outspoken"))
+    agent.assign_role(Role.FAITHFUL)
+    agent.assign_role(Role.TRAITOR)
+    messages = PromptBuilder().build(
+        agent_id="matt",
+        agent=agent,
+        role=agent.role,
+        persona=agent.persona,
+        goals=agent.goals,
+        view=base_view(),
+        action_type=ActionType.PUBLIC_MESSAGE,
+        legal_targets=[],
+    )
+    system = next(m for m in messages if m.role == "system")
+    assert "Play your cover, not the truth" in system.content
 
 
 def test_public_message_forbids_replying_to_oneself_and_echoing() -> None:
