@@ -3,30 +3,35 @@
 #
 # Generated from season_uk_s01.hinglish.yaml, which stays as the baseline.
 # Identical to the English control in every setting except `language` and
-# the host, so the pair is a single-variable experiment: any difference
-# between them is the language, and any difference against uk-s01-r1/r2/r3
-# is the end-vote fix.
+# (from round 6) the host, so the pair was a single-variable experiment
+# through round 5: any difference between them was the language. The host
+# split breaks that from round 6 on - see the note below.
 #
 # The personas stay in English on purpose. They are behavioural
 # instructions; translating them too would vary two things at once. The
 # language rule moves only what the agents say, and the engine's decision
 # words stay English.
 #
-# Pinned to HOST_A, the same host as the English control.
+# Host: HOST_A, the same host as the English control.
 #
-# HOST_B was tried first and rejected on evidence: it drops
-# connections under load. Four concurrent calls with ~4k prompts gave 4/4
-# RemoteDisconnected, at concurrency 3 two of three failed, and at
-# concurrency 1 it failed on a cold model. Only concurrency 2 survived,
-# far too slow for 22 players. The run died twice there in the opening
-# public discussion wave.
+# HOST_B was tried a SECOND time at round 6 and killed the run again.
+# It answers a single call fine (valid JSON, a healthy-looking rate), so a smoke
+# test passes and looks healthy, but under the real workload it drops
+# connections - `Remote end closed connection without response` on the
+# first concurrent wave. Exhausting the three retries propagated the
+# error and took the process down at 06:18, about 20 minutes after the
+# move, losing the round-6 phase in flight.
 #
-# Both runs now sit on one host at the same concurrency, so the pair
-# differs by `language` alone. That also matters because the two hosts
-# carry *different weights* under the identical tag hauhau-qwen:latest -
-# same 9.0B qwen3.5 Q4_K_M and same size, but digest DIGEST_B... on HOST_B
-# against DIGEST_A... on .15. A split-host pair could never have isolated
-# language.
+# So both pieces of the original rejection stand: it cannot serve four
+# concurrent calls, and its digicest DIGEST_B... differs from HOST_A's
+# DIGEST_A... anyway, which would have broken the language-only comparison
+# even had it stayed up. A third attempt should start from concurrency 2,
+# where the old notes say it does survive, and accept the speed.
+#
+# Consequence worth fixing separately: a transport failure kills an
+# eight-hour run outright instead of skipping one action. The resume
+# machinery exists for this, but nothing invokes it automatically.
+
 
 game:
   name: season_uk_s01_hinglish_fix
@@ -134,7 +139,7 @@ communication:
 llm:
   provider: ollama
   model: hauhau-qwen:latest
-  base_url: http://HOST_A:11434  # override per machine
+  base_url: http://HOST_A:11434  # HOST_B killed this run twice; see the header note
   temperature: 0.7
   # 768, raised from 512. Hinglish output runs long: in this very run it
   # p50'd at 313 tokens and p99'd at exactly the old 512 cap, with 11
