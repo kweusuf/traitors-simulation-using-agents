@@ -177,6 +177,7 @@ class PromptBuilder:
         legal_targets: Optional[list[str]],
         memory_items: Optional[list[dict]] = None,
         extra_instruction: Optional[str] = None,
+        agent_id: Optional[str] = None,
     ) -> str:
         lines = [
             view.render(),
@@ -277,13 +278,31 @@ class PromptBuilder:
                 "or hint at your own role."
             )
         if action_type is ActionType.PUBLIC_MESSAGE:
-            lines.append(
-                "This message goes to every player. Speak as one player among "
-                "many: no claims about your own role, no naming anyone as a "
-                "traitor, and no repeating role information you only privately "
-                "know. Name the player you are responding to and say something "
-                "this conversation has not heard yet; do not echo phrasing "
-                "from the transcript."
+            lines.extend(
+                [
+                    "This message goes to every player. Speak as one player among "
+                    "many: no claims about your own role, no naming anyone as a "
+                    "traitor, and no repeating role information you only privately "
+                    "know. Name the player you are responding to and say something "
+                    "this conversation has not heard yet; do not echo phrasing "
+                    "from the transcript.",
+                    "",
+                    "Two rules the room keeps breaking without them. First, you "
+                    "cannot reply to yourself: your own earlier lines are marked "
+                    "'(you)' in the transcript, and you are not someone else to "
+                    "answer. Address only another player. Second, do not open by "
+                    "paraphrasing whoever spoke last. Opening with \"X, you've "
+                    "been...\" or \"X, tumne toh...\" turns the discussion into "
+                    "everyone agreeing with the most recent speaker. Instead, "
+                    "either name a different player and make a specific claim "
+                    "about them, or put forward something no one has raised yet.",
+                    "",
+                    "Take a position rather than validating the room. Agreeing "
+                    "with what was just said is the easy move and it tells the "
+                    "others nothing about you. If you think someone is lying, say "
+                    "so and say what they said that does not fit. If you are "
+                    "unsure, say what would change your mind.",
+                ]
             )
         if action_type is ActionType.PRIVATE_MESSAGE:
             lines.append(
@@ -355,7 +374,16 @@ class PromptBuilder:
             lines.append("")
             lines.append("Public transcript:")
             for msg in shown:
-                lines.append(f"  [{msg.round_number}] {msg.sender_id}: {msg.content}")
+                # Mark the reader's own past words. Rendering every line
+                # identically left the model unable to tell what it had
+                # already said from what others had, and it answered
+                # itself - "Ivan, you noted that..." sent by Ivan.
+                who = (
+                    f"{msg.sender_id} (you)"
+                    if agent_id is not None and msg.sender_id == agent_id
+                    else msg.sender_id
+                )
+                lines.append(f"  [{msg.round_number}] {who}: {msg.content}")
             if dropped:
                 lines.append(
                     f"  (earlier {dropped} public messages are omitted; "
@@ -453,6 +481,7 @@ class PromptBuilder:
                     legal_targets,
                     memory_items,
                     extra_instruction,
+                    agent_id=agent_id,
                 ),
             ),
         ]
