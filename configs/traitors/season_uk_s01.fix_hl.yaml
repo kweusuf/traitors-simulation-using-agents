@@ -14,19 +14,31 @@
 #
 # Host: HOST_A, the same host as the English control.
 #
-# HOST_B was tried a SECOND time at round 6 and killed the run again.
-# It answers a single call fine (valid JSON, a healthy-looking rate), so a smoke
-# test passes and looks healthy, but under the real workload it drops
-# connections - `Remote end closed connection without response` on the
-# first concurrent wave. Exhausting the three retries propagated the
-# error and took the process down at 06:18, about 20 minutes after the
-# move, losing the round-6 phase in flight.
+# HOST_B has now failed three times, and each was worse than the last.
+# It was rejected once for dropping connections under load (four concurrent
+# calls with ~4k prompts gave 4/4 RemoteDisconnected; at concurrency 3 two of
+# three failed; at concurrency 1 it failed on a cold model). It was tried a
+# second time at round 6 of the Hinglish run and killed that run: it answered
+# a single call fine (valid JSON, a healthy-looking rate), so a smoke test looked
+# healthy, but it dropped the first concurrent wave, exhausted the three
+# retries, and took the process down twenty minutes in.
 #
-# So both pieces of the original rejection stand: it cannot serve four
-# concurrent calls, and its digicest DIGEST_B... differs from HOST_A's
-# DIGEST_A... anyway, which would have broken the language-only comparison
-# even had it stayed up. A third attempt should start from concurrency 2,
-# where the old notes say it does survive, and accept the speed.
+# Third assessment, after both games finished: the host is not usable at all.
+# /api/tags times out at 10s, one chat call times out, and four concurrent
+# chat calls fail 0/4. Ping is intermittent - two of three replies, one lost -
+# while HOST_A answers the same probe 4/4 in under 9s. So the machine is up but
+# the Ollama port is not accepting connections, and the path to it is lossy.
+# That is a different failure from the two before, and it needs a person with
+# access to that machine rather than another experiment.
+#
+# A fourth attempt should not be a game. Check the host is powered, that
+# Ollama is running, and that the port is listening; then re-run the staged
+# probe - reachability, one call at a realistic prompt size, then four
+# concurrent - before anything is pointed at it. Start at concurrency 2,
+# where the original notes say it does survive.
+#
+# Its digest is also still DIGEST_B... against HOST_A's DIGEST_A..., so even a
+# healthy HOST_B would break the language-only comparison.
 #
 # Consequence worth fixing separately: a transport failure kills an
 # eight-hour run outright instead of skipping one action. The resume
