@@ -69,6 +69,14 @@ class GameSettings(StrictModel):
     # council, which never reaches a faithful player. Set it false to run
     # a memoryless control.
     agent_memory: bool = True
+    # Reject a message that names a player who does not exist, rather than
+    # logging it and letting it through. A model that invents a player
+    # early can occupy the whole room: in one run a phantom was in 82% of
+    # messages and the faithful never found a real traitor. Off by default
+    # because the detector is not calibrated - a false positive discards a
+    # legitimate turn. Run once with it off, read `phantoms` in the run
+    # summary, then turn it on.
+    reject_invented_players: bool = False
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)
