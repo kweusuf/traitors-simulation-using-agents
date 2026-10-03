@@ -41,6 +41,11 @@ game:
   # phantom caught, zero false positives, caught at the sequence where it
   # was introduced - so the gate is on here rather than logging only.
   reject_invented_players: true
+  # Treatment arm of the template-collapse experiment: the stylistic
+  # constraints on public speech are ON. Stated explicitly rather than left
+  # to the default, so this config records the arm it is. The control is
+  # season_uk_s01.noecho.yaml, identical except this flag.
+  anti_echo_instructions: true
   # Both Series 1 recruitment attempts came the night after one of
   # the traitors was banished (episode 7 after Alyssa, episode 11
   # after Amanda), which is exactly the banishment window. Turning
