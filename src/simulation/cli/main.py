@@ -31,6 +31,11 @@ from simulation.persistence.database import Database
 from simulation.persistence.event_log import Event, EventType
 from simulation.persistence.repositories import SnapshotRepository
 
+# A run's database lives inside its own run folder, beside the event log
+# and metrics, so everything one game produced is in one place.
+#
+# DEFAULT_DB is only the batch default now: a batch covers several games
+# and so has no single run folder to sit in.
 DEFAULT_RUNS_DIR = "runs"
 DEFAULT_DB = "runs/simulation.db"
 DEFAULT_SEASON = "configs/seasons/the-traitors-uk-s01.yaml"
@@ -156,11 +161,33 @@ def _load_config(args: argparse.Namespace) -> GameConfig:
     return config
 
 
-def _open_db(args: argparse.Namespace) -> Database:
-    db_path = getattr(args, "db", DEFAULT_DB)
-    if db_path != ":memory:":
-        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
-    return Database(db_path)
+def _open_db(args: argparse.Namespace, db_path: Optional[str] = None) -> Database:
+    """Open the SQLite store.
+
+    A run's database belongs inside that run's folder, beside its event
+    log and metrics. Kept out in the runs root, a run's records were split
+    across two places and the link between them existed only in whatever
+    command line was typed. `db_path` is resolved by the caller because
+    the run folder is not known until the game id is.
+    """
+    path = db_path if db_path is not None else getattr(args, "db", None)
+    if path in (None, ":memory:"):
+        return Database(path or ":memory:")
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    return Database(path)
+
+
+def run_db_path(args: argparse.Namespace, game_id: str) -> str:
+    """Where this run's database goes.
+
+    An explicit `--db` wins, including `:memory:`. Otherwise it is
+    `<runs-dir>/<game-id>/game.db`, so everything one run produces lives in
+    one folder.
+    """
+    explicit = getattr(args, "db", None)
+    if explicit:
+        return explicit
+    return str(Path(args.runs_dir) / game_id / "game.db")
 
 
 # ----------------------------------------------------------------------
@@ -173,7 +200,17 @@ def cmd_run(args: argparse.Namespace) -> int:
     model, _ = model_identity(config.llm)
     print(f"Model: {model}")
 
-    with _open_db(args) as db:
+    # The game id first: the database lives inside the run folder, so its
+    # path depends on which run this is.
+    probe = GameRunner(
+        config,
+        runs_dir=args.runs_dir,
+        db=None,
+        personas_dir=personas_dir_for(args.config),
+    )
+    game_id = args.game_id or probe.next_game_id()
+
+    with _open_db(args, run_db_path(args, game_id)) as db:
         runner = GameRunner(
             config,
             runs_dir=args.runs_dir,
@@ -206,7 +243,11 @@ def cmd_batch(args: argparse.Namespace) -> int:
     model, _ = model_identity(config.llm)
     print(f"Model: {model}  Games: {args.games}")
 
-    with _open_db(args) as db:
+    # A batch is several games sharing one store, so it does not get the
+    # per-run default that `run` uses - there is no single run folder to
+    # put it in. Keep it at the runs root.
+    batch_db = getattr(args, "db", None) or str(Path(args.runs_dir) / "simulation.db")
+    with _open_db(args, batch_db) as db:
         runner = GameRunner(
             config,
             runs_dir=args.runs_dir,
@@ -607,7 +648,14 @@ def cmd_list_games(args: argparse.Namespace) -> int:
 
 def _add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR, help="run artifacts root")
-    parser.add_argument("--db", default=DEFAULT_DB, help="SQLite path (or :memory:)")
+    parser.add_argument(
+        "--db",
+        default=None,
+        help=(
+            "SQLite path (or :memory:). Defaults to <runs-dir>/<game-id>/game.db "
+            "so a run's database sits beside its own artifacts"
+        ),
+    )
     parser.add_argument("--quiet", action="store_true", help="no live progress output")
 
 
