@@ -8,6 +8,7 @@ never parse arbitrary prose to determine game state.
 from __future__ import annotations
 
 import json
+import re
 from typing import Any, Iterable, Optional
 
 from simulation.actions.actions import ACTIONS_REQUIRING_TARGET, Action, ActionType
@@ -134,6 +135,83 @@ def resolve_target(
 
 def _with_target(action: Action, target: str) -> Action:
     return action.model_copy(update={"target": target})
+
+
+def resolve_content_names(
+    content: str, known_players: Iterable[str], context: str = ""
+) -> tuple[str, list[str], list[str]]:
+    """Repair and detect names that are not players.
+
+    Returns `(content, repairs, phantoms)`. Two separate problems:
+
+    - A *near miss* - `Matty` for matt, `Aamon` for amos - is repaired
+      when exactly one known player is a single edit away. That is
+      unambiguous and costs nothing to fix.
+    - A *phantom* - a name no player resembles - has no repair target. In
+      one run a model invented a player in round 1 and the room spent the
+      rest of the game investigating her, while three real traitors went
+      unchallenged. There is nothing to correct it to, so it is reported
+      and the turn retried with the roster in front of the model.
+
+    `context` is the rendered prompt. A capitalised token is only treated
+    as a phantom if its lowercase form appears nowhere in that context, so
+    an ordinary word that merely started a sentence is left alone.
+    """
+    known = list(known_players)
+    if not known:
+        return content, [], []
+    folded = {name.strip().casefold(): name for name in known}
+    lowercase_context = {
+        w.casefold() for w in re.findall(r"[A-Za-z]{3,}", context)
+    }
+
+    # A capitalised token is only a *suspect* when it is being used to
+    # address somebody: immediately before a comma. Position alone cannot
+    # decide, because "Iris, you have been quiet" and "Watching the
+    # watchers" share a shape; the comma is what marks one as a person
+    # being spoken to. First-word-of-sentence was tried and rejected - it
+    # flagged every ordinary sentence-initial capital.
+    suspect = {
+        m.group(1)
+        for m in re.finditer(
+            r"(?:^|(?<=[.!?]\s)|(?<=\n)|(?<=[\"'“]\s))([A-Z][a-zA-Z]{2,})\s*,", content
+        )
+    }
+
+    repairs: list[str] = []
+    phantoms: list[str] = []
+
+    def fix(match: "re.Match[str]") -> str:
+        token = match.group(0)
+        low = token.casefold()
+        if low in folded:
+            return folded[low]
+        # Single-edit near miss, and only when exactly one player fits.
+        if len(low) >= 4:
+            close = [
+                name
+                for name in known
+                if _edit_distance(low, name.casefold(), cap=1) <= 1
+            ]
+            if len(close) == 1:
+                repairs.append(f"'{token}' -> '{close[0]}'")
+                return close[0]
+        if token in suspect and low not in lowercase_context:
+            phantoms.append(token)
+        return token
+
+    fixed = re.sub(r"\b[A-Z][a-zA-Z]{2,}\b", fix, content)
+    return fixed, repairs, phantoms
+
+
+def phantom_reason(phantoms: list[str], known_players: Iterable[str]) -> str:
+    return (
+        "your message names "
+        + ", ".join(f"'{p}'" for p in phantoms)
+        + ", which is not a player in this game. Use only these names: "
+        + ", ".join(sorted(known_players))
+        + ". Do not invent anyone."
+    )
 
 
 def check_action_constraints(

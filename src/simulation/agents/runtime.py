@@ -14,6 +14,8 @@ from simulation.actions.validator import (
     ActionParseError,
     check_action_constraints,
     parse_action,
+    phantom_reason,
+    resolve_content_names,
     resolve_target,
 )
 from simulation.agents.agent import Agent
@@ -47,6 +49,7 @@ class AgentRuntime:
         memory_decay: float = DEFAULT_DECAY,
         memory_floor: float = DEFAULT_FLOOR,
         memory_items_limit: int = 6,
+        reject_invented_players: bool = False,
     ) -> None:
         self.agents = agents
         self.gateway = gateway
@@ -62,6 +65,12 @@ class AgentRuntime:
         self.memory_items_limit = memory_items_limit
         # Targets repaired before the legality check, for the run summary.
         self._repair_log: list[str] = []
+        # Names invented by the model, kept so a run that hallucinates a
+        # player is visible rather than silent.
+        self._phantom_log: list[str] = []
+        # Phantoms are always logged; this decides whether one also costs
+        # the turn. Off until the detector's false-positive rate is known.
+        self.reject_invented_players = reject_invented_players
 
     @property
     def repairs(self) -> int:
@@ -77,6 +86,11 @@ class AgentRuntime:
         and this counter only needs to survive to the end of the run.
         """
         return list(self._repair_log)
+
+    @property
+    def phantoms(self) -> list[str]:
+        """Every invented player name this run has produced."""
+        return list(self._phantom_log)
 
     async def decide(
         self,
@@ -135,6 +149,33 @@ class AgentRuntime:
                 action, repair = resolve_target(action, legal_targets)
                 if repair is not None:
                     self._repair_log.append(f"{agent_id}: {repair}")
+                # Names in the prose, not just the target field. A model can
+                # invent a whole player inside `content` and never trip the
+                # target check, which is how a phantom got into one run.
+                if action.content:
+                    roster = list(view.alive_players) + list(
+                        view.eliminated_players
+                    )
+                    fixed, repairs, phantoms = resolve_content_names(
+                        action.content, roster, messages[1].content
+                    )
+                    if repairs:
+                        self._repair_log.extend(
+                            f"{agent_id}: name {r}" for r in repairs
+                        )
+                        action = action.model_copy(update={"content": fixed})
+                    if phantoms:
+                        # Always recorded. Rejected only when the flag is
+                        # on: the detector is not calibrated, and a false
+                        # positive would discard a legitimate turn. Measure
+                        # the rate from the log, then decide.
+                        self._phantom_log.append(
+                            f"{agent_id}: {', '.join(phantoms)}"
+                        )
+                        if self.reject_invented_players:
+                            raise ActionParseError(
+                                phantom_reason(phantoms, roster)
+                            )
                 reason = check_action_constraints(action, {action_type}, legal_targets)
                 if reason is not None:
                     raise ActionParseError(reason)
