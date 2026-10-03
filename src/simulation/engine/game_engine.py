@@ -533,6 +533,11 @@ class GameEngine:
             targets=recipients,
             payload={
                 "content": message.content,
+                # The model's own pointer, kept in the log so the arm can be
+                # measured after the fact. Absent unless `co_generate_gist` is
+                # on, and absent whenever the model skipped it - which is a
+                # result to count, not a gap to fill in later.
+                **({"gist": action.gist} if action.gist else {}),
                 "message_id": message.message_id,
                 "confidence": action.confidence,
                 "channel": channel.value,

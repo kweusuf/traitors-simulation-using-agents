@@ -8,7 +8,7 @@ exists.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import Field, create_model, model_validator
 
@@ -114,6 +114,20 @@ class Action(StrictModel):
     content: Optional[str] = None
     confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     reason_summary: Optional[str] = None
+    # A short, self-authored gist of `content`, produced in the same call.
+    #
+    # Why: a message action already pays for one generation, and that call is
+    # the only moment the model is reasoning about what it just said. Asking
+    # for a pointer alongside costs no extra call, and the pointer - not the
+    # 800-character message - is what a later prompt needs to remember the
+    # exchange. The pointer feeds the same decay curve every other memory
+    # uses, so old pointers fade without anything being deleted.
+    #
+    # Never required by default. A missing gist is not a failed action: the
+    # message still stands, and memory falls back to its deterministic
+    # first-clause gist. See `co_generate_gist` in the game config for why
+    # that fallback matters.
+    gist: Optional[str] = None
 
     @classmethod
     def __get_pydantic_json_schema__(cls, core_schema, handler):
@@ -128,7 +142,17 @@ class Action(StrictModel):
         """
         schema = handler(core_schema)
         if isinstance(schema, dict):
-            schema["required"] = ["action", "target", "content"]
+            required = ["action", "target", "content"]
+            # `action_schema` redeclares `gist` as required for the mandatory
+            # pointer arm. Redeclaring a field without a default is enough for
+            # pydantic's own schema, but this hook rewrites `required` wholesale
+            # - so the arm has to be re-applied here or the provider is handed
+            # an optional pointer and the mandatory arm silently behaves like
+            # the optional one.
+            gist = cls.model_fields.get("gist")
+            if gist is not None and gist.is_required():
+                required.append("gist")
+            schema["required"] = required
         return schema
 
     @model_validator(mode="after")
@@ -142,7 +166,9 @@ class Action(StrictModel):
         return self
 
 
-def action_schema(action_type: ActionType) -> type[Action]:
+def action_schema(
+    action_type: ActionType, want_gist: bool = False, gist_required: bool = False
+) -> type[Action]:
     """The JSON schema handed to the model for one action.
 
     A closed-choice action gets a schema whose `content` is an enum of its
@@ -156,15 +182,28 @@ def action_schema(action_type: ActionType) -> type[Action]:
 
     Every other action keeps the plain schema, so nothing changes for the
     free-text turns.
+
+    `gist_required` adds `gist` to the grammar's required list. That is the
+    whole difference between the optional and mandatory arms: with it, a
+    reply that omits the pointer is not valid JSON for this schema and the
+    provider refuses it, so the call is retried rather than silently accepted
+    without a pointer. Only the pointer-bearing actions ask for one - a vote
+    has no message to point at.
     """
     choices = CONTENT_CHOICES.get(action_type)
-    if not choices:
+    fields: dict[str, Any] = {}
+    if choices:
+        fields["content"] = (Literal[choices], ...)
+    # A required pointer is expressed the ordinary way: redeclaring the field
+    # as `(str, ...)` drops the inherited `None` default, so pydantic's own
+    # generated schema lists it as required and the provider's grammar
+    # enforces it. The optional arm simply does not redeclare it, and
+    # inherits the `Optional[str] = None` from `Action`.
+    if gist_required and action_type in ACTIONS_REQUIRING_CONTENT:
+        fields["gist"] = (str, ...)
+    if not fields:
         return Action
     # `Literal[tuple]` is `Literal` over the tuple's members (PEP 586), so
     # the enum is built from the same tuple the prompt hint renders.
     name = "".join(part.title() for part in action_type.value.split("_"))
-    return create_model(
-        f"{name}Action",
-        __base__=Action,
-        content=(Literal[choices], ...),
-    )
+    return create_model(f"{name}Action", __base__=Action, **fields)

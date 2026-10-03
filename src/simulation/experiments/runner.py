@@ -272,6 +272,8 @@ class GameRunner:
                 transcript_limit=config.communication.transcript_messages_per_prompt,
                 language=config.game.language,
                 anti_echo_instructions=config.game.anti_echo_instructions,
+                want_gist=config.game.co_generate_gist,
+                gist_required=config.game.gist_required,
             ),
             telemetry=telemetry,
             memory_enabled=config.game.agent_memory,
@@ -446,7 +448,10 @@ class GameRunner:
         for event in fresh:
             round_number = int(event.get("round") or 0)
             sequence = int(event.get("sequence") or 0)
-            for write in writes_for(env.state, event, history):
+            for write in writes_for(
+                env.state, event, history,
+                remember_everything=self.config.game.pointer_memory,
+            ):
                 for pid, agent in agents.items():
                     if write.visible_to(pid, env.state):
                         await agent.remember(

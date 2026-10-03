@@ -32,6 +32,7 @@ DEATH = 4.0          # a murder, a banishment
 ACCUSATION = 3.0     # a named accusation or a rebuttal on the record
 ATTENTION = 3.5      # a survivor coming under the room's scrutiny
 PUBLIC_RECORD = 2.0  # nominations and the ballot that followed
+POINTER = 1.5        # a general one-line pointer at something that was said
 
 ALL = "all"
 TRAITORS = "traitors"
@@ -79,6 +80,43 @@ def _first_clause(text: str, limit: int = 160) -> str:
             trimmed = head
             break
     return trimmed[:limit]
+
+
+# Longest pointer worth storing. A pointer exists to replace a full message
+# in a later prompt, so a pointer nearly as long as the message saves nothing.
+MAX_POINTER_CHARS = 160
+
+
+def usable_pointer(gist: str | None, content: str) -> str:
+    """The pointer to store for a message: the model's own, or a fallback.
+
+    The model is asked for the pointer in the same call that writes the
+    message, which is free, but it is a small model and "also summarise
+    this" is an easy instruction to half-obey. Three ways that goes wrong,
+    all handled here rather than at the prompt:
+
+    - no pointer at all, so the deterministic gist is used instead;
+    - a pointer that is a verbatim slice of the message, which is the
+      "summarise" instruction answered with a copy and is no more compact
+      than the message it was meant to replace;
+    - a pointer so long it costs as much as the message.
+
+    Never raises and never returns empty: the caller always gets something
+    to store, because a memory row is expected to have content.
+    """
+    fallback = _first_clause(content)
+    if not gist:
+        return fallback
+    pointer = " ".join(gist.split())[:MAX_POINTER_CHARS]
+    if not pointer:
+        return fallback
+    # A pointer that merely repeats the head of the message has not been
+    # distilled, it has been copied; the deterministic clause is no worse and
+    # costs nothing.
+    head = " ".join(content.split())[: len(pointer)]
+    if pointer.lower() == head.lower():
+        return fallback
+    return pointer
 
 
 @dataclass(frozen=True)
@@ -169,14 +207,24 @@ def writes_for(
     state: GameState,
     event: dict[str, Any],
     history: list[dict[str, Any]] | None = None,
+    remember_everything: bool = False,
 ) -> list[MemoryWrite]:
-    """The memories one event produces, in the order they should be written."""
+    """The memories one event produces, in the order they should be written.
+
+    `remember_everything` adds a decaying pointer for every message on top of
+    the marker-triggered memories. It is off by default, so a config that says
+    nothing keeps storing only what the show's rules make worth keeping.
+    """
     history = list(history or [])
     kind = event["type"]
     actor = event.get("actor")
     targets = event.get("targets") or []
     payload = event.get("payload") or {}
     round_number = int(event.get("round") or 0)
+    # The pointer the model wrote alongside the message, if any. Absent unless
+    # `co_generate_gist` is on and the model obeyed; every use below falls
+    # back to the deterministic clause, so this is always optional.
+    gist = payload.get("gist")
     out: list[MemoryWrite] = []
 
     if kind == "PLAYER_ELIMINATED":
@@ -350,7 +398,7 @@ def writes_for(
         if nominee and _has(body, ACCUSATION_MARKERS):
             out.append(
                 MemoryWrite(
-                    content=f"{actor} called you out: {_first_clause(body)}",
+                    content=f"{actor} called you out: {usable_pointer(gist, body)}",
                     kind="accusation",
                     subjects=(actor,),
                     salience=ACCUSATION,
@@ -369,7 +417,7 @@ def writes_for(
         if recipients and _has(body, BEQUEST_MARKERS):
             out.append(
                 MemoryWrite(
-                    content=f"In private, {actor} told you: {_first_clause(body)}",
+                    content=f"In private, {actor} told you: {usable_pointer(gist, body)}",
                     kind="bequest",
                     subjects=(actor,),
                     salience=BEQUEST,
@@ -377,6 +425,36 @@ def writes_for(
                     named=named,
                 )
             )
+            return out
+
+    if kind in ("PUBLIC_MESSAGE", "PRIVATE_MESSAGE") and remember_everything:
+        # A pointer for every message, not only for marker-triggered ones.
+        #
+        # This is the half of the pointer design that actually shrinks a
+        # prompt. Without it, memory holds only accusations and bequests, and
+        # the transcript - the 93% of the prompt - has nothing to shrink
+        # *into*. With it, a message is remembered as one short line that
+        # decays, so an old exchange leaves the prompt on its own instead of
+        # being carried until it falls out of the window.
+        #
+        # Salience sits below ACCUSATION so that a real accusation, which is
+        # also stored by the branch above, always outranks a general pointer
+        # to the same round. The pointer is the memory of a remark, and it
+        # should read as one.
+        #
+        # This branch does not inherit `body` from the branches above: each of
+        # those binds it inside its own `if`, so a message with no targets
+        # and no bequest marker arrives here with `body` unbound. It is read
+        # from the payload here for that reason.
+        out.append(
+            MemoryWrite(
+                content=usable_pointer(gist, str(payload.get("content") or "")),
+                kind="pointer",
+                subjects=(actor,),
+                salience=POINTER,
+                audience=ALL,
+            )
+        )
         return out
 
     return out

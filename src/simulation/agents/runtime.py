@@ -125,7 +125,13 @@ class AgentRuntime:
             retries_before = self._transport_retries()
             try:
                 response = await self.gateway.generate(
-                    messages, action_schema(action_type), self.model_config
+                    messages,
+                    action_schema(
+                        action_type,
+                        want_gist=self.prompt_builder.want_gist,
+                        gist_required=self.prompt_builder.gist_required,
+                    ),
+                    self.model_config,
                 )
             except Exception as exc:
                 # Transport failures still belong in the run's telemetry.

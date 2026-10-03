@@ -41,7 +41,9 @@ def _window(messages, limit: int) -> tuple[list, int]:
     return list(messages[-limit:]), len(messages) - limit
 
 
-def action_json_hint(action_type: ActionType) -> str:
+def action_json_hint(
+    action_type: ActionType, want_gist: bool = False
+) -> str:
     """Example JSON for one action type.
 
     The example is action-specific because a generic example lets the
@@ -50,6 +52,12 @@ def action_json_hint(action_type: ActionType) -> str:
     `content` are always shown because the structured-output schema
     always requires them; actions without a target say so explicitly
     instead of leaving the model to guess.
+
+    With `want_gist` the example carries a pointer too. It is shown with a
+    visibly-too-short placeholder for the same reason `content` shows `?` on
+    a closed-choice action: the model copies whatever the example holds, so a
+    realistic-looking pointer here would become every player's pointer, and a
+    pointer everyone shares is worth nothing.
     """
     example: dict[str, object] = {"action": action_type.value}
     example["target"] = "bob" if action_type in ACTIONS_REQUIRING_TARGET else None
@@ -66,6 +74,8 @@ def action_json_hint(action_type: ActionType) -> str:
         )
     else:
         example["content"] = ""
+    if want_gist:
+        example["gist"] = "one short line"
     example["confidence"] = 0.8
     return (
         f"Respond with JSON only, e.g. {json.dumps(example)}. "
@@ -87,9 +97,20 @@ class PromptBuilder:
         transcript_limit: int = 0,
         language: str = "english",
         anti_echo_instructions: bool = True,
+        want_gist: bool = False,
+        gist_required: bool = False,
     ) -> None:
         self.transcript_limit = transcript_limit
         self.language = language
+        # Whether to ask for a one-line pointer alongside the message, and
+        # whether to reject a reply that arrives without one. They are
+        # separate because the experiment needs the optional arm: a pointer
+        # is a bonus, and making it mandatory turns "the model ignored the
+        # extra field" into a validation failure and a retry, which at ~90s
+        # a call is expensive enough to distort the very latency the pointer
+        # is meant to improve.
+        self.want_gist = want_gist
+        self.gist_required = gist_required
         # The stylistic constraints on public speech. Switchable because a
         # small model given several style rules at once tends to collapse
         # onto the single template that satisfies all of them: a run with
@@ -497,8 +518,22 @@ class PromptBuilder:
             lines.append("")
             lines.append(extra_instruction)
 
+        if self.want_gist:
+            # Asked for on its own line rather than folded into the JSON hint,
+            # because the hint states the format and this states the intent,
+            # and a model told to do two things at once needs both said plainly.
+            lines.append("")
+            lines.append(
+                "Also in `gist`: one short line naming what you just said, "
+                "in your own words, for your own notes later. It is a "
+                "pointer, not a summary of your reasoning - the player who "
+                "reads it in three rounds should grasp the claim without "
+                "seeing this message again. Under 25 words. Do not repeat "
+                "your message verbatim and do not leave it empty."
+            )
+
         lines.append("")
-        lines.append(action_json_hint(action_type))
+        lines.append(action_json_hint(action_type, want_gist=self.want_gist))
         return "\n".join(lines)
 
     def build(

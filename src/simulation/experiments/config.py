@@ -88,6 +88,40 @@ class GameSettings(StrictModel):
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)
+    # Ask the model for a one-line pointer to its own message, in the same
+    # call that writes the message. The pointer costs no extra generation and
+    # is what later prompts keep instead of the full 800-character message.
+    #
+    # This is an experiment knob, not a recommended default, and it is off by
+    # default for two reasons. It asks a small model to do two things at once,
+    # and this one already drops fields from a reply when a field is not
+    # prominent (see `Action.__get_pydantic_json_schema__`). And a pointer
+    # that comes back as a copy of the message's opening clause is not a
+    # distillation at all. Neither failure is fatal - `usable_pointer` falls
+    # back to the deterministic clause - but "falls back silently" is exactly
+    # the kind of thing that looks like it worked, so the gist is recorded in
+    # the run folder and the co-generation rate is meant to be measured.
+    co_generate_gist: bool = False
+    # Make the pointer mandatory: a reply that arrives without one is not
+    # valid against the schema, so the provider refuses it and the call is
+    # retried. Only meaningful with `co_generate_gist` - it changes the
+    # grammar, not the request, so on its own it does nothing.
+    #
+    # This arm is measured because the failure it causes is worth knowing
+    # about: a model that will not produce the pointer spends the budget on
+    # retries instead of messages, which is expensive precisely when the
+    # prompt is already slow.
+    gist_required: bool = False
+    # Store a decaying pointer for *every* message, not just the ones the
+    # show's rules make worth keeping (accusations, bequests, deaths).
+    #
+    # This is what lets the transcript shrink: a message is remembered as one
+    # short line that fades, so old exchanges leave the prompt by themselves
+    # instead of riding along until they fall out of the window. Off by
+    # default because it is a large behavioural change - every message becomes
+    # a memory - and the trade has not yet been measured against the repeat
+    # rate it is meant to fix.
+    pointer_memory: bool = False
     # The language every agent speaks in. The instructions stay English;
     # only what an agent says changes. `hinglish` is Roman-script Hindi
     # mixed with English, the way the Indian contestants talk. Any action
