@@ -77,6 +77,14 @@ class GameSettings(StrictModel):
     # legitimate turn. Run once with it off, read `phantoms` in the run
     # summary, then turn it on.
     reject_invented_players: bool = False
+    # Stylistic constraints on public speech: do not paraphrase the last
+    # speaker, take a position rather than validate the room. Off is the
+    # control for an experiment, not a recommendation: with them on, a small
+    # model collapsed onto one template and eight different players emitted
+    # byte-identical messages. The mechanical rule that stops a player
+    # replying to itself is not part of this flag, because it is factual
+    # rather than stylistic and does not invite a template.
+    anti_echo_instructions: bool = True
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)

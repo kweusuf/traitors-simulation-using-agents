@@ -271,6 +271,7 @@ class GameRunner:
             prompt_builder=PromptBuilder(
                 transcript_limit=config.communication.transcript_messages_per_prompt,
                 language=config.game.language,
+                anti_echo_instructions=config.game.anti_echo_instructions,
             ),
             telemetry=telemetry,
             memory_enabled=config.game.agent_memory,

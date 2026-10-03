@@ -86,9 +86,17 @@ class PromptBuilder:
         self,
         transcript_limit: int = 0,
         language: str = "english",
+        anti_echo_instructions: bool = True,
     ) -> None:
         self.transcript_limit = transcript_limit
         self.language = language
+        # The stylistic constraints on public speech. Switchable because a
+        # small model given several style rules at once tends to collapse
+        # onto the single template that satisfies all of them: a run with
+        # these on had eight different players emit byte-identical
+        # messages. Turning them off is the control for that experiment,
+        # so the finding can be attributed rather than assumed.
+        self.anti_echo_instructions = anti_echo_instructions
 
     def _language_rule(self) -> list[str]:
         """The directive that moves an agent's speech into another language.
@@ -316,23 +324,32 @@ class PromptBuilder:
                     "this conversation has not heard yet; do not echo phrasing "
                     "from the transcript.",
                     "",
-                    "Two rules the room keeps breaking without them. First, you "
-                    "cannot reply to yourself: your own earlier lines are marked "
-                    "'(you)' in the transcript, and you are not someone else to "
-                    "answer. Address only another player. Second, do not open by "
-                    "paraphrasing whoever spoke last. Opening with \"X, you've "
-                    "been...\" or \"X, tumne toh...\" turns the discussion into "
-                    "everyone agreeing with the most recent speaker. Instead, "
-                    "either name a different player and make a specific claim "
-                    "about them, or put forward something no one has raised yet.",
-                    "",
-                    "Take a position rather than validating the room. Agreeing "
-                    "with what was just said is the easy move and it tells the "
-                    "others nothing about you. If you think someone is lying, say "
-                    "so and say what they said that does not fit. If you are "
-                    "unsure, say what would change your mind.",
+                    # Mechanical, so always on: the marker is factual, and
+                    # without it the model answered itself.
+                    "You cannot reply to yourself: your own earlier lines are "
+                    "marked '(you)' in the transcript, and you are not someone "
+                    "else to answer. Address only another player.",
                 ]
             )
+            if self.anti_echo_instructions:
+                lines.extend(
+                    [
+                        "",
+                        "Do not open by paraphrasing whoever spoke last. Opening "
+                        "with \"X, you've been...\" or \"X, tumne toh...\" turns "
+                        "the discussion into everyone agreeing with the most "
+                        "recent speaker. Instead, either name a different player "
+                        "and make a specific claim about them, or put forward "
+                        "something no one has raised yet.",
+                        "",
+                        "Take a position rather than validating the room. "
+                        "Agreeing with what was just said is the easy move and "
+                        "it tells the others nothing about you. If you think "
+                        "someone is lying, say so and say what they said that "
+                        "does not fit. If you are unsure, say what would change "
+                        "your mind.",
+                    ]
+                )
         if action_type is ActionType.PRIVATE_MESSAGE:
             lines.append(
                 "This message goes to one player only. Address them by name "

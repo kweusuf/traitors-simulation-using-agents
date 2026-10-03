@@ -133,7 +133,7 @@ def test_public_message_forbids_replying_to_oneself_and_echoing() -> None:
         base_view(), ActionType.PUBLIC_MESSAGE, legal_targets=[]
     )
     assert "cannot reply to yourself" in prompt
-    assert "do not open by paraphrasing whoever spoke last" in prompt
+    assert "open by paraphrasing whoever spoke last" in prompt
     assert "(you)" in prompt, "the instruction should point at the marker"
     assert "Take a position rather than validating the room" in prompt
 
@@ -143,6 +143,41 @@ def test_public_message_instruction_does_not_leak_into_private_messages() -> Non
         base_view(), ActionType.PRIVATE_MESSAGE, legal_targets=["theo"]
     )
     assert "cannot reply to yourself" not in private
+
+
+def test_anti_echo_instructions_can_be_turned_off() -> None:
+    """The control arm of the template-collapse experiment.
+
+    The stylistic constraints and the self-reply rule are different in
+    kind: one asks for a register, the other states a fact about the
+    transcript. Turning the flag off must drop the first and keep the
+    second.
+    """
+    on = PromptBuilder().build_user(
+        base_view(), ActionType.PUBLIC_MESSAGE, legal_targets=[]
+    )
+    assert "open by paraphrasing whoever spoke last" in on
+    assert "Take a position rather than validating the room" in on
+
+    off = PromptBuilder(anti_echo_instructions=False).build_user(
+        base_view(), ActionType.PUBLIC_MESSAGE, legal_targets=[]
+    )
+    assert "open by paraphrasing whoever spoke last" not in off
+    assert "Take a position rather than validating the room" not in off
+    # The mechanical rule survives: it is factual, not stylistic.
+    assert "cannot reply to yourself" in off
+    assert "cannot reply to yourself" in on
+
+
+def test_the_flag_does_not_touch_other_action_types() -> None:
+    """A control that changed more than one thing would not be a control."""
+    on = PromptBuilder().build_user(
+        base_view(), ActionType.PRIVATE_MESSAGE, legal_targets=["theo"]
+    )
+    off = PromptBuilder(anti_echo_instructions=False).build_user(
+        base_view(), ActionType.PRIVATE_MESSAGE, legal_targets=["theo"]
+    )
+    assert on == off
 
 
 def test_build_marks_own_messages_end_to_end() -> None:
