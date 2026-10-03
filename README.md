@@ -4,8 +4,8 @@ Configuration-driven framework for running multi-agent LLM social
 simulations. First environment: a text-only game inspired by *The
 Traitors*.
 
-**Spec:** `02-framework-requirements-and-scaffolding-spec.md`
-**Progress tracker:** `docs/progress.md`
+**Spec:** [`docs/02-framework-requirements-and-scaffolding-spec.md`](docs/02-framework-requirements-and-scaffolding-spec.md)
+**Progress tracker:** [`docs/progress.md`](docs/progress.md)
 
 **New here?** Read [Rules of the game](#rules-of-the-game) for how a game
 is set up, played and won, and

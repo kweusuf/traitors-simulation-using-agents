@@ -1,6 +1,6 @@
 # Project Progress: LLM Social Simulation Framework
 
-**Source of truth:** `02-framework-requirements-and-scaffolding-spec.md`
+**Source of truth:** [`02-framework-requirements-and-scaffolding-spec.md`](02-framework-requirements-and-scaffolding-spec.md)
 **Status:** MILESTONE 2 REACHED (Phases 0-31 complete, 432 tests green)
 **Started:** 2026-09-26
 
@@ -17,7 +17,8 @@ and its commit lands.
   its verification step runs and its commit lands.
 - Tests are written alongside the phase they verify, not deferred.
 - Spec section references (e.g. `spec §29`) point into
-  `02-framework-requirements-and-scaffolding-spec.md`.
+  [`02-framework-requirements-and-scaffolding-spec.md`](02-framework-requirements-and-scaffolding-spec.md),
+  which lives in this directory.
 
 ------------------------------------------------------------------------
 
