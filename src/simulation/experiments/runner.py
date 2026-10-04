@@ -448,6 +448,15 @@ class GameRunner:
         for event in fresh:
             round_number = int(event.get("round") or 0)
             sequence = int(event.get("sequence") or 0)
+            # How sure the model was when it said this, carried onto the
+            # memory rather than discarded with the action. Only message
+            # actions produce one, so anything else falls back to fully
+            # confident - an elimination or a vote is not a matter of
+            # opinion and does not want a confidence attached to it.
+            confidence = (event.get("payload") or {}).get("confidence")
+            writer_confidence = (
+                float(confidence) if isinstance(confidence, (int, float)) else 1.0
+            )
             for write in writes_for(
                 env.state, event, history,
                 remember_everything=self.config.game.pointer_memory,
@@ -461,6 +470,8 @@ class GameRunner:
                             sequence=sequence,
                             subjects=write.subjects,
                             salience=write.salience,
+                            confidence=writer_confidence,
+                            decayable=not write.durable,
                         )
             self._bump_relationships(env, agents, event, history)
 

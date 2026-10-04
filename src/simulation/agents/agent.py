@@ -66,6 +66,8 @@ class Agent:
         sequence: int = 0,
         subjects: tuple[str, ...] = (),
         salience: float = 1.0,
+        confidence: float = 1.0,
+        decayable: bool = True,
     ) -> None:
         await self.memory.remember(
             {
@@ -75,6 +77,8 @@ class Agent:
                 "sequence": sequence,
                 "subjects": subjects,
                 "salience": salience,
+                "confidence": confidence,
+                "decayable": decayable,
             }
         )
 

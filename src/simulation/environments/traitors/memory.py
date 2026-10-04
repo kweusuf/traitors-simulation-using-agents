@@ -27,12 +27,36 @@ from simulation.engine.state import GameState, Role
 # Salience bands. Deliberate rather than model-judged: an LLM call per
 # message is not affordable at 22 players over 12 rounds, and a rule is
 # reproducible.
+#
+# `decayable` is explicit rather than left emergent from a large number. A
+# murder at 4.0 with the default 0.6 decay does outlast a remark at 1.0, but
+# only by arithmetic, and only until the floor catches it - and a fact that
+# outlasts anything only by being big enough is a fact that eventually gets
+# forgotten anyway. Eliminations, revealed roles and private knowledge are
+# the record of the game rather than an impression of it: a faithful player
+# who has forgotten who was murdered in round 2 is not playing the season.
+# Marking them here makes that a property of the write rather than a
+# coincidence of two numbers.
 BEQUEST = 5.0        # an ultimatum, a recruitment offer, a bequest
 DEATH = 4.0          # a murder, a banishment
 ACCUSATION = 3.0     # a named accusation or a rebuttal on the record
 ATTENTION = 3.5      # a survivor coming under the room's scrutiny
 PUBLIC_RECORD = 2.0  # nominations and the ballot that followed
 POINTER = 1.5        # a general one-line pointer at something that was said
+
+# Memory kinds that must not fade. The night's council and every private
+# word are already scoped by audience (only their audience ever receives
+# them), so this is about age, not about who can see them.
+#
+# Nominations are deliberately absent. There are a great many of them, and
+# making them durable would crowd the few prompt slots with the record of who
+# was floated rather than with what the room currently believes. A
+# nomination is remembered by its count and by the accusation that
+# followed, both of which are durable.
+IMMUTABLE_KINDS = frozenset({
+    "murder", "banishment", "recruit", "ultimatum", "council",
+    "role_revealed", "secret", "bequest",
+})
 
 ALL = "all"
 TRAITORS = "traitors"
@@ -129,6 +153,21 @@ class MemoryWrite:
     salience: float
     audience: str = ALL
     named: frozenset[str] = field(default_factory=frozenset)
+    # How much the writer trusted this when it happened, 0-1. Kept apart
+    # from `salience` on purpose: salience says how much this matters, this
+    # says how sure the writer was. A confident remark and a hesitant one can
+    # matter equally, and a confident one that later proved wrong has not
+    # become less true.
+    confidence: float = 1.0
+    # A fact of the game rather than an impression of it. Non-decaying
+    # memories keep their salience whatever their age, so the record of who
+    # died and who was revealed never falls under the floor.
+    decayable: bool = True
+
+    @property
+    def durable(self) -> bool:
+        """Whether this memory survives age."""
+        return not self.decayable or self.kind in IMMUTABLE_KINDS
 
     def visible_to(self, agent_id: str, state: GameState) -> bool:
         if self.audience == ALL:

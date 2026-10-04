@@ -42,6 +42,14 @@ class ShortTermMemory:
             # and the per-observer weighting are applied.
             "subjects": tuple(event.get("subjects") or ()),
             "salience": float(event.get("salience", 1.0)),
+            # How sure the writer was, kept apart from salience: how much it
+            # matters is not how likely it is.
+            "confidence": float(event.get("confidence", 1.0)),
+            # Set False for a fact of the game rather than an impression of
+            # it. A non-decaying memory keeps its salience whatever its age,
+            # so an elimination or a revealed role does not fade out from
+            # under a player who still needs it.
+            "decayable": bool(event.get("decayable", True)),
         }
         self._items.append(item)
         if len(self._items) > self._buffer_size:
@@ -74,17 +82,28 @@ class ShortTermMemory:
         `factor` is how one observer weights another player's words -
         high for someone they are close to, low for someone they are at
         odds with. It is called as `factor(subject, round)`.
+
+        A memory marked `decayable: False` skips both the decay curve and
+        the floor: an elimination or a revealed role is a fact of the game,
+        not an impression that gets less interesting with age, and a player
+        who has forgotten who died two rounds ago is not playing the season
+        however little that matters right now. `confidence` rides along in
+        the output but does not change the ordering - how sure the writer
+        was is not how much it matters.
         """
         scored: list[tuple[float, int, dict[str, Any]]] = []
         for item in self._items:
             age = max(0, now_round - int(item["round"]))
-            strength = float(item["salience"]) * (decay ** age)
+            if item.get("decayable", True):
+                strength = float(item["salience"]) * (decay ** age)
+            else:
+                strength = float(item["salience"])
             if factor is not None and item["subjects"]:
                 for subject in item["subjects"]:
                     strength *= max(0.0, float(factor(subject, int(item["round"]))))
                     if strength <= 0.0:
                         break
-            if strength < floor:
+            if item.get("decayable", True) and strength < floor:
                 continue
             scored.append((strength, int(item["sequence"]), item))
         # Strongest first; a tie falls to the more recent memory, so two
