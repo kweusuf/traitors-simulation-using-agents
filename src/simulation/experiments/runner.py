@@ -281,6 +281,10 @@ class GameRunner:
             memory_floor=config.game.memory_floor,
             memory_items_limit=config.game.memory_items_in_prompt,
             reject_invented_players=config.game.reject_invented_players,
+            reject_repetition=config.game.reject_repetition,
+            repetition_threshold=config.game.repetition_threshold,
+            repetition_scope=config.game.repetition_scope,
+            repetition_min_words=config.game.repetition_min_words,
         )
         context = PhaseContext(
             engine=env.engine,

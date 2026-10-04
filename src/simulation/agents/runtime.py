@@ -18,6 +18,7 @@ from simulation.actions.validator import (
     resolve_content_names,
     resolve_target,
 )
+from simulation.actions.repetition import find_repeat, repeat_reason
 from simulation.agents.agent import Agent
 from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.visibility import AgentView, InformationProjector
@@ -50,6 +51,10 @@ class AgentRuntime:
         memory_floor: float = DEFAULT_FLOOR,
         memory_items_limit: int = 6,
         reject_invented_players: bool = False,
+        reject_repetition: bool = False,
+        repetition_threshold: float = 1.0,
+        repetition_scope: str = "self",
+        repetition_min_words: int = 5,
     ) -> None:
         self.agents = agents
         self.gateway = gateway
@@ -71,6 +76,32 @@ class AgentRuntime:
         # Phantoms are always logged; this decides whether one also costs
         # the turn. Off until the detector's false-positive rate is known.
         self.reject_invented_players = reject_invented_players
+        # Repetition gate. Off by default: the threshold is a judgement
+        # call, and turning it on silently changes every run that uses this
+        # constructor. Calibrate it against a completed run with
+        # tools/repeat_rate.py before enabling it.
+        self.reject_repetition = reject_repetition
+        # Calibrated by replaying a completed run: 48% of its public
+        # messages overlap an earlier one by >= 0.6, because players
+        # legitimately keep returning to the same claims. Only an exact
+        # match (1.0) separates copying from discussion there - and that is
+        # the form the template collapse actually takes.
+        self.repetition_threshold = repetition_threshold
+        # "self" compares against this agent's own earlier messages, which
+        # is the failure a player repeats. "room" also compares against
+        # everyone else's, which catches the template collapse where eight
+        # players converge on one phrase without any single player saying
+        # it twice.
+        self.repetition_scope = repetition_scope
+        self.repetition_min_words = repetition_min_words
+        # Messages rejected as repeats, for the run summary. Recorded even
+        # when the repeat is accepted on the last attempt.
+        self._repeat_log: list[str] = []
+
+    @property
+    def repeats_rejected(self) -> int:
+        """How many generated messages were rejected as near-duplicates."""
+        return len(self._repeat_log)
 
     @property
     def repairs(self) -> int:
@@ -182,6 +213,24 @@ class AgentRuntime:
                             raise ActionParseError(
                                 phantom_reason(phantoms, roster)
                             )
+                    # Repetition, judged against what this agent has
+                    # already put into the conversation. Checked after the
+                    # name repair so the comparison is on the text the room
+                    # will actually see, and raised as a parse error so it
+                    # reuses the existing correction retry: the rejected
+                    # message is already appended to the conversation,
+                    # which is what lets the model see what it said.
+                    repeat = self._repetition_reason(
+                        view, action, action_type
+                    )
+                    if repeat is not None:
+                        self._repeat_log.append(f"{agent_id}: {repeat[:80]}")
+                        # On the last attempt the repeated text is accepted
+                        # anyway. A model that cannot break out of a phrase
+                        # must not cost the whole game a turn; the repeat
+                        # stays visible in the summary instead.
+                        if attempt < attempts - 1:
+                            raise ActionParseError(repeat)
                 reason = check_action_constraints(action, {action_type}, legal_targets)
                 if reason is not None:
                     raise ActionParseError(reason)
@@ -225,6 +274,63 @@ class AgentRuntime:
             return action
 
         raise AssertionError("unreachable")
+
+    # Actions whose `content` is a fixed vocabulary rather than prose. A
+    # "banish" is not a repetition of the last "banish", and treating it as
+    # one would burn retries on the vote every round.
+    _FIXED_CONTENT_ACTIONS = frozenset({
+        ActionType.END_VOTE,
+        ActionType.RECRUIT_DECISION,
+        ActionType.RECRUIT_RESPONSE,
+    })
+
+    def _repetition_reason(
+        self, view: AgentView, action: Action, action_type: ActionType
+    ) -> Optional[str]:
+        """Why this message repeats what was already said, or None.
+
+        Compares only within the channel the message is going to, since a
+        private DM that echoes the public room is expected behaviour.
+        """
+        if not self.reject_repetition:
+            return None
+        if action_type in self._FIXED_CONTENT_ACTIONS:
+            return None
+        content = (action.content or "").strip()
+        if not content:
+            return None
+
+        if self.repetition_scope == "room":
+            history = [
+                m.content
+                for m in view.public_transcript
+                if m.sender_id != view.agent_id
+            ]
+        else:
+            history = [
+                m.content
+                for m in view.public_transcript
+                if m.sender_id == view.agent_id
+            ]
+        # A private message is compared against the agent's own private
+        # history only; comparing it to the public room would reject the
+        # natural case of raising in private what was said in public.
+        if action_type is ActionType.PRIVATE_MESSAGE:
+            history = [
+                m.content
+                for m in view.private_conversations
+                if m.sender_id == view.agent_id
+            ]
+
+        found = find_repeat(
+            content,
+            history,
+            self.repetition_threshold,
+            self.repetition_min_words,
+        )
+        if found is None:
+            return None
+        return repeat_reason(*found)
 
     def _memory_items(self, agent: Agent, view: AgentView) -> list:
         """What this agent still remembers, or nothing when memory is off.

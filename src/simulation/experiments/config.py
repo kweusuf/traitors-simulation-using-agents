@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 import yaml
 from pydantic import Field, model_validator
@@ -77,6 +77,37 @@ class GameSettings(StrictModel):
     # legitimate turn. Run once with it off, read `phantoms` in the run
     # summary, then turn it on.
     reject_invented_players: bool = False
+    # Reject a message that repeats something already said, and ask again
+    # with the rejected text quoted back. A small model settles into one
+    # sentence shape and reuses it: byte-identical messages are the obvious
+    # case, but near-duplicates are the expensive one, because eight
+    # players agreeing in slightly different words reads as agreement
+    # while carrying no new information. Off by default because the
+    # threshold is a judgement call - calibrate it with
+    # tools/repeat_rate.py against a completed run first.
+    reject_repetition: bool = False
+    # Share of content words two messages must share to count as a repeat.
+    #
+    # Calibrated by replaying a completed run (tools/repetition_rates.py):
+    # 48% of its public messages score >= 0.6 against something said earlier,
+    # because players legitimately keep returning to the same handful of
+    # players and the same handful of claims. A threshold anywhere near 0.6
+    # would throw away half a real game. What separates copying from
+    # discussion there is exactness, not overlap: 17.5% of messages are
+    # byte-identical to an earlier one, and that is the template collapse
+    # this gate exists to stop. So the default requires an exact match.
+    #
+    # Lower it to catch paraphrases only if a run shows the collapse taking a
+    # paraphrased form, and expect real messages to be discarded with it.
+    repetition_threshold: float = Field(default=1.0, gt=0.0, le=1.0)
+    # "self" rejects a player repeating their own earlier message.
+    # "room" also rejects a player echoing the last speaker, which is the
+    # conversational-following behaviour a small model does constantly.
+    repetition_scope: Literal["self", "room"] = "self"
+    # Replies shorter than this are only rejected on an exact match. Below
+    # it, content-word similarity is too noisy to act on: "No." is not a
+    # repetition of "No."
+    repetition_min_words: int = Field(default=5, ge=0, le=40)
     # Stylistic constraints on public speech: do not paraphrase the last
     # speaker, take a position rather than validate the room. Off is the
     # control for an experiment, not a recommendation: with them on, a small
