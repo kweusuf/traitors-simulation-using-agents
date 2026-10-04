@@ -1,12 +1,18 @@
 # Project Progress: LLM Social Simulation Framework
 
 **Source of truth:** [`02-framework-requirements-and-scaffolding-spec.md`](02-framework-requirements-and-scaffolding-spec.md)
-**Status:** MILESTONE 2 REACHED (Phases 0-31 complete, 432 tests green)
+**Status:** MILESTONE 2 REACHED (Phases 0-31 complete); prompt-size work in progress
+**Tests:** 547 green
 **Started:** 2026-09-26
 
 This document tracks implementation progress. Each phase ends with a git
 commit. A phase is only marked complete when its verification step passes
 and its commit lands.
+
+Work after phase 31 is tracked in the change log below rather than as
+numbered phases, since it is experiment work rather than the scaffolding
+plan. The open thread is the template-collapse investigation, written up
+in [`2026-10-04-prompt-size-and-template-collapse.md`](2026-10-04-prompt-size-and-template-collapse.md).
 
 ------------------------------------------------------------------------
 
@@ -867,3 +873,14 @@ session; a full 4-hour season replay is not.
 | 2026-09-29 | Phase 31 complete (audit fix, phase 4): the private-message prompt now carries the player's own per-pair threads (`AgentView.pair_threads`, a recipient/sender-derived counterpart, role-private group traffic excluded) with the transcript budget split across threads so one busy pair cannot crowd out the rest, plus a `private_chats` metrics block counting pairs, two-way pairs, `reciprocity_rate`, thread length buckets and per-player totals; 432 tests passed. |
 | 2026-09-30 | Resume for crashed runs (`simulation run <config> --game-id <id> --resume`): the log is truncated back to its last `PHASE_ENDED` and the engine is rehydrated from it (`GameEngine.restore_resume`, `ResumePoint.rebuild_state`), so a run that dies on a transport timeout continues instead of restarting. A phase that never ended is redone whole, which is what stops a half-run elimination from banishing somebody twice. `ROLE_ASSIGNED` now records the seeded ambition, and `ResumePoint.recover_ambitions` replays the seed for older logs that lack it, refusing to guess when the roles were drawn rather than pinned. An idle guard refuses to rewrite a log written in the last 300s; 452 tests passed. |
 | 2026-09-30 | Live status: `uk-s01-r1` and `uk-s01-r2` resumed from their event logs (r1 from round 3, r2 from round 5; both continued with roles and board intact and no redeal, 22 `ROLE_ASSIGNED` events in each). `uk-s01-r3` finished on its own at round 12 with 1792 events and full artifacts, so it needed no resume. r2 resumed at concurrency 4 via `season_uk_s01.r2c4.yaml` because r1 was already at 16 and 16+8 is the in-flight load that wedged the host before; verified identical apart from concurrency. |
+| 2026-10-01 | Agent memory landed as a default-on feature: decaying, per-observer, information-scoped. Design in `docs/2026-10-01-agent-memory-design.md`. |
+| 2026-10-02 | Closed-choice actions stopped being decided by a string in the prompt. The worked example held `"content": "end"`, and every season run ended its finale with all five players answering `end` - a unanimous end stops the game, so a surviving traitor takes the prize. That was the mechanism behind the run of traitor wins. Fixed by pinning `content` to an enum in the response schema and showing `?` in the example. Measured on the real final five: example `end` gave `end` 6/6, example `banish` gave `banish` 4/4. The bias is gone; the model's own preference for ending is not, and that is recorded rather than papered over. |
+| 2026-10-02 | Run logs stopped corrupting under concurrent writers: a per-run lock (`experiments/lock.py`) guards `events.jsonl` and `llm_calls.jsonl`, and the lock file records the owning pid so a killed run can be recovered rather than deadlocking. |
+| 2026-10-02 | Per-run databases moved to `runs/<game_id>/game.db`; a batch still writes the shared root database. Two runs against one file interleaved their writes. |
+| 2026-10-03 | Diagnostic and audit tooling: `tools/audit_run.py` (invented names, stale-player references, self-replies, cross-thread replies, duplicate text, rejected targets, role claims), opt-in phantom-player detection, memory-nomination and self-reply prompt fixes, private-reply routing, converted-player cover behaviour, target-typo normalization, telemetry truncation on resume. |
+| 2026-10-03 | `repeat_rate.py` and `collapse_probe.py` added to measure template collapse. The first write-up of it reported 38% of messages repeating; that pooled public and private. Public repeats at 23%, private at 11%. Every rate since is per-channel. |
+| 2026-10-04 | Prompt composition measured rather than assumed (`tools/prompt_composition.py`, differencing builder output with sections excluded): the transcript is 93% of a late-game prompt, 33.7k public plus 30.5k private against 2.8k for instructions and memory. The fixed parts are under 3%. This reframed the collapse as a context problem, and it predicts the tell - agents with different prompts emitting identical text, which is what eight players behind one repeated line did. |
+| 2026-10-04 | Pointer arm implemented: `co_generate_gist` asks for a one-line pointer in the call that writes the message (no extra generation), `gist_required` puts it in the schema's required list, `pointer_memory` stores a decaying pointer for every message. All default off. `usable_pointer` rejects a pointer that is a copy of the message head, and a missing pointer falls back to a deterministic gist - which means an arm where the model never complies scores like one where it does, so the co-generation rate is logged and printed by `tools/schema_check.py`. |
+| 2026-10-04 | The mandatory and optional arms were silently identical: `Action.__get_pydantic_json_schema__` rewrites `required` wholesale, so redeclaring `gist` as required did nothing and the provider was handed an optional field. Fixed and covered by a test. Arms are now generated from one base config and verified by loading each and diffing. |
+| 2026-10-04 | First measured arm, `uk-s01-ptr-mem`: public repetition 16% over 509 messages, against 23-33% for the three baseline runs, with the worst-case shared line dropping from 13 players to 5. Pointers were co-generated on 100% of messages, none a copy of the head, median 0.19x the message length. Repetition is reduced, not solved. |
+| 2026-10-04 | Two earlier claims withdrawn: that pointer memory flattened the prompt curve (it did not - `transcript_messages_per_prompt: 40` is the cap, and pointer memory never touched the window), and that the pointer arm ran four times faster with no failures (drawn from 51 calls in round 1; over the full 1,007 it matched the baseline). Design and evidence in `docs/2026-10-04-prompt-size-and-template-collapse.md`. |

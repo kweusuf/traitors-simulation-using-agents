@@ -17,6 +17,19 @@ path = Path(sys.argv[1] if len(sys.argv) > 1
             else "configs/traitors/season_uk_s01.ptr_mem.local.yaml")
 cfg = load_config(str(path))
 
+# What the arm's name claims it is. Derived from the filename rather than
+# hardcoded, because a checker that asserts one arm's flags and is then
+# pointed at a different arm either fails loudly on a correct config or -
+# worse - is edited until it passes, and stops checking anything.
+ARMS = {
+    "ptr_opt": (True, False, False),
+    "ptr_req": (True, True, False),
+    "ptr_mem": (True, True, True),
+}
+arm = next((n for n in ARMS if f".{n}." in path.name), None)
+if arm is None:
+    raise SystemExit(f"{path.name} is not a pointer arm; nothing to check")
+
 print(path.name)
 print(f"  co_generate_gist  {cfg.game.co_generate_gist}")
 print(f"  gist_required     {cfg.game.gist_required}")
@@ -32,14 +45,15 @@ print(f"  seed              {cfg.seed}")
 print(f"  model             {cfg.llm.model}")
 print(f"  base_url          {cfg.llm.base_url}")
 
-want = {
-    "co_generate_gist": True,
-    "gist_required": True,
-    "pointer_memory": True,
-    "anti_echo_instructions": True,
-    "reject_invented_players": True,
-}
+want = dict(zip(
+    ("co_generate_gist", "gist_required", "pointer_memory"), ARMS[arm]
+))
+want["anti_echo_instructions"] = True
+want["reject_invented_players"] = True
 wrong = [k for k, v in want.items() if getattr(cfg.game, k) is not v]
 if wrong:
-    raise SystemExit(f"WRONG ARM: {wrong}")
-print("\nflags match the intended arm")
+    raise SystemExit(
+        f"WRONG ARM: {arm} expects {want}, but "
+        + ", ".join(f"{k}={getattr(cfg.game, k)}" for k in wrong)
+    )
+print(f"\nflags match the {arm} arm")

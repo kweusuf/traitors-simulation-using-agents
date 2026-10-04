@@ -18,6 +18,13 @@ Milestone 1 (deterministic fake-backend game) and Milestone 2 (CLI,
 run artifacts, replay tooling) are complete; see `docs/progress.md`.
 One git commit per phase.
 
+Work in progress is the prompt-size experiment: the room was repeating
+itself verbatim in 23-33% of public messages, which is traced to the
+transcript being 93% of a late-game prompt. A pointer strategy is
+implemented and being measured; see
+[`docs/2026-10-04-prompt-size-and-template-collapse.md`](docs/2026-10-04-prompt-size-and-template-collapse.md)
+for what is established and what is not.
+
 ## Setup
 
 ```bash
@@ -156,6 +163,35 @@ votes on nobody. Both exist so a replay can match a real season's
 rhythm, including episodes that were quiet for structural reasons rather
 than dramatic ones.
 
+### Prompt size: pointers
+
+Three flags in `game:`, all off by default. They address the prompt growing
+without bound - the transcript is around 93% of a late-game prompt, at
+~850 characters a message - and the template collapse that follows, where
+different players emit byte-identical messages because each is equally
+unable to see the room.
+
+- **`co_generate_gist`** asks the model, in the call that writes the
+  message, for a one-line pointer to what it just said. No extra
+  generation, and it is the only moment the model is reasoning about the
+  message. The pointer feeds the same decay curve as every other memory, so
+  old pointers fade without anything being deleted.
+- **`gist_required`** puts the pointer in the response schema's `required`
+  list, so a reply without one is refused and retried. Meaningful only with
+  `co_generate_gist`; it changes the grammar, not the request.
+- **`pointer_memory`** stores a decaying pointer for *every* message rather
+  than only for the ones the show's rules make worth keeping.
+
+A missing pointer is never a failed action - it falls back to a
+deterministic first-clause gist - so the worst case is the previous
+behaviour rather than a run stalling. The cost of that safety is that an
+arm where the model never writes a pointer scores the same as one where it
+works, so the co-generation rate is logged and meant to be read.
+
+Measured so far, pointers alone take public repetition from 23-33% to
+around 16-19%, on one run each. Not yet a result. Design and evidence in
+[`docs/2026-10-04-prompt-size-and-template-collapse.md`](docs/2026-10-04-prompt-size-and-template-collapse.md).
+
 ### Pacing and prompt context
 
 The `communication:` block caps how much each player says
@@ -164,6 +200,12 @@ of the transcript an agent sees (`transcript_messages_per_prompt`; `0`
 keeps the whole thing). These matter for model cost as much as for play,
 since a 22-player game with an unbounded transcript is the single
 biggest driver of token spend.
+
+`transcript_messages_per_prompt` is the main lever on both. It applies
+*per private thread*, so an agent in several conversations gets the budget
+once per thread rather than once in total. At the default of 40 the median
+prompt plateaus near 26,000 characters from round 2 onward; nothing has
+been run below 40.
 
 ## Design decisions worth knowing
 
@@ -279,6 +321,57 @@ why it is the most likely of these to help the illegal-target problem
 rather than worsen it. Design in
 `docs/2026-10-01-agent-memory-design.md`.
 
+**Most prompts are transcript, and that is the collapse mechanism.** Measured
+by differencing builder output with sections excluded (`tools/prompt_composition.py`),
+a late-game prompt is 93% raw transcript: 33,744 characters of public
+messages and 30,543 of private threads, against 2,782 for instructions and
+memory combined. The fixed parts are under 3% and are not worth touching.
+
+That size explains the template collapse without needing a separate cause. A
+model that has lost track of the room does not error - it falls back to the
+highest-probability completion, and given forty messages that all begin
+"Tom, you've been...", that completion is another one. The prediction that
+made this testable was that agents with *different* prompts would emit
+*identical* text, and that is what happened: the eight players behind one
+repeated line had eight distinct prompt lengths. They were not being fed the
+same prompt. Each was equally blind.
+
+**A number that was wrong twice.** Repetition was first reported as 38% of
+all messages, by pooling public and private into one figure. Public repeats
+at 23% and private at 11%; the pooled number was about 1.6x too high, and a
+private DM repeating text is not the room speaking in one voice. Later, an
+early reading of the pointer arm claimed four-times-better latency with zero
+failures, drawn from 51 calls in round 1 - over the full 1,007 calls it was
+the same as the baseline. Both errors came from reading a partial run as a
+whole one, and both are why the tooling computes rates per channel and the
+tools print sample sizes.
+
+**Asking for a pointer beats storing one.** Of the two strategies, only the
+co-generated pointer shows an effect. `pointer_memory` adds a decaying
+pointer for every message and finished at 16% repetition; `co_generate_gist`
+alone was at 19% against a 23-33% baseline. If that holds at comparable run
+lengths, the simpler flag is the one to keep. One run each, different
+lengths - this is the open question, not a settled result.
+
+**The fallback is a trap as much as a safety net.** A missing pointer falls
+back to a deterministic gist, so a run in which the model never produces one
+looks exactly like a run where it works. The same applies to a pointer that
+is a verbatim copy of the message's opening clause: a distillation that did
+not happen, adding a line without replacing one. Both are checked
+(`usable_pointer`) and both need to be *measured* rather than assumed, which
+is what the co-generation column in `tools/compare_arms.py` is for.
+
+**Two arms can silently become one.** Requiring the pointer in the response
+schema had no effect, because the schema hook rewrites its `required` list
+wholesale and discarded pydantic's own answer. `ptr_req` would have run as a
+copy of `ptr_opt` while the results table implied a comparison. The arms are
+generated from one base config and verified by loading each and diffing, for
+the same reason: an A/B whose arms differ by an accidental byte is worse than
+none, because the result still looks like a result.
+
+Full evidence, including what was tried and did not pan out, in
+[`docs/2026-10-04-prompt-size-and-template-collapse.md`](docs/2026-10-04-prompt-size-and-template-collapse.md).
+
 **Most optional mechanics default to off.** A feature that changes the
 game is only enabled deliberately by a config, so an existing config
 keeps playing the same game when a new flag is added. Agent memory is the
@@ -324,11 +417,16 @@ Each game writes `runs/<game_id>/`:
 config.yaml       the config actually used (seed resolved)
 events.jsonl      append-only event log, the replay source of truth
 game.json         final game state
+game.db           this run's SQLite database
 transcript.json   structured messages and eliminations
 transcript.txt    human-readable narrative
 metrics.json      outcome, experiment identity, LLM ops, quality signals
 llm_calls.jsonl   one line per model call: tokens in/out, latency, retries
 ```
+
+`runs/<game_id>/game.db` rather than one shared root database: a batch
+writes to the root, a single run keeps its state beside its own artifacts.
+Concurrent writers sharing one file corrupted run logs before this.
 
 `metrics.json` gives each run a 360 degree view of the model
 operations: input and output tokens, latency percentiles, transport
@@ -338,6 +436,29 @@ game record, secrecy violations, a duplication score, cross-player
 speech similarity on content and phrasing, parse failures).
 
 ## Inspect
+
+Diagnostics for a single run folder, all read-only:
+
+```bash
+python tools/run_health.py runs/<game_id>        # progress, prompt size, call health
+python tools/repeat_rate.py                      # repeat rate, split by channel
+python tools/prompt_composition.py runs/<game-id> # what the prompt is spent on
+python tools/schema_check.py runs/<game-id>      # pointer quality
+```
+
+and for comparing arms:
+
+```bash
+python tools/compare_arms.py runs/a runs/b runs/c
+python tools/make_pointer_arms.py                # regenerate the pointer arms
+python tools/verify_pointer_arms.py              # they load and differ only by flags
+python tools/check_arm_flags.py configs/traitors/season_uk_s01.ptr_req.local.yaml
+python tools/make_local_arm.py ptr_req           # arm + real endpoint, gitignored
+```
+
+`run_health.py` is the one to reach for while a run is going: a run writes
+no summary until it ends, and prompt size by round is the thing worth
+watching. The rest are for after.
 
 ```bash
 python -m simulation list-games
