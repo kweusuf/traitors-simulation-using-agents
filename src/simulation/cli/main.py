@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -195,7 +196,73 @@ def run_db_path(args: argparse.Namespace, game_id: str) -> str:
 # ----------------------------------------------------------------------
 
 
+def _refuse_if_bugs_open() -> int:
+    """Block a new game while docs/todo.md lists an unticked blocking bug.
+
+    Reads the file rather than importing from tools/, which is not a package
+    and is not on the path for a normal install. The format is a checkbox in
+    a heading, so the file stays readable as a document; the alternative -
+    a machine-readable block that a person can forget to update - is the
+    failure this exists to prevent.
+
+    Returns an exit code, or 0 to proceed.
+
+    `SIMULATION_IGNORE_BUG_GATE=1` bypasses it, for the test suite and for
+    anyone deliberately reproducing a run with a known bug in place. It is an
+    environment variable rather than a flag so it cannot be reached by muscle
+    memory or by a command line copied between runs.
+    """
+    if os.environ.get("SIMULATION_IGNORE_BUG_GATE") == "1":
+        return 0
+    todo = Path(__file__).resolve().parents[3] / "docs" / "todo.md"
+    if not todo.exists():
+        # No list means no gate. A checkout without the docs should still
+        # be able to run a game.
+        return 0
+    import re
+
+    heading = re.compile(r"^#{1,6}\s+\[(?P<mark>[ xX])\]\s*(?P<title>.+?)\s*$", re.M)
+    section = re.compile(r"^#{1,6}\s+(?P<title>.+?)\s*$", re.M)
+    text = todo.read_text()
+    bugs = {m.start() for m in heading.finditer(text)}
+    sections = [
+        (m.start(), m.group("title").strip().lower())
+        for m in section.finditer(text)
+        if m.start() not in bugs
+    ]
+
+    blocking = []
+    for match in heading.finditer(text):
+        if match.group("mark") == "x":
+            continue
+        severity = ""
+        for pos, title in sections:
+            if pos < match.start():
+                severity = title
+            else:
+                break
+        if severity == "blocking":
+            blocking.append(match.group("title"))
+
+    if not blocking:
+        return 0
+    print(f"Refusing to start a new game: {len(blocking)} blocking bug(s) open.")
+    for title in blocking:
+        print(f"  - {title}")
+    print(f"See {todo}. Fix them and tick the box; resumes are not blocked.")
+    return 1
+
+
 def cmd_run(args: argparse.Namespace) -> int:
+    # A known open bug silently corrupts a new run's data, and the damage
+    # only shows up in the results much later. Resuming is exempt: those
+    # rounds already happened and cannot be re-played, and blocking a resume
+    # over a bug found in the run being resumed would strand it.
+    if not getattr(args, "resume", False):
+        refused = _refuse_if_bugs_open()
+        if refused:
+            return refused
+
     config = _load_config(args)
     model, _ = model_identity(config.llm)
     print(f"Model: {model}")

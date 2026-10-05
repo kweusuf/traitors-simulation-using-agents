@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from simulation.cli.main import make_progress_printer, main
@@ -12,7 +13,15 @@ CONFIG = "configs/traitors/basic.yaml"
 
 
 def run_cli(args: list[str], capsys) -> tuple[int, str]:
-    code = main(args)
+    # Tests start games for their own sake, on the fake backend, with results
+    # thrown away. The bug gate exists to stop an *experiment* being corrupted
+    # by a known defect, so it does not apply here - but it must stay active
+    # everywhere else, which is why this bypass is set here and nowhere else.
+    os.environ["SIMULATION_IGNORE_BUG_GATE"] = "1"
+    try:
+        code = main(args)
+    finally:
+        os.environ.pop("SIMULATION_IGNORE_BUG_GATE", None)
     return code, capsys.readouterr().out
 
 
