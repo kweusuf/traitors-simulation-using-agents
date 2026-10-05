@@ -188,7 +188,7 @@ def test_the_ledger_reaches_the_prompt() -> None:
     )
     action_prompt = " ".join(m.content for m in provider.calls[-1])
     assert "wilf" in action_prompt
-    assert "You have a position" in action_prompt
+    assert "who you think is lying" in action_prompt
 
 
 def test_the_ledger_is_written_once_per_round() -> None:
@@ -272,6 +272,45 @@ def test_one_player_never_sees_another_players_ledger() -> None:
         runtime.decide("alice", make_view(), ActionType.PUBLIC_MESSAGE, [])
     )
     assert runtime.prompt_builder._ledger_lines == []
+
+
+def test_the_mechanism_is_never_named_in_the_prompt() -> None:
+    """A model told it is keeping a ledger will discuss the ledger.
+
+    Not a style point. The first run of this arm had 18 of its first 24
+    public messages arguing about "the ledger" - an artefact that does not
+    exist in the game, promoted into the fiction by the prompt's own
+    vocabulary. The player is told what they concluded; nothing tells them
+    there is a list they are carrying.
+    """
+    from simulation.agents.beliefs import Beliefs
+    from simulation.agents.ledger import apply_ledger
+
+    beliefs = Beliefs()
+    apply_ledger(
+        Ledger.model_validate(
+            ledger_reply(suspects=[("wilf", 0.8)], allies=[("bob", 0.9)])
+        ),
+        beliefs,
+        3,
+    )
+    text = "\n".join(ledger_lines(beliefs, 3, 2)).casefold()
+    for word in ("ledger", "suspect list", "your list"):
+        assert word not in text, f"prompt names the mechanism: {word}"
+
+
+def test_the_mechanism_is_never_named_in_the_speech_instruction() -> None:
+    builder = PromptBuilder(
+        transcript_limit=40,
+        suspicion_ledger=True,
+        ledger_lines=["- wilf (0.80)"],
+    )
+    text = builder.build_user(
+        make_view(), ActionType.PUBLIC_MESSAGE, []
+    ).casefold()
+    assert "ledger" not in text
+    # The instruction still has to tell the model what to do.
+    assert "who you think is lying" in text
 
 
 def test_a_bare_list_reply_is_accepted() -> None:

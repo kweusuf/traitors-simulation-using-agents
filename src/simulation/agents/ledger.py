@@ -238,7 +238,10 @@ def ledger_lines(
     cleared = _ranked(beliefs, "faithful", allies)
     if cleared:
         lines.append("")
-        lines.append("People you have cleared, and will defend:")
+        # Deliberately worded as the player's own conclusions rather than as
+        # a named artefact. A model told it is keeping "a ledger" starts
+        # discussing the ledger in the game; see docs/learnings.md.
+        lines.append("You are convinced these players are honest:")
         lines.extend(f"- {line}" for line in cleared)
     return lines
 

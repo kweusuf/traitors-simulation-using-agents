@@ -453,20 +453,34 @@ class PromptBuilder:
                 "defend yourself before pushing anyone else."
             )
         if self.suspicion_ledger and action_type in _LEDGER_PHASES:
+            # Framed as what this player already concluded. Nothing here names
+            # the mechanism, because a model that is told it is keeping a
+            # "ledger" will start discussing the ledger with the other
+            # players - which is how 18 of 24 early messages ended up
+            # talking about an artefact that does not exist in the game.
+            lines.append("Where your own read of the table stands:")
             lines.extend(self._ledger_lines)
         if action_type in _SPEECH_ACTIONS and self.suspicion_ledger:
             # The agenda is not only for the ballot. A player arguing a case
             # they have not written down reasons from the last message they
             # read, which is what made the room sound like one voice.
+            #
+            # Phrasing matters more here than usual. An earlier version told
+            # the model to "argue the top of your list", and it dutifully
+            # started referring to "my list" as a thing in the game - 18 of
+            # the first 24 messages discussed a ledger that did not exist.
+            # The instruction below never names the mechanism, so there is
+            # nothing in the prompt for the model to promote into the
+            # fiction. It says what to *do* with what it already knows.
             lines.append(
-                "You have a position. Do not spend this message summarising "
-                "the room. Make the case for the person at the top of your "
-                "list, name the specific thing they did, and try to get "
-                "others to agree with you by name before the vote. If someone "
-                "has already made the case you wanted, build on it instead of "
-                "repeating it - and if you have someone you cleared, say so "
-                "and defend them by name, because silence lets the table talk "
-                "them out of the room."
+                "Speak as yourself, with a position, not as a summariser of "
+                "the room. Say who you think is lying and name the specific "
+                "thing they did that gives them away. If another player has "
+                "already made the case you agree with, build on it and say so "
+                "by name, and if they have not, make it clearly enough that "
+                "someone else can join you. If you are certain somebody here "
+                "is honest, say that plainly and defend them now, because if "
+                "you stay silent the table may talk them out of the room."
             )
         if action_type is ActionType.VOTE and view.own_role is Role.TRAITOR:
             lines.append(
