@@ -40,6 +40,13 @@ from simulation.models.base import ChatMessage
 from simulation.models.gateway import LLMGateway
 from simulation.models.llm import ModelConfig
 
+# The ledger's generation is recorded under its own `action_type` so its cost
+# and failures are countable. It is not an `ActionType` because it is not a
+# game action: it produces no decision the engine sees, only the player's
+# private read. Naming it distinctly is what lets `tools/run_health.py`
+# separate the mechanism's overhead from the game's own calls.
+LEDGER_ACTION = "ledger_update"
+
 if TYPE_CHECKING:  # avoids an agents -> experiments import at runtime
     from simulation.experiments.telemetry import TelemetryRecorder
 
@@ -121,6 +128,7 @@ class AgentRuntime:
         # extra call per player per round, so a run that silently made ten
         # thousand of them would otherwise look identical to one that did not.
         self._ledger_calls = 0
+        self._ledger_failures = 0
 
     @property
     def ledger_calls(self) -> int:
@@ -352,26 +360,43 @@ class AgentRuntime:
 
         current = agent.beliefs.prompt_lines()
         prompt = ledger_prompt(view, current, view.round_number)
+        messages = [
+            ChatMessage(
+                role="system",
+                content=LEDGER_SYSTEM.format(
+                    suspects=self.ledger_suspects,
+                    allies=self.ledger_allies,
+                ),
+            ),
+            ChatMessage(role="user", content=prompt),
+        ]
         try:
             response = await self.gateway.generate(
-                [
-                    ChatMessage(
-                        role="system",
-                        content=LEDGER_SYSTEM.format(
-                            suspects=self.ledger_suspects,
-                            allies=self.ledger_allies,
-                        ),
-                    ),
-                    ChatMessage(role="user", content=prompt),
-                ],
+                messages,
                 ledger_schema(self.ledger_suspects, self.ledger_allies),
                 self.model_config,
             )
-        except Exception:
+        except Exception as exc:
             # A failed ledger must never cost the turn it was supporting.
             # The player's previous read stands, which is the right fallback:
             # a stale position is better than no position.
+            #
+            # Recorded, because a run whose ledgers silently failed everywhere
+            # looks exactly like one where the players had no opinions - the
+            # call is the mechanism, so its absence has to be visible.
+            self._record_call(
+                view,
+                LEDGER_ACTION,
+                1,
+                ok=False,
+                error=f"{type(exc).__name__}: {exc}",
+                messages=messages,
+            )
+            self._ledger_failures += 1
             return agent.ledger
+        self._record_call(
+            view, LEDGER_ACTION, 1, ok=True, response=response, messages=messages
+        )
 
         ledger = parse_ledger(response.content)
         # Only living, real players are kept. The model was told the roster,
@@ -456,7 +481,7 @@ class AgentRuntime:
     def _record_call(
         self,
         view: AgentView,
-        action_type: ActionType,
+        action_type: "ActionType | str",
         attempt: int,
         *,
         ok: bool,
@@ -465,11 +490,24 @@ class AgentRuntime:
         error: Optional[str] = None,
         messages: Optional[list[ChatMessage]] = None,
     ) -> None:
+        """Record one model call.
+
+        `action_type` accepts a plain string as well as an `ActionType`,
+        because the ledger's generation is a model call that is not a game
+        action. It used to bypass this method entirely, which meant a run
+        whose ledgers silently failed everywhere looked exactly like a run
+        where the players had no opinions - the mechanism itself was
+        invisible in the one place a run's cost and failures are readable.
+        """
         if self.telemetry is None:
             return
         self.telemetry.record(
             agent_id=view.agent_id,
-            action_type=action_type.value,
+            action_type=(
+                action_type.value
+                if isinstance(action_type, ActionType)
+                else str(action_type)
+            ),
             phase=view.phase.value,
             round_number=view.round_number,
             attempt=attempt,

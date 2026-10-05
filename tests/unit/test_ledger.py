@@ -13,6 +13,9 @@ which is then shown back to them on every turn.
 from __future__ import annotations
 
 import asyncio
+import json
+import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -311,6 +314,69 @@ def test_the_mechanism_is_never_named_in_the_speech_instruction() -> None:
     assert "ledger" not in text
     # The instruction still has to tell the model what to do.
     assert "who you think is lying" in text
+
+
+def test_the_ledger_call_is_recorded_in_telemetry() -> None:
+    """Its cost and failures have to be visible, not implicit.
+
+    The ledger's generation used to bypass the call recorder entirely, so a
+    run in which every ledger failed looked exactly like a run where the
+    players simply had no opinions - the mechanism was invisible in the one
+    place a run's overhead and failures are readable.
+    """
+    from simulation.experiments.telemetry import TelemetryRecorder
+
+    with tempfile.TemporaryDirectory() as tmp:
+        runtime, provider = make_runtime(
+            {"alice": [speak()]}, suspicion_ledger=True
+        )
+        runtime.telemetry = TelemetryRecorder("fake", Path(tmp) / "calls.jsonl")
+        queue_ledger(provider, ledger_reply(suspects=[("wilf", 0.8)]))
+        asyncio.run(
+            runtime.decide("alice", make_view(), ActionType.PUBLIC_MESSAGE, [])
+        )
+        rows = [
+            json.loads(line)
+            for line in (Path(tmp) / "calls.jsonl").read_text().splitlines()
+        ]
+        kinds = [r["action_type"] for r in rows]
+        assert "ledger_update" in kinds
+        assert "public_message" in kinds
+        assert all(r["ok"] for r in rows)
+
+
+def test_a_failing_ledger_is_recorded_too() -> None:
+    """A silent fallback would hide a run that never built a read."""
+    from simulation.experiments.telemetry import TelemetryRecorder
+
+    class Broken(FakeLLMProvider):
+        async def generate(self, messages, response_schema=None, config=None):
+            if any("two private lists" in m.content for m in messages):
+                raise RuntimeError("provider is down")
+            return await super().generate(messages, response_schema, config)
+
+    agent = Agent("alice", "Alice", Persona(description="Careful player."))
+    agent.assign_role(Role.FAITHFUL)
+    provider = Broken({"alice": [speak()]})
+    with tempfile.TemporaryDirectory() as tmp:
+        runtime = AgentRuntime(
+            agents={"alice": agent},
+            gateway=LLMGateway(provider, max_concurrency=1),
+            model_config=ModelConfig(),
+            prompt_builder=PromptBuilder(),
+            suspicion_ledger=True,
+            telemetry=TelemetryRecorder("fake", Path(tmp) / "calls.jsonl"),
+        )
+        asyncio.run(
+            runtime.decide("alice", make_view(), ActionType.PUBLIC_MESSAGE, [])
+        )
+        rows = [
+            json.loads(line)
+            for line in (Path(tmp) / "calls.jsonl").read_text().splitlines()
+        ]
+        ledger_rows = [r for r in rows if r["action_type"] == "ledger_update"]
+        assert ledger_rows and not ledger_rows[0]["ok"]
+        assert "provider is down" in ledger_rows[0]["error"]
 
 
 def test_a_bare_list_reply_is_accepted() -> None:
