@@ -316,6 +316,97 @@ def test_the_mechanism_is_never_named_in_the_speech_instruction() -> None:
     assert "who you think is lying" in text
 
 
+def test_a_player_has_no_standing_lines_before_any_history() -> None:
+    """Round one has no record, so there is nothing to say about anyone."""
+    from simulation.agents.relationships import Relationships
+
+    assert Relationships().stand_lines() == []
+
+
+def test_standing_lines_carry_the_reason_not_just_a_number() -> None:
+    """A bare score reads as a fact about a person.
+
+    "40% doubt" on its own invites the model to treat it as a property of
+    somebody rather than as a tally of what this player actually watched.
+    Every line therefore names the observation behind it.
+    """
+    from simulation.agents.relationships import Relationships
+
+    rel = Relationships()
+    rel.update("iris", suspicion=0.4)
+    rel.update("matt", trust=0.8)
+    lines = rel.stand_lines()
+    assert any("matt" in line and "straightly" in line for line in lines)
+    assert any("iris" in line and "dodged" in line for line in lines)
+    assert all(":" in line for line in lines), "each line names its player"
+
+
+def test_the_standing_reaches_the_vote_prompt() -> None:
+    """It was maintained on every event and shown to nobody, for months.
+
+    Rendering is the whole point of this change, so the test is that the
+    text actually arrives where the decision is made.
+    """
+    from simulation.agents.relationships import Relationships
+
+    rel = Relationships()
+    rel.update("iris", suspicion=0.4)
+    view = AgentView(
+        agent_id="alice",
+        game_id="g",
+        round_number=3,
+        phase=GamePhase.VOTING,
+        own_role=Role.FAITHFUL,
+        known_roles={"alice": Role.FAITHFUL},
+        alive_players=["alice", "iris"],
+        eliminated_players=[],
+        public_transcript=[],
+        private_conversations=[],
+        winner=None,
+    )
+    text = PromptBuilder(standing_lines=rel.stand_lines()).build_user(
+        view, ActionType.VOTE, ["iris"]
+    )
+    assert "iris" in text
+    assert "How you have found the others so far" in text
+    # And the instruction has to tell the model to use it.
+    assert "dodged is evidence too" in text
+
+
+def test_no_standing_is_invented_when_there_is_no_history() -> None:
+    view = AgentView(
+        agent_id="alice",
+        game_id="g",
+        round_number=1,
+        phase=GamePhase.VOTING,
+        own_role=Role.FAITHFUL,
+        known_roles={"alice": Role.FAITHFUL},
+        alive_players=["alice", "iris"],
+        eliminated_players=[],
+        public_transcript=[],
+        private_conversations=[],
+        winner=None,
+    )
+    text = PromptBuilder().build_user(view, ActionType.VOTE, ["iris"])
+    assert "How you have found the others" not in text
+
+
+def test_the_shared_builder_is_not_given_standing_lines() -> None:
+    """One player's history must never be shown to another player."""
+    from simulation.agents.relationships import Relationships
+
+    rel = Relationships()
+    rel.update("iris", suspicion=0.4)
+    runtime, provider = make_runtime({"alice": [speak()]}, suspicion_ledger=True)
+    queue_ledger(provider, ledger_reply())
+    view = make_view()
+    asyncio.run(
+        runtime.decide("alice", view, ActionType.PUBLIC_MESSAGE, [])
+    )
+    assert runtime.prompt_builder._standing_lines == []
+    assert rel.stand_lines(), "the player's own record exists regardless"
+
+
 def test_the_ledger_call_is_recorded_in_telemetry() -> None:
     """Its cost and failures have to be visible, not implicit.
 

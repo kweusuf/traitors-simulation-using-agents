@@ -126,8 +126,14 @@ class PromptBuilder:
         gist_required: bool = False,
         suspicion_ledger: bool = False,
         ledger_lines: Optional[list[str]] = None,
+        standing_lines: Optional[list[str]] = None,
     ) -> None:
         self.suspicion_ledger = suspicion_ledger
+        # Where this player stands with the people they have dealt with,
+        # maintained on every event and - until now - shown to nobody. Passed
+        # in for the same reason as the ledger lines: the state lives on the
+        # agent, and reaching for it here would couple builder to agent.
+        self._standing_lines = list(standing_lines or [])
         # Rendered once per turn by the runtime and handed in, rather than
         # built here: the ledger lives on the agent, and reaching for it from
         # the prompt builder would couple the two.
@@ -452,6 +458,13 @@ class PromptBuilder:
                 "you are coordinating, and if suspicion is turning on you, "
                 "defend yourself before pushing anyone else."
             )
+        if self._standing_lines and action_type in _LEDGER_PHASES:
+            # Phrased as remembered history rather than as a score. A number
+            # with no cause reads as a fact about a person; these say what
+            # the player actually observed, which is the part that justifies
+            # a decision later.
+            lines.append("How you have found the others so far:")
+            lines.extend(self._standing_lines)
         if self.suspicion_ledger and action_type in _LEDGER_PHASES:
             # Framed as what this player already concluded. Nothing here names
             # the mechanism, because a model that is told it is keeping a
@@ -495,14 +508,18 @@ class PromptBuilder:
             # telling the model to deduce anything first. The ledger is
             # shown above; this is what connects it to the vote.
             lines.append(
-                "Vote from your list, not from the last thing you read. If "
-                "someone has just made a strong case against your top "
-                "suspect, you may move - but say what changed your mind. If "
-                "you would rather protect someone you have cleared, you may "
-                "vote for them, and you will have to justify it. Never vote "
-                "for a name that is neither in your ledger nor defended in "
-                "this round's discussion. Use reason_summary to name the "
-                "specific thing that settled it."
+                "Vote from your own read of the table, not from the last "
+                "thing you read. The record above of who has been straight "
+                "with you and who has dodged is evidence too: if the person "
+                "you distrust most has answered you cleanly every time, say "
+                "so and weigh it. If someone has just made a strong case "
+                "against your top suspect, you may move - but say what "
+                "changed your mind. If you would rather protect someone you "
+                "have cleared, you may vote for them, and you will have to "
+                "justify it. Never vote for a name that neither your read "
+                "nor this round's discussion has given you any reason to "
+                "doubt. Use reason_summary to name the specific thing that "
+                "settled it."
             )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))

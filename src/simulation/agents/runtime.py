@@ -189,6 +189,7 @@ class AgentRuntime:
             builder._ledger_lines = ledger_lines(
                 agent.beliefs, self.ledger_suspects, self.ledger_allies
             )
+            builder._standing_lines = agent.relationships.stand_lines()
         messages = builder.build(
             agent_id=agent_id,
             agent=agent,
