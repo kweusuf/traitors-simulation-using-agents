@@ -170,11 +170,52 @@ will read.
 
 ---
 
+See the "Still open" section of docs/learnings.md for the arm that was
+paused and where it stopped.
+
 ## Still open
 
 - `scope: room` untested. Targets the 15 surviving cross-player duplicates.
-- Phantom detector false positive on sentence-initial words.
+- Phantom detector false positive on sentence-initial words - a live run
+  rejected a message for naming "Meanwhile" as a player.
 - Whether a paraphrased collapse ever occurs, which is the only condition
   under which lowering `repetition_threshold` is right.
 - Latency cost of rejections: p50 rose 24.9s to 70.5s in `uk-s01-rep`, part
   of which is 21 extra generations on already-large prompts.
+
+## Paused: uk-s01-ledger
+
+Stopped at the owner's request, mid-game, to free the host for other work.
+Resumable with `--resume`; nothing was discarded.
+
+State at the pause, for comparison when it is picked back up:
+
+| | |
+| --- | --- |
+| Game id | `uk-s01-ledger` |
+| Config | `season_uk_s01.ledger.local.yaml` |
+| Seed | 42 |
+| Reached | round 6, phase `traitor_night` (870 events, sequence 870) |
+| Eliminations | 7 - tom, amanda, maddy, kieran, alyssa, rayan, alex |
+| Traitors | alyssa, amanda, wilf |
+| **Caught** | **2 of 3** (amanda r2, alyssa r5) |
+| Calls | 842, 12.6% failed, p50 78.6s |
+
+**This is the first run in which the table caught a traitor at all before
+the endgame.** The two prior runs finished 2 of 3 from 17 eliminations,
+which is at or below the 2.32 expected by chance. Here 2 of 7 caught
+against 0.95 expected is a better ratio than either baseline managed -
+but on seven eliminations that is still a small sample, and it is the
+reason to resume rather than to call the question answered.
+
+Resume with:
+
+```bash
+python -m simulation run configs/traitors/season_uk_s01.ledger.local.yaml \
+    --game-id uk-s01-ledger --resume
+```
+
+Note that this arm moves **two** variables against `ptr_mem`: the
+suspicion ledger and the newly-wired relationship standing. If the result
+is ambiguous, a ledger-only arm is the obvious follow-up - see
+docs/decisions.md.
