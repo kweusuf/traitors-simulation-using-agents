@@ -278,6 +278,38 @@ def test_banished_traitor_converts_a_faithful_player() -> None:
     assert recruited[0].payload["by"] == traitor
 
 
+def test_recruit_response_events_name_the_offerer_unambiguously() -> None:
+    """`by` on a response reads as 'declined by X', which is false.
+
+    Seen in uk-s01-ledger: `RECRUIT_DECLINED ... by: wilf` was read as
+    wilf declining, when wilf was the recruiter and never offered
+    anything. The response events carry `by_offerer`; the offerer is in
+    `targets`, the answerer in `actor`.
+    """
+    from simulation.actions.actions import Action, ActionType
+
+    engine = make_engine(recruit_choice=True)
+    traitor = roles_of(engine, Role.TRAITOR)[0]
+    faithful = sorted(roles_of(engine, Role.FAITHFUL))[0]
+
+    engine._recruit_offered = faithful
+    engine._recruit_offerer = traitor
+    engine.begin_phase(GamePhase.TRAITOR_NIGHT)
+    engine.submit_action(
+        Action(
+            action=ActionType.RECRUIT_RESPONSE,
+            actor_id=faithful,
+            content="decline",
+        )
+    )
+    declined = [e for e in engine.sink.events if e.type is EventType.RECRUIT_DECLINED]
+    assert len(declined) == 1
+    assert declined[0].actor == faithful
+    assert declined[0].targets == [traitor]
+    assert declined[0].payload["by_offerer"] == traitor
+    assert "by" not in declined[0].payload
+
+
 def test_recruitment_saves_the_last_traitor_from_a_faithful_win() -> None:
     engine = make_engine(players=4, traitors=1, recruit_on_banish=True)
     traitor = roles_of(engine, Role.TRAITOR)[0]

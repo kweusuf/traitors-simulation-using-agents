@@ -171,11 +171,40 @@ def resolve_content_names(
     # watchers" share a shape; the comma is what marks one as a person
     # being spoken to. First-word-of-sentence was tried and rejected - it
     # flagged every ordinary sentence-initial capital.
+    #
+    # A sentence-initial discourse marker ("However, ...", "Meanwhile, ...")
+    # is ordinary prose, not an address. These are excluded outright: a
+    # token in this set can never be a suspect, so a comma after one is
+    # never evidence of a phantom.
+    DISCOURSE_MARKERS = frozenset(
+        {
+            "however",
+            "meanwhile",
+            "moreover",
+            "furthermore",
+            "nevertheless",
+            "nonetheless",
+            "therefore",
+            "instead",
+            "finally",
+            "firstly",
+            "secondly",
+            "frankly",
+            "honestly",
+            "basically",
+            "actually",
+            "well",
+            "so",
+            "but",
+            "and",
+        }
+    )
     suspect = {
         m.group(1)
         for m in re.finditer(
             r"(?:^|(?<=[.!?]\s)|(?<=\n)|(?<=[\"'“]\s))([A-Z][a-zA-Z]{2,})\s*,", content
         )
+        if m.group(1).casefold() not in DISCOURSE_MARKERS
     }
 
     repairs: list[str] = []

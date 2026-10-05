@@ -28,7 +28,13 @@ ARMS = {
 }
 arm = next((n for n in ARMS if f".{n}." in path.name), None)
 if arm is None:
-    raise SystemExit(f"{path.name} is not a pointer arm; nothing to check")
+    # Not a pointer arm: report what it loads with rather than refusing to
+    # look. The checker's job is confirming an arm is what its name claims;
+    # for anything else the loaded flags are still worth seeing.
+    print(f"{path.name} (not a pointer arm; flags only, no assertion)")
+    print(f"  suspicion_ledger  {cfg.game.suspicion_ledger}")
+    print(f"  reject_repetition {cfg.game.reject_repetition}")
+    raise SystemExit(0)
 
 print(path.name)
 print(f"  co_generate_gist  {cfg.game.co_generate_gist}")

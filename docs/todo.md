@@ -23,7 +23,7 @@ Related: [learnings.md](learnings.md) for what is known about behaviour,
 
 These corrupt results. A new game must not start until they are fixed.
 
-### [ ] `by` means different things on different recruitment events
+### [x] `by` means different things on different recruitment events
 
 `RECRUIT_OFFERED`, `RECRUIT_ACCEPTED` and `RECRUIT_DECLINED` all carry
 `payload.by`, but it is the **recruiter** in all three. On the first that
@@ -36,10 +36,11 @@ two players. The player who accepted or declined is `actor`.
 
 `src/simulation/engine/game_engine.py:944-955`
 
-Fix: rename to `by_offerer` on the two response events, or drop `by` and
-rely on `actor`/`targets`. Then re-read the events already written.
+**Fixed:** response events carry `by_offerer`, with the offerer also in
+`targets`; pinned by
+`test_recruit_response_events_name_the_offerer_unambiguously`.
 
-### [ ] The phantom detector reads sentence-initial words as players
+### [x] The phantom detector reads sentence-initial words as players
 
 `resolve_content_names` flags a capitalised token before a comma that
 matches no player. "However, I think..." and "Meanwhile, ..." are ordinary
@@ -56,8 +57,11 @@ This is the false-positive risk the original calibration claimed was
 eliminated; it was not, because only true phantoms were counted in that
 check. `src/simulation/actions/validator.py:174-199`
 
-Fix: exclude sentence-initial words, or require the token to be a known
-first name elsewhere in the transcript. Keep the true-positive rate at one.
+**Fixed:** first-word discourse markers pass through as prose; pinned by
+`test_sentence_initial_discourse_marker_is_not_a_phantom`. Note the
+detector's remaining shape, recorded in the sibling test: it flags a name
+in address position at a sentence start, so mid-sentence addresses
+("Listen Iris, ...") were never covered - a separate gap, not blocking.
 
 ---
 
@@ -65,7 +69,7 @@ first name elsewhere in the transcript. Keep the true-positive rate at one.
 
 Real, known, but they degrade a run rather than invalidate it.
 
-### [ ] `check_arm_flags.py` refuses any arm it does not recognise
+### [x] `check_arm_flags.py` refuses any arm it does not recognise
 
 ```python
 raise SystemExit(f"{path.name} is not a pointer arm; nothing to check")

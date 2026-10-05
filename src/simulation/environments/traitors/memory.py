@@ -410,7 +410,10 @@ def writes_for(
 
     if kind in ("RECRUIT_OFFERED", "RECRUIT_ACCEPTED", "RECRUIT_DECLINED"):
         offered = payload.get("target") or actor
-        by = payload.get("by") or actor
+        # `by` is the field on legacy OFFERED events; the response events
+        # carry `by_offerer` so they cannot be misread as "declined by X".
+        # Both are read so old runs still replay.
+        by = payload.get("by_offerer") or payload.get("by") or actor
         named = frozenset({offered, by} - {None})
         verb = {
             "RECRUIT_OFFERED": "was offered a place on the traitor team",

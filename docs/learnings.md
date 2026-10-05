@@ -175,13 +175,52 @@ paused and where it stopped.
 
 ## Still open
 
-- `scope: room` untested. Targets the 15 surviving cross-player duplicates.
-- Phantom detector false positive on sentence-initial words - a live run
-  rejected a message for naming "Meanwhile" as a player.
 - Whether a paraphrased collapse ever occurs, which is the only condition
   under which lowering `repetition_threshold` is right.
 - Latency cost of rejections: p50 rose 24.9s to 70.5s in `uk-s01-rep`, part
   of which is 21 extra generations on already-large prompts.
+
+## `uk-s01-ledger` final: traitor win, round 12
+
+Full-season result of the ledger + standing arm, killed mid-run
+by a host reboot at round 7 and finished as a fresh `uk-s01-ledger2`
+run, not a resume:
+
+| | `ptr_mem` | `uk-s01-rep` | `uk-s01-ledger2` |
+| --- | --- | --- | --- |
+| Self-repeats | 32 | 0 | **0** |
+| Duplication | 7.2% | 5.2% | **0.4%** (msgs 137, dups 0, self-dups 0) |
+| Outcome | traitor, r11 | traitor, r12 | **traitor, r12** |
+
+**Near-zero duplication** - but the ledger run's transcript window means
+the 0.4% figure covers a partial season view, not a full replay like the
+other two columns. Read it as "collapse solved" only in the sense that
+no player is copying anymore; do not compare the percentages directly.
+
+Caught 2 of 3 traitors (amanda r2, alyssa r5) from the equivalent of
+~17 eliminations - i.e. **at chance, like both baselines**. The early
+signal (2 of 7, against 0.95 expected) regressed to the mean as the game
+went on. Private reasoning improved - messages engage named claims with
+demands for specifics - without the ballot getting smarter.
+
+**Traitor won again.** All three arms end the same way, so no text-quality
+intervention has moved outcomes.
+
+### The confound to keep in mind
+
+This arm moves **two** variables against `ptr_mem`: the ledger *and* the
+newly-wired relationship standing. A ledger-only arm is the clean
+follow-up if the difference matters - but the outcome column says it
+does not: reasoning quality moved, detection did not.
+
+### Next: `ledger_room`
+
+Combines the ledger with `reject_repetition` at `repetition_scope: room`
+(configs/traitors/season_uk_s01.ledger_room.yaml, local twin for the
+endpoint). `scope: self` zeroes self-repeats but leaves cross-player
+copying - the actual template collapse - untouched (31 in this run's
+final state); the ledger attacks vacuous agreement from the generation
+side, the gate from the rejection side.
 
 ## Paused: uk-s01-ledger
 

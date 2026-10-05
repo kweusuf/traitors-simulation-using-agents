@@ -82,6 +82,36 @@ def test_a_sentence_starting_with_a_word_is_not_a_phantom() -> None:
     assert phantoms == []
 
 
+def test_sentence_initial_discourse_markers_are_not_phantoms() -> None:
+    """The two real false positives: 'However,' and 'Meanwhile,' cost retries.
+
+    Seen in uk-s01-ledger, where each burned a full retry on a ~25s call.
+    A discourse marker before a comma is ordinary prose, never an address.
+    """
+    for sentence in [
+        "However, I think we should look closer.",
+        "Meanwhile, the room has gone quiet.",
+        "Moreover, nobody has answered the question.",
+        "Frankly, that story does not hold together.",
+    ]:
+        _, _, phantoms = resolve_content_names(sentence, ROSTER, CONTEXT)
+        assert phantoms == [], f"{sentence!r} was wrongly called a phantom"
+
+
+def test_a_real_phantom_after_a_discourse_marker_is_still_caught() -> None:
+    """The exclusion must not swallow a genuine phantom later in the text.
+
+    Note the detector's shape: it flags a name in address position at a
+    sentence start, so the phantom needs its own sentence. Mid-sentence
+    addresses ("Listen Iris, ...") were never covered, before or after
+    this fix - a separate gap, not a regression.
+    """
+    _, _, phantoms = resolve_content_names(
+        "However, that story fails. Iris, you have been quiet.", ROSTER, CONTEXT
+    )
+    assert phantoms == ["Iris"]
+
+
 def test_rejection_is_opt_in_so_a_false_positive_cannot_cost_a_turn() -> None:
     """The detector is uncalibrated; logging is safe, rejecting is not."""
     from simulation.agents.agent import Agent

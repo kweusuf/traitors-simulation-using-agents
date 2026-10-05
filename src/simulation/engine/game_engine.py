@@ -944,7 +944,7 @@ class GameEngine:
                 EventType.RECRUIT_ACCEPTED,
                 actor=offered,
                 targets=[offerer],
-                payload={"by": offerer},
+                payload={"by_offerer": offerer},
             )
             self.check_win()
         else:
@@ -952,7 +952,7 @@ class GameEngine:
                 EventType.RECRUIT_DECLINED,
                 actor=offered,
                 targets=[offerer],
-                payload={"by": offerer},
+                payload={"by_offerer": offerer},
             )
             alive_traitors = [
                 p
