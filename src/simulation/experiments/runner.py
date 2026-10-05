@@ -285,6 +285,9 @@ class GameRunner:
             repetition_threshold=config.game.repetition_threshold,
             repetition_scope=config.game.repetition_scope,
             repetition_min_words=config.game.repetition_min_words,
+            suspicion_ledger=config.game.suspicion_ledger,
+            ledger_suspects=config.game.ledger_suspects,
+            ledger_allies=config.game.ledger_allies,
         )
         context = PhaseContext(
             engine=env.engine,

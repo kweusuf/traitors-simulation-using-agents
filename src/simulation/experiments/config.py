@@ -86,6 +86,18 @@ class GameSettings(StrictModel):
     # threshold is a judgement call - calibrate it with
     # tools/repeat_rate.py against a completed run first.
     reject_repetition: bool = False
+    # Ask each player to keep a ranked list of who they suspect and who they
+    # have cleared, and show it to them every turn. Off by default.
+    #
+    # A model asked for a bare `target` reasons in one forward pass over the
+    # whole transcript and answers with whatever name looked worst most
+    # recently, which is why banishment tracked chance. The ledger gives it
+    # somewhere to have written a position down first.
+    suspicion_ledger: bool = False
+    # How many names each list may hold. The innocent list is shorter because
+    # a long one is not a defence, it is a preference - see agents/ledger.py.
+    ledger_suspects: int = 3
+    ledger_allies: int = 2
     # Share of content words two messages must share to count as a repeat.
     #
     # Calibrated by replaying a completed run (tools/repetition_rates.py):

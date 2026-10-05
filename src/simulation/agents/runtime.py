@@ -7,6 +7,7 @@ correction retry before giving up (spec section 21).
 
 from __future__ import annotations
 
+import copy
 from typing import TYPE_CHECKING, Optional
 
 from simulation.actions.actions import Action, ActionType, action_schema
@@ -20,6 +21,17 @@ from simulation.actions.validator import (
 )
 from simulation.actions.repetition import find_repeat, repeat_reason
 from simulation.agents.agent import Agent
+from simulation.agents.ledger import (
+    DEFAULT_ALLY_SIZE,
+    DEFAULT_SUSPECT_SIZE,
+    LEDGER_SYSTEM,
+    Ledger,
+    apply_ledger,
+    ledger_lines,
+    ledger_prompt,
+    ledger_schema,
+    parse_ledger,
+)
 from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.visibility import AgentView, InformationProjector
 from simulation.engine.game_engine import GameEngine
@@ -55,6 +67,9 @@ class AgentRuntime:
         repetition_threshold: float = 1.0,
         repetition_scope: str = "self",
         repetition_min_words: int = 5,
+        suspicion_ledger: bool = False,
+        ledger_suspects: int = DEFAULT_SUSPECT_SIZE,
+        ledger_allies: int = DEFAULT_ALLY_SIZE,
     ) -> None:
         self.agents = agents
         self.gateway = gateway
@@ -97,6 +112,20 @@ class AgentRuntime:
         # Messages rejected as repeats, for the run summary. Recorded even
         # when the repeat is accepted on the last attempt.
         self._repeat_log: list[str] = []
+        # The suspicion ledger. Off by default for the same reason as every
+        # other experimental flag: an existing config must play identically.
+        self.suspicion_ledger = suspicion_ledger
+        self.ledger_suspects = ledger_suspects
+        self.ledger_allies = ledger_allies
+        # Counts ledger generations, for the run summary. The ledger costs an
+        # extra call per player per round, so a run that silently made ten
+        # thousand of them would otherwise look identical to one that did not.
+        self._ledger_calls = 0
+
+    @property
+    def ledger_calls(self) -> int:
+        """How many dedicated ledger generations this run has spent."""
+        return self._ledger_calls
 
     @property
     def repeats_rejected(self) -> int:
@@ -137,7 +166,22 @@ class AgentRuntime:
             raise RuntimeError(f"agent '{agent_id}' has no assigned role")
 
         memory_items = self._memory_items(agent, view)
-        messages = self.prompt_builder.build(
+        # The ledger is refreshed before the prompt is built, so the prompt
+        # always shows this round's read rather than last round's. Once per
+        # round per player; `refresh_ledger` is a no-op after the first call
+        # in a round and returns None when the flag is off.
+        await self.refresh_ledger(agent_id, view)
+        builder = self.prompt_builder
+        if self.suspicion_ledger:
+            # The builder is shared across agents, so the per-player lines go
+            # on a copy. Mutating the shared instance would show one player's
+            # ledger to every other player in the game.
+            builder = copy.copy(builder)
+            builder.suspicion_ledger = True
+            builder._ledger_lines = ledger_lines(
+                agent.beliefs, self.ledger_suspects, self.ledger_allies
+            )
+        messages = builder.build(
             agent_id=agent_id,
             agent=agent,
             role=agent.role,
@@ -283,6 +327,65 @@ class AgentRuntime:
         ActionType.RECRUIT_DECISION,
         ActionType.RECRUIT_RESPONSE,
     })
+
+    async def refresh_ledger(
+        self, agent_id: str, view: AgentView
+    ) -> Optional[Ledger]:
+        """Ask one player to record who they suspect and who they have cleared.
+
+        A separate generation, which is the expensive choice. The cheap one -
+        reading suspicion out of the `confidence` on a message action - was
+        rejected because it reports how sure the model was of what it just
+        said, not who it thinks is guilty, and those are different questions.
+
+        Once per round per player, at the round's opening, rather than before
+        every action: the ledger is a position that should change when the
+        evidence changes, not a value recomputed twenty times between
+        statements. Returning None when the flag is off keeps the caller from
+        having to branch on the config.
+        """
+        agent = self.agents.get(agent_id)
+        if not self.suspicion_ledger or agent is None:
+            return None
+        if agent.ledger_round == view.round_number:
+            return agent.ledger          # already refreshed this round
+
+        current = agent.beliefs.prompt_lines()
+        prompt = ledger_prompt(view, current, view.round_number)
+        try:
+            response = await self.gateway.generate(
+                [
+                    ChatMessage(
+                        role="system",
+                        content=LEDGER_SYSTEM.format(
+                            suspects=self.ledger_suspects,
+                            allies=self.ledger_allies,
+                        ),
+                    ),
+                    ChatMessage(role="user", content=prompt),
+                ],
+                ledger_schema(self.ledger_suspects, self.ledger_allies),
+                self.model_config,
+            )
+        except Exception:
+            # A failed ledger must never cost the turn it was supporting.
+            # The player's previous read stands, which is the right fallback:
+            # a stale position is better than no position.
+            return agent.ledger
+
+        ledger = parse_ledger(response.content)
+        # Only living, real players are kept. The model was told the roster,
+        # but a name that is not on it would otherwise enter the prompt as a
+        # suspect and send this player chasing somebody who does not exist.
+        roster = set(view.alive_players)
+        ledger.suspects = [s for s in ledger.suspects if s.player in roster]
+        ledger.allies = [a for a in ledger.allies if a.player in roster]
+        ledger.suspects.sort(key=lambda s: s.confidence, reverse=True)
+        apply_ledger(ledger, agent.beliefs, view.round_number)
+        agent.ledger = ledger
+        agent.ledger_round = view.round_number
+        self._ledger_calls += 1
+        return ledger
 
     def _repetition_reason(
         self, view: AgentView, action: Action, action_type: ActionType

@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from simulation.agents.beliefs import Beliefs
+from simulation.agents.ledger import Ledger
 from simulation.agents.goals import Goals, inject_role_goals
 from simulation.agents.persona import Persona
 from simulation.agents.relationships import Relationships
@@ -41,6 +42,14 @@ class Agent:
         self.memory = memory or ShortTermMemory(game_id="", agent_id=agent_id)
         self.beliefs = Beliefs()
         self.relationships = Relationships()
+        # The player's own ranked read: who they suspect, who they have
+        # cleared. Written by the runtime once per round and read back into
+        # every prompt, so it is the one piece of state that survives between
+        # turns as a *conclusion* rather than as events to re-read.
+        self.ledger: Optional["Ledger"] = None
+        # Which round the current ledger was written in. -1 means never, so
+        # the first turn of round 1 refreshes rather than being skipped.
+        self.ledger_round: int = -1
 
     def assign_role(
         self, role: Role, ambition: Optional[str] = None

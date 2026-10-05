@@ -33,6 +33,31 @@ ACTION_JSON_HINT = (
 # it and the default keeps every existing game byte-for-byte identical.
 _ENGLISH = frozenset({"", "english", "en", "none", "default"})
 
+# Where a player keeps a running position rather than acting. Voting is in
+# here because the ballot is the point the ledger exists for; the traitor
+# night and the murder pick are not, since a traitor's read of the room is
+# not what they are acting on that night.
+_LEDGER_PHASES = frozenset({
+    ActionType.PUBLIC_MESSAGE,
+    ActionType.PRIVATE_MESSAGE,
+    ActionType.TRAITOR_MESSAGE,
+    ActionType.ACCUSE,
+    ActionType.DEFEND,
+    ActionType.REBUT,
+    ActionType.VOTE,
+    ActionType.SHARE_INFORMATION,
+})
+
+# Actions where the player is speaking to the room and can move others.
+_SPEECH_ACTIONS = frozenset({
+    ActionType.PUBLIC_MESSAGE,
+    ActionType.PRIVATE_MESSAGE,
+    ActionType.ACCUSE,
+    ActionType.DEFEND,
+    ActionType.REBUT,
+    ActionType.SHARE_INFORMATION,
+})
+
 
 def _window(messages, limit: int) -> tuple[list, int]:
     """Newest `limit` entries plus how many were dropped (0 = no limit)."""
@@ -99,7 +124,14 @@ class PromptBuilder:
         anti_echo_instructions: bool = True,
         want_gist: bool = False,
         gist_required: bool = False,
+        suspicion_ledger: bool = False,
+        ledger_lines: Optional[list[str]] = None,
     ) -> None:
+        self.suspicion_ledger = suspicion_ledger
+        # Rendered once per turn by the runtime and handed in, rather than
+        # built here: the ledger lives on the agent, and reaching for it from
+        # the prompt builder would couple the two.
+        self._ledger_lines = list(ledger_lines or [])
         self.transcript_limit = transcript_limit
         self.language = language
         # Whether to ask for a one-line pointer alongside the message, and
@@ -420,11 +452,43 @@ class PromptBuilder:
                 "you are coordinating, and if suspicion is turning on you, "
                 "defend yourself before pushing anyone else."
             )
+        if self.suspicion_ledger and action_type in _LEDGER_PHASES:
+            lines.extend(self._ledger_lines)
+        if action_type in _SPEECH_ACTIONS and self.suspicion_ledger:
+            # The agenda is not only for the ballot. A player arguing a case
+            # they have not written down reasons from the last message they
+            # read, which is what made the room sound like one voice.
+            lines.append(
+                "You have a position. Do not spend this message summarising "
+                "the room. Make the case for the person at the top of your "
+                "list, name the specific thing they did, and try to get "
+                "others to agree with you by name before the vote. If someone "
+                "has already made the case you wanted, build on it instead of "
+                "repeating it - and if you have someone you cleared, say so "
+                "and defend them by name, because silence lets the table talk "
+                "them out of the room."
+            )
         if action_type is ActionType.VOTE and view.own_role is Role.TRAITOR:
             lines.append(
                 "Vote with the faithful against the innocent you have been "
                 "framing, unless the vote is on you or a fellow traitor: then "
                 "vote for whichever faithful keeps both of you safe."
+            )
+        if action_type is ActionType.VOTE and view.own_role is Role.FAITHFUL:
+            # The traitor has had vote instructions all along and the
+            # faithful did not, which is most of why banishment tracked
+            # chance: the ballot asked for a bare `target` with nothing
+            # telling the model to deduce anything first. The ledger is
+            # shown above; this is what connects it to the vote.
+            lines.append(
+                "Vote from your list, not from the last thing you read. If "
+                "someone has just made a strong case against your top "
+                "suspect, you may move - but say what changed your mind. If "
+                "you would rather protect someone you have cleared, you may "
+                "vote for them, and you will have to justify it. Never vote "
+                "for a name that is neither in your ledger nor defended in "
+                "this round's discussion. Use reason_summary to name the "
+                "specific thing that settled it."
             )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))
