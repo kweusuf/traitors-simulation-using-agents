@@ -16,6 +16,8 @@ import types
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 TOOL = Path(__file__).resolve().parents[2] / "tools" / "run_rand_sweep.py"
 
 
@@ -206,3 +208,98 @@ def test_an_arm_already_on_disk_is_resumed_on_its_first_attempt(
     assert exit_code == 0
     assert seen == [["resume", "ledger"]]
     assert "attempt 1 (resume)" in log
+
+
+def test_a_wave_is_parsed_from_commas_or_spaces() -> None:
+    tool = _tool()
+    assert tool.parse_wave("fix_en,noecho") == ["fix_en", "noecho"]
+    assert tool.parse_wave(" fix_en  noecho ") == ["fix_en", "noecho"]
+
+
+def test_a_wave_naming_an_arm_that_was_never_generated_is_refused() -> None:
+    """A typo has to fail here, not at the far end of an unattended sweep,
+    where the supervisor exits at once and the wave looks finished."""
+    tool = _tool()
+    with pytest.raises(SystemExit, match="unknown arm"):
+        tool.parse_wave("fix_en,ptr_otp")
+    with pytest.raises(SystemExit, match="empty wave"):
+        tool.parse_wave(" , ")
+
+
+def test_attempts_are_counted_from_the_headers_the_supervisor_writes(
+    monkeypatch, tmp_path
+) -> None:
+    """The count that has to travel with an arm's results."""
+    tool = _tool()
+    _supervise_once(tool, monkeypatch, tmp_path, [1, 1])
+    log = tmp_path / "logs" / "ledger.log"
+    text = log.read_text()
+    assert "attempt(s)" in text  # the stop line names a count...
+    # Three attempts: the new run plus `max_resumes` resumes, since the cap
+    # counts resumes and not attempts.
+    assert tool.attempts_so_far(log) == 3  # ...and is not itself an attempt
+
+
+def _fake_supervisors(tool, monkeypatch, codes: dict[str, int]):
+    """Fake `Popen` for the wave runner, recording the spawn and wait order."""
+    order: list[tuple[str, str]] = []
+
+    def popen(command, **_kwargs):
+        label = command[command.index("--arms") + 1]
+        order.append(("spawn", label))
+        code = codes.get(label, 0)
+
+        class _Proc:
+            def wait(self):
+                order.append(("wait", label))
+                return code
+
+            def poll(self):
+                return None
+
+            def terminate(self):
+                order.append(("terminate", label))
+
+        return _Proc()
+
+    monkeypatch.setattr(
+        tool, "subprocess",
+        types.SimpleNamespace(Popen=popen, STDOUT=subprocess.STDOUT),
+    )
+    return order
+
+
+def test_the_next_wave_waits_for_the_one_before_it(
+    monkeypatch, tmp_path
+) -> None:
+    """The ceiling on requests in flight is the whole reason for waves, so a
+    wave must not start while the previous one still has arms running."""
+    tool = _tool()
+    monkeypatch.setattr(
+        tool, "signal",
+        types.SimpleNamespace(signal=lambda *a: None, SIGTERM=15),
+    )
+    monkeypatch.setattr(tool, "ROOT", tmp_path)
+    logs = tmp_path / "logs"
+    logs.mkdir()
+    (logs / "ledger.log").write_text(
+        "--- uk-s01-rand-ledger attempt 1 (resume) 2026-01-01 00:00:00 ---\n"
+        "--- uk-s01-rand-ledger attempt 2 (resume) 2026-01-01 00:10:00 ---\n"
+    )
+    order = _fake_supervisors(
+        tool, monkeypatch, {"ledger": 0, "noecho": 1, "ptr_opt": 0}
+    )
+    args = _args(wave=["ledger,noecho", "ptr_opt"], log_dir="logs")
+    # Non-zero because an arm ended without finishing: the wave runner's own
+    # exit code has to say so, or a sweep that gave up reads like a clean one.
+    assert tool.orchestrate(args) == 1
+    assert order == [
+        ("spawn", "ledger"), ("spawn", "noecho"),
+        ("wait", "ledger"), ("wait", "noecho"),
+        ("spawn", "ptr_opt"), ("wait", "ptr_opt"),
+    ]
+    summary = (logs / "waves.log").read_text()
+    assert "wave 1/2" in summary and "wave 2/2" in summary
+    assert "wave 1: ledger exit 0, 2 attempt(s)" in summary
+    assert "wave 1: noecho exit 1, 0 attempt(s)" in summary
+    assert "sweep finished" in summary
