@@ -300,6 +300,27 @@ def test_room_scope_catches_echoing_the_last_speaker() -> None:
     assert runtime.repeats_rejected == 1
 
 
+def test_room_scope_still_catches_the_agent_repeating_itself() -> None:
+    """`room` is self *plus* others, not others *instead of* self.
+
+    A run at `scope: room` finished with 50 byte-identical self-repeats: the
+    history was built from `sender_id != agent_id`, so `room` replaced the
+    self-check instead of extending it. The speaker's own messages are part
+    of the room.
+    """
+    runtime, _ = make_runtime(
+        {"alice": [say(WORDING), say(OTHER)]},
+        reject_repetition=True,
+        repetition_scope="room",
+    )
+    view = make_view([WORDING])  # alice's own earlier message
+    action = asyncio.run(
+        runtime.decide("alice", view, ActionType.PUBLIC_MESSAGE, [])
+    )
+    assert action.content == OTHER
+    assert runtime.repeats_rejected == 1
+
+
 def test_a_vote_is_never_judged_a_repetition() -> None:
     """"banish" twice is two votes, not a repeated turn."""
     runtime, _ = make_runtime(

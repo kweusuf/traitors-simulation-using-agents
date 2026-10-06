@@ -430,11 +430,12 @@ class AgentRuntime:
             return None
 
         if self.repetition_scope == "room":
-            history = [
-                m.content
-                for m in view.public_transcript
-                if m.sender_id != view.agent_id
-            ]
+            # Self plus others. This used to exclude the speaker, which made
+            # the two scopes disjoint rather than nested: switching from
+            # `self` to `room` *dropped* the self-check instead of adding to
+            # it, and a run at `scope: room` finished with 50 byte-identical
+            # self-repeats. The room includes the speaker's own messages.
+            history = [m.content for m in view.public_transcript]
         else:
             history = [
                 m.content

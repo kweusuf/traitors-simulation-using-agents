@@ -113,8 +113,11 @@ class GameSettings(StrictModel):
     # paraphrased form, and expect real messages to be discarded with it.
     repetition_threshold: float = Field(default=1.0, gt=0.0, le=1.0)
     # "self" rejects a player repeating their own earlier message.
-    # "room" also rejects a player echoing the last speaker, which is the
-    # conversational-following behaviour a small model does constantly.
+    # "room" rejects that too, and additionally a player echoing anyone
+    # else, which is the conversational-following behaviour a small model
+    # does constantly. The scopes are nested, not disjoint: `room` includes
+    # the speaker's own messages. (An earlier `room` excluded them, which
+    # silently dropped the self-check; see docs/todo.md.)
     repetition_scope: Literal["self", "room"] = "self"
     # Replies shorter than this are only rejected on an exact match. Below
     # it, content-word similarity is too noisy to act on: "No." is not a

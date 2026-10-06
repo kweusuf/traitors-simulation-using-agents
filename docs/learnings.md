@@ -213,14 +213,51 @@ newly-wired relationship standing. A ledger-only arm is the clean
 follow-up if the difference matters - but the outcome column says it
 does not: reasoning quality moved, detection did not.
 
-### Next: `ledger_room`
+## `uk-s01-ledger-room` final: traitor (solo) win, round 13
 
-Combines the ledger with `reject_repetition` at `repetition_scope: room`
-(configs/traitors/season_uk_s01.ledger_room.yaml, local twin for the
-endpoint). `scope: self` zeroes self-repeats but leaves cross-player
-copying - the actual template collapse - untouched (31 in this run's
-final state); the ledger attacks vacuous agreement from the generation
-side, the gate from the rejection side.
+The `ledger_room` arm combines the ledger with `reject_repetition` at
+`repetition_scope: room` (`season_uk_s01.ledger_room.yaml`, local twin for
+the endpoint). `scope: self` zeroes self-repeats but leaves cross-player
+copying untouched; the ledger was meant to attack vacuous agreement from
+the generation side, the gate from the rejection side. The arm completed a
+full season, and two things went the wrong way at once.
+
+| | `ptr_mem` | `uk-s01-rep` | `uk-s01-ledger2` | `ledger_room` |
+| --- | --- | --- | --- | --- |
+| Self-repeats | 32 | 0 | 0 | **50 (9.1%)** |
+| Duplication | 7.2% | 5.2% | 0.4% | 2.5% (cross-author, pooled) |
+| Outcome | traitor, r11 | traitor, r12 | traitor, r12 | **traitor, r13 (solo)** |
+
+**Self-repeats came back.** `scope: room` builds its comparison history
+from everyone *except* the speaker (`runtime.py:432-443`), so it dropped
+the `scope: self` check instead of adding to it: 50 byte-identical
+self-repeats in 552 public messages, worse than the 32 the un-gated
+`ptr_mem` arm had and the opposite of the 0 the `self`-scope arm managed.
+Cross-author duplication did stay low (4 texts, 6 copies), so the gate
+worked on the half it was aimed at. The defect is fixed in
+`_repetition_reason` (see [todo.md](todo.md)); this run predates the fix,
+so its 50 self-repeats are the size of the hole `scope: room` left open.
+
+**An invented object took over the room.** aaron, the first speaker of
+round 1 (sequence 41), attributed a "ledger" to Maddy before she had
+spoken; **169 of 552 public messages (30.6%)** end up arguing about it,
+and the `hallucination_score` is 0.0 because that check compares text only
+against the *record* (eliminations, rounds, roles), not against invented
+referents. The prompt never names the mechanism, so this was generated once
+and then copied by everyone - an object-shaped echo of the invented-player
+collapse the phantom gate exists for.
+
+Detection did not move. The room banished two of the three original
+traitors (alyssa r6, amanda r7) and the r6 recruit fay (r11), but original
+traitor wilf survived to the endgame and won solo - the fourth arm in a row
+ending in a traitor win, and the first where no text-quality change moved
+the outcome.
+
+For comparison with the earlier arms, the cost: 1,305 calls, 13.3% failed
+(174), p50 76.8s, p95 126.4s against a 300s timeout. Failures were 104
+illegal-target, 62 repetition, 5 parse and 3 phantom; the repetition gate
+alone rejected 62 turns and 12 of those re-generated successfully. The
+rejections, not the generation, are where the ledger arm's failures live.
 
 ## Paused: uk-s01-ledger
 

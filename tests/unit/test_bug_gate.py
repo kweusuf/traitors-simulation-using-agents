@@ -20,15 +20,17 @@ TODO = "docs/todo.md"
 
 
 def test_an_open_blocking_bug_refuses_a_new_game() -> None:
-    """The gate has to actually refuse, not merely warn."""
-    # The repository's own list is the one that matters; if it is clean the
-    # gate must pass, and if it is not, this documents which state we are in.
+    """The gate has to actually refuse, not merely warn.
+
+    The repository's own list is the one that matters: an open *blocking*
+    bug must make the gate refuse, and the absence of one must let a game
+    start. A bug filed under "Not blocking" is not a disagreement - the two
+    sections exist precisely so a run can continue with one noted.
+    """
     blocked = _refuse_if_bugs_open() == 1
-    open_ticked = any(
-        line.startswith("### [ ]") for line in _todo_lines()
-    )
-    assert blocked == open_ticked, (
-        "the gate and docs/todo.md disagree about what is open"
+    open_blocking = bool(_open_bugs_under("blocking"))
+    assert blocked == open_blocking, (
+        "the gate and docs/todo.md disagree about what is blocking"
     )
 
 
@@ -54,3 +56,31 @@ def _todo_lines() -> list[str]:
 
     todo = Path(__file__).resolve().parents[2] / TODO
     return todo.read_text().splitlines()
+
+
+def _open_bugs_under(section: str) -> list[str]:
+    """Unticked bug titles governed by the `## {section}` heading.
+
+    Mirrors the gate's rule: a bug is a heading whose text opens with a
+    checkbox, and its severity is the nearest preceding heading that is not
+    itself a bug. Kept as a small independent parse on purpose, so this
+    cross-checks the gate rather than calling it.
+    """
+    import re
+
+    bug = re.compile(r"^#{1,6}\s+\[(?P<mark>[^\]]*)\]\s*(?P<title>.+?)\s*$")
+    heading = re.compile(r"^#{1,6}\s+(?P<title>.+?)\s*$")
+    current = ""
+    found: list[str] = []
+    for line in _todo_lines():
+        head = heading.match(line)
+        if head is None:
+            continue
+        match = bug.match(line)
+        if match is not None:
+            ticked = match.group("mark").strip().lower() == "x"
+            if not ticked and current == section:
+                found.append(match.group("title"))
+        else:
+            current = head.group("title").strip().lower()
+    return found
