@@ -413,3 +413,71 @@ def test_host_is_never_counted_as_a_player() -> None:
     assert similarity["players_compared"] == 2  # alice and charlie spoke
     assert result["secrecy"]["flags_total"] == 0
     assert result["hallucination_score"] == 0.0
+
+
+# ----------------------------------------------------------------------
+# Hallucination: a claim put in a player's mouth
+# ----------------------------------------------------------------------
+
+
+def test_a_claim_attributed_to_a_silent_player_is_flagged() -> None:
+    """The entry point of an invented object: nobody can have said it yet.
+
+    uk-s01-ledger-room opened with "Maddy, you mentioned the ledger
+    entries...", written by the first speaker of round 1 while maddy had
+    not spoken at all. 30.6% of the room's messages then argued about a
+    ledger that does not exist, and the detector scored none of them. The
+    record settles the attribution: maddy had no message to quote.
+    """
+    events = base_events() + [
+        message(20, "alice", "bob, you mentioned the ledger entries were sequential."),
+    ]
+    result = analyse(events)
+
+    assert result["hallucination"]["fabricated_attributions"] == 1
+    assert result["hallucination"]["messages_with_contradictions"] == 1
+    assert result["hallucination_score"] > 0.0
+    assert result["hallucination"]["samples"][0]["kind"] == "fabricated_attribution"
+
+
+def test_quoting_a_player_who_has_spoken_is_not_a_fabrication() -> None:
+    """Engaging with what was actually said is the point of the game."""
+    events = base_events() + [
+        message(20, "bob", "alice, you mentioned you would listen to everyone."),
+    ]
+    result = analyse(events)
+
+    assert result["hallucination"]["fabricated_attributions"] == 0
+    assert result["hallucination_score"] == 0.0
+
+
+def test_a_silent_player_saying_nothing_is_not_a_fabricated_claim() -> None:
+    """'you said nothing' is true of a silent player, not a fabrication."""
+    events = base_events() + [
+        message(20, "alice", "bob, you said nothing at all this round."),
+        message(21, "charlie", "david, you mentioned no one has been accused."),
+    ]
+    result = analyse(events)
+
+    assert result["hallucination"]["fabricated_attributions"] == 0
+    assert result["hallucination_score"] == 0.0
+
+
+def test_a_private_message_counts_as_having_spoken() -> None:
+    """A claim whispered earlier can legitimately be raised in public."""
+    events = base_events() + [
+        ev(
+            20,
+            EventType.PRIVATE_MESSAGE,
+            round=1,
+            phase="private_chat",
+            actor="alice",
+            targets=["bob"],
+            channel="private",
+            content="Keep an eye on the quiet ones, that is all I will say.",
+        ),
+        message(21, "bob", "alice, you mentioned watching the quiet ones."),
+    ]
+    result = analyse(events)
+
+    assert result["hallucination"]["fabricated_attributions"] == 0

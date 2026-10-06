@@ -137,6 +137,35 @@ def _with_target(action: Action, target: str) -> Action:
     return action.model_copy(update={"target": target})
 
 
+# Ordinary prose that opens a sentence, never an address. A token in this
+# set can never be read as a suspect in `resolve_content_names`, so a comma
+# after one is never evidence of an invented player: "However, ..." and
+# "Otherwise, ..." are how a sentence starts, not somebody being spoken to.
+#
+# The set is open-ended by nature and must err towards inclusion. The
+# asymmetry: a marker that is missing costs one wasted retry on a real turn
+# (and only where rejection is on), while a word wrongly listed cannot hide
+# a real address, because no player is named "otherwise". No roster name may
+# appear here - the checked configs name none of these words. "otherwise"
+# arrived this way, after uk-s01-ledger-room spent a retry on it.
+_DISCOURSE_MARKERS = frozenset(
+    """
+    actually additionally admittedly afterwards alternatively anyway but
+    apparently arguably basically besides certainly clearly consequently
+    conversely curiously currently either else eventually evidently finally
+    firstly fortunately frankly further furthermore generally granted hence
+    honestly however ideally importantly indeed initially instead
+    interestingly lastly later likewise meanwhile moreover mostly naturally
+    nevertheless next nonetheless nor notably now obviously occasionally
+    often or otherwise overall perhaps plainly please possibly presumably
+    previously probably rather regardless secondly similarly since so
+    sometimes soon specifically still strangely surely surprisingly then
+    thereafter therefore thus too truly typically ultimately unfortunately
+    usually well yet and
+    """.split()
+)
+
+
 def resolve_content_names(
     content: str, known_players: Iterable[str], context: str = ""
 ) -> tuple[str, list[str], list[str]]:
@@ -172,39 +201,16 @@ def resolve_content_names(
     # being spoken to. First-word-of-sentence was tried and rejected - it
     # flagged every ordinary sentence-initial capital.
     #
-    # A sentence-initial discourse marker ("However, ...", "Meanwhile, ...")
-    # is ordinary prose, not an address. These are excluded outright: a
-    # token in this set can never be a suspect, so a comma after one is
-    # never evidence of a phantom.
-    DISCOURSE_MARKERS = frozenset(
-        {
-            "however",
-            "meanwhile",
-            "moreover",
-            "furthermore",
-            "nevertheless",
-            "nonetheless",
-            "therefore",
-            "instead",
-            "finally",
-            "firstly",
-            "secondly",
-            "frankly",
-            "honestly",
-            "basically",
-            "actually",
-            "well",
-            "so",
-            "but",
-            "and",
-        }
-    )
+    # A sentence-initial discourse marker ("However, ...", "Otherwise, ...")
+    # is ordinary prose, not an address. `_DISCOURSE_MARKERS` above excludes
+    # them outright: a token in that set is never a suspect, so a comma after
+    # one is never evidence of a phantom.
     suspect = {
         m.group(1)
         for m in re.finditer(
             r"(?:^|(?<=[.!?]\s)|(?<=\n)|(?<=[\"'“]\s))([A-Z][a-zA-Z]{2,})\s*,", content
         )
-        if m.group(1).casefold() not in DISCOURSE_MARKERS
+        if m.group(1).casefold() not in _DISCOURSE_MARKERS
     }
 
     repairs: list[str] = []

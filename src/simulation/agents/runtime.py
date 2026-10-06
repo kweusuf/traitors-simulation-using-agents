@@ -72,7 +72,7 @@ class AgentRuntime:
         reject_invented_players: bool = False,
         reject_repetition: bool = False,
         repetition_threshold: float = 1.0,
-        repetition_scope: str = "self",
+        repetition_scope: str = "room",
         repetition_min_words: int = 5,
         suspicion_ledger: bool = False,
         ledger_suspects: int = DEFAULT_SUSPECT_SIZE,
@@ -113,7 +113,9 @@ class AgentRuntime:
         # is the failure a player repeats. "room" also compares against
         # everyone else's, which catches the template collapse where eight
         # players converge on one phrase without any single player saying
-        # it twice.
+        # it twice. Both scopes are nested, so `room` is the default: `self`
+        # saw only the smaller half of a measured collapse (zero self-repeats
+        # and still 31 byte-identical messages from different players).
         self.repetition_scope = repetition_scope
         self.repetition_min_words = repetition_min_words
         # Messages rejected as repeats, for the run summary. Recorded even

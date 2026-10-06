@@ -273,9 +273,16 @@ def test_the_gate_is_off_by_default() -> None:
 
 
 def test_self_scope_leaves_echoing_the_room_alone() -> None:
-    """Matching the last speaker is legitimate conversation."""
+    """`self` is still available, and still ignores other players.
+
+    Matching the last speaker is legitimate conversation, so `self` exists
+    for a run that wants only the self-repeat check - but it must be asked
+    for by name now that `room` is the default.
+    """
     runtime, _ = make_runtime(
-        {"alice": [say(WORDING)]}, reject_repetition=True
+        {"alice": [say(WORDING)]},
+        reject_repetition=True,
+        repetition_scope="self",
     )
     view = make_view([WORDING], sender="bob")
     action = asyncio.run(
@@ -283,6 +290,32 @@ def test_self_scope_leaves_echoing_the_room_alone() -> None:
     )
     assert action.content == WORDING
     assert runtime.repeats_rejected == 0
+
+
+def test_the_default_scope_catches_echoing_the_room() -> None:
+    """The wrong default: `self` saw only the smaller half of the collapse.
+
+    A run with `scope: self` zeroed self-repeats and still finished with 31
+    byte-identical messages, all from *different* players - which is the
+    collapse this gate exists to stop. `room` nests `self`, so it is the
+    default; this asserts the gate with no scope named at all.
+    """
+    runtime, _ = make_runtime(
+        {"alice": [say(WORDING), say(OTHER)]}, reject_repetition=True
+    )
+    view = make_view([WORDING], sender="bob")
+    action = asyncio.run(
+        runtime.decide("alice", view, ActionType.PUBLIC_MESSAGE, [])
+    )
+    assert action.content == OTHER
+    assert runtime.repeats_rejected == 1
+
+
+def test_the_config_default_matches_the_runtime_default() -> None:
+    """A config that leaves the scope alone must get the tested behaviour."""
+    from simulation.experiments.config import GameConfig
+
+    assert GameConfig().game.repetition_scope == "room"
 
 
 def test_room_scope_catches_echoing_the_last_speaker() -> None:

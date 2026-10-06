@@ -4,9 +4,10 @@ Every defect found and not yet fixed, in one place, so a bug found during a
 run is not rediscovered by the next person reading its logs.
 
 `tools/bug_gate.py` reads this file and **refuses to start a new game while
-anything under "Open" is unticked**. A run started with a known bug
+anything under "Blocking" is unticked**. A run started with a known bug
 silently corrupts its own data, and the corruption is only visible much
-later, in the results.
+later, in the results. An entry under "Not blocking" is reported and does
+not stop a game.
 
 Resuming is exempt: the rounds already played cannot be un-played, and
 blocking a resume over a bug found in the run being resumed would strand it.
@@ -83,7 +84,7 @@ its name claims, and the first thing it does on a new arm is refuse to look.
 Fix: fall back to reporting the loaded flags, or delegate to
 `tools/diff_arms.py` when a second config is given.
 
-### [ ] Cross-player duplicates are not caught by `scope: self`
+### [x] Cross-player duplicates are not caught by `scope: self`
 
 `uk-s01-rep` finished with 31 byte-identical duplicates, all from *different*
 players, and zero self-repeats. The gate works; it was pointed at the
@@ -93,11 +94,15 @@ smaller half of the collapse.
 already at 12-19% failures.
 
 **Update:** `scope: room` now covers both halves and is pinned by
-`test_room_scope_still_catches_the_agent_repeating_itself`. Whether the
-*default* should move from `self` to `room` is still open.
+`test_room_scope_still_catches_the_agent_repeating_itself`.
 
-Not a bug so much as a wrong default, kept because changing it mid-experiment
-would confound the ledger arm. See [learnings.md](learnings.md).
+**Fixed:** the *default* moved with the measurement. `repetition_scope` is
+`room` in both `GameConfig` and `AgentRuntime`, pinned by
+`test_the_default_scope_catches_echoing_the_room` and
+`test_the_config_default_matches_the_runtime_default`. `self` remains
+selectable for a run that wants only the self-repeat check, and nothing is
+rejected unless `reject_repetition` is also on, so a config that leaves the
+scope alone still plays exactly as it did. See [learnings.md](learnings.md).
 
 ### [x] `scope: room` drops the agent's own messages from the check
 
@@ -125,7 +130,7 @@ copies), so the gate did catch the half it was aimed at.
 self-plus-others and nested under `self` rather than disjoint from it.
 Pinned by `test_room_scope_still_catches_the_agent_repeating_itself`.
 
-### [ ] The discourse-marker allowlist misses ordinary sentence-initial adverbs
+### [x] The discourse-marker allowlist misses ordinary sentence-initial adverbs
 
 `resolve_content_names` (`src/simulation/actions/validator.py:179-208`)
 excludes a fixed set of sentence-initial words — "however", "meanwhile",
@@ -145,9 +150,24 @@ The run's other two phantom rejections were real — `Ilya`, invented by
 aaron in r1 and again by andrea in r5 — so the gate catches true phantoms
 and misfired only on this one.
 
-`src/simulation/actions/validator.py:179-208` (`resolve_content_names`)
+`src/simulation/actions/validator.py` (`_DISCOURSE_MARKERS` at `:151`,
+`resolve_content_names` at `:169`)
 
-### [ ] A hallucinated object can occupy the room, and the detector is blind to it
+**Fixed:** the set is now the module-level `_DISCOURSE_MARKERS` rather than a
+list local to the function, extended from 19 hand-picked words to the usual
+sentence-initial adverbs and connectives, `otherwise` included. Pinned by
+`test_otherwise_at_a_sentence_start_is_not_a_phantom` and the extended
+`test_sentence_initial_discourse_markers_are_not_phantoms`.
+
+The list stays open-ended, which is the honest shape of this fix: it is
+extended as new markers appear. The asymmetry is what makes that safe - a
+missed marker costs one retry, while a word added in error can never hide a
+real address, since no player is named `otherwise`. The alternative, deciding
+by position alone, was already rejected: it flags every ordinary
+sentence-initial capital. True phantoms are still caught, and mid-sentence
+addresses ("Listen Iris, ...") were never covered by either version.
+
+### [x] A hallucinated object can occupy the room, and the detector is blind to it
 
 `uk-s01-ledger-room`'s central fiction is a **ledger** that does not exist
 in the game. aaron — the first speaker of round 1 (sequence 41) — opens
@@ -167,6 +187,43 @@ alive-after-elimination, invented rounds, role contradictions — so an
 invented non-player *object* driving 30% of the discussion is invisible to
 it. Same failure mode as the invented *player* the phantom gate exists for,
 but object-shaped and undetected.
+
+`src/simulation/experiments/quality.py`
+
+**Fixed:** the check now reads attributions, which is the part of this the
+record can settle. A message that names a claim a player has no earlier
+message to support is a `fabricated_attribution` - the same shape as the
+other record contradictions, and it scores. `uk-s01-ledger-room` registers 3
+(aaron's seed among them) and its `hallucination_score` is 0.004 rather than
+0.0. Measured across the archived runs: 0-7 on the arms that show the
+pattern, 0 on the arms that do not, every occurrence in round 1. Pinned by
+`test_a_claim_attributed_to_a_silent_player_is_flagged`, with the
+false-positive shapes pinned alongside it (a claim about a player who has
+spoken, "you said nothing", and a private message counting as having spoken).
+
+The object's *uptake* is still invisible, so it is its own entry below rather
+than a claim that this one covers it.
+
+### [ ] An invented object's uptake is invisible to the metrics
+
+Round 1 can put a fiction into the room that contradicts the *world* without
+contradicting the record: `uk-s01-ledger-room`'s ledger reached 169 of 552
+public messages (30.6%), and every one of those is a true statement about a
+thing that does not exist. `fabricated_attribution` catches the entry; what
+the room does with the object afterwards is unmeasured.
+
+A vocabulary-level detector was measured and rejected. The checker sees only
+`events.jsonl`, whose payloads are structured and which carries no engine
+prose, and `llm_calls.jsonl` records `prompt_chars` rather than prompt text -
+so there is nothing to ground a term against. The only available filter is
+frequency plus a hand-written word list, and on this run that list is 213
+words long, `trust` and `claim` beside `ledger`: it cannot separate an
+invented object from ordinary vocabulary, and a false positive here would
+mark a real discussion as a hallucination.
+
+Either the engine's own text has to reach the checker, or the fix belongs on
+the generation side - a prompt that anchors the room to named record facts -
+rather than in a post-hoc scan.
 
 `src/simulation/experiments/quality.py`
 

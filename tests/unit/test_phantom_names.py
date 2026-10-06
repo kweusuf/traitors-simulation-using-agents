@@ -83,19 +83,38 @@ def test_a_sentence_starting_with_a_word_is_not_a_phantom() -> None:
 
 
 def test_sentence_initial_discourse_markers_are_not_phantoms() -> None:
-    """The two real false positives: 'However,' and 'Meanwhile,' cost retries.
+    """Real false positives: 'However,' and 'Meanwhile,' each cost a retry.
 
     Seen in uk-s01-ledger, where each burned a full retry on a ~25s call.
     A discourse marker before a comma is ordinary prose, never an address.
+    The set is open-ended, so this covers one marker per family: contrast,
+    addition, sequence, aside, conclusion.
     """
     for sentence in [
         "However, I think we should look closer.",
         "Meanwhile, the room has gone quiet.",
         "Moreover, nobody has answered the question.",
         "Frankly, that story does not hold together.",
+        "Otherwise, we are guessing without a basis.",
+        "Additionally, nobody has named a motive.",
+        "Ultimately, the vote is all we have.",
+        "Naturally, the quiet players are the safest bet.",
     ]:
         _, _, phantoms = resolve_content_names(sentence, ROSTER, CONTEXT)
         assert phantoms == [], f"{sentence!r} was wrongly called a phantom"
+
+
+def test_otherwise_at_a_sentence_start_is_not_a_phantom() -> None:
+    """The marker the allowlist was missing, and the cost of missing one.
+
+    uk-s01-ledger-room r1 rejected alex's turn for naming 'Otherwise'. Same
+    ordinary prose shape as the markers already listed, and an omission here
+    discards a real turn rather than asking twice.
+    """
+    _, _, phantoms = resolve_content_names(
+        "Otherwise, the whole read falls apart.", ROSTER, CONTEXT
+    )
+    assert phantoms == []
 
 
 def test_a_real_phantom_after_a_discourse_marker_is_still_caught() -> None:

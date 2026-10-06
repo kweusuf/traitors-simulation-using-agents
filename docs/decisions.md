@@ -127,16 +127,21 @@ lost turns.
 
 ### `scope: self` was the wrong default, and the data says so
 
-**Decision.** Run with `repetition_scope: self`; `room` is untested.
+**Decision.** Default `repetition_scope: room`; `self` stays selectable.
 
-**Reasoning.** `self` was chosen to be conservative about false positives.
-Measured, it was the smaller half of the problem: cross-player duplicates
-fell only 50 → 15, while self-repeats went to zero. The collapse is
-*different players* saying the same thing, which `self` cannot see by
-construction.
+**Reasoning.** `self` was chosen to be conservative about false positives, and
+measured it was the smaller half of the problem: cross-player duplicates fell
+only 50 → 15 while self-repeats went to zero. The collapse is *different
+players* saying the same thing, which `self` cannot see by construction - and
+the split repeats the other way round in `uk-s01-rep`, 31 byte-identical
+messages from different players and zero self-repeats. Once `room` includes
+the speaker's own messages the scopes are nested, so `room` is `self` plus the
+half that matters, and the old default was conservative only in the sense of
+seeing less.
 
 **Benefit.** A clean one-variable result and a specific next arm, rather than
-a vague "try it on". See
+a vague "try it on". Nothing is rejected unless `reject_repetition` is also
+on, so a config that has not enabled the gate behaves exactly as before. See
 [learnings.md](learnings.md#the-template-collapse-is-cross-player-not-self-repetition).
 
 ---
@@ -219,6 +224,28 @@ construction, so constructing it before the resume point is settled would
 erase a crashed run's telemetry during the very attempt meant to recover it.
 
 **Benefit.** A rejected resume leaves the run untouched.
+
+### An invented referent is caught where it is put in someone's mouth
+
+**Decision.** `quality.analyse` flags a message that attributes a claim to a
+player who has not spoken - `fabricated_attribution` - and the record decides
+it, because the log holds every message's author and its sequence.
+
+**Reasoning.** Detecting the invented object itself was tried and rejected.
+Grounding would have to come from the engine's own text, and the checker has
+none: `events.jsonl` payloads are structured, and `llm_calls.jsonl` keeps
+`prompt_chars` rather than prompt text. That leaves frequency plus a
+hand-written word list, which on the run that motivated this is 213 words
+long, `trust`, `real` and `claim` beside `ledger` - it cannot separate an
+invented object from ordinary vocabulary. The attribution is the part the
+record can settle, and it is where the fiction actually entered: the first
+speaker of round 1 named a claim made by a player who had not spoken.
+
+**Benefit.** An invented referent that arrives through a fabricated quote now
+moves `hallucination_score` off 0.0 - 0-7 occurrences per run on the arms that
+show the pattern, 0 on the arms that do not. What the room does with the
+object afterwards is still unmeasured, and that is open in
+[todo.md](todo.md).
 
 ---
 

@@ -236,7 +236,9 @@ self-repeats in 552 public messages, worse than the 32 the un-gated
 Cross-author duplication did stay low (4 texts, 6 copies), so the gate
 worked on the half it was aimed at. The defect is fixed in
 `_repetition_reason` (see [todo.md](todo.md)); this run predates the fix,
-so its 50 self-repeats are the size of the hole `scope: room` left open.
+so its 50 self-repeats are the size of the hole `scope: room` left open. The
+default then followed the measurement - `repetition_scope: room`, which nests
+`self` - so a new arm gets both checks unless it asks for `self` explicitly.
 
 **An invented object took over the room.** aaron, the first speaker of
 round 1 (sequence 41), attributed a "ledger" to Maddy before she had
@@ -246,6 +248,14 @@ against the *record* (eliminations, rounds, roles), not against invented
 referents. The prompt never names the mechanism, so this was generated once
 and then copied by everyone - an object-shaped echo of the invented-player
 collapse the phantom gate exists for.
+
+The detector is no longer blind to the *entry*. What put the ledger in the
+room is checkable against the record - a claim attributed to a player who had
+not spoken - and that is now `fabricated_attribution`. Every arm in the
+archive that shows the pattern shows it in round 1, 0-7 times per run; this
+run registers three, the seed among them. What the room does with the object
+*after* that is still unmeasured, because 169 messages about a thing that does
+not exist are not contradictions of the record. See [todo.md](todo.md).
 
 Detection did not move. The room banished two of the three original
 traitors (alyssa r6, amanda r7) and the r6 recruit fay (r11), but original

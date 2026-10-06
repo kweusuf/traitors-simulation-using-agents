@@ -298,6 +298,7 @@ def test_metrics_command_shows_llm_and_quality(tmp_path, capsys) -> None:
     assert "latency ms:" in out
     assert "public_message: calls=" in out
     assert "Quality: hallucination_score=" in out
+    assert "fabricated attributions=" in out
     assert "secrecy: traitor declarations=" in out
 
 

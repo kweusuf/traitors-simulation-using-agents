@@ -8,7 +8,8 @@ social deduction game means different things:
 - **hallucination**: generated text that contradicts the game record
   (claiming an elimination that never happened, calling an eliminated
   player alive, inventing a round that never ran, self-declaring a role
-  that does not match the dealt one).
+  that does not match the dealt one, attributing a claim to a player who
+  has not spoken yet).
 - **secrecy**: role declarations that spoil the game, judged against the
   role the sender actually held at that moment (traitor first-person
   self-declaration, traitor affiliation phrasing such as "two of our
@@ -84,6 +85,23 @@ _ACCUSATION_CONTEXT = re.compile(
 _ELIMINATION_CLAIM = r"{name}\s+(?:was|is|has been)\s+(?:banished|murdered|killed|eliminated|voted out)"
 _STILL_ALIVE_CLAIM = r"{name}\s+(?:is|remains|is still)\s+alive"
 _ROUND_CLAIM = re.compile(r"\bround\s+(\d+)\b", re.IGNORECASE)
+
+# A claim put in a named player's mouth: "Maddy, you mentioned ...". The
+# record decides whether it is possible, because a player cannot have
+# mentioned anything before their first message - which makes this the one
+# invented *referent* a deterministic check can catch. It is how this run's
+# ledger entered the fiction: the first speaker of round 1 attributed it to a
+# player who was still silent, and 30% of the room then argued about it.
+#
+# The trailing guard keeps "you said nothing / you mentioned no one" out:
+# that is a true observation about a silent player, not a fabricated claim.
+_ATTRIBUTION = re.compile(
+    r"([A-Za-z']+)\s*,\s*you\s+"
+    r"(?:said|mentioned|claimed|argued|noted|stated|insisted|admitted|"
+    r"suggested|pointed out|told)\b"
+    r"(?!\s+(?:no|not|nothing|never|little)\b)",
+    re.IGNORECASE,
+)
 
 # Word overlap would otherwise be dominated by glue words, so the
 # content-word comparison drops the commonest English ones.
@@ -316,6 +334,13 @@ def analyse(events: list[Event]) -> dict[str, Any]:
     fabricated_eliminations = 0
     alive_after_elimination = 0
     invented_rounds = 0
+    fabricated_attributions = 0
+    # Who has spoken by the time each message is judged. Populated in
+    # sequence order, so a message is read against who had spoken *before*
+    # it - private speech counts, since a whispered claim can be quoted in
+    # public legitimately.
+    spoken: set[str] = set()
+    roster_lookup = {pid.casefold() for pid in roster}
     traitor_declarations = 0
     traitor_affiliations = 0
     traitor_named_teammates = 0
@@ -386,6 +411,26 @@ def analyse(events: list[Event]) -> dict[str, Any]:
                     event,
                     f"mentions round {claimed}; the game reached round {total_rounds}",
                 )
+
+        # ...and a claim put in a player's mouth. Only the record can
+        # settle this: naming a claim someone has not made is how an
+        # invented referent enters the room, and the room then copies it.
+        if sender in roster:
+            for match in _ATTRIBUTION.finditer(content):
+                quoted = match.group(1).casefold()
+                if (
+                    quoted in roster_lookup
+                    and quoted != sender
+                    and quoted not in spoken
+                ):
+                    fabricated_attributions += 1
+                    violations += 1
+                    note(
+                        hall_samples,
+                        "fabricated_attribution",
+                        event,
+                        f"attributes a claim to {quoted}, who has not spoken",
+                    )
 
         # 2. Role secrecy, judged against the role the sender actually
         # held at that moment in the game, and only where a non-traitor
@@ -467,6 +512,11 @@ def analyse(events: list[Event]) -> dict[str, Any]:
             elif first_author != sender:
                 duplicate_messages += 1
 
+        # The speaker has now spoken, for the next message's attribution
+        # check. Recorded after this message is judged, never before.
+        if sender in roster:
+            spoken.add(sender)
+
         if violations:
             fabrications_by_message += 1
 
@@ -486,6 +536,7 @@ def analyse(events: list[Event]) -> dict[str, Any]:
             "fabricated_eliminations": fabricated_eliminations,
             "alive_after_elimination": alive_after_elimination,
             "invented_rounds": invented_rounds,
+            "fabricated_attributions": fabricated_attributions,
             "samples": hall_samples,
         },
         "secrecy": {

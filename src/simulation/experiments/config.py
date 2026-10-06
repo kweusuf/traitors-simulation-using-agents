@@ -118,7 +118,14 @@ class GameSettings(StrictModel):
     # does constantly. The scopes are nested, not disjoint: `room` includes
     # the speaker's own messages. (An earlier `room` excluded them, which
     # silently dropped the self-check; see docs/todo.md.)
-    repetition_scope: Literal["self", "room"] = "self"
+    #
+    # `room` is the default because `self` was pointed at the smaller half
+    # of the collapse: self-scope zeroed self-repeats and still left 31
+    # byte-identical messages from *different* players, which is the failure
+    # this gate exists to stop. Nothing is rejected unless
+    # `reject_repetition` is also on, so a config that leaves this alone
+    # plays the same until it turns the gate on.
+    repetition_scope: Literal["self", "room"] = "room"
     # Replies shorter than this are only rejected on an exact match. Below
     # it, content-word similarity is too noisy to act on: "No." is not a
     # repetition of "No."

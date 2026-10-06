@@ -515,7 +515,8 @@ def cmd_metrics(args: argparse.Namespace) -> int:
         f"  hallucination: contradictions={hallucination.get('messages_with_contradictions')} "
         f"(fake eliminations={hallucination.get('fabricated_eliminations')}, "
         f"alive after elim={hallucination.get('alive_after_elimination')}, "
-        f"invented rounds={hallucination.get('invented_rounds')})"
+        f"invented rounds={hallucination.get('invented_rounds')}, "
+        f"fabricated attributions={hallucination.get('fabricated_attributions')})"
     )
     print(
         f"  secrecy: traitor declarations={secrecy.get('traitor_public_declarations')} "
