@@ -106,6 +106,24 @@ lives in the server process, not the config.
 4 per run, two runs at once, is the level these configs record as always
 clean. Past what a host serves in parallel, extra requests do not error -
 they wait, and then fail on `timeout_seconds`.
+
+### A retryable transport failure that exhausts the retries still ends the run
+
+From the outside these look like blips: the provider retries a dropped
+connection with backoff, the call log records an `attempt: 1` failure, and the
+run carries on. Past the retry budget the `OllamaError` propagates through the
+decide loop, the phase, the runner and the CLI, and the game ends where it
+stands. Only a *parse* failure is absorbed as a skipped action; nothing in the
+stack turns a dead socket into one.
+
+That makes supervision part of running a long sweep rather than an optional
+extra: every arm sharing one host is one host-wide failure away from ending
+together. `tools/run_rand_sweep.py` resumes a crashed arm from its own log, so
+a transport failure costs the phase it interrupted instead of the night. Count
+the restarts per arm (`grep -c attempt <arm>.log`) and keep that next to the
+arm's numbers: two arms interrupted a different number of times were not asked
+quite the same question.
+
 ---
 
 ## Prompting and schema

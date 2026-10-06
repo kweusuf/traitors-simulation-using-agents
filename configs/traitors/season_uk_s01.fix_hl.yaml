@@ -31,7 +31,8 @@
 #
 # Consequence worth fixing separately: a transport failure kills an
 # eight-hour run outright instead of skipping one action. The resume
-# machinery exists for this, but nothing invokes it automatically.
+# machinery exists for this and tools/run_rand_sweep.py now invokes it per
+# arm; a run started by hand still dies where it stands.
 
 
 game:

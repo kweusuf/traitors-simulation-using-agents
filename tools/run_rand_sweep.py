@@ -13,6 +13,21 @@ to share that budget rather than each claiming the tracked four. And a sweep
 left to one-at-a-time finishes over several days, which is long enough that
 the model tag on the host is no longer the same experiment.
 
+Every arm runs under a supervisor. A transport failure that exhausts the
+provider's retries propagates out of the run and ends it, so for a run this
+long one closed socket is the difference between losing a night and losing a
+phase. The resume machinery exists for exactly this and nothing invoked it
+automatically; the supervisor does, relaunching a crashed arm with `--resume`
+so it continues from the last completed phase of its own log. Seven arms are
+seven chances for one socket to end the sweep.
+
+Supervision does not make an arm identical to an uninterrupted run: a resume
+discards the phase that was cut off, so that phase's calls are paid for again.
+Each attempt writes a header into the arm's log, so the number of resumes is
+readable afterwards (`grep -c attempt <arm>.log`) rather than inferred from
+the tracebacks between them. Two arms resumed a different number of times were
+not asked quite the same question, and that belongs next to their numbers.
+
 Nothing here writes an address into the repository. `--base-url` keeps the
 endpoint on the command line; the run's own captured config records it inside
 its run folder, which is gitignored.
@@ -21,16 +36,25 @@ Usage:
   uv run --no-sync python tools/run_rand_sweep.py --base-url http://HOST:11434
   uv run --no-sync python tools/run_rand_sweep.py --base-url ... --dry-run
   uv run --no-sync python tools/run_rand_sweep.py --base-url ... --arms ledger
+  # continue arms already on disk (a plain run skips a folder that exists)
+  uv run --no-sync python tools/run_rand_sweep.py --base-url ... --resume
 
 Watch one while it runs:
   uv run --no-sync python tools/run_health.py runs/uk-s01-rand-ledger
+
+Stop:
+  kill <pid>                # a supervisor, from <log-dir>/launch.txt
+  pkill -f 'uk-s01-rand-'   # every supervisor and the run under it
 """
 from __future__ import annotations
 
 import argparse
+import signal
 import subprocess
 import sys
+import time
 from pathlib import Path
+from typing import Optional
 
 # One list, owned by the generator, so the sweep cannot drift from the set of
 # arms that were actually generated.
@@ -39,20 +63,160 @@ from make_rand_arms import ARMS  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# How a crashed arm is recovered. Both numbers exist because the failure that
+# triggers a resume is usually gone by the next attempt, while a host that is
+# down fails every attempt within seconds: without a pause and a cap, the
+# supervisor would spend the night failing at it.
+DEFAULT_MAX_RESUMES = 20
+DEFAULT_RESUME_BACKOFF = 60.0
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--base-url", required=True,
-                    help="the host that serves the model, e.g. http://HOST:11434")
-    ap.add_argument("--arms", nargs="*", default=list(ARMS),
-                    help=f"arms to run (default: {' '.join(ARMS)})")
-    ap.add_argument("--runs-dir", default="runs")
-    ap.add_argument("--log-dir", default="runs/_rand-sweep",
-                    help="where each arm's output is written (gitignored)")
-    ap.add_argument("--dry-run", action="store_true",
-                    help="print the commands instead of starting anything")
-    args = ap.parse_args()
+# `load_point` refuses to rewrite a log that moved recently, on the grounds
+# that a live run is holding it. A crash lands inside that window, so the
+# resume is told the log is idle after five seconds instead: the directory
+# lock, not the clock, is what proves the writer is gone.
+RESUME_IDLE_SECONDS = 5
 
+# The attempt in flight, so a SIGTERM takes the run with the supervisor
+# instead of leaving a run behind with nothing watching it.
+_child: Optional[subprocess.Popen] = None
+
+
+def command_for_attempt(
+    attempt: int, *, fresh: list[str], resume: list[str], resume_first: bool
+) -> list[str]:
+    """The command for one attempt at one arm.
+
+    Attempt 1 is a new run, unless the caller asked to continue a folder that
+    is already on disk, in which case it is a resume. Every later attempt is a
+    resume: by then the folder exists and its event log is the only account of
+    the rounds that already happened.
+    """
+    if attempt > 1 or resume_first:
+        return resume
+    return fresh
+
+
+def should_retry(exit_code: int, attempt: int, max_resumes: int) -> bool:
+    """Whether an attempt that just returned leaves something to continue.
+
+    Zero means the game finished, and there is nothing to resume. Anything
+    else is a crash - a transport failure, most often - and the run folder is
+    still there with a playable history in it, so the next attempt continues
+    it. The cap is on resumes, not attempts: the first run is not one.
+    """
+    return exit_code != 0 and attempt <= max_resumes
+
+
+def _commands(arm: str, game_id: str, base_url: str) -> tuple[list[str], list[str]]:
+    """The new-run command and the resume command for one arm.
+
+    The config is checked here rather than assumed: an arm nobody generated
+    would otherwise start a run that fails on its first model call, hours
+    after the sweep was left to itself.
+    """
+    config = ROOT / "configs" / "traitors" / f"season_uk_s01.{arm}.rand.yaml"
+    if not config.exists():
+        raise SystemExit(
+            f"no {config.name}; run tools/make_rand_arms.py {arm} first"
+        )
+    fresh = [
+        # -u because stdout is a file here: buffered, the log stays empty for
+        # the whole run and a traceback is lost with the buffer.
+        sys.executable, "-u", "-m", "simulation", "run", str(config),
+        "--game-id", game_id, "--base-url", base_url, "--quiet",
+    ]
+    return fresh, fresh + ["--resume", "--idle-seconds", str(RESUME_IDLE_SECONDS)]
+
+
+def _pretty(command: list[str]) -> str:
+    """A command as the reader would type it: repo-relative, uv in front."""
+    parts = [str(part).replace(str(ROOT) + "/", "") for part in command[1:]]
+    return "uv run --no-sync python " + " ".join(parts)
+
+
+def _supervisor_command(
+    arm: str, game_id: str, args: argparse.Namespace, *, resume_first: bool
+) -> list[str]:
+    """The command that supervises one arm, in its own session.
+
+    `--session-name` puts the run id into the supervisor's command line as
+    well as the run's. That is what keeps the documented
+    `pkill -f 'uk-s01-rand-'` honest: a supervisor that outlived its own run
+    would only resume it, undoing the kill.
+    """
+    command = [
+        sys.executable, "-u", str(Path(__file__).resolve()),
+        "--base-url", args.base_url,
+        "--supervise", "--arms", arm, "--session-name", game_id,
+        "--runs-dir", args.runs_dir, "--log-dir", args.log_dir,
+        "--max-resumes", str(args.max_resumes),
+        "--resume-backoff", str(args.resume_backoff),
+    ]
+    if resume_first:
+        command.append("--resume")
+    return command
+
+
+def _terminate_child(signum: int, _frame: object) -> None:  # pragma: no cover
+    """Take the attempt in flight with the supervisor, then stop."""
+    if _child is not None and _child.poll() is None:
+        _child.terminate()
+    raise SystemExit(128 + signum)
+
+
+def supervise(args: argparse.Namespace) -> int:
+    """Run one arm to the end, resuming it after a crash.
+
+    Foreground, and the return value is the last attempt's exit code. One
+    header per attempt goes into the arm's log, appended rather than
+    truncated, so a log that already holds a crash keeps it: how the arm died
+    is evidence too, and the headers around it say how many times that
+    happened.
+    """
+    global _child
+    if len(args.arms) != 1:
+        raise SystemExit("--supervise takes exactly one arm")
+    arm = args.arms[0]
+    game_id = args.session_name or f"uk-s01-rand-{arm}"
+    fresh, resume = _commands(arm, game_id, args.base_url)
+    log = ROOT / args.log_dir / f"{arm}.log"
+    log.parent.mkdir(parents=True, exist_ok=True)
+    signal.signal(signal.SIGTERM, _terminate_child)
+
+    attempt = 1
+    with log.open("a", encoding="utf-8") as handle:
+        while True:
+            resuming = attempt > 1 or args.resume
+            command = command_for_attempt(
+                attempt, fresh=fresh, resume=resume, resume_first=args.resume
+            )
+            handle.write(
+                f"\n--- {game_id} attempt {attempt} "
+                f"({'resume' if resuming else 'new run'}) "
+                f"{time.strftime('%Y-%m-%d %H:%M:%S')} ---\n"
+            )
+            handle.flush()
+            _child = subprocess.Popen(
+                command, cwd=ROOT, stdout=handle, stderr=subprocess.STDOUT
+            )
+            exit_code = _child.wait()
+            _child = None
+            if not should_retry(exit_code, attempt, args.max_resumes):
+                handle.write(
+                    f"--- {game_id} stopped: exit {exit_code} after "
+                    f"{attempt} attempt(s) ---\n"
+                )
+                return exit_code
+            handle.write(
+                f"--- {game_id} exited {exit_code}; resuming in "
+                f"{args.resume_backoff:.0f}s ---\n"
+            )
+            handle.flush()
+            time.sleep(args.resume_backoff)
+            attempt += 1
+
+def launch(args: argparse.Namespace) -> None:
+    """Start one supervisor per arm, and record what was started."""
     # A run started over a known blocking bug corrupts its own data, and the
     # corruption surfaces later, indistinguishable from a finding. The run
     # itself refuses too; failing here catches it for the whole sweep at once
@@ -69,38 +233,29 @@ def main() -> None:
     log_dir = ROOT / args.log_dir
     runs_dir = ROOT / args.runs_dir
     log_dir.mkdir(parents=True, exist_ok=True)
-    launched: list[tuple[str, str, int, Path]] = []
+    started: list[tuple[str, str, int]] = []
 
     for arm in args.arms:
-        config = ROOT / "configs" / "traitors" / f"season_uk_s01.{arm}.rand.yaml"
-        if not config.exists():
-            raise SystemExit(
-                f"no {config.name}; run tools/make_rand_arms.py {arm} first"
-            )
         game_id = f"uk-s01-rand-{arm}"
-        command = [
-            # -u because stdout is a file here: buffered, the log stays empty
-            # for the whole run and a traceback is lost with the buffer.
-            sys.executable, "-u", "-m", "simulation", "run", str(config),
-            "--game-id", game_id, "--base-url", args.base_url, "--quiet",
-        ]
-        pretty = "uv run --no-sync python " + " ".join(
-            str(part).replace(str(ROOT) + "/", "") for part in command[1:]
-        )
-        if (runs_dir / game_id).exists():
-            # Two writers on one game id would corrupt the log, and the
-            # rounds already in it cannot be replayed away. A dead run is
-            # continued with --resume, which is a decision to make on purpose.
+        fresh, resume = _commands(arm, game_id, args.base_url)
+        exists = (runs_dir / game_id).exists()
+        if exists and not args.resume:
+            # Two writers on one game id would corrupt the log, and the rounds
+            # already in it cannot be replayed away. Continuing a dead run is
+            # a decision to make on purpose.
             print(f"skip {game_id}: the run folder exists "
-                  f"(resume it, or move it aside)")
+                  f"(continue it with --resume, or move it aside)")
             continue
+        command = _supervisor_command(arm, game_id, args, resume_first=exists)
         if args.dry_run:
-            print(f"would start: {pretty}")
+            print(f"would start: {_pretty(command)}")
+            print(f"             first attempt: "
+                  f"{_pretty(resume if exists else fresh)}")
             print(f"             log -> {args.log_dir}/{arm}.log")
             continue
 
         log = log_dir / f"{arm}.log"
-        with log.open("wb") as handle:
+        with log.open("ab") as handle:
             process = subprocess.Popen(
                 command, cwd=ROOT, stdout=handle,
                 stderr=subprocess.STDOUT,
@@ -108,9 +263,9 @@ def main() -> None:
                 # that started it goes away.
                 start_new_session=True,
             )
-        launched.append((arm, game_id, process.pid, log))
+        started.append((arm, game_id, process.pid))
 
-    if args.dry_run or not launched:
+    if args.dry_run or not started:
         return
 
     # Written down because a sweep runs for hours and the person who has to
@@ -118,21 +273,62 @@ def main() -> None:
     lines = [
         f"pid {pid}  {game_id}\n    {ROOT}/configs/traitors/"
         f"season_uk_s01.{arm}.rand.yaml\n"
-        for arm, game_id, pid, _ in launched
+        for arm, game_id, pid in started
     ]
     (log_dir / "launch.txt").write_text(
-        f"started {len(launched)} run(s) against {args.base_url}\n"
-        f"stop one:  kill <pid>\nstop all:  pkill -f 'uk-s01-rand-'\n\n"
+        f"started {len(started)} supervised run(s) against the host given\n"
+        f"a crashed arm is resumed from its own log, up to "
+        f"{args.max_resumes} resumes; every attempt\nwrites a header into "
+        f"<arm>.log, and that count is how often an arm was broken into\n"
+        f"stop one:  kill <pid>      (the run under it goes too)\n"
+        f"stop all:  pkill -f 'uk-s01-rand-'\n\n"
         + "\n".join(lines)
     )
 
-    print(f"\nstarted {len(launched)} run(s) against the host given")
+    print(f"\nstarted {len(started)} supervised run(s) against the host given")
     print(f"logs: {args.log_dir}/<arm>.log   pids: {args.log_dir}/launch.txt")
     print("\nThe host serves a fixed number of requests in parallel, so the "
           "first rounds\nare the slowest: every arm is warming up at once. "
           "Check one with\n  uv run --no-sync python tools/run_health.py "
-          f"{args.runs_dir}/uk-s01-rand-{launched[0][0]}\n"
-          "and read a stall as queueing into the timeout, not as emptiness.")
+          f"{args.runs_dir}/uk-s01-rand-{started[0][0]}\n"
+          "and read a stall as queueing into the timeout, not as emptiness. "
+          "A crash costs\nan arm one phase, not the run: the supervisor "
+          "resumes it, and the attempt\nheaders in the log say how often "
+          "that had to happen.")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--base-url", required=True,
+                    help="the host that serves the model, e.g. http://HOST:11434")
+    ap.add_argument("--arms", nargs="*", default=list(ARMS),
+                    help=f"arms to run (default: {' '.join(ARMS)})")
+    ap.add_argument("--runs-dir", default="runs")
+    ap.add_argument("--log-dir", default="runs/_rand-sweep",
+                    help="where each arm's output is written (gitignored)")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue the run folders that already exist, instead "
+                         "of skipping them: an arm already on disk resumes first")
+    ap.add_argument("--max-resumes", type=int, default=DEFAULT_MAX_RESUMES,
+                    help="how many times one arm may be resumed after a crash "
+                         f"(default {DEFAULT_MAX_RESUMES})")
+    ap.add_argument("--resume-backoff", type=float, default=DEFAULT_RESUME_BACKOFF,
+                    help="seconds between a crash and the attempt that resumes "
+                         f"it (default {DEFAULT_RESUME_BACKOFF:.0f})")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="print the commands instead of starting anything")
+    ap.add_argument("--supervise", action="store_true",
+                    help="internal: watch one arm in the foreground and resume "
+                         "it after a crash, instead of returning")
+    ap.add_argument("--session-name", default="",
+                    help="internal: the run id being supervised, kept in this "
+                         "process's command line so `pkill -f 'uk-s01-rand-'` "
+                         "reaches it")
+    args = ap.parse_args()
+
+    if args.supervise:
+        raise SystemExit(supervise(args))
+    launch(args)
 
 
 if __name__ == "__main__":
