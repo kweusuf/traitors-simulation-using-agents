@@ -56,7 +56,9 @@ Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 
 Everything below is config-driven from the `game:` block. Defaults are
 chosen so a bare config plays the plain game; every optional mechanic is
-off unless a config turns it on.
+off unless a config turns it on. Every key, with what it does when it is
+enabled and when it is not, is listed in
+[`docs/03-config-reference.md`](docs/03-config-reference.md).
 
 ### Setup
 
@@ -454,6 +456,8 @@ python tools/make_pointer_arms.py                # regenerate the pointer arms
 python tools/verify_pointer_arms.py              # they load and differ only by flags
 python tools/check_arm_flags.py configs/traitors/season_uk_s01.ptr_req.local.yaml
 python tools/make_local_arm.py ptr_req           # arm + real endpoint, gitignored
+python tools/make_rand_arms.py                   # same arms, traitors drawn from the seed
+uv run --no-sync python tools/run_rand_sweep.py --base-url http://HOST_A:11434
 ```
 
 `run_health.py` is the one to reach for while a run is going: a run writes
