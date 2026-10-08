@@ -6,16 +6,20 @@ character prompt, a system prompt, and a grammar-constrained reply. This
 sends one real prompt through the same path a run would and reports what
 came back - valid JSON, the fields present, how long it took.
 
+It goes through the provider's transport rather than its own HTTP call,
+for the reason the `fix_hl` header records: a probe that opens its own
+connection can measure the probe. What it still cannot do is size a host
+for concurrency - one request says nothing about how many run at once.
+
 Usage:
   python tools/probe_model.py hauhau-qwen-27b [runs/uk-s01-ptr-mem]
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import sys
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -25,6 +29,9 @@ from simulation.agents.goals import Goals  # noqa: E402
 from simulation.agents.prompts import PromptBuilder  # noqa: E402
 from simulation.agents.persona import Persona  # noqa: E402
 from simulation.engine.state import GamePhase, Role  # noqa: E402
+from simulation.models.base import ChatMessage  # noqa: E402
+from simulation.models.llm import ModelConfig  # noqa: E402
+from simulation.models.ollama import OllamaError, OllamaProvider  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from prompt_composition import build_view  # noqa: E402
@@ -68,35 +75,31 @@ def main() -> None:
     print(f"host:  {base}")
     print(f"prompt: {chars:,} chars across {len(messages)} messages")
 
-    body = json.dumps({
-        "model": model,
-        "messages": messages,
-        "format": action_schema(
-            ActionType.PUBLIC_MESSAGE,
-            want_gist=want_gist, gist_required=want_gist,
-        ).model_json_schema(),
-        "stream": False,
-        "options": {"num_predict": 768, "temperature": 0.7},
-    }).encode()
+    schema = action_schema(
+        ActionType.PUBLIC_MESSAGE,
+        want_gist=want_gist, gist_required=want_gist,
+    )
+    config = ModelConfig(
+        name=model, base_url=base, temperature=0.7, max_tokens=768,
+        timeout_seconds=900, reasoning_effort="none", retries=0,
+    )
 
     start = time.monotonic()
     try:
-        request = urllib.request.Request(
-            f"{base}/api/chat", data=body,
-            headers={"Content-Type": "application/json"},
+        # `retries=0` on purpose: this asks what one call does, and a probe
+        # that quietly retries cannot answer that.
+        reply = asyncio.run(
+            OllamaProvider().generate(
+                [ChatMessage(**message) for message in messages], schema, config
+            )
         )
-        with urllib.request.urlopen(request, timeout=900) as response:
-            raw = json.loads(response.read())
-    except urllib.error.HTTPError as exc:
-        print(f"HTTP {exc.code}: {exc.read()[:300]!r}")
-        return
-    except Exception as exc:  # noqa: BLE001 - reported, not swallowed
-        print(f"failed after {time.monotonic() - start:.0f}s: {exc!r}")
+    except OllamaError as exc:
+        print(f"failed after {time.monotonic() - start:.0f}s: {exc}")
         return
 
     elapsed = time.monotonic() - start
-    text = (raw.get("message") or {}).get("content", "")
-    tokens = raw.get("eval_count") or 0
+    text = reply.content
+    tokens = reply.tokens_used or 0
     print(f"\nelapsed: {elapsed:.0f}s   tokens: {tokens}   "
           f"~{tokens / max(elapsed, 1):.1f} tok/s")
     print(f"raw reply: {text[:300]!r}\n")

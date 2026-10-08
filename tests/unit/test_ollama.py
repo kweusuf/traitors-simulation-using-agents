@@ -1,16 +1,20 @@
 """Unit tests for the Ollama provider (spec sections 17-19, 22).
 
-Every test injects a fake poster, so no Ollama server is required.
+Every test injects either a fake poster or a fake connection, so no
+Ollama server is required.
 """
 
 from __future__ import annotations
 
 import asyncio
-import urllib.error
+import errno
+import http.client
+import json
 from typing import Any
 
 import pytest
 
+import simulation.models.ollama as ollama_module
 from simulation.actions.actions import Action
 from simulation.experiments.config import LLMSettings, load_config
 from simulation.models.base import ChatMessage
@@ -156,21 +160,9 @@ def test_generate_raises_on_transport_error() -> None:
         asyncio.run(provider.generate(MESSAGES, Action, make_config()))
 
 
-def test_default_poster_maps_http_and_url_errors() -> None:
-    def failing_open(url: str, *args: Any, **kwargs: Any):
-        raise urllib.error.URLError("connection refused")
-
-    provider = OllamaProvider()
-    # Patch the module-level urlopen rather than hitting the network.
-    import simulation.models.ollama as ollama_module
-
-    original = ollama_module.urllib.request.urlopen
-    ollama_module.urllib.request.urlopen = failing_open  # type: ignore[assignment]
-    try:
-        with pytest.raises(OllamaError, match="cannot reach Ollama"):
-            provider._poster("http://localhost:11434/api/chat", {}, 1.0)
-    finally:
-        ollama_module.urllib.request.urlopen = original  # type: ignore[assignment]
+# The default poster's own behaviour - the connection it opens, the
+# headers it sends, and how it classifies failures - is covered under
+# "The transport the default poster uses" below.
 
 
 # ----------------------------------------------------------------------
@@ -293,70 +285,211 @@ def test_retries_can_be_switched_off() -> None:
     assert calls["n"] == 1
 
 
-def test_default_poster_marks_transient_failures_retryable() -> None:
-    import simulation.models.ollama as ollama_module
+# ----------------------------------------------------------------------
+# The transport the default poster uses
+# ----------------------------------------------------------------------
 
-    original = ollama_module.urllib.request.urlopen
+CHAT_URL = "http://localhost:11434/api/chat"
 
-    def fail_with(error: BaseException):
-        def opener(url: str, *args: Any, **kwargs: Any):
-            raise error
+# What a server that drops close-announced requests sent back instead of
+# an answer. `urllib.request.urlopen` announces `Connection: close` on
+# every request and cannot be told not to, which is why the poster opens
+# its own connection instead.
+DROPPED = http.client.RemoteDisconnected(
+    "Remote end closed connection without response"
+)
 
-        return opener
-
-    cases = [
-        (TimeoutError("timed out"), True),
-        (urllib.error.URLError("connection refused"), True),
-        (
-            urllib.error.HTTPError(
-                "http://localhost:11434/api/chat", 503, "unavailable", {}, None
-            ),
-            True,
-        ),
-        (
-            urllib.error.HTTPError(
-                "http://localhost:11434/api/chat", 404, "not found", {}, None
-            ),
-            False,
-        ),
-    ]
-    try:
-        for error, expected in cases:
-            ollama_module.urllib.request.urlopen = fail_with(error)  # type: ignore[assignment]
-            try:
-                ollama_module._urllib_post("http://localhost:11434/api/chat", {}, 1.0)
-            except OllamaError as exc:
-                assert exc.retryable is expected, (error, exc.retryable)
-            else:
-                raise AssertionError(f"{error!r} did not raise")
-    finally:
-        ollama_module.urllib.request.urlopen = original  # type: ignore[assignment]
+OK_RESPONSE = json.dumps(OK_BODY).encode("utf-8")
 
 
-def test_default_poster_marks_dropped_connections_retryable() -> None:
-    import http.client
-    import simulation.models.ollama as ollama_module
+@pytest.fixture(autouse=True)
+def _empty_connection_pool():
+    """A pooled socket outlives the test that opened it, so clear it."""
+    ollama_module.reset_connections()
+    yield
+    ollama_module.reset_connections()
 
-    original = ollama_module.urllib.request.urlopen
-    cases = [
-        http.client.RemoteDisconnected("Remote end closed connection without response"),
-        ConnectionResetError("reset by peer"),
-        BrokenPipeError("broken pipe"),
-    ]
-    try:
-        for error in cases:
-            def opener(url, *args, _error=error, **kwargs):
-                raise _error
 
-            ollama_module.urllib.request.urlopen = opener  # type: ignore[assignment]
-            try:
-                ollama_module._urllib_post("http://localhost:11434/api/chat", {}, 1.0)
-            except OllamaError as exc:
-                assert exc.retryable is True, (error, exc.retryable)
-            else:
-                raise AssertionError(f"{error!r} did not raise")
-    finally:
-        ollama_module.urllib.request.urlopen = original  # type: ignore[assignment]
+class _FakeSocket:
+    def __init__(self) -> None:
+        self.timeout: float | None = None
+
+    def settimeout(self, value: float) -> None:
+        self.timeout = value
+
+
+class _FakeResponse:
+    def __init__(self, status: int = 200, body: bytes = OK_RESPONSE) -> None:
+        self.status = status
+        self._body = body
+
+    def read(self) -> bytes:
+        return self._body
+
+
+class _FakeConnection:
+    """Answers, or fails, in the order a test lists the outcomes.
+
+    An exception is raised where a real socket raises it: at the send if
+    it is next in line when `request` runs, at the read otherwise. With
+    nothing listed it answers 200 and `OK_BODY`.
+    """
+
+    def __init__(self, *outcomes: Any) -> None:
+        self.requests: list[dict[str, Any]] = []
+        self.closed = False
+        self.sock: _FakeSocket | None = None
+        self._outcomes = list(outcomes)
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        body: bytes | None = None,
+        headers: Any = None,
+    ) -> None:
+        self.requests.append(
+            {"method": method, "url": url, "headers": dict(headers or {})}
+        )
+        if self._outcomes and isinstance(self._outcomes[0], BaseException):
+            raise self._outcomes.pop(0)
+        self.sock = self.sock or _FakeSocket()
+
+    def getresponse(self) -> _FakeResponse:
+        outcome = self._outcomes.pop(0) if self._outcomes else _FakeResponse()
+        if isinstance(outcome, BaseException):
+            raise outcome
+        return outcome
+
+    def die(self, error: BaseException = DROPPED) -> None:
+        """The peer closes the connection while it sits in the pool."""
+        self._outcomes.insert(0, error)
+
+    def close(self) -> None:
+        self.closed = True
+
+
+def _serve(monkeypatch: Any, *connections: _FakeConnection) -> list[str]:
+    """Feed these connections to the poster in order, counting the opens."""
+    opened: list[str] = []
+    remaining = list(connections)
+
+    def factory(scheme: str, host: str, port: int, timeout: float) -> _FakeConnection:
+        opened.append(f"{scheme}://{host}:{port}")
+        return remaining.pop(0) if len(remaining) > 1 else remaining[0]
+
+    monkeypatch.setattr(ollama_module, "_open_connection", factory)
+    return opened
+
+
+def test_the_default_poster_never_announces_connection_close(monkeypatch) -> None:
+    """The header was the whole bug: a real server dropped 1-2 of 8
+    requests that carried it, and 8 of 8 that did not."""
+    connection = _FakeConnection()
+    _serve(monkeypatch, connection)
+
+    ollama_module._http_post(CHAT_URL, {"model": "m"}, 5.0)
+
+    (sent,) = connection.requests
+    assert "Connection" not in sent["headers"]
+    assert sent["headers"]["Content-Type"] == "application/json"
+    assert (sent["method"], sent["url"]) == ("POST", "/api/chat")
+
+
+def test_the_default_poster_reuses_one_connection_across_calls(monkeypatch) -> None:
+    """One connection carried every call in a live check; opening one per
+    call is what made the drop rate fatal."""
+    connection = _FakeConnection()
+    opened = _serve(monkeypatch, connection)
+
+    for _ in range(3):
+        assert ollama_module._http_post(CHAT_URL, {}, 5.0) == OK_BODY
+
+    assert opened == ["http://localhost:11434"]
+    assert len(connection.requests) == 3
+
+
+def test_a_pooled_connection_the_server_closed_is_replaced(monkeypatch) -> None:
+    """A server closes idle connections, so the next call meets a dead
+    socket. That must not reach the caller as a failed call."""
+    stale, fresh = _FakeConnection(), _FakeConnection()
+    opened = _serve(monkeypatch, stale, fresh)
+
+    assert ollama_module._http_post(CHAT_URL, {}, 5.0) == OK_BODY
+    stale.die()
+    assert ollama_module._http_post(CHAT_URL, {}, 5.0) == OK_BODY
+
+    assert len(opened) == 2  # the dead socket was replaced, not reused
+    assert stale.closed
+
+
+def test_a_fresh_connection_that_fails_is_not_resent(monkeypatch) -> None:
+    """The extra attempt covers a dead pooled socket only. A call failing
+    on a fresh connection must not be sent twice here: the provider owns
+    retrying, and a silent second send would double the model calls."""
+    connection = _FakeConnection(DROPPED)
+    opened = _serve(monkeypatch, connection)
+
+    with pytest.raises(OllamaError):
+        ollama_module._http_post(CHAT_URL, {}, 5.0)
+
+    assert len(opened) == 1
+    assert len(connection.requests) == 1
+
+
+def test_the_provider_defaults_to_the_keep_alive_poster() -> None:
+    assert OllamaProvider()._poster is ollama_module._http_post
+
+
+@pytest.mark.parametrize(
+    ("status", "retryable"),
+    [(500, True), (503, True), (429, True), (404, False), (400, False)],
+)
+def test_default_poster_marks_http_status_retryable_by_code(
+    monkeypatch, status: int, retryable: bool
+) -> None:
+    _serve(monkeypatch, _FakeConnection(_FakeResponse(status, b"nope")))
+
+    with pytest.raises(OllamaError, match=f"HTTP {status}") as raised:
+        ollama_module._http_post(CHAT_URL, {}, 1.0)
+
+    assert raised.value.retryable is retryable
+
+
+def test_default_poster_marks_a_garbled_body_retryable(monkeypatch) -> None:
+    _serve(monkeypatch, _FakeConnection(_FakeResponse(200, b"<html>")))
+
+    with pytest.raises(OllamaError, match="non-JSON") as raised:
+        ollama_module._http_post(CHAT_URL, {}, 1.0)
+
+    assert raised.value.retryable is True
+
+
+@pytest.mark.parametrize(
+    "error", [TimeoutError("timed out"), ConnectionRefusedError("refused")]
+)
+def test_default_poster_marks_transient_failures_retryable(
+    monkeypatch, error: BaseException
+) -> None:
+    _serve(monkeypatch, _FakeConnection(error))
+    with pytest.raises(OllamaError) as raised:
+        ollama_module._http_post(CHAT_URL, {}, 1.0)
+
+    assert raised.value.retryable is True
+
+
+@pytest.mark.parametrize(
+    "error",
+    [DROPPED, ConnectionResetError("reset by peer"), BrokenPipeError("broken pipe")],
+)
+def test_default_poster_marks_dropped_connections_retryable(
+    monkeypatch, error: BaseException
+) -> None:
+    _serve(monkeypatch, _FakeConnection(error))
+    with pytest.raises(OllamaError) as raised:
+        ollama_module._http_post(CHAT_URL, {}, 1.0)
+
+    assert raised.value.retryable is True
 
 
 def test_provider_survives_a_dropped_connection() -> None:
@@ -380,4 +513,78 @@ def test_provider_survives_a_dropped_connection() -> None:
     )
     assert response.content == '{"action": "vote"}'
     assert calls["n"] == 3
+
+
+def test_default_poster_marks_an_unreachable_host(monkeypatch) -> None:
+    """A bare network errno (no route) is the host being gone, not a busy
+    server, and the provider waits longer for it."""
+    error = OSError(errno.EHOSTUNREACH, "No route to host")
+    _serve(monkeypatch, _FakeConnection(error))
+
+    with pytest.raises(OllamaError, match="No route") as raised:
+        ollama_module._http_post(CHAT_URL, {}, 1.0)
+
+    assert raised.value.retryable is True
+    assert raised.value.unreachable is True
+
+
+def test_default_poster_does_not_call_a_slow_server_unreachable(monkeypatch) -> None:
+    _serve(monkeypatch, _FakeConnection(TimeoutError("slow")))
+
+    with pytest.raises(OllamaError) as raised:
+        ollama_module._http_post(CHAT_URL, {}, 1.0)
+
+    assert raised.value.retryable is True
+    assert raised.value.unreachable is False
+
+
+def test_an_unreachable_host_backs_off_for_longer_than_a_busy_server(
+    monkeypatch,
+) -> None:
+    """The pauses differ, so `asyncio.sleep` is intercepted rather than the
+    clock measured."""
+    sleeps: list[float] = []
+
+    async def fake_sleep(seconds: float) -> None:
+        sleeps.append(seconds)
+
+    monkeypatch.setattr(ollama_module.asyncio, "sleep", fake_sleep)
+
+    calls = {"n": 0}
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise OllamaError("busy", retryable=True)
+        raise OllamaError("no route", retryable=True, unreachable=True)
+
+    provider = OllamaProvider(
+        poster=poster, backoff=(1.0, 2.0, 4.0), unreachable_backoff=(8.0, 9.0, 10.0)
+    )
+    with pytest.raises(OllamaError) as raised:
+        asyncio.run(provider.generate(MESSAGES, Action, make_config(retries=3)))
+
+    # The first pause is the ordinary schedule, the rest the longer one.
+    assert sleeps == [1.0, 9.0, 10.0]
+    assert raised.value.unreachable is True
+    assert raised.value.retries == 3  # attempts - 1: every retry was spent
+
+
+def test_a_response_reports_the_retries_its_own_call_spent() -> None:
+    """The count rides on the response, so a concurrent call's retries
+    cannot be attributed to this one."""
+    calls = {"n": 0}
+
+    def poster(url: str, payload: dict[str, Any], timeout: float) -> dict[str, Any]:
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise OllamaError("timed out", retryable=True)
+        return OK_BODY
+
+    provider = OllamaProvider(poster=poster, backoff=(0.0, 0.0, 0.0))
+    response = asyncio.run(provider.generate(MESSAGES, Action, make_config(retries=3)))
+
+    assert response.retries == 2
+    assert provider.retries == 2  # the run-wide counter still tracks the run
+
     assert provider.retries == 2
