@@ -75,7 +75,9 @@ HEADER = """\
 #
 # max_concurrency is {conc} in flight per arm rather than {arm_conc}, so all
 # {n} arms can run at once on one host; {n} arms at {arm_conc} apiece would be
-# {naive} in flight, past what the arms themselves record as always clean.
+# {naive} in flight. Neither number is a measured host limit: those levels came
+# through a client that announced `Connection: close` on every request, which
+# the server dropped most of the time (see the header of fix_hl).
 #
 # The rest of the file is the tracked arm byte for byte.
 """
@@ -106,7 +108,9 @@ def render(text: str, seed: int, arm_conc: int) -> str:
     text, n_conc = CONCURRENCY_BLOCK.subn(
         f"  # {SWEEP_CONCURRENCY} in flight: the random-deal arms are meant to\n"
         f"  # run together on one host, so each gives up its share of the host\n"
-        f"  # rather than every arm's calls queueing into the timeout at once.\n"
+        f"  # rather than every arm's calls landing at once. An in-flight level,\n"
+        f"  # not a measured host limit - see the header of fix_hl for why the\n"
+        f"  # earlier host numbers cannot be read as one.\n"
         f"  # If this run stalls: --resume --idle-seconds 5\n"
         f"  max_concurrency: {SWEEP_CONCURRENCY}\n",
         text, count=1,

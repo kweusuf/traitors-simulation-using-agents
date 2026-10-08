@@ -181,10 +181,11 @@ llm:
   timeout_seconds: 300
   retries: 3
   # 4 in flight, matching the Hinglish control so the pair differs by
-  # language alone. Two runs at 4 is 8 in flight on the host, the level
-  # these configs record as always clean; 16 finished a season but badly
-  # degraded (p95 674s, 23% failed calls), because past what a host serves
-  # in parallel this only queues requests into the 300s timeout.
+  # language alone, and left at 4 so this run stays comparable to the ones
+  # already recorded on this arm. Not a measured host limit: the readings
+  # that named 8 in flight as clean and 16 as degraded came through a client
+  # that announced `Connection: close` on every request, which this server
+  # dropped most of the time (see the header of fix_hl).
   # If this run stalls: --resume --idle-seconds 5
   max_concurrency: 4
   options: {}

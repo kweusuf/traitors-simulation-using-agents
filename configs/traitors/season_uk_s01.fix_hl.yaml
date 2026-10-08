@@ -13,26 +13,35 @@
 #
 # Host: the same one as the English control, and model-matched to it.
 #
-# Three findings from splitting this pair across two hosts, worth keeping
-# because each one cost a run:
+# Findings from running this pair, worth keeping because each one cost a run:
 #
-# 1. A single-call smoke test is the wrong instrument for a host whose
-#    failure only appears under concurrency. One call returned valid JSON
-#    and a healthy-looking rate, then the first four-in-flight wave dropped
-#    every connection and exhausted the retries. Size the host at the
-#    concurrency you will actually run, not at one.
+# 1. What read as a host concurrency ceiling was the client's connection
+#    handling. Every call went out through `urllib.request.urlopen`, which
+#    announces `Connection: close` on each request and cannot be told
+#    otherwise; a server that answers a close-announced request by closing
+#    it turned most calls into `RemoteDisconnected`. The same requests over
+#    a kept-alive connection were not dropped at all, at the same
+#    concurrency, in the same minute. So the in-flight levels recorded here
+#    - one clean, one degraded, one that wedged the host - are observations
+#    made through that client, not a measured host capacity. The provider
+#    now holds its connection (models/ollama.py); re-measure before treating
+#    any in-flight number as a ceiling.
 # 2. The same model tag does not imply the same weights. The two hosts
 #    carried different digests under an identical tag, so a split-host pair
 #    could never have isolated language anyway. Verify the digest on every
 #    host before treating a pair as single-variable.
-# 3. Past what a host serves in parallel, extra concurrency only queues work
-#    into the request timeout rather than surfacing an error. High
-#    concurrency looks like it runs; it just runs badly and slowly.
+# 3. A single-call smoke test cannot clear a host for a run. One call
+#    returned valid JSON while most calls were being dropped, which is the
+#    same trap from the other side: probe at the concurrency you will run,
+#    over the transport you will run on.
 #
 # Consequence worth fixing separately: a transport failure kills an
 # eight-hour run outright instead of skipping one action. The resume
-# machinery exists for this and tools/run_rand_sweep.py now invokes it per
-# arm; a run started by hand still dies where it stands.
+# machinery exists for this and tools/run_rand_sweep.py invokes it per arm;
+# a run started by hand still dies where it stands. Resume also assumes the
+# failure was transient: an arm that dies in the same phase every time
+# spends its attempts replaying that phase rather than making progress, and
+# its log looks like a run in flight while nothing advances.
 
 
 game:
@@ -153,10 +162,11 @@ llm:
   timeout_seconds: 300
   retries: 3
   # 4 in flight, matching the English control so the pair differs by
-  # language alone. Two runs at 4 is 8 in flight on the host, the level
-  # these configs record as always clean; 16 finished a season but badly
-  # degraded (p95 674s, 23% failed calls), because past what a host
-  # serves in parallel this only queues requests into the 300s timeout.
+  # language alone, and left at 4 so this run stays comparable to the ones
+  # already recorded on this arm. Not a measured host limit: the readings
+  # that named 8 in flight as clean and 16 as degraded came through a client
+  # that announced `Connection: close` on every request, which this server
+  # dropped most of the time (see the header of fix_hl).
   # If a run stalls: --resume --idle-seconds 5
   max_concurrency: 4
   options: {}

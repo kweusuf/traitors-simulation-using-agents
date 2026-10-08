@@ -108,13 +108,13 @@ llm:
   reasoning_effort: none
   timeout_seconds: 300
   retries: 3
-  # Chosen deliberately at 16 on a known-good host. Evidence: 8 in
-  # flight has always been clean, 24 wedged the host and killed two
-  # runs outright, and 16 alone finished a whole season badly degraded
-  # (p95 558s, 85 failed calls). Past what the host serves in parallel
-  # this does not add throughput, it only queues requests into the
-  # 300s timeout. If this run stalls, `--resume --idle-seconds 5`
-  # picks it up where it stopped.
+  # 16 in flight, left where the recorded runs had it so this stays
+  # comparable to them. Not a measured host limit: the readings behind it
+  # - one level clean, one degraded, one that wedged the host - came through
+  # a client that announced `Connection: close` on every request, which this
+  # server dropped most of the time (see the header of fix_hl).
+  # If this run stalls, `--resume --idle-seconds 5` picks it up where it
+  # stopped.
   max_concurrency: 16
   options: {}
 
