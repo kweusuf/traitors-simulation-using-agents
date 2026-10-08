@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 # Words the model writes that look like proper nouns but are not names.
+# Sentence-initial connectors live here: without them, ordinary openers
+# ("Otherwise, ...", "However, ...") are flagged as invented players.
 STOPWORD_CAPS = {
     "You", "Your", "Youre", "What", "Which", "Who", "When", "Where", "Why",
     "How", "I", "Im", "Its", "It", "Is", "A", "An", "The", "And", "But",
@@ -29,6 +31,8 @@ STOPWORD_CAPS = {
     "Still", "Even", "Also", "Just", "Only", "Most", "Some", "Each",
     "Someone", "Something", "Anything", "Nothing", "Everyone", "Nobody",
     "Because", "Though", "Unless", "Whether", "Either", "Neither",
+    "Otherwise", "Whatever", "Therefore", "However", "Hence", "Thus",
+    "Meanwhile", "Nevertheless", "Nonetheless", "Instead",
     "Public", "Round", "Table", "Night", "Morning", "Good", "Bad",
     "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
     "Nine", "Ten", "First", "Second", "Third", "Again", "Instead",

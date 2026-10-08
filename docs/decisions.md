@@ -264,16 +264,20 @@ otherwise) and the context window (`n_ctx: 4096` serving a model that reports
 **Benefit.** Both are now a ten-second check instead of a lost run. See
 [learnings.md](learnings.md#the-hosts-context-size-is-server-state-not-config).
 
-### Concurrent runs are capped at what the host serves in parallel
+### Concurrent runs are capped at an in-flight level, not at a measured capacity
 
-**Decision.** `max_concurrency: 4`, two runs at once.
+**Decision.** `max_concurrency: 4`, two runs at once - kept, not re-derived.
 
-**Reasoning.** 16 concurrent finished a season but degraded badly (p95 674s,
-23% failed). Past capacity, requests queue into the timeout rather than
-erroring.
+**Reasoning.** The numbers that chose it came through a client that
+announced `Connection: close` on every request, which this server dropped most
+of the time: an in-flight level that looked clean, one that looked degraded,
+and one that wedged the host. They measure the client, so they cannot be read
+as a host capacity. The level is kept because raising it now would move the ground under
+the runs already recorded against these arms.
 
-**Benefit.** Runs complete with a 0-10% failure rate instead of degrading
-into timeouts.
+**Benefit.** With that header gone an in-flight level is a knob again: raise it
+and measure, instead of inheriting a ceiling nobody established. See
+[learnings.md](learnings.md#a-request-that-announces-connection-close-was-dropped-at-any-load).
 
 ### Measure with a tool, not by reading a run folder
 
@@ -354,3 +358,21 @@ already existed - the retry loop appends the rejected attempt, so quoting it
 back cost nothing new. The threshold needed care; see below.
 
 **Benefit.** Self-repeats went **32 → 0** against `uk-s01-ptr-mem`.
+
+### A sustained transport failure ends the run; it does not skip the turn
+
+**Decision.** Keep the abort. A host that exhausts the provider's retries
+ends the run, and the supervisor resumes it from its own event log. Harden
+only the wait: an unreachable host backs off for longer than a busy one.
+Keep the skip path for parse failures alone.
+
+**Reasoning.** Skipping a turn is right when one bad reply should not cost
+the night. It is wrong when the whole host is gone - every call fails, the
+run fills with missed actions, and a game that was never played looks like
+one that was. The log makes stopping cheap: a resume costs the interrupted
+phase, not the run. And the transport genuinely cannot tell a sustained
+outage from a one-off, so the safe reading is to stop and resume rather
+than to keep going and corrupt the record.
+
+**Benefit.** A short outage is ridden out inside the process; a long one
+costs a resume, never a game that quietly did not happen.

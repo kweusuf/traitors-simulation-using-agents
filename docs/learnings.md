@@ -100,12 +100,25 @@ without complaint. The model reports `context_length: 262144`; Ollama was
 serving it at 4096. **Verify `/api/ps` before a long run** - the setting
 lives in the server process, not the config.
 
-### Concurrency past a host's capacity queues into the timeout
+### A request that announces `Connection: close` was dropped, at any load
 
-16 concurrent finished a season but badly degraded (p95 674s, 23% failed).
-4 per run, two runs at once, is the level these configs record as always
-clean. Past what a host serves in parallel, extra requests do not error -
-they wait, and then fail on `timeout_seconds`.
+The provider used to POST through `urllib.request.urlopen`, which sends
+`Connection: close` on every request and cannot be told otherwise. Against
+one host, that header alone was the difference between most calls failing and
+none: the same requests over a kept-alive connection were not dropped at all,
+at the same concurrency, in the same minute, and one kept-alive connection
+carried a whole run of requests without a loss. Each drop arrived as
+`RemoteDisconnected` - a *retryable* error, so it spent the retry budget and
+then ended the run.
+
+**This does not make the earlier host numbers wrong; it makes them unreadable
+as capacity.** Every in-flight level recorded here - one clean, one degraded,
+one that wedged the host - was measured through that client, so a loss that
+was really per-request was attributed to how many requests were in flight.
+Re-measure before trusting any of it. The provider now holds its connection
+(`models/ollama.py`), and `tools/probe_model.py` sends its prompt down that
+same transport, because a probe that opens its own connection measures the
+probe.
 
 ### A retryable transport failure that exhausts the retries still ends the run
 
@@ -123,6 +136,15 @@ a transport failure costs the phase it interrupted instead of the night. Count
 the restarts per arm (`grep -c attempt <arm>.log`) and keep that next to the
 arm's numbers: two arms interrupted a different number of times were not asked
 quite the same question.
+
+Resume assumes the failure was transient, and that assumption can fail
+silently. An arm that dies in the same phase on every attempt resumes into
+that phase, dies there again, and repeats until the attempt cap. One arm
+reached dozens of resumes while still being in round 1 at its first discussion: each
+resume replayed the round's leading phases into the log, so the file grew and
+looked busy while the phase counter never moved. Read which *phases* the log
+contains rather than how many lines it has - an arm resuming at a fixed point
+is a bug report, not a run in flight.
 
 ---
 
@@ -323,3 +345,33 @@ Note that this arm moves **two** variables against `ptr_mem`: the
 suspicion ledger and the newly-wired relationship standing. If the result
 is ambiguous, a ledger-only arm is the obvious follow-up - see
 docs/decisions.md.
+
+## A resume that reopened the round it landed in
+
+`restore_resume` rebuilds a crashed run's board from its event log and
+steps the round number back one on purpose, because `start_round`
+increments on the way in. The resume path then called `start_round`, so
+the round the crash happened in was opened a second time: the log gained a
+duplicate `ROUND_STARTED` for it, and the phase loop ran from the top of
+the round rather than the phase that was cut off - re-spending every call
+the completed phases had already made. Folded from that point, a round has
+to be read by its *last* `ROUND_STARTED` to land on an honest board, and
+code that has to be told that is a symptom, not the fix.
+
+The fix is `GameEngine.reopen_round`: it sets the round and clears the
+per-round scratch *without* emitting `ROUND_STARTED`, so the resumed
+phases run against a round the log already vouches for. It keeps the
+recruitment window recovered from the log, which a plain `start_round`
+would have cleared - the window belongs to a traitor's banishment later in
+the same round, so a crash between that banishment and the night they use
+it is exactly the case that must keep it.
+
+What did not change is the transport. An unreachable host that exhausts
+the provider's retries still ends the run, deliberately: the framework's
+answer to a sustained outage is to resume from the log, not to skip the
+turn, because skipping turns through a real outage fills a run with missed
+actions and passes it off as a vote. The transport cannot tell a genuine
+outage from a one-off, so it does the safe thing. Only the *wait* grew - an
+unreachable host (a network errno, no route) is backed off for longer than
+a busy server - so a short outage is ridden out in process before the run
+gives up and the supervisor resumes it.
