@@ -1,12 +1,13 @@
 """Live health of a run in progress: which round, and is it still moving.
 
 A run writes no summary until it ends, so progress is read from the event
-log and the call log. Call health matters more than message count: past what
-a host serves in parallel, requests queue into the timeout rather than
-failing loudly, so a stalled run keeps growing its files slowly and looks
-alive. Prompt size over the rounds is reported for the same reason - a
-prompt climbing toward the model's context window degrades the reply before
-it ever errors.
+log and the call log. Call health matters more than message count: a stalled
+run keeps growing the files it already has, so size says nothing, and a phase
+that is not advancing shows up in the call log as failed calls, retries spent,
+or latency that has stopped fitting the timeout. Read which phases the event
+log contains, not how many lines it has. Prompt size over the rounds is
+reported for the same reason - a prompt climbing toward the model's context
+window degrades the reply before it ever errors.
 """
 import collections
 import json

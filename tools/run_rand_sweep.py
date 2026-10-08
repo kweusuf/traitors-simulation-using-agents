@@ -6,12 +6,14 @@ left is a set of configs that differ by one flag each, which is what makes the
 comparison readable, and this tool exists to start them together.
 
 The arms run in waves, a few at a time. Running all seven together was the
-first attempt and it does not work against a host whose parallel capacity is
-below that: past what a host serves, the failure here is not slowness but closed
-connections - the model never answers, the retries do not absorb it, and the run
-ends. "8 in flight is clean" is a property of the host it was measured on, not
-of the model, which is the same trap the `fix_hl` header records. A wave keeps
-the requests in flight at what the host actually serves.
+first attempt, and it failed for a reason that turned out not to be the host:
+every call announced `Connection: close`, which the server dropped most of the
+time, so the failure was closed connections rather than slowness and no
+in-flight level was safe. That is fixed in `models/ollama.py`; the header of
+`fix_hl` records what it means for the in-flight numbers recorded earlier.
+Waves remain because they bound the damage - whatever the host's real ceiling
+is, it has not been established yet, and a wave that trips it costs a wave
+rather than the sweep.
 
 Wave membership is deliberate, so the tightest comparisons stay inside a wave:
 the control and the arms nearest it first, then the arms that stack the later
@@ -27,6 +29,13 @@ phase. The resume machinery exists for exactly this and nothing invoked it
 automatically; the supervisor does, relaunching a crashed arm with `--resume`
 so it continues from the last completed phase of its own log. Seven arms are
 seven chances for one socket to end the sweep.
+
+One caveat that cost hours: resume assumes the failure was transient. An arm
+that dies in the same phase on every attempt resumes into that phase, dies
+there again, and repeats until `max_resumes` - which reads as a working sweep
+that is hours into no progress. Watch the phases in the event log rather than
+the attempt count, and treat an arm resuming at a fixed point as a bug report
+rather than a run in flight.
 
 Supervision does not make an arm identical to an uninterrupted run: a resume
 discards the phase that was cut off, so that phase's calls are paid for again.
@@ -389,10 +398,12 @@ def launch_waves(args: argparse.Namespace) -> None:
     print(f"wave runner pid {process.pid}; logs: {args.log_dir}/waves.log and "
           f"{args.log_dir}/<arm>.log")
     print("\nOne wave at a time, in the order given, so the requests in flight "
-          "stay at what\nthe host serves. Watch the running wave with\n"
+          "Watch the running wave with\n"
           "  uv run --no-sync python tools/run_health.py "
           f"{args.runs_dir}/uk-s01-rand-{parse_wave(args.wave[0])[0]}\n"
-          "and read a stall as queueing into the timeout, not as emptiness. A "
+          "and read a stall as a phase that has stopped advancing - the "
+          "event log says which phase it is, the call log says whether "
+          "calls are failing. A "
           "crash costs\nan arm one phase, not the run: the supervisor resumes "
           "it.")
 
@@ -480,7 +491,9 @@ def launch(args: argparse.Namespace) -> None:
           "first rounds\nare the slowest: every arm is warming up at once. "
           "Check one with\n  uv run --no-sync python tools/run_health.py "
           f"{args.runs_dir}/uk-s01-rand-{started[0][0]}\n"
-          "and read a stall as queueing into the timeout, not as emptiness. "
+          "and read a stall as a phase that has stopped advancing - the "
+          "event log says which phase it is, the call log says whether "
+          "calls are failing. "
           "A crash costs\nan arm one phase, not the run: the supervisor "
           "resumes it, and the attempt\nheaders in the log say how often "
           "that had to happen.")
