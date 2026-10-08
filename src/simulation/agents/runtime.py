@@ -208,7 +208,6 @@ class AgentRuntime:
         attempts = 1 + self.max_retries
         last_reason = ""
         for attempt in range(attempts):
-            retries_before = self._transport_retries()
             try:
                 response = await self.gateway.generate(
                     messages,
@@ -221,17 +220,21 @@ class AgentRuntime:
                 )
             except Exception as exc:
                 # Transport failures still belong in the run's telemetry.
+                # The retry count rides on the error rather than being read
+                # off the provider's shared counter: under concurrency that
+                # counter moves for other calls too, which would credit this
+                # failure with retries it did not spend.
                 self._record_call(
                     view,
                     action_type,
                     attempt + 1,
                     ok=False,
                     error=f"{type(exc).__name__}: {exc}",
-                    retries=self._transport_retries() - retries_before,
+                    retries=int(getattr(exc, "retries", 0)),
                     messages=messages,
                 )
                 raise
-            retries_spent = self._transport_retries() - retries_before
+            retries_spent = int(getattr(response, "retries", 0))
             try:
                 action = parse_action(response.content, agent_id)
                 # A near-miss name ('Meryl', 'clare') is the same player the
@@ -477,10 +480,6 @@ class AgentRuntime:
             decay=self.memory_decay,
             floor=self.memory_floor,
         )
-
-    def _transport_retries(self) -> int:
-        """Provider-level transport retries spent so far, if it reports them."""
-        return int(getattr(getattr(self.gateway, "provider", None), "retries", 0))
 
     def _record_call(
         self,

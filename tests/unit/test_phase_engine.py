@@ -147,3 +147,38 @@ def test_duplicate_phase_runs_once_per_config_entry() -> None:
     ]
     missions = [e for e in started if e.payload["phase"] == "mission"]
     assert len(missions) == 6  # 3 per round over 2 rounds
+
+
+def test_resume_reopens_the_round_instead_of_announcing_it_again() -> None:
+    """A resumed run continues the interrupted round; it does not restart it.
+
+    The bug this pins: `restore_resume` leaves the engine one round behind
+    the round the crash happened in, and the resume path used to call
+    `start_round`, which opened that same round a second time. The log
+    then held two `ROUND_STARTED` for one round, and replaying the whole
+    round spent the calls its completed phases had already made.
+    """
+    phases = ["mission", "public_discussion", "voting", "elimination"]
+    engine, log, phase_engine, context = build(phases, max_rounds=2)
+    # Restored into round 2, whose ROUND_STARTED the crashed run already
+    # wrote: mission finished and the crash came during public_discussion.
+    engine._started = True
+    engine.state.round_number = 1
+    engine.sink.emit(EventType.ROUND_STARTED, round_number=2, phase="")
+
+    resume_phase = phases.index("public_discussion")
+    asyncio.run(phase_engine.run(context, resume_at=(1, resume_phase)))
+
+    # Round 2 keeps the single announcement it already had; only round 3
+    # is announced by the resumed run.
+    announced = [
+        e.round for e in engine.sink.events if e.type is EventType.ROUND_STARTED
+    ]
+    assert announced == [2, 3]
+    # Only the phases at and after the cut ran again in round 2: mission,
+    # which had already finished, was not replayed.
+    assert [name for _, name in log] == [
+        "public_discussion", "voting", "elimination",  # remainder of round 2
+        "mission", "public_discussion", "voting", "elimination",  # round 3
+    ]
+

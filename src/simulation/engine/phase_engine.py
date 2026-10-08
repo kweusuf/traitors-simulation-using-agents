@@ -133,12 +133,18 @@ class PhaseEngine:
         for _ in range(max_rounds):
             if self.engine.is_over or self.engine.state.finale:
                 break
-            self.engine.start_round()
-            start = (
-                resume_phase
-                if opened == 0 and self.engine.state.round_number == resume_round
-                else 0
-            )
+            if opened == 0 and resume_at is not None:
+                # Resuming mid-round. `restore_resume` left the round
+                # number one behind the round the crash happened in, and
+                # that round is already announced on the record, so it is
+                # reopened rather than restarted. Only the phases at and
+                # after the cut run again: the ones already recorded are
+                # not replayed, and no second `ROUND_STARTED` is written.
+                self.engine.reopen_round(resume_round + 1)
+                start = resume_phase
+            else:
+                self.engine.start_round()
+                start = 0
             for name in self.order[start:]:
                 if self.engine.is_over or self.engine.state.finale:
                     break

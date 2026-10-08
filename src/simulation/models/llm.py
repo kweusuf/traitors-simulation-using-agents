@@ -39,6 +39,10 @@ class LLMResponse(StrictModel):
     latency_ms: Optional[float] = None
     tokens_used: Optional[int] = None  # output tokens
     input_tokens: Optional[int] = None  # prompt tokens
+    # Transport retries this one call spent before it answered. Carried on
+    # the response rather than read off the provider's shared counter so a
+    # concurrent call cannot have its retries attributed to this one.
+    retries: int = 0
 
 
 class LLMProvider(Protocol):

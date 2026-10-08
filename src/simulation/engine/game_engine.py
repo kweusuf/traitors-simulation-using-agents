@@ -218,6 +218,33 @@ class GameEngine:
 
     def start_round(self) -> None:
         self.state.round_number += 1
+        # A fresh round opens with no recruitment window; the window
+        # belongs to a traitor's banishment later in the same round.
+        self._recruit_window = False
+        self._clear_round_state()
+        self._emit(EventType.ROUND_STARTED)
+
+    def reopen_round(self, round_number: int) -> None:
+        """Reopen a round whose `ROUND_STARTED` is already on the record.
+
+        A resumed run is restored to the round it crashed in with its
+        round number stepped back one (see `resume.rebuild_state`), so
+        `start_round` would both open that same round and write a second
+        `ROUND_STARTED` for it. The round would then appear twice on the
+        log and every fold would have to guess which copy to believe.
+        This reopens the round quietly instead, leaving the single
+        `ROUND_STARTED` the crashed run already wrote in place.
+
+        The recruitment window is deliberately left as it was found: it
+        was recovered from the log by `resume`, and a crash between a
+        traitor's banishment and the night they use the window is
+        exactly the case that must keep it.
+        """
+        self.state.round_number = round_number
+        self._clear_round_state()
+
+    def _clear_round_state(self) -> None:
+        """Drop the per-round scratch each phase rebuilds for itself."""
         self.state.votes.clear()
         self._vote_weights.clear()
         self._night_choices.clear()
@@ -232,12 +259,10 @@ class GameEngine:
         self._council_picks.clear()
         self.murder_shortlist = []
         self._pending_recruit = None
-        self._recruit_window = False
         self._recruit_votes.clear()
         self._recruit_offers.clear()
         self._recruit_offered = None
         self._recruit_offerer = None
-        self._emit(EventType.ROUND_STARTED)
 
     def begin_phase(self, phase: GamePhase) -> None:
         self.state.phase = phase

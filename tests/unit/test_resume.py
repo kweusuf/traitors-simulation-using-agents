@@ -628,3 +628,30 @@ def test_resume_proceeds_once_the_log_has_gone_quiet(tmp_path) -> None:
 
     result = make_runner(tmp_path, config).run(game_id="game-001", seed=42, resume=True)
     assert result.events[-1].type is EventType.GAME_ENDED
+
+
+def test_a_resume_does_not_replay_the_round_it_landed_in(tmp_path) -> None:
+    """Every round opens exactly once, even across a crash and a resume.
+
+    The bug this pins: a resumed run used to reopen the interrupted round
+    with a second `ROUND_STARTED` and replay the phases it had already
+    recorded, so a round could appear twice in the log and its completed
+    phases were paid for a second time.
+    """
+    config = fake_config()
+    with pytest.raises(Exception):
+        make_runner(tmp_path, config, provider=CrashingProvider(25)).run(
+            game_id="game-001", seed=42
+        )
+    run_dir = tmp_path / "runs" / "game-001"
+    _cool(run_dir)
+
+    result = make_runner(tmp_path, config).run(game_id="game-001", seed=42, resume=True)
+
+    starts: dict[int, int] = {}
+    for event in result.events:
+        if event.type is EventType.ROUND_STARTED:
+            starts[event.round] = starts.get(event.round, 0) + 1
+    assert starts, "the run should have opened at least one round"
+    duplicated = {r: n for r, n in starts.items() if n != 1}
+    assert not duplicated, f"rounds opened more than once: {duplicated}"
