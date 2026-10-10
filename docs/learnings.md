@@ -215,6 +215,13 @@ paused and where it stopped.
 
 ## Still open
 
+- Whether the traitor mandate changes outcomes, and by how much. The control
+  (`traitor_mandate: false`, same arm, same seed) has not been run, so the
+  finding in "A persona-blind deal" is established as a prompt change and not
+  as an effect. See [2026-10-10-traitor-mandate.md](2026-10-10-traitor-mandate.md).
+- The fixed speaking order: turns are handed out by `sorted(alive_players)`
+  against a quota, so a round is a queue and the same players speak in the same
+  slots every round.
 - Whether a paraphrased collapse ever occurs, which is the only condition
   under which lowering `repetition_threshold` is right.
 - Latency cost of rejections: p50 rose 24.9s to 70.5s in `uk-s01-rep`, part
@@ -345,6 +352,58 @@ Note that this arm moves **two** variables against `ptr_mem`: the
 suspicion ledger and the newly-wired relationship standing. If the result
 is ambiguous, a ledger-only arm is the obvious follow-up - see
 docs/decisions.md.
+
+## A persona-blind deal handed the tower to players who cannot lie
+
+Full write-up, including the direction taken and what is still unmeasured:
+[2026-10-10-traitor-mandate.md](2026-10-10-traitor-mandate.md).
+
+The random-deal arms drop `traitor_names` so the engine draws the trio from
+the seed. That was right for arm comparison - a pinned trio makes the deal a
+constant, so a behaviour shared by all seven arms can be a property of those
+three personas rather than of the flag under test. What the change did not
+account for is how uneven the cast is. Three personas are written around a
+deception goal (`redirect_suspicion_early`, `be_everyones_confidant`,
+`build_alliances`). The other nineteen are written as honest contestants, and
+several carry a goal that is an instruction to lose once you are drawn as a
+traitor: imran "stay apart from the herd" (sociability 0.25), meryl "stay
+loyal to your read" (analytical 0.25, trust 0.75), kieran "never be played
+twice".
+
+Two things then compounded it. `inject_role_goals` merged persona goals with
+role goals rather than replacing them, so a drawn traitor was handed both -
+`stay_apart_from_the_herd, ensure_traitor_team_wins` - and the persona's half
+of that is a description of honest play. And the draw is uniform over the
+cast, so a tower can be three such players with nobody in it able to hold a
+false line.
+
+Measured on one arm and one deal (`season_uk_s01.fix_en.rand.yaml`, seed 1,
+which draws imran / kieran / meryl - the same trio every run, because the
+deal is a function of the seed and the cast and nothing else):
+
+| run | winner | rounds | rounds whose banishment was a traitor |
+| --- | --- | --- | --- |
+| `uk-s01-rand-fix_en-fresh` | traitor | 12 | 3 of 10 |
+| `uk-s01-rand-fix_en-fresh2` | faithful | 10 | 3 of 9 |
+| `uk-s01-rand-fix_en-conc4` | faithful | 9 | 3 of 8 |
+| `uk-s01-rand-fix_en-conc16` | faithful | 7 | 3 of 7 |
+
+Chance is 3 in 22, so the room is banishing traitors at two to three times
+the rate a coin would. Fourteen of the fifteen 22-player runs that predate the
+random-deal arms went to the traitors, and every one of those was pinned to
+the three the season wrote as traitors.
+
+The fix briefs the role at induction instead of changing the cast: every
+drawn traitor is told the role requires deception, and only the *method*
+scales to the persona - a written deceiver may invent, a trusting one is told
+to withhold and deflect rather than fabricate detail they cannot keep
+straight. The persona keeps its manner and no longer supplies the objective.
+
+Two caveats, both of which matter before this is generalised. Four runs is not
+a distribution, and one of them (`fresh2`) crossed a mid-run code change and
+resumed, so a round of it re-ran; its numbers are not clean. And an identical
+model tag is not identical weights, so the four runs above are not a
+controlled comparison of anything except the deal.
 
 ## A resume that reopened the round it landed in
 

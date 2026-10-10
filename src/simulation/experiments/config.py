@@ -138,6 +138,21 @@ class GameSettings(StrictModel):
     # replying to itself is not part of this flag, because it is factual
     # rather than stylistic and does not invite a template.
     anti_echo_instructions: bool = True
+    # Whether a player drawn as a traitor is briefed, at induction, that the
+    # role requires deception. The deal does not consult the persona, and the
+    # cast is written for a faithful game: three of the twenty-two personas
+    # carry a deception goal and the rest carry honest ones, several of which
+    # the old unconditional goal merge handed to drawn traitors as an
+    # objective ("stay_apart_from_the_herd" alongside
+    # "ensure_traitor_team_wins"). The mandate is not scaled to nothing - it
+    # always states that a traitor must lie - but *how* they are told to
+    # deceive is scaled to the persona's capacity for it, so a careful,
+    # trusting player is told to withhold and deflect rather than to invent
+    # detail they cannot keep straight.
+    #
+    # Off restores the previous prompts exactly, which is what makes the
+    # claim measurable rather than assumed.
+    traitor_mandate: bool = True
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)

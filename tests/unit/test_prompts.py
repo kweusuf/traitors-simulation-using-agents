@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 from simulation.actions.actions import ActionType
-from simulation.agents.goals import Goals
+from simulation.agents.goals import (
+    MANDATE_CANDID,
+    MANDATE_CORE,
+    MANDATE_PRACTISED,
+    Goals,
+)
 from simulation.agents.persona import Persona
 from simulation.agents.prompts import PromptBuilder, action_json_hint
 from simulation.communication.channels import Channel, Message
@@ -173,6 +178,66 @@ def test_faithful_prompt_has_no_traitor_alliance_paragraph() -> None:
         "bob", Role.FAITHFUL, Persona(description="Careful player."), Goals()
     )
     assert "switch sides" not in system
+
+
+# ----------------------------------------------------------------------
+# Traitor mandate (an induced role is briefed on what the role requires)
+# ----------------------------------------------------------------------
+
+
+def test_traitor_mandate_reaches_the_traitor_and_scales_to_the_persona() -> None:
+    builder = PromptBuilder()
+    persona = Persona(
+        description="Careful player.", personality={"analytical": 0.9, "trust": 0.3}
+    )
+    goals = Goals(primary="survive", secondary=["ensure_traitor_team_wins"])
+
+    candid = builder.build_system(
+        "meryl", Role.TRAITOR, persona, goals, deception=0.1
+    )
+    practised = builder.build_system(
+        "wilf", Role.TRAITOR, persona, goals, deception=0.9
+    )
+    faithful = builder.build_system("bob", Role.FAITHFUL, persona, goals)
+
+    # The same non-negotiable core for both, because refusing to lie is not a
+    # personality trait - it is not playing.
+    assert MANDATE_CORE in candid and MANDATE_CORE in practised
+    # The method is the part that scales.
+    assert MANDATE_CANDID in candid and MANDATE_CANDID not in practised
+    assert MANDATE_PRACTISED in practised and MANDATE_PRACTISED not in candid
+    # And it must not leak into a faithful player's prompt.
+    assert MANDATE_CORE not in faithful
+
+
+def test_traitor_mandate_can_be_switched_off_for_the_control_arm() -> None:
+    off = PromptBuilder(traitor_mandate=False)
+    system = off.build_system(
+        "alice", Role.TRAITOR, Persona(description="Careful player."), Goals(),
+        deception=0.9,
+    )
+    assert MANDATE_CORE not in system
+    # The rest of the traitor briefing survives; only the mandate is off.
+    assert "switch sides" in system
+
+
+def test_build_supplies_a_deception_score_when_the_caller_does_not() -> None:
+    # The probe tools hold only a persona, so `build` has to degrade to a
+    # number rather than raise on a traitor turn.
+    messages = PromptBuilder().build(
+        agent_id="alice",
+        role=Role.TRAITOR,
+        persona=Persona(
+            description="Careful player.",
+            personality={"analytical": 0.8, "risk_tolerance": 0.8},
+        ),
+        goals=Goals(secondary=["build_alliances", "ensure_traitor_team_wins"]),
+        view=make_view(own_role=Role.TRAITOR),
+        action_type=ActionType.PUBLIC_MESSAGE,
+        legal_targets=[],
+    )
+    assert MANDATE_CORE in messages[0].content
+    assert MANDATE_PRACTISED in messages[0].content
 
 
 # ----------------------------------------------------------------------

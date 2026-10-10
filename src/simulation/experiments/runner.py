@@ -272,6 +272,7 @@ class GameRunner:
                 transcript_limit=config.communication.transcript_messages_per_prompt,
                 language=config.game.language,
                 anti_echo_instructions=config.game.anti_echo_instructions,
+                traitor_mandate=config.game.traitor_mandate,
                 want_gist=config.game.co_generate_gist,
                 gist_required=config.game.gist_required,
             ),

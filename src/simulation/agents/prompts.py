@@ -17,7 +17,7 @@ from simulation.actions.actions import (
     CONTENT_CHOICES,
     ActionType,
 )
-from simulation.agents.goals import Goals
+from simulation.agents.goals import Goals, mandate_lines
 from simulation.agents.persona import Persona
 from simulation.communication.visibility import AgentView
 from simulation.engine.state import GamePhase, Role
@@ -127,6 +127,7 @@ class PromptBuilder:
         suspicion_ledger: bool = False,
         ledger_lines: Optional[list[str]] = None,
         standing_lines: Optional[list[str]] = None,
+        traitor_mandate: bool = True,
     ) -> None:
         self.suspicion_ledger = suspicion_ledger
         # Where this player stands with the people they have dealt with,
@@ -156,6 +157,13 @@ class PromptBuilder:
         # messages. Turning them off is the control for that experiment,
         # so the finding can be attributed rather than assumed.
         self.anti_echo_instructions = anti_echo_instructions
+        # Whether a player drawn as a traitor is told, before their first
+        # turn, that the role requires deception - and how. The deal is
+        # persona-blind and the cast is mostly written as honest contestants,
+        # so without this a tower can be dealt three players whose personas
+        # give them no way to hold a false line. Off is the control for
+        # measuring that claim, not a recommendation.
+        self.traitor_mandate = traitor_mandate
 
     def _language_rule(self) -> list[str]:
         """The directive that moves an agent's speech into another language.
@@ -217,6 +225,7 @@ class PromptBuilder:
         persona: Persona,
         goals: Goals,
         converted: bool = False,
+        deception: float = 0.5,
     ) -> str:
         lines = [
             f"You are {agent_id}, a player in a text-based social deduction game.",
@@ -252,6 +261,9 @@ class PromptBuilder:
             "",
         ]
         if role is Role.TRAITOR:
+            if self.traitor_mandate:
+                lines.extend(mandate_lines(deception))
+                lines.append("")
             lines.append(
                 "As a traitor you may switch sides: work with your traitor "
                 "allies to banish every faithful player and win as a team, or "
@@ -644,7 +656,15 @@ class PromptBuilder:
         memory_items: Optional[list[dict]] = None,
         extra_instruction: Optional[str] = None,
         agent: Optional["Agent"] = None,
+        deception: Optional[float] = None,
     ) -> list[ChatMessage]:
+        # The runtime passes this from the agent's *base* goals, because the
+        # injected ones have already dropped the persona's objectives for a
+        # traitor and with them the signal. The fallback is for callers that
+        # only hold a persona (the probe tools), and it under-reports rather
+        # than guessing.
+        if deception is None:
+            deception = persona.deception_aptitude(goals)
         return [
             ChatMessage(
                 role="system",
@@ -656,6 +676,7 @@ class PromptBuilder:
                     converted=bool(
                         getattr(agent, "converted_round", None) is not None
                     ),
+                    deception=deception,
                 ),
             ),
             ChatMessage(

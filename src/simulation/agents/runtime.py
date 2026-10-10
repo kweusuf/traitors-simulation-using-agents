@@ -198,6 +198,10 @@ class AgentRuntime:
             role=agent.role,
             persona=agent.persona,
             goals=agent.goals,
+            # Read from the persona's *base* goals rather than the injected
+            # ones: the injection drops the persona's objectives for a
+            # traitor, and the goal signal lives in exactly what it drops.
+            deception=agent.persona.deception_aptitude(agent.base_goals),
             view=view,
             action_type=action_type,
             legal_targets=legal_targets,

@@ -359,7 +359,50 @@ back cost nothing new. The threshold needed care; see below.
 
 **Benefit.** Self-repeats went **32 → 0** against `uk-s01-ptr-mem`.
 
+### A drawn traitor is briefed, and does not inherit the persona's objectives
+
+**Decision.** Two changes, both about the same mismatch. When the deal makes a
+player a traitor, the role is briefed at induction (`game.traitor_mandate`,
+on by default): the role requires deception, and only the *method* is scaled,
+to `Persona.deception_aptitude`. And `inject_role_goals` stops merging the
+persona's secondary goals into a traitor's list - a traitor gets the role's
+goals alone. The persona still reaches the prompt through its description and
+its traits.
+
+**Reasoning.** The deal does not consult the persona, and the cast was written
+for a faithful game: three personas exist to deceive and nineteen do not,
+several of the nineteen carrying a goal that is an instruction to lose once
+drawn as a traitor. Merging then handed a drawn traitor the contradiction
+directly - `stay_apart_from_the_herd` next to `ensure_traitor_team_wins`, in
+the same task list, in a room whose most-frequent accusation is that someone
+has been quiet.
+
+`persona.py` says persona instructions describe tendencies and never force a
+strategy ("you always lie" is banned), and that still holds: the mandate is
+role-level, the same shape as the converted-player coaching that already
+exists for a faithful recruited mid-game. The failure is also not a matter of
+degree. A traitor who will not lie is not playing badly, they are not playing,
+so the core of the mandate does not scale down to nothing - only the method
+does.
+
+**Alternative considered.** Pin the season's three traitors again, or add a
+`traitor_aptitude` field to the personas and weight the deal. Rejected:
+pinning restores exactly the confound the random-deal arms exist to remove,
+and editing twenty-two persona files to carry a deception score writes the
+answer into the input the experiment reads.
+
+**Cost.** A traitor's prompt grows by roughly 700 characters, and prompt size
+is the known lever on call latency, so the arms' timings shift as well as
+their play.
+
+**Benefit.** Not yet measured. `traitor_mandate: false` is the control that
+does not exist yet as an arm.
+
+Full write-up, with the runs, the measurements and what is still open:
+[2026-10-10-traitor-mandate.md](2026-10-10-traitor-mandate.md).
+
 ### A sustained transport failure ends the run; it does not skip the turn
+
 
 **Decision.** Keep the abort. A host that exhausts the provider's retries
 ends the run, and the supervisor resumes it from its own event log. Harden

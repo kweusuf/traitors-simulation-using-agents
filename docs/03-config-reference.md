@@ -36,6 +36,18 @@ the measurement or the failure behind it, and the arms that exist are in
 | `recruit_choice` | `false` | Recruitment becomes the traitors' *choice* on the night it opens: they vote recruit-or-murder (a tie murders), offer one living faithful who may decline, and a lone traitor's offer is an ultimatum. Overrides `recruit_on_banish` when both are set | Recruitment happens automatically under `recruit_on_banish`, if that is on |
 | `recruit_window` | `true` | With `recruit_choice` on: the choice opens **only** on the night after a traitor was banished, and is spent that night whether they recruit or kill. This is the show's rule | The choice is offered on every traitor night; a vacancy can be held open indefinitely. Either way the living traitor count may never exceed the starting count |
 
+## The traitor mandate
+
+| Key | Default | Set | Unset |
+| --- | --- | --- | --- |
+| `traitor_mandate` | **`true`** | A player drawn as a traitor is briefed at induction that the role requires deception: say things you do not believe, argue readings you do not hold, build cases against players you know to be innocent. The *method* is scaled to the persona - one the cast wrote as a deceiver is told invention comes easily, one written as trusting is told to deceive defensively by withholding, deflecting and letting others carry the false case. The core is identical for all of them | The prompts are what they were before the flag existed. This is the control for the finding in [learnings.md](learnings.md#a-persona-blind-deal-handed-the-tower-to-players-who-cannot-lie), written up in [2026-10-10-traitor-mandate.md](2026-10-10-traitor-mandate.md) |
+
+A drawn traitor no longer inherits the persona's objectives. The injection
+gives a traitor the role's goals alone, where it used to merge persona goals
+with role goals and hand over both as a task list
+(`stay_apart_from_the_herd, ensure_traitor_team_wins`). The persona still
+supplies the manner, through its description and its traits.
+
 ## Discussion, repetition and rejection
 
 | Key | Default | Set | Unset |
