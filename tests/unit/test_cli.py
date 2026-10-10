@@ -244,6 +244,23 @@ def test_base_url_and_model_flags_override_config(tmp_path, capsys) -> None:
     assert metrics["model_parameters"]["base_url"] == remote
 
 
+def test_concurrency_flag_overrides_config(tmp_path, capsys) -> None:
+    # The sweep arms pin max_concurrency to 1 so every arm can run at once.
+    # Running one arm alone wants the level the host actually serves, and
+    # that is a property of the moment, not of the arm's rules, so it
+    # belongs on the command line rather than in a generated config.
+    code, _ = run_cli(
+        ["run", CONFIG, "--provider", "fake", "--concurrency", "4", "--quiet"]
+        + base_args(tmp_path),
+        capsys,
+    )
+    assert code == 0
+    metrics = json.loads(
+        (tmp_path / "runs" / "game-001" / "metrics.json").read_text()
+    )
+    assert metrics["model_parameters"]["max_concurrency"] == 4
+
+
 def test_batch_accepts_base_url_flag(tmp_path, capsys) -> None:
     code, _ = run_cli(
         ["batch", CONFIG, "--games", "1", "--seed", "7", "--provider", "fake",

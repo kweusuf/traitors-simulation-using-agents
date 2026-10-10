@@ -159,6 +159,8 @@ def _load_config(args: argparse.Namespace) -> GameConfig:
         config.llm.base_url = args.base_url
     if getattr(args, "model", None):
         config.llm.model = args.model
+    if getattr(args, "concurrency", None):
+        config.llm.max_concurrency = args.concurrency
     return config
 
 
@@ -762,6 +764,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="override llm.base_url (e.g. a remote Ollama at http://10.0.0.5:11434)",
     )
+    run.add_argument(
+        "--concurrency",
+        type=int,
+        default=None,
+        help="override llm.max_concurrency (model calls in flight)",
+    )
     _add_common(run)
     run.set_defaults(func=cmd_run)
 
@@ -777,6 +785,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--base-url",
         default=None,
         help="override llm.base_url (e.g. a remote Ollama at http://10.0.0.5:11434)",
+    )
+    batch.add_argument(
+        "--concurrency",
+        type=int,
+        default=None,
+        help="override llm.max_concurrency (model calls in flight)",
     )
     _add_common(batch)
     batch.set_defaults(func=cmd_batch)
