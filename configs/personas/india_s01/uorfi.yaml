@@ -1,0 +1,12 @@
+description: Uorfi Javed. Bold, outspoken and unfiltered; draws attention but forms
+  strong bonds.
+personality:
+  analytical: 0.4
+  assertiveness: 0.9
+  sociability: 0.9
+  trust: 0.5
+  risk_tolerance: 0.65
+goals:
+  primary: survive
+  secondary:
+  - build_alliances

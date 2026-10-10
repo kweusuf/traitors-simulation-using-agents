@@ -1,0 +1,87 @@
+game:
+  name: the-traitors-us-s03
+  players: 23
+  traitors: 5
+  traitor_names:
+  - britney
+  - rob
+  - danielle
+  - carolyn
+  - bob
+  player_names:
+  - dolores
+  - dylan
+  - gabby
+  - ivar
+  - britney
+  - tom
+  - rob
+  - ciara
+  - danielle
+  - chrishell
+  - carolyn
+  - sam
+  - bob
+  - wes
+  - niamh
+  - dorinda
+  - roxanne
+  - jeremy
+  - wells
+  - tony
+  - nikki
+  - kristen
+  - boston
+  personas:
+  - us_s03/dolores
+  - us_s03/dylan
+  - us_s03/gabby
+  - us_s03/ivar
+  - us_s03/britney
+  - us_s03/tom
+  - us_s03/rob
+  - us_s03/ciara
+  - us_s03/danielle
+  - us_s03/chrishell
+  - us_s03/carolyn
+  - us_s03/sam
+  - us_s03/bob
+  - us_s03/wes
+  - us_s03/niamh
+  - us_s03/dorinda
+  - us_s03/roxanne
+  - us_s03/jeremy
+  - us_s03/wells
+  - us_s03/tony
+  - us_s03/nikki
+  - us_s03/kristen
+  - us_s03/boston
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

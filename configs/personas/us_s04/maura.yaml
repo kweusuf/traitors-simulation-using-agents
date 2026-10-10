@@ -1,0 +1,9 @@
+description: Maura Higgins. Outgoing, forms bonds quickly.
+personality:
+  analytical: 0.55
+  assertiveness: 0.6
+  sociability: 0.85
+  trust: 0.55
+  risk_tolerance: 0.5
+goals:
+  primary: survive

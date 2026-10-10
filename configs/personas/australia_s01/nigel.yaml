@@ -1,0 +1,9 @@
+description: Nigel Brennan. Hostage negotiator, composed, persuasive.
+personality:
+  analytical: 0.8
+  assertiveness: 0.6
+  sociability: 0.6
+  trust: 0.5
+  risk_tolerance: 0.45
+goals:
+  primary: survive

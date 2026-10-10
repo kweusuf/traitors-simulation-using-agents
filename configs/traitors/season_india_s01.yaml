@@ -1,0 +1,81 @@
+game:
+  name: the-traitors-india-s01
+  players: 20
+  traitors: 5
+  traitor_names:
+  - harsh
+  - purav
+  - karan_kundrra
+  - raj_kundrra
+  - jannat
+  player_names:
+  - nikita
+  - uorfi
+  - harsh
+  - purav
+  - karan_kundrra
+  - raj_kundrra
+  - jannat
+  - anshula
+  - sudhanshu
+  - sahil
+  - jasmine
+  - mukesh
+  - maheep
+  - ashish
+  - elnaaz
+  - raftaar
+  - nitish
+  - sargun
+  - lakshmi
+  - kunal
+  personas:
+  - india_s01/nikita
+  - india_s01/uorfi
+  - india_s01/harsh
+  - india_s01/purav
+  - india_s01/karan_kundrra
+  - india_s01/raj_kundrra
+  - india_s01/jannat
+  - india_s01/anshula
+  - india_s01/sudhanshu
+  - india_s01/sahil
+  - india_s01/jasmine
+  - india_s01/mukesh
+  - india_s01/maheep
+  - india_s01/ashish
+  - india_s01/elnaaz
+  - india_s01/raftaar
+  - india_s01/nitish
+  - india_s01/sargun
+  - india_s01/lakshmi
+  - india_s01/kunal
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

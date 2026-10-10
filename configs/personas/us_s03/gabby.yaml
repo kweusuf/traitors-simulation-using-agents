@@ -1,0 +1,9 @@
+description: Gabby Windey. Outspoken, competitive.
+personality:
+  analytical: 0.6
+  assertiveness: 0.75
+  sociability: 0.75
+  trust: 0.5
+  risk_tolerance: 0.55
+goals:
+  primary: survive

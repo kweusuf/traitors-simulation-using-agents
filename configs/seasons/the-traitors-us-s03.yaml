@@ -1,0 +1,70 @@
+# Ground truth for The Traitors (US), Season 3 (Peacock, 2025)
+
+season:
+  id: the-traitors-us-s03
+  name: The Traitors (US), Season 3
+  network: Peacock
+  aired: 2025-01-09/2025-03-06
+  episode_count: 12
+  contestant_count: 23
+  starting_traitor_count: 3
+  winner_faction: faithful
+  winners: [dolores, dylan, gabby, ivar]
+  final_counts:
+    faithful: 4
+    traitors: 0
+
+cast:
+  - {id: dolores, role: faithful, result: winner, exit_episode: 11}
+  - {id: dylan, role: faithful, result: winner, exit_episode: 11}
+  - {id: gabby, role: faithful, result: winner, exit_episode: 11}
+  - {id: ivar, role: faithful, result: winner, exit_episode: 11}
+  - {id: britney, role: traitor, traitor_type: recruited, recruited_episode: 9, result: banished, exit_episode: 11}
+  - {id: tom, role: faithful, result: murdered, exit_episode: 11}
+  - {id: rob, role: traitor, traitor_type: original, result: banished, exit_episode: 10}
+  - {id: ciara, role: faithful, result: murdered, exit_episode: 10}
+  - {id: danielle, role: traitor, traitor_type: original, result: banished, exit_episode: 9}
+  - {id: chrishell, role: faithful, result: murdered, exit_episode: 9}
+  - {id: carolyn, role: traitor, traitor_type: original, result: banished, exit_episode: 8}
+  - {id: sam, role: faithful, result: murdered, exit_episode: 8}
+  - {id: bob, role: traitor, traitor_type: original, result: banished, exit_episode: 7}
+  - {id: wes, role: faithful, result: murdered, exit_episode: 7}
+  - {id: niamh, role: faithful, result: murdered, exit_episode: 6}
+  - {id: dorinda, role: faithful, result: banished, exit_episode: 6}
+  - {id: roxanne, role: faithful, result: murdered, exit_episode: 5}
+  - {id: jeremy, role: faithful, result: banished, exit_episode: 5}
+  - {id: wells, role: faithful, result: murdered, exit_episode: 4}
+  - {id: tony, role: faithful, result: banished, exit_episode: 4}
+  - {id: nikki, role: faithful, result: murdered, exit_episode: 3}
+  - {id: kristen, role: faithful, result: banished, exit_episode: 3}
+  - {id: boston, role: faithful, result: murdered, exit_episode: 2}
+
+eliminations:
+  - {episode: 1, night_victim: null, banishment: null}
+  - {episode: 2, night_victim: boston, banishment: null}
+  - {episode: 3, night_victim: nikki, banishment: kristen}
+  - {episode: 4, night_victim: wells, banishment: tony}
+  - {episode: 5, night_victim: roxanne, banishment: jeremy}
+  - {episode: 6, night_victim: niamh, banishment: dorinda}
+  - {episode: 7, night_victim: wes, banishment: bob}
+  - {episode: 8, night_victim: sam, banishment: carolyn}
+  - {episode: 9, night_victim: chrishell, banishment: danielle}
+  - {episode: 10, night_victim: ciara, banishment: rob}
+  - {episode: 11, night_victim: tom, banishment: britney}
+  - {episode: 12, night_victim: null, banishment: null}
+
+traitor_reveal_episodes:
+  bob: 7
+  carolyn: 8
+  danielle: 9
+  rob: 10
+  britney: 11
+
+recruitments:
+  - {episode: 9, recruiters: [danielle], target: britney, type: seduce, accepted: true}
+
+finale:
+  outcome: faithful_win
+
+twists_used: [recruitment_seduce]
+twists_not_used: [shield, seer, dagger, ultimatum]

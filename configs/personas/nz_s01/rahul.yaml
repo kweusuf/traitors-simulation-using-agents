@@ -1,0 +1,10 @@
+# Persona for rahul (nz_s01)
+description: rahul
+personality:
+  analytical: 0.5
+  assertiveness: 0.5
+  sociability: 0.5
+  trust: 0.5
+  risk_tolerance: 0.5
+goals:
+  primary: survive

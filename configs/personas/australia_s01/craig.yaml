@@ -1,0 +1,9 @@
+description: Craig Carr. Business coach, grounded, loyal.
+personality:
+  analytical: 0.7
+  assertiveness: 0.55
+  sociability: 0.7
+  trust: 0.55
+  risk_tolerance: 0.45
+goals:
+  primary: survive

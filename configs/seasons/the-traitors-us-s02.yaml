@@ -1,0 +1,70 @@
+# Ground truth for The Traitors (US), Season 2 (Peacock, 2024)
+
+season:
+  id: the-traitors-us-s02
+  name: The Traitors (US), Season 2
+  network: Peacock
+  aired: 2024-01-12/2024-03-07
+  episode_count: 12
+  contestant_count: 22
+  starting_traitor_count: 2
+  winner_faction: faithful
+  winners: [ct, trishelle]
+  runner_up: [mj]
+  final_counts:
+    faithful: 3
+    traitors: 0
+
+cast:
+  - {id: ct, role: faithful, result: winner, exit_episode: 11, persona: "loyal, strategic when needed"}
+  - {id: trishelle, role: faithful, result: winner, exit_episode: 11, persona: "social, played well under pressure"}
+  - {id: mj, role: faithful, result: finalist, exit_episode: 11, persona: "observant, aligned with faithfuls"}
+  - {id: sheree, role: faithful, result: murdered, exit_episode: 11, persona: "outspoken"}
+  - {id: phaedra, role: traitor, traitor_type: original, result: banished, exit_episode: 10, persona: "cunning, persuasive"}
+  - {id: john, role: faithful, result: murdered, exit_episode: 10, persona: "straightforward"}
+  - {id: peter, role: faithful, result: banished, exit_episode: 9, persona: "trusting"}
+  - {id: kevin, role: faithful, result: murdered, exit_episode: 9, persona: "friendly"}
+  - {id: parvati, role: traitor, traitor_type: recruited, recruited_episode: 8, result: banished, exit_episode: 8, persona: "experienced player, recruited"}
+  - {id: bergie, role: faithful, result: murdered, exit_episode: 8, persona: "likable"}
+  - {id: dan, role: traitor, traitor_type: original, result: banished, exit_episode: 6, persona: "strategic"}
+  - {id: janelle, role: faithful, result: banished, exit_episode: 5, persona: "competitive"}
+  - {id: sandra, role: faithful, result: murdered, exit_episode: 5, persona: "early victim"}
+  - {id: tamra, role: faithful, result: banished, exit_episode: 4, persona: "outspoken"}
+  - {id: larsa, role: faithful, result: murdered, exit_episode: 4, persona: "socialite"}
+  - {id: makensy, role: faithful, result: murdered, exit_episode: 3, persona: "young player"}
+  - {id: maks, role: faithful, result: banished, exit_episode: 3, persona: "physical player"}
+  - {id: ekin-su, role: faithful, result: murdered, exit_episode: 2, persona: "bold"}
+  - {id: peppermint, role: faithful, result: banished, exit_episode: 2, persona: "first banished"}
+  - {id: deontay, role: faithful, result: murdered, exit_episode: 1, persona: "early victim"}
+  - {id: carly, role: faithful, result: murdered, exit_episode: 1, persona: "early victim"}
+  - {id: melinda, role: faithful, result: banished, exit_episode: 1, persona: "first banished"}
+
+eliminations:
+  - {episode: 1, night_victim: [deontay, carly], banishment: melinda}
+  - {episode: 2, night_victim: ekin-su, banishment: peppermint}
+  - {episode: 3, night_victim: makensy, banishment: maks}
+  - {episode: 4, night_victim: larsa, banishment: tamra}
+  - {episode: 5, night_victim: sandra, banishment: janelle}
+  - {episode: 6, night_victim: null, banishment: dan}
+  - {episode: 7, night_victim: null, banishment: null}
+  - {episode: 8, night_victim: bergie, banishment: parvati}
+  - {episode: 9, night_victim: kevin, banishment: peter}
+  - {episode: 10, night_victim: john, banishment: phaedra}
+  - {episode: 11, night_victim: sheree, banishment: null}
+  - {episode: 12, night_victim: null, banishment: null}
+
+traitor_reveal_episodes:
+  dan: 6
+  phaedra: 10
+  parvati: 8
+
+recruitments:
+  - {episode: 8, recruiters: [phaedra], target: parvati, type: seduce, accepted: true}
+
+finale:
+  sequence:
+    - "faithfuls win against remaining traitor(s) by banishment"
+  outcome: faithful_win
+
+twists_used: [recruitment_seduce]
+twists_not_used: [shield, seer, dagger, ultimatum]

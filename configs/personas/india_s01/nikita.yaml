@@ -1,0 +1,13 @@
+description: Nikita Luther. Poker player, observant and strategic; plays cautiously
+  and reads people well.
+personality:
+  analytical: 0.85
+  assertiveness: 0.5
+  sociability: 0.55
+  trust: 0.45
+  risk_tolerance: 0.4
+goals:
+  primary: survive
+  secondary:
+  - find_traitors
+  - stay_under_radar

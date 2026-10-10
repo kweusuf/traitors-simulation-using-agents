@@ -1,0 +1,9 @@
+description: Karan Kundrra. Charismatic, can read room.
+personality:
+  analytical: 0.65
+  assertiveness: 0.7
+  sociability: 0.8
+  trust: 0.45
+  risk_tolerance: 0.55
+goals:
+  primary: survive

@@ -1,0 +1,64 @@
+# Ground truth for The Traitors (Australia), Season 2
+
+season:
+  id: the-traitors-australia-s02
+  name: The Traitors Australia, Season 2
+  network: Network 10
+  aired: 2023-08-13/2023-09-10
+  episode_count: 9
+  contestant_count: 20
+  starting_traitor_count: 3
+  winner_faction: none
+  winners: []
+  final_counts:
+    faithful: 3
+    traitors: 3
+
+cast:
+  - {id: camille, role: traitor, traitor_type: original, result: finalist, exit_episode: 9}
+  - {id: sam_mcglone, role: traitor, traitor_type: original, result: finalist, exit_episode: 9}
+  - {id: blake, role: traitor, traitor_type: original, result: finalist, exit_episode: 9}
+  - {id: sarah, role: faithful, result: finalist, exit_episode: 9}
+  - {id: liam, role: faithful, result: banished, exit_episode: 9}
+  - {id: gloria, role: faithful, result: banished, exit_episode: 8}
+  - {id: hannah, role: faithful, result: murdered, exit_episode: 8}
+  - {id: keith, role: faithful, result: banished, exit_episode: 7}
+  - {id: simone, role: faithful, result: banished, exit_episode: 6}
+  - {id: luke_toki, role: faithful, result: murdered, exit_episode: 6}
+  - {id: annabel, role: faithful, result: banished, exit_episode: 5}
+  - {id: roha, role: faithful, result: murdered, exit_episode: 5}
+  - {id: ian_zaro, role: faithful, result: banished, exit_episode: 4}
+  - {id: paul_de_gelder, role: faithful, result: murdered, exit_episode: 4}
+  - {id: ash_pollard, role: traitor, traitor_type: original, result: banished, exit_episode: 3}
+  - {id: paeden, role: faithful, result: murdered, exit_episode: 3}
+  - {id: gyton, role: faithful, result: banished, exit_episode: 2}
+  - {id: milly, role: faithful, result: murdered, exit_episode: 2}
+  - {id: jessika, role: faithful, result: banished, exit_episode: 1}
+  - {id: nicole, role: faithful, result: murdered, exit_episode: 1}
+
+eliminations:
+  - {episode: 1, night_victim: nicole, banishment: jessika}
+  - {episode: 2, night_victim: milly, banishment: gyton}
+  - {episode: 3, night_victim: paeden, banishment: ash_pollard}
+  - {episode: 4, night_victim: paul_de_gelder, banishment: ian_zaro}
+  - {episode: 5, night_victim: roha, banishment: annabel}
+  - {episode: 6, night_victim: luke_toki, banishment: simone}
+  - {episode: 7, night_victim: null, banishment: keith}
+  - {episode: 8, night_victim: hannah, banishment: gloria}
+  - {episode: 9, night_victim: null, banishment: liam}
+
+traitor_reveal_episodes:
+  ash_pollard: 3
+  camille: 9
+  sam_mcglone: 9
+  blake: 9
+
+recruitments: []
+
+finale:
+  outcome: no_winner
+  sequence:
+    - "finalists reach end with traitors and faithfuls; no formal winner declared per season ending"
+
+twists_used: []
+twists_not_used: [recruitment_seduce, recruitment_ultimatum, shield, seer, dagger]

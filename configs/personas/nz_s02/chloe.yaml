@@ -1,0 +1,9 @@
+description: Chloe. Original traitor, cunning.
+personality:
+  analytical: 0.75
+  assertiveness: 0.65
+  sociability: 0.7
+  trust: 0.4
+  risk_tolerance: 0.55
+goals:
+  primary: survive

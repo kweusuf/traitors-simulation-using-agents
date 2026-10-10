@@ -1,0 +1,86 @@
+game:
+  name: the-traitors-us-s04
+  players: 23
+  traitors: 4
+  traitor_names:
+  - rob_rausch
+  - lisa_rinna
+  - candace
+  - donna
+  player_names:
+  - rob_rausch
+  - maura
+  - nikki_garcia
+  - lana
+  - rachel
+  - dorinda
+  - carsten
+  - lisa_rinna
+  - taran
+  - candace
+  - johnny
+  - donna
+  - real_housewives_cast_member
+  - ian
+  - kristen
+  - yamir
+  - hercules
+  - patti
+  - jamie
+  - cameron
+  - mark
+  - tiffany
+  - michaela
+  personas:
+  - us_s04/rob_rausch
+  - us_s04/maura
+  - us_s04/nikki_garcia
+  - us_s04/lana
+  - us_s04/rachel
+  - us_s04/dorinda
+  - us_s04/carsten
+  - us_s04/lisa_rinna
+  - us_s04/taran
+  - us_s04/candace
+  - us_s04/johnny
+  - us_s04/donna
+  - us_s04/real_housewives_cast_member
+  - us_s04/ian
+  - us_s04/kristen
+  - us_s04/yamir
+  - us_s04/hercules
+  - us_s04/patti
+  - us_s04/jamie
+  - us_s04/cameron
+  - us_s04/mark
+  - us_s04/tiffany
+  - us_s04/michaela
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

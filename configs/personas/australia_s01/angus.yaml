@@ -1,0 +1,9 @@
+description: Angus McNicol. Sales manager, traitor.
+personality:
+  analytical: 0.6
+  assertiveness: 0.6
+  sociability: 0.65
+  trust: 0.45
+  risk_tolerance: 0.5
+goals:
+  primary: survive

@@ -1,0 +1,83 @@
+game:
+  name: the-traitors-us-s02
+  players: 22
+  traitors: 3
+  traitor_names:
+  - phaedra
+  - parvati
+  - dan
+  player_names:
+  - ct
+  - trishelle
+  - mj
+  - sheree
+  - phaedra
+  - john
+  - peter
+  - kevin
+  - parvati
+  - bergie
+  - dan
+  - janelle
+  - sandra
+  - tamra
+  - larsa
+  - makensy
+  - maks
+  - ekin-su
+  - peppermint
+  - deontay
+  - carly
+  - melinda
+  personas:
+  - us_s02/ct
+  - us_s02/trishelle
+  - us_s02/mj
+  - us_s02/sheree
+  - us_s02/phaedra
+  - us_s02/john
+  - us_s02/peter
+  - us_s02/kevin
+  - us_s02/parvati
+  - us_s02/bergie
+  - us_s02/dan
+  - us_s02/janelle
+  - us_s02/sandra
+  - us_s02/tamra
+  - us_s02/larsa
+  - us_s02/makensy
+  - us_s02/maks
+  - us_s02/ekin-su
+  - us_s02/peppermint
+  - us_s02/deontay
+  - us_s02/carly
+  - us_s02/melinda
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

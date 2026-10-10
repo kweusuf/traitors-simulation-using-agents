@@ -1,0 +1,9 @@
+description: Kate Williams. Photographer, recruited late.
+personality:
+  analytical: 0.6
+  assertiveness: 0.6
+  sociability: 0.7
+  trust: 0.45
+  risk_tolerance: 0.55
+goals:
+  primary: survive

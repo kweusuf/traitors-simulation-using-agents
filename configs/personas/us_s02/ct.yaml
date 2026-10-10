@@ -1,0 +1,9 @@
+description: CT Tamburello. Veteran, loyal, adaptable.
+personality:
+  analytical: 0.7
+  assertiveness: 0.7
+  sociability: 0.65
+  trust: 0.55
+  risk_tolerance: 0.5
+goals:
+  primary: survive

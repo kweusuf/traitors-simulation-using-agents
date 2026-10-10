@@ -1,0 +1,9 @@
+description: Christian de la Torre. Smooth talker, defensive under pressure.
+personality:
+  analytical: 0.6
+  assertiveness: 0.65
+  sociability: 0.7
+  trust: 0.45
+  risk_tolerance: 0.55
+goals:
+  primary: survive

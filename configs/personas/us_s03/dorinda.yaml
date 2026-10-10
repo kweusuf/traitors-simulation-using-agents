@@ -1,0 +1,10 @@
+# Persona for dorinda (us_s03)
+description: dorinda
+personality:
+  analytical: 0.5
+  assertiveness: 0.5
+  sociability: 0.5
+  trust: 0.5
+  risk_tolerance: 0.5
+goals:
+  primary: survive

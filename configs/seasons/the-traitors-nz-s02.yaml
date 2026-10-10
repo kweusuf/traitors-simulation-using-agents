@@ -1,0 +1,62 @@
+# Ground truth for The Traitors (NZ), Season 2
+
+season:
+  id: the-traitors-nz-s02
+  name: The Traitors NZ, Season 2
+  network: Three NZ
+  aired: 2024-07-01/2024-08-06
+  episode_count: 12
+  contestant_count: 20
+  starting_traitor_count: 3
+  winner_faction: traitor
+  winners: [chloe]
+
+cast:
+  - {id: chloe, role: traitor, traitor_type: original, result: winner, exit_episode: 12}
+  - {id: maruia, role: faithful, result: finalist, exit_episode: 12}
+  - {id: noel, role: faithful, result: finalist, exit_episode: 12}
+  - {id: brittany, role: faithful, result: banished, exit_episode: 12}
+  - {id: donna, role: faithful, result: banished, exit_episode: 11}
+  - {id: keanu, role: traitor, traitor_type: original, result: banished, exit_episode: 11}
+  - {id: bradley, role: traitor, traitor_type: recruited, recruited_episode: 9, result: banished, exit_episode: 11}
+  - {id: bailey, role: faithful, result: banished, exit_episode: 10}
+  - {id: aaron, role: faithful, result: murdered, exit_episode: 9}
+  - {id: elliott, role: faithful, result: murdered, exit_episode: 8}
+  - {id: kate, role: faithful, result: banished, exit_episode: 8}
+  - {id: jannaia, role: faithful, result: murdered, exit_episode: 7}
+  - {id: ryan, role: faithful, result: banished, exit_episode: 7}
+  - {id: teejay, role: faithful, result: banished, exit_episode: 6}
+  - {id: jess, role: faithful, result: murdered, exit_episode: 6}
+  - {id: kimberly, role: faithful, result: banished, exit_episode: 5}
+  - {id: jacinda, role: faithful, result: murdered, exit_episode: 5}
+  - {id: liam, role: faithful, result: banished, exit_episode: 4}
+  - {id: sonny, role: faithful, result: murdered, exit_episode: 4}
+  - {id: thomas, role: faithful, result: banished, exit_episode: 2}
+
+eliminations:
+  - {episode: 1, night_victim: null, banishment: null}
+  - {episode: 2, night_victim: null, banishment: thomas}
+  - {episode: 3, night_victim: null, banishment: null}
+  - {episode: 4, night_victim: sonny, banishment: liam}
+  - {episode: 5, night_victim: jacinda, banishment: kimberly}
+  - {episode: 6, night_victim: jess, banishment: teejay}
+  - {episode: 7, night_victim: jannaia, banishment: ryan}
+  - {episode: 8, night_victim: elliott, banishment: kate}
+  - {episode: 9, night_victim: aaron, banishment: bradley}
+  - {episode: 10, night_victim: null, banishment: bailey}
+  - {episode: 11, night_victim: null, banishment: keanu, other: "donna banished later same episode context"}
+  - {episode: 12, night_victim: null, banishment: [donna, brittany]}
+
+traitor_reveal_episodes:
+  chloe: 12
+  keanu: 11
+  bradley: 11
+
+recruitments:
+  - {episode: 9, recruiters: [chloe, keanu], target: bradley, type: seduce, accepted: true}
+
+finale:
+  outcome: traitor_win
+
+twists_used: [recruitment_seduce]
+twists_not_used: [shield, seer, dagger, ultimatum]

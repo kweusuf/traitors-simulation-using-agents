@@ -1,0 +1,9 @@
+description: Phaedra Parks. Cunning, persuasive, lawyer instincts.
+personality:
+  analytical: 0.85
+  assertiveness: 0.7
+  sociability: 0.75
+  trust: 0.4
+  risk_tolerance: 0.55
+goals:
+  primary: survive

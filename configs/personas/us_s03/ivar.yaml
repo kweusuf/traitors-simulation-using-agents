@@ -1,0 +1,9 @@
+description: Lord Ivar Mountbatten. Diplomatic, measured.
+personality:
+  analytical: 0.7
+  assertiveness: 0.5
+  sociability: 0.7
+  trust: 0.55
+  risk_tolerance: 0.4
+goals:
+  primary: survive

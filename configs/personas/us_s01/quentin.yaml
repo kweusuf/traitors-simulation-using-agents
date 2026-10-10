@@ -1,0 +1,9 @@
+description: Quentin Jiles. Analytical, reads people well.
+personality:
+  analytical: 0.8
+  assertiveness: 0.5
+  sociability: 0.55
+  trust: 0.5
+  risk_tolerance: 0.4
+goals:
+  primary: survive

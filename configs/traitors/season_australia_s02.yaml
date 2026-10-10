@@ -1,0 +1,80 @@
+game:
+  name: the-traitors-australia-s02
+  players: 20
+  traitors: 4
+  traitor_names:
+  - camille
+  - sam_mcglone
+  - blake
+  - ash_pollard
+  player_names:
+  - camille
+  - sam_mcglone
+  - blake
+  - sarah
+  - liam
+  - gloria
+  - hannah
+  - keith
+  - simone
+  - luke_toki
+  - annabel
+  - roha
+  - ian_zaro
+  - paul_de_gelder
+  - ash_pollard
+  - paeden
+  - gyton
+  - milly
+  - jessika
+  - nicole
+  personas:
+  - australia_s02/camille
+  - australia_s02/sam_mcglone
+  - australia_s02/blake
+  - australia_s02/sarah
+  - australia_s02/liam
+  - australia_s02/gloria
+  - australia_s02/hannah
+  - australia_s02/keith
+  - australia_s02/simone
+  - australia_s02/luke_toki
+  - australia_s02/annabel
+  - australia_s02/roha
+  - australia_s02/ian_zaro
+  - australia_s02/paul_de_gelder
+  - australia_s02/ash_pollard
+  - australia_s02/paeden
+  - australia_s02/gyton
+  - australia_s02/milly
+  - australia_s02/jessika
+  - australia_s02/nicole
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

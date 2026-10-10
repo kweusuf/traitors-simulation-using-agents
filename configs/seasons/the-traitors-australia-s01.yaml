@@ -1,0 +1,71 @@
+# Ground truth for The Traitors (Australia), Season 1
+
+season:
+  id: the-traitors-australia-s01
+  name: The Traitors Australia, Season 1
+  network: Network 10
+  aired: 2022-10-16/2022-11-13
+  episode_count: 12
+  contestant_count: 24
+  starting_traitor_count: 4
+  winner_faction: traitor
+  winners: [alex_duggan]
+  runner_up: [craig]
+
+cast:
+  - {id: alex_duggan, role: traitor, traitor_type: recruited, recruited_episode: 8, result: winner, exit_episode: 12}
+  - {id: craig, role: faithful, result: finalist, exit_episode: 12}
+  - {id: kate, role: traitor, traitor_type: recruited, recruited_episode: 10, result: banished, exit_episode: 12}
+  - {id: lewis, role: faithful, result: banished, exit_episode: 12}
+  - {id: teresa, role: faithful, result: banished, exit_episode: 11}
+  - {id: paul, role: faithful, result: murdered, exit_episode: 11}
+  - {id: nigel, role: traitor, traitor_type: original, result: banished, exit_episode: 10}
+  - {id: marielle, role: traitor, traitor_type: original, result: banished, exit_episode: 9}
+  - {id: fi, role: faithful, result: murdered, exit_episode: 9}
+  - {id: dirk, role: faithful, result: banished, exit_episode: 8}
+  - {id: matt, role: faithful, result: banished, exit_episode: 7}
+  - {id: mark, role: faithful, result: murdered, exit_episode: 7}
+  - {id: claire, role: traitor, traitor_type: original, result: banished, exit_episode: 6}
+  - {id: angus, role: traitor, traitor_type: original, result: banished, exit_episode: 5}
+  - {id: justine, role: faithful, result: murdered, exit_episode: 5}
+  - {id: olivia, role: faithful, result: banished, exit_episode: 4}
+  - {id: midy, role: faithful, result: murdered, exit_episode: 4}
+  - {id: kashindi, role: faithful, result: banished, exit_episode: 3}
+  - {id: ethan, role: faithful, result: murdered, exit_episode: 3}
+  - {id: mk, role: faithful, result: banished, exit_episode: 2}
+  - {id: sandra, role: faithful, result: murdered, exit_episode: 2}
+  - {id: jack, role: faithful, result: banished, exit_episode: 1}
+  - {id: millie, role: faithful, result: murdered, exit_episode: 1}
+  - {id: chloe, role: faithful, result: walked, exit_episode: 3}
+
+eliminations:
+  - {episode: 1, night_victim: millie, banishment: jack}
+  - {episode: 2, night_victim: sandra, banishment: mk}
+  - {episode: 3, night_victim: ethan, banishment: kashindi, other: "chloe walked"}
+  - {episode: 4, night_victim: midy, banishment: olivia}
+  - {episode: 5, night_victim: justine, banishment: angus}
+  - {episode: 6, night_victim: null, banishment: claire}
+  - {episode: 7, night_victim: mark, banishment: matt}
+  - {episode: 8, night_victim: null, banishment: dirk}
+  - {episode: 9, night_victim: fi, banishment: marielle}
+  - {episode: 10, night_victim: null, banishment: nigel}
+  - {episode: 11, night_victim: paul, banishment: teresa}
+  - {episode: 12, night_victim: null, banishment: [kate, lewis]}
+
+traitor_reveal_episodes:
+  angus: 5
+  claire: 6
+  marielle: 9
+  nigel: 10
+  kate: 12
+  alex_duggan: 12
+
+recruitments:
+  - {episode: 8, recruiters: [marielle, nigel], target: alex_duggan, type: seduce, accepted: true}
+  - {episode: 10, recruiters: [alex_duggan, nigel], target: kate, type: seduce, accepted: true}
+
+finale:
+  outcome: traitor_win
+
+twists_used: [recruitment_seduce, shield]
+twists_not_used: [seer, dagger, ultimatum]

@@ -1,0 +1,9 @@
+description: Alex Duggan. Model, smooth talker, recruited and won.
+personality:
+  analytical: 0.6
+  assertiveness: 0.7
+  sociability: 0.75
+  trust: 0.4
+  risk_tolerance: 0.6
+goals:
+  primary: survive

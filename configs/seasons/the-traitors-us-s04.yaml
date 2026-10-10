@@ -1,0 +1,69 @@
+# Ground truth for The Traitors (US), Season 4 (Peacock, 2026)
+
+season:
+  id: the-traitors-us-s04
+  name: The Traitors (US), Season 4
+  network: Peacock
+  aired: 2026-01-08/2026-02-26
+  episode_count: 12
+  contestant_count: 23
+  starting_traitor_count: 3
+  winner_faction: traitor
+  winners: [rob_rausch]
+  final_counts:
+    faithful: 2
+    traitors: 1
+
+cast:
+  - {id: rob_rausch, role: traitor, traitor_type: original, result: winner, exit_episode: 12}
+  - {id: maura, role: faithful, result: finalist, exit_episode: 12}
+  - {id: nikki_garcia, role: faithful, result: finalist, exit_episode: 12}
+  - {id: lana, role: faithful, result: murdered, exit_episode: 12}
+  - {id: rachel, role: faithful, result: banished, exit_episode: 11}
+  - {id: dorinda, role: faithful, result: murdered, exit_episode: 11}
+  - {id: carsten, role: faithful, result: banished, exit_episode: 10}
+  - {id: lisa_rinna, role: traitor, traitor_type: original, result: banished, exit_episode: 9}
+  - {id: taran, role: faithful, result: murdered, exit_episode: 9}
+  - {id: candace, role: traitor, traitor_type: original, result: banished, exit_episode: 8}
+  - {id: johnny, role: faithful, result: murdered, exit_episode: 8}
+  - {id: donna, role: traitor, traitor_type: recruited, recruited_episode: 7, result: banished, exit_episode: 7}
+  - {id: real_housewives_cast_member, role: faithful, result: murdered, exit_episode: 7} # abbreviated; fuller detail exists
+  - {id: ian, role: faithful, result: banished, exit_episode: 6}
+  - {id: kristen, role: faithful, result: murdered, exit_episode: 6}
+  - {id: yamir, role: faithful, result: banished, exit_episode: 5}
+  - {id: hercules, role: faithful, result: murdered, exit_episode: 5}
+  - {id: patti, role: faithful, result: banished, exit_episode: 4}
+  - {id: jamie, role: faithful, result: murdered, exit_episode: 4}
+  - {id: cameron, role: faithful, result: banished, exit_episode: 3}
+  - {id: mark, role: faithful, result: murdered, exit_episode: 3}
+  - {id: tiffany, role: faithful, result: banished, exit_episode: 2}
+  - {id: michaela, role: faithful, result: murdered, exit_episode: 2}
+
+eliminations:
+  - {episode: 1, night_victim: null, banishment: null}
+  - {episode: 2, night_victim: michaela, banishment: tiffany}
+  - {episode: 3, night_victim: mark, banishment: cameron}
+  - {episode: 4, night_victim: jamie, banishment: patti}
+  - {episode: 5, night_victim: hercules, banishment: yamir}
+  - {episode: 6, night_victim: kristen, banishment: ian}
+  - {episode: 7, night_victim: null, banishment: donna}
+  - {episode: 8, night_victim: johnny, banishment: candace}
+  - {episode: 9, night_victim: taran, banishment: lisa_rinna}
+  - {episode: 10, night_victim: null, banishment: carsten}
+  - {episode: 11, night_victim: dorinda, banishment: rachel}
+  - {episode: 12, night_victim: lana, banishment: null}
+
+traitor_reveal_episodes:
+  rob_rausch: 12
+  lisa_rinna: 9
+  candace: 8
+  donna: 7
+
+recruitments:
+  - {episode: 7, recruiters: [], target: donna, type: seduce, accepted: true}
+
+finale:
+  outcome: traitor_win
+
+twists_used: [recruitment_seduce, secret_traitor]
+twists_not_used: [shield, seer, dagger]

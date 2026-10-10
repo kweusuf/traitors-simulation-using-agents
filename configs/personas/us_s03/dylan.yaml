@@ -1,0 +1,9 @@
+description: Dylan Efron. Athletic, likable, builds trust easily.
+personality:
+  analytical: 0.55
+  assertiveness: 0.6
+  sociability: 0.85
+  trust: 0.6
+  risk_tolerance: 0.5
+goals:
+  primary: survive

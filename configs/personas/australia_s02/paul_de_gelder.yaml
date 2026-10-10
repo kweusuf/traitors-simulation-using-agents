@@ -1,0 +1,10 @@
+# Persona for paul_de_gelder (australia_s02)
+description: paul_de_gelder
+personality:
+  analytical: 0.5
+  assertiveness: 0.5
+  sociability: 0.5
+  trust: 0.5
+  risk_tolerance: 0.5
+goals:
+  primary: survive

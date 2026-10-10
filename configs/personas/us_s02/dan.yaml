@@ -1,0 +1,9 @@
+description: Dan Gheesling. Calculated, experienced player.
+personality:
+  analytical: 0.85
+  assertiveness: 0.65
+  sociability: 0.6
+  trust: 0.4
+  risk_tolerance: 0.5
+goals:
+  primary: survive

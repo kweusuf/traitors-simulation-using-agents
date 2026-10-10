@@ -1,0 +1,90 @@
+game:
+  name: the-traitors-australia-s01
+  players: 24
+  traitors: 6
+  traitor_names:
+  - alex_duggan
+  - kate
+  - nigel
+  - marielle
+  - claire
+  - angus
+  player_names:
+  - alex_duggan
+  - craig
+  - kate
+  - lewis
+  - teresa
+  - paul
+  - nigel
+  - marielle
+  - fi
+  - dirk
+  - matt
+  - mark
+  - claire
+  - angus
+  - justine
+  - olivia
+  - midy
+  - kashindi
+  - ethan
+  - mk
+  - sandra
+  - jack
+  - millie
+  - chloe
+  personas:
+  - australia_s01/alex_duggan
+  - australia_s01/craig
+  - australia_s01/kate
+  - australia_s01/lewis
+  - australia_s01/teresa
+  - australia_s01/paul
+  - australia_s01/nigel
+  - australia_s01/marielle
+  - australia_s01/fi
+  - australia_s01/dirk
+  - australia_s01/matt
+  - australia_s01/mark
+  - australia_s01/claire
+  - australia_s01/angus
+  - australia_s01/justine
+  - australia_s01/olivia
+  - australia_s01/midy
+  - australia_s01/kashindi
+  - australia_s01/ethan
+  - australia_s01/mk
+  - australia_s01/sandra
+  - australia_s01/jack
+  - australia_s01/millie
+  - australia_s01/chloe
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

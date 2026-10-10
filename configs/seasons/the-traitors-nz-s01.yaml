@@ -1,0 +1,58 @@
+# Ground truth for The Traitors (NZ), Season 1
+
+season:
+  id: the-traitors-nz-s01
+  name: The Traitors NZ, Season 1
+  network: Three NZ
+  aired: 2023-07-09/2023-09-05
+  episode_count: 10
+  contestant_count: 19
+  starting_traitor_count: 3
+  winner_faction: faithful
+  winners: [anna]
+
+cast:
+  - {id: anna, role: faithful, result: winner, exit_episode: 10}
+  - {id: brooke, role: faithful, result: finalist, exit_episode: 10}
+  - {id: sam, role: traitor, traitor_type: original, result: finalist, exit_episode: 10}
+  - {id: murray, role: faithful, result: banished, exit_episode: 10}
+  - {id: mark, role: traitor, traitor_type: original, result: banished, exit_episode: 9}
+  - {id: nicky, role: traitor, traitor_type: original, result: banished, exit_episode: 8}
+  - {id: dane, role: faithful, result: murdered, exit_episode: 8}
+  - {id: cathrine, role: faithful, result: banished, exit_episode: 7}
+  - {id: jess, role: faithful, result: murdered, exit_episode: 7}
+  - {id: stephen, role: faithful, result: banished, exit_episode: 6}
+  - {id: laura, role: faithful, result: murdered, exit_episode: 6}
+  - {id: rahul, role: faithful, result: banished, exit_episode: 5}
+  - {id: katie, role: faithful, result: murdered, exit_episode: 5}
+  - {id: max, role: faithful, result: banished, exit_episode: 4}
+  - {id: mel, role: faithful, result: murdered, exit_episode: 4}
+  - {id: john, role: faithful, result: banished, exit_episode: 3}
+  - {id: jj, role: faithful, result: murdered, exit_episode: 3}
+  - {id: leighton, role: faithful, result: banished, exit_episode: 2}
+  - {id: brittany, role: faithful, result: murdered, exit_episode: 2}
+
+eliminations:
+  - {episode: 1, night_victim: null, banishment: null}
+  - {episode: 2, night_victim: brittany, banishment: leighton}
+  - {episode: 3, night_victim: jj, banishment: john}
+  - {episode: 4, night_victim: mel, banishment: max}
+  - {episode: 5, night_victim: katie, banishment: rahul}
+  - {episode: 6, night_victim: laura, banishment: stephen}
+  - {episode: 7, night_victim: jess, banishment: cathrine}
+  - {episode: 8, night_victim: dane, banishment: nicky}
+  - {episode: 9, night_victim: null, banishment: mark}
+  - {episode: 10, night_victim: null, banishment: murray}
+
+traitor_reveal_episodes:
+  nicky: 8
+  mark: 9
+  sam: 10
+
+recruitments: []
+
+finale:
+  outcome: faithful_win
+
+twists_used: []
+twists_not_used: [recruitment_seduce, recruitment_ultimatum, shield, seer, dagger]

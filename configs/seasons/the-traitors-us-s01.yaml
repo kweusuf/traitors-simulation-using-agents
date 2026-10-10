@@ -1,0 +1,75 @@
+# Ground truth for The Traitors (US), Season 1 (Peacock, 2023)
+#
+# Sources:
+#   https://en.wikipedia.org/wiki/The_Traitors_(American_TV_series)_season_1
+#   https://thetraitors.fandom.com/wiki/The_Traitors_(US)/Season_1
+
+season:
+  id: the-traitors-us-s01
+  name: The Traitors (US), Season 1
+  network: Peacock
+  aired: 2023-01-12/2023-02-28
+  episode_count: 11
+  contestant_count: 20
+  starting_traitor_count: 3
+  winner_faction: traitor
+  winners: [cirie]
+  runner_up: [andie, quentin]
+  final_counts:
+    faithful: 2
+    traitors: 1
+
+cast:
+  - {id: cirie, role: traitor, traitor_type: original, result: winner, exit_episode: 10, persona: "strategic player, controlled information and built trust"}
+  - {id: andie, role: faithful, result: finalist, exit_episode: 10, persona: "observant, cautious with accusations"}
+  - {id: quentin, role: faithful, result: finalist, exit_episode: 10, persona: "analytical, read people carefully"}
+  - {id: arie, role: traitor, traitor_type: recruited, recruited_episode: 8, result: walked, exit_episode: 10, persona: "charming, recruited late"}
+  - {id: kate, role: faithful, result: banished, exit_episode: 10, persona: "outspoken, direct in confrontation"}
+  - {id: christian, role: traitor, traitor_type: original, result: banished, exit_episode: 9, persona: "smooth talker, defensive under pressure"}
+  - {id: stephenie, role: faithful, result: murdered, exit_episode: 8, persona: "game-savvy, skeptical"}
+  - {id: rachel, role: faithful, result: banished, exit_episode: 8, persona: "vocal, quick to form opinions"}
+  - {id: shelbe, role: faithful, result: banished, exit_episode: 7, persona: "naive at times, loyal"}
+  - {id: anjelica, role: faithful, result: murdered, exit_episode: 7, persona: "quiet observer"}
+  - {id: cody, role: traitor, traitor_type: original, result: banished, exit_episode: 6, persona: "competitive, sometimes overconfident"}
+  - {id: amanda, role: faithful, result: walked, exit_episode: 5, persona: "early dropout"}
+  - {id: michael, role: faithful, result: murdered, exit_episode: 5, persona: "strategic thinker"}
+  - {id: brandi, role: faithful, result: banished, exit_episode: 4, persona: "blunt, confrontational"}
+  - {id: ryan, role: faithful, result: murdered, exit_episode: 4, persona: "friendly, social"}
+  - {id: azra, role: faithful, result: murdered, exit_episode: 3, persona: "quiet, got caught in crossfire"}
+  - {id: bam, role: faithful, result: banished, exit_episode: 3, persona: "outspoken"}
+  - {id: reza, role: faithful, result: murdered, exit_episode: 2, persona: "early target"}
+  - {id: geraldine, role: faithful, result: banished, exit_episode: 2, persona: "first banished"}
+  - {id: robert, role: faithful, result: murdered, exit_episode: 1, persona: "first murder victim"}
+
+eliminations:
+  - {episode: 1, night_victim: robert, banishment: null}
+  - {episode: 2, night_victim: reza, banishment: geraldine}
+  - {episode: 3, night_victim: azra, banishment: bam}
+  - {episode: 4, night_victim: ryan, banishment: brandi}
+  - {episode: 5, night_victim: michael, banishment: null, other: "Amanda walked"}
+  - {episode: 6, night_victim: null, banishment: cody}
+  - {episode: 7, night_victim: anjelica, banishment: shelbe}
+  - {episode: 8, night_victim: stephenie, banishment: rachel}
+  - {episode: 9, night_victim: null, banishment: christian}
+  - {episode: 10, night_victim: null, banishment: kate, other: "Arie walked; finale - Cirie wins as traitor"}
+
+traitor_reveal_episodes:
+  cirie: 10
+  christian: 9
+  cody: 6
+  arie: 10
+
+recruitments:
+  - {episode: 8, recruiters: [cirie, christian], target: arie, type: seduce, accepted: true, betrayed_team: false}
+
+finale:
+  sequence:
+    - "final four: Cirie (traitor), Andie, Quentin, Arie (traitor)"
+    - "Arie walked from game"
+    - "banishment vote led to Kate banished; final three remained"
+    - "end game vote - Andie and Quentin chose to end game, Cirie chose banish"
+    - "Cirie revealed as traitor and won"
+  outcome: traitor_win
+
+twists_used: [shield, recruitment_seduce]
+twists_not_used: [seer, dagger, on_trial, ultimatum]

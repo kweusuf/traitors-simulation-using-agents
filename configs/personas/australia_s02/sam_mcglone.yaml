@@ -1,0 +1,10 @@
+# Persona for sam_mcglone (australia_s02)
+description: sam_mcglone
+personality:
+  analytical: 0.5
+  assertiveness: 0.5
+  sociability: 0.5
+  trust: 0.5
+  risk_tolerance: 0.5
+goals:
+  primary: survive

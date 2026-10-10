@@ -1,0 +1,64 @@
+# Ground truth for The Traitors (India), Season 1 (Prime Video, 2025)
+
+season:
+  id: the-traitors-india-s01
+  name: The Traitors India, Season 1
+  network: Prime Video
+  aired: 2025-06-12/2025-07-03
+  episode_count: 10
+  contestant_count: 20
+  starting_traitor_count: 3
+  winner_faction: faithful
+  winners: [nikita, uorfi]
+  runner_up: [harsh, purav]
+
+cast:
+  - {id: nikita, role: faithful, result: winner, exit_episode: 10}
+  - {id: uorfi, role: faithful, result: winner, exit_episode: 10}
+  - {id: harsh, role: traitor, traitor_type: recruited, recruited_episode: 9, result: finalist, exit_episode: 10}
+  - {id: purav, role: traitor, traitor_type: recruited, recruited_episode: 9, result: finalist, exit_episode: 10}
+  - {id: karan_kundrra, role: traitor, traitor_type: original, result: banished, exit_episode: 9}
+  - {id: raj_kundrra, role: traitor, traitor_type: original, result: banished, exit_episode: 9}
+  - {id: jannat, role: traitor, traitor_type: original, result: banished, exit_episode: 8}
+  - {id: anshula, role: faithful, result: murdered, exit_episode: 8}
+  - {id: sudhanshu, role: faithful, result: banished, exit_episode: 7}
+  - {id: sahil, role: faithful, result: murdered, exit_episode: 7}
+  - {id: jasmine, role: faithful, result: banished, exit_episode: 6}
+  - {id: mukesh, role: faithful, result: murdered, exit_episode: 6}
+  - {id: maheep, role: faithful, result: banished, exit_episode: 5}
+  - {id: ashish, role: faithful, result: murdered, exit_episode: 5}
+  - {id: elnaaz, role: faithful, result: banished, exit_episode: 4}
+  - {id: raftaar, role: faithful, result: murdered, exit_episode: 4}
+  - {id: nitish, role: faithful, result: banished, exit_episode: 3}
+  - {id: sargun, role: faithful, result: murdered, exit_episode: 3}
+  - {id: lakshmi, role: faithful, result: banished, exit_episode: 2}
+  - {id: kunal, role: faithful, result: murdered, exit_episode: 2}
+
+eliminations:
+  - {episode: 1, night_victim: null, banishment: null}
+  - {episode: 2, night_victim: kunal, banishment: lakshmi}
+  - {episode: 3, night_victim: sargun, banishment: nitish}
+  - {episode: 4, night_victim: raftaar, banishment: elnaaz}
+  - {episode: 5, night_victim: ashish, banishment: maheep}
+  - {episode: 6, night_victim: mukesh, banishment: jasmine}
+  - {episode: 7, night_victim: sahil, banishment: sudhanshu}
+  - {episode: 8, night_victim: anshula, banishment: jannat}
+  - {episode: 9, night_victim: null, banishment: [karan_kundrra, raj_kundrra]}
+  - {episode: 10, night_victim: null, banishment: [harsh, purav]}
+
+traitor_reveal_episodes:
+  jannat: 8
+  karan_kundrra: 9
+  raj_kundrra: 9
+  harsh: 10
+  purav: 10
+
+recruitments:
+  - {episode: 9, recruiters: [raj_kundrra], target: harsh, type: ultimatum, accepted: true}
+  - {episode: 9, recruiters: [karan_kundrra], target: purav, type: ultimatum, accepted: true}
+
+finale:
+  outcome: faithful_win
+
+twists_used: [recruitment_ultimatum]
+twists_not_used: [shield, seer, dagger, seduce]

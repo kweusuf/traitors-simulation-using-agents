@@ -1,0 +1,77 @@
+game:
+  name: the-traitors-nz-s01
+  players: 19
+  traitors: 3
+  traitor_names:
+  - sam
+  - mark
+  - nicky
+  player_names:
+  - anna
+  - brooke
+  - sam
+  - murray
+  - mark
+  - nicky
+  - dane
+  - cathrine
+  - jess
+  - stephen
+  - laura
+  - rahul
+  - katie
+  - max
+  - mel
+  - john
+  - jj
+  - leighton
+  - brittany
+  personas:
+  - nz_s01/anna
+  - nz_s01/brooke
+  - nz_s01/sam
+  - nz_s01/murray
+  - nz_s01/mark
+  - nz_s01/nicky
+  - nz_s01/dane
+  - nz_s01/cathrine
+  - nz_s01/jess
+  - nz_s01/stephen
+  - nz_s01/laura
+  - nz_s01/rahul
+  - nz_s01/katie
+  - nz_s01/max
+  - nz_s01/mel
+  - nz_s01/john
+  - nz_s01/jj
+  - nz_s01/leighton
+  - nz_s01/brittany
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  max_tokens: 512
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

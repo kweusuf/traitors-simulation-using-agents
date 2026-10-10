@@ -1,0 +1,9 @@
+description: Arie Luyendyk Jr. Charming, recruited late.
+personality:
+  analytical: 0.5
+  assertiveness: 0.6
+  sociability: 0.8
+  trust: 0.45
+  risk_tolerance: 0.55
+goals:
+  primary: survive

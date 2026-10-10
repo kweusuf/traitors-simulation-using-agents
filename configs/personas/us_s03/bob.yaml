@@ -1,0 +1,9 @@
+description: Bob the Drag Queen. Charismatic, strategic performer.
+personality:
+  analytical: 0.75
+  assertiveness: 0.7
+  sociability: 0.9
+  trust: 0.45
+  risk_tolerance: 0.55
+goals:
+  primary: survive
