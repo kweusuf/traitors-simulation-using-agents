@@ -107,6 +107,96 @@ for what the pointer experiment established and what it withdrew.
 | `nomination_keep` | `2` | How many of the most-nominated suspects stay standing to answer the room, and face the revote on a tie | - |
 | `council_deliberation` | `false` | The night's kill is decided in two rounds: a proposal from each traitor in turn onto the channel, then a simultaneous hold-or-switch where the majority of final picks wins | One simultaneous blind ballot |
 
+## Flags that compete, and what enabling one costs
+
+Most flags are independent: turning one on adds its behaviour and leaves the
+rest alone. The ones below are not. Each entry names the winner when both are
+set, and what the loser costs while it is on - extra model calls, extra
+retries, a rule that is silently narrowed, or a companion key that stops doing
+anything. Read this before combining them in one config.
+
+**Recruiting: `recruit_choice` owns recruitment whenever it is on.**
+`should_recruit_on_banish` returns `False` outright when `recruit_choice` is
+set, so the automatic `recruit_on_banish` conversion never fires as well - a
+config with both on plays the choice path only. `max_recruits` still caps both
+paths. Neither path fires during the finale: rapid-fire voting is pure voting,
+with no conversions, and `recruit_window_open` is `False` once
+`state.finale` is set.
+
+**The recruit window narrows the choice, it does not add a second one.**
+`recruit_window` (on by default) does nothing on its own: it only gates
+`recruit_choice`. With both on, the traitors choose recruit-or-murder solely
+on the night after a banished traitor opened the window, and the window is
+spent that night either way. With `recruit_choice` on and `recruit_window`
+off, the choice is offered every traitor night and a vacancy can be held open
+indefinitely. Either way a recruit only fills a slot a banishment opened -
+the living traitor count may never exceed the starting count, so a full tower
+gets murder alone that night.
+
+**Two finale triggers, whichever fires first.**
+`finale_total` and the `finale_traitors` + `finale_faithful` pair are checked
+on every win check (and once at game start), and either one opens the finale
+alone. A game configured at the finale counts opens straight into the
+endgame. `finale_max_votes` then bounds the rapid-fire rounds: that many
+consecutive rounds with nobody banished declares `round_limit_winner` with
+reason `finale_vote_limit`, so a deadlocked final table cannot hang.
+
+**The grammar flag without the request flag buys retries, not pointers.**
+`gist_required` adds `gist` to the schema's required list; `co_generate_gist`
+(`want_gist`) is what asks the model to write one. With the requirement on
+and the request off, the model is never asked for a pointer but its reply is
+rejected without one - every content action retries until one appears.
+`ptr_req` therefore sets both; `gist_required` alone is a misconfiguration.
+
+**Memory writes without `agent_memory` are kept but never shown.**
+`co_generate_gist` and `pointer_memory` keep writing pointers and the memory
+layer keeps storing them, but `_memory_items` returns nothing when
+`agent_memory` is off, so prompts carry no memory section at all. A
+memoryless control (`agent_memory: false`) combined with the pointer flags
+measures nothing about pointers - the run pays any co-generation cost and
+shows none of it. Likewise `memory_decay`, `memory_floor`, and
+`memory_items_in_prompt` are inert while `agent_memory` is off, and the
+ledger's `ledger_suspects` / `ledger_allies` sizes are inert while
+`suspicion_ledger` is off.
+
+**Rejection flags cost retries, and scope decides what they catch.**
+`reject_invented_players` and `reject_repetition` each turn a bad message
+into a re-ask against the same prompt, bounded by `max_retries` - roughly one
+extra model call per rejection, at whatever a call costs when the prompt is
+already slow. `repetition_scope: room` (the default) compares against every
+player's earlier messages; `self` compares only against the speaker's own,
+which zeroed self-repeats in the measured run and still left 31
+byte-identical lines from different players. `repetition_threshold` and
+`repetition_min_words` are inert while `reject_repetition` is off.
+
+**The ledger costs a call per player per round.**
+`suspicion_ledger` refreshes once per player per round before the prompt is
+built, so the prompt always shows this round's read - one dedicated ledger
+generation per living player per round, counted as `ledger_calls` in the run
+summary. The `ledger` arm layers this onto `ptr_mem`; `ledger_room` adds the
+room-scope rejection gate on top, trading its retries against the ledger's
+calls.
+
+**`warning_turns` without `discussion_budget` is inert.**
+The hosted debate only runs when `discussion_budget` is non-zero; with it at
+`0` the phases keep one turn each and the warning count does nothing. With
+the budget set, the host paces that many open turns, warns, then runs
+`warning_turns` closing turns for everyone.
+
+**`nomination_keep` serves two gates, each inert without its flag.**
+With `nomination_enabled` off there is no accusation round and the keep count
+does nothing; with `revote_enabled` off a tied ballot resolves by the plain
+tally rule and the keep count's second use (who faces the revote) never
+applies.
+
+**Companion keys that go quiet.** `transcript_messages_per_prompt: 0` means
+the whole transcript, so a long game hands every call 40k+ characters of
+context and prompt-evaluation time grows per call. `max_concurrency` past
+what a host serves in parallel does not fail loudly - the extra requests
+queue into `timeout_seconds` instead, making the run slower and emptier.
+`blind_finale_banishments` without any finale trigger never fires, since no
+banishment happens during a finale that never opens.
+
 ## Items (one-shot)
 
 | Key | Default | Set | Unset |
