@@ -167,18 +167,28 @@ class GameSettings(StrictModel):
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)
     # Ask the model for a one-line pointer to its own message, in the same
     # call that writes the message. The pointer costs no extra generation and
-    # is what later prompts keep instead of the full 800-character message.
+    # is what later prompts keep instead of the full 800-character message;
+    # the transcript is around 93% of a late-game prompt, so the pointer is
+    # the only lever that shrinks it without deleting anything.
     #
-    # This is an experiment knob, not a recommended default, and it is off by
-    # default for two reasons. It asks a small model to do two things at once,
-    # and this one already drops fields from a reply when a field is not
-    # prominent (see `Action.__get_pydantic_json_schema__`). And a pointer
+    # On by default. It was off while the arms above were measured, so the
+    # two failure modes below are the reason to watch the rate, not a reason
+    # to leave it off: it asks a small model to do two things at once, and
+    # this one already drops fields from a reply when a field is not
+    # prominent (see `Action.__get_pydantic_json_schema__`); and a pointer
     # that comes back as a copy of the message's opening clause is not a
     # distillation at all. Neither failure is fatal - `usable_pointer` falls
     # back to the deterministic clause - but "falls back silently" is exactly
     # the kind of thing that looks like it worked, so the gist is recorded in
-    # the run folder and the co-generation rate is meant to be measured.
-    co_generate_gist: bool = False
+    # the run folder and the co-generation rate is meant to be measured
+    # (`tools/compare_arms.py`, and the pointer columns in a run summary).
+    #
+    # A config that wants the pre-pointer prompts - every arm measured before
+    # this default moved, which is what makes them readable against each
+    # other - must say `co_generate_gist: false` explicitly rather than
+    # inherit this. A resumed run reads its config file again, so an arm left
+    # silent here would play differently on resume than it did the first time.
+    co_generate_gist: bool = True
     # Make the pointer mandatory: a reply that arrives without one is not
     # valid against the schema, so the provider refuses it and the call is
     # retried. Only meaningful with `co_generate_gist` - it changes the

@@ -46,6 +46,12 @@ game:
   # to the default, so this config records the arm it is. The control is
   # season_uk_s01.noecho.yaml, identical except this flag.
   anti_echo_instructions: true
+  # Prompt-pointer knob, pinned rather than inherited. It moved to
+  # on-by-default after this arm ran, and a resumed run re-reads its config
+  # file, so leaving it unset would make the prompts - and the config captured
+  # in the run folder - disagree with what the arm actually played. See
+  # docs/03-config-reference.md, "What a new run inherits".
+  co_generate_gist: false
   # Both Series 1 recruitment attempts came the night after one of
   # the traitors was banished (episode 7 after Alyssa, episode 11
   # after Amanda), which is exactly the banishment window. Turning

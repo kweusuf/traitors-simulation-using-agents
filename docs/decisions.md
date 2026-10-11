@@ -39,6 +39,22 @@ did before, or every earlier run stops being a baseline.
 valid. A config that states its own flags is also a record of what the run
 actually did, independent of its filename.
 
+**Amendment (2026-11-10): the rule was about *off*, not about every default.**
+What the entry protects is the invariant - a flag's off state leaves a game
+playing as it did - and that still holds. What it never said, and has been
+misread as saying, is that no flag may ever be on. Six are: `agent_memory`,
+`anti_echo_instructions`, `recruit_window`, `traitor_mandate`,
+`traitor_role_goals`, and since this date `co_generate_gist`. The register of
+them, and of what a new run inherits, is
+[03-config-reference.md](03-config-reference.md#what-a-new-run-inherits).
+
+The cost of moving a default is that a config which omitted the key has now
+changed what it plays, and a resumed run re-reads its config file - so the
+value it played is no longer recoverable from the file. The arm that predates
+the move must therefore pin the value it played, which is why
+`co_generate_gist: false` now appears explicitly in the configs measured with
+it off.
+
 ### Model identity is an explicit variable, never implicit
 
 **Decision.** Model and endpoint live in gitignored `*.local.yaml`, set

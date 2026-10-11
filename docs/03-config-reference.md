@@ -3,15 +3,54 @@
 The `game:` block is the interface. A flag that is off has to leave a game
 playing exactly as it did before it existed, or every earlier run stops being
 a baseline - the reasoning is in
-[decisions.md](decisions.md#every-experimental-flag-defaults-off). Two flags
-are on by default (`agent_memory`, `anti_echo_instructions`) and are marked
-here, because a reader who assumes "all off" would misread them.
+[decisions.md](decisions.md#every-experimental-flag-defaults-off). The flags
+that are on by default are bold in the tables below and gathered in
+[What a new run inherits](#what-a-new-run-inherits), because a reader who
+assumes "all off" would misread them.
 
 This page is the reference for what each key does in both states. For *why* a
 default is what it is, each key's comment in `experiments/config.py` carries
 the measurement or the failure behind it, and the arms that exist are in
 [The arms](#the-arms) below. To run one:
 `uv run --no-sync python -m simulation run configs/traitors/<arm>.yaml`.
+
+## What a new run inherits
+
+A config states what its arm varies and nothing else; every key it leaves out
+comes from the defaults in `experiments/config.py`. Those defaults are the
+recommended values for a new run, so they are the register: the six flags that
+are on, and the rule that keeps a config honest when one of them moves.
+
+| Key | Default | Why it is on |
+| --- | --- | --- |
+| `agent_memory` | `true` | An agent that cannot remember the round table plays a different and much weaker game |
+| `anti_echo_instructions` | `true` | Its off state is a control, not a recommendation: with it off a small model collapses onto one template, and eight players emitted byte-identical messages |
+| `co_generate_gist` | `true` | The transcript is 93% of a late-game prompt and the pointer is the only lever on it that deletes nothing. Off until 2026-11-10 |
+| `recruit_window` | `true` | It is the show's rule: the recruit-or-murder choice opens only on the night after a traitor is banished |
+| `traitor_mandate` | `true` | A deal blind to the persona handed the tower to players the cast wrote as unable to lie |
+| `traitor_role_goals` | `true` | The companion half of that finding, its own flag so the two can be varied one at a time |
+
+Everything else in `game:` is off, `0` (which is how the finale, the debate
+clock and the quiet-round cadence are disabled), or a tuning value that
+predates the flag system (`memory_decay`, `repetition_threshold`,
+`warning_turns`). Each flag among them is turned on deliberately by an arm
+whose purpose is to vary it - the gates under
+[Discussion, repetition and rejection](#discussion-repetition-and-rejection),
+the pointer flags under [Pointers](#pointers-the-prompt-size-experiment), the
+`false` defaults under [Hosted structure](#hosted-structure), the items - so a
+config that turns one on is an experiment, and says so in its header.
+
+**An arm that predates a default moving must pin the value it played.** A
+resumed run re-reads its config file, so a config that omitted the key plays
+one way the first time and another way once the default moves, and the config
+captured in its run folder then records neither. `co_generate_gist` is the one
+default that has moved: the 22 tracked configs that do not mention it were all
+measured with it off, and need `co_generate_gist: false` before they are
+resumed. `season_us_s02.nomandate.yaml` carries the pin already; the rest are
+outstanding, `season_uk_s01.fix_en.yaml` among them - pin the base config and
+regenerate its `.rand` variant with `tools/make_rand_arms.py`, never the
+generated file by hand.
+
 
 ## The deal and the roster
 
@@ -77,7 +116,7 @@ its description and its traits.
 
 | Key | Default | Set | Unset |
 | --- | --- | --- | --- |
-| `co_generate_gist` | `false` | Ask the model for a one-line pointer to its own message **in the same call** that writes it, so the pointer costs no extra generation. This is an experiment knob, not a recommended default: it asks a small model to do two things at once, and a pointer that comes back as a copy of the opening clause is not a distillation | The transcript carries whole messages |
+| `co_generate_gist` | **`true`** | Ask the model for a one-line pointer to its own message **in the same call** that writes it, so the pointer costs no extra generation and later prompts keep the pointer instead of the full message. Watch the co-generation rate in the run folder: it asks a small model to do two things at once, and a pointer that comes back as a copy of the opening clause is not a distillation, which `usable_pointer` absorbs silently. The arms measured before this default moved (2026-11-10) pin `co_generate_gist: false` | The transcript carries whole messages |
 | `gist_required` | `false` | The pointer is mandatory in the response schema, so a reply without one is refused and the call retried. Changes the grammar, not the request - on its own it does nothing | The pointer is optional and memory falls back to its deterministic clause |
 | `pointer_memory` | `false` | Store a decaying pointer for **every** message, not just the ones the show's rules make worth keeping. This is what lets the transcript shrink: old exchanges leave the prompt by fading instead of riding along until they fall out of the window | Only accusations, bequests and deaths leave a trace |
 

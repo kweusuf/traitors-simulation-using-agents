@@ -52,6 +52,10 @@ game:
   recruit_choice: true
   recruit_window: true
   max_recruits: 2
+  # The control must keep the prompts the treatment arm played with: the gist
+  # knob moved to on-by-default after that arm ran, and a resumed run re-reads
+  # its config, so this is pinned rather than inherited.
+  co_generate_gist: false
   agent_memory: true
   reject_invented_players: true
   anti_echo_instructions: true
