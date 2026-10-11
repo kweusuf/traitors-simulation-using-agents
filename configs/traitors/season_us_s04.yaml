@@ -1,12 +1,12 @@
 game:
   name: the-traitors-us-s04
   players: 23
-  traitors: 4
+  # Starting traitors only: donna was recruited in episode 7.
+  traitors: 3
   traitor_names:
   - rob_rausch
   - lisa_rinna
   - candace
-  - donna
   player_names:
   - rob_rausch
   - maura

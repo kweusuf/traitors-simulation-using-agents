@@ -182,3 +182,110 @@ def test_resume_reopens_the_round_instead_of_announcing_it_again() -> None:
         "mission", "public_discussion", "voting", "elimination",  # round 3
     ]
 
+
+def _finale_engine(phases: list[str], extra_phases: list[str] = (), **game_overrides):
+    """An engine restored into finale round 5, whose ROUND_STARTED is on record."""
+    game = {"players": 4, "traitors": 1, "max_rounds": 1, "finale_max_votes": 1}
+    game.update(game_overrides)
+    config = GameConfig(game=game, phases=phases, seed=1)
+    db = Database()
+    engine = GameEngine(config, EventSink("game-finale", db=db), db=db, seed=1)
+    log: list = []
+    registry = {
+        name: RecordingPhase(name, log) for name in [*phases, *extra_phases]
+    }
+    phase_engine = PhaseEngine(config, engine, registry)
+    context = PhaseContext(engine=engine, config=config)
+
+    engine._started = True
+    engine.state.finale = True
+    engine.sink.emit(
+        EventType.FINALE_STARTED,
+        round_number=5,
+        phase="",
+        payload={"traitors": [], "faithful": []},
+    )
+    # Restored one round behind the finale round the crash happened in, whose
+    # ROUND_STARTED the crashed run already wrote.
+    engine.state.round_number = 4
+    engine.sink.emit(EventType.ROUND_STARTED, round_number=5, phase="")
+    return engine, log, phase_engine, context
+
+
+def test_resume_inside_a_finale_reopens_the_round_too() -> None:
+    """The round-reopen fix must cover the finale loops, which open their own.
+
+    `run` breaks out of the normal loop the moment `state.finale` is set, so a
+    resume that lands inside a finale never reaches the normal `reopen_round`
+    branch. The finale loops used to call `start_round` unconditionally and so
+    wrote the same duplicate `ROUND_STARTED` the normal loop was fixed for.
+    """
+    phases = ["round_table", "private_chat", "voting", "elimination"]
+    engine, log, phase_engine, context = _finale_engine(phases)
+
+    asyncio.run(phase_engine.run(context, resume_at=(4, 0)))
+
+    # No second ROUND_STARTED for round 5, and only its finale phases ran.
+    announced = [
+        e.round for e in engine.sink.events if e.type is EventType.ROUND_STARTED
+    ]
+    assert announced == [5]
+    assert [name for _, name in log] == phases
+    assert {rnd for rnd, _ in log} == {5}
+
+
+def test_resume_skips_finale_phases_that_already_ended() -> None:
+    """A resumed finale round picks up at the cut, not from its first phase.
+
+    The finale order is not `config.phases`, so `phase_index` cannot place the
+    cut; `resume_completed` names what already ended so those phases are not
+    run (and paid for) again.
+    """
+    phases = ["round_table", "private_chat", "voting", "elimination"]
+    engine, log, phase_engine, context = _finale_engine(phases)
+
+    asyncio.run(
+        phase_engine.run(
+            context,
+            resume_at=(4, 0),
+            resume_completed=("round_table", "private_chat"),
+        )
+    )
+
+    # Only the phases after the cut re-ran, all in the interrupted round.
+    assert [name for _, name in log] == ["voting", "elimination"]
+    assert {rnd for rnd, _ in log} == {5}
+    announced = [
+        e.round for e in engine.sink.events if e.type is EventType.ROUND_STARTED
+    ]
+    assert announced == [5]
+
+
+def test_resume_after_a_finale_end_vote_runs_only_the_banishment_tail() -> None:
+    """A completed end_vote means a banishment was asked for.
+
+    The reopened round's vote record is empty, so the decision cannot be read
+    back off it; `resume_completed` is what says the end vote already happened
+    and only its voting/elimination tail is left.
+    """
+    phases = ["round_table", "private_chat", "voting", "elimination"]
+    engine, log, phase_engine, context = _finale_engine(
+        phases, extra_phases=["end_vote"], endgame_vote=True
+    )
+
+    asyncio.run(
+        phase_engine.run(
+            context,
+            resume_at=(4, 0),
+            resume_completed=("round_table", "private_chat", "end_vote"),
+        )
+    )
+
+    assert [name for _, name in log] == ["voting", "elimination"]
+    assert {rnd for rnd, _ in log} == {5}
+    announced = [
+        e.round for e in engine.sink.events if e.type is EventType.ROUND_STARTED
+    ]
+    assert announced == [5]
+
+

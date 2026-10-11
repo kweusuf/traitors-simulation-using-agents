@@ -87,6 +87,33 @@ def test_role_goal_injection() -> None:
     assert kept.secondary == ["keep_your_allies_close", "identify_traitors"]
 
 
+def test_role_goals_flag_restores_the_pre_mandate_merge() -> None:
+    """The goal replacement is its own flag, so the two changes vary singly.
+
+    The mandate commit changed two things: it added the induction text and it
+    stopped merging the persona objective onto a drawn traitor. Bundling them
+    under one flag made the recorded mandate-off control ambiguous, so each
+    has its own knob now - this one for the objectives.
+    """
+    base = Goals(primary="survive", secondary=["stay_apart_from_the_herd"])
+    on = inject_role_goals(base, Role.TRAITOR, traitor_role_goals=True)
+    off = inject_role_goals(base, Role.TRAITOR, traitor_role_goals=False)
+
+    # On: the role's objective alone, with no honest-play instruction.
+    assert on.secondary == ["ensure_traitor_team_wins"]
+    assert "stay_apart_from_the_herd" not in on.secondary
+    # Off: the pre-mandate merge, persona objective back alongside the role's.
+    assert off.secondary == ["stay_apart_from_the_herd", "ensure_traitor_team_wins"]
+
+    # A faithful player is unaffected by the flag either way.
+    assert inject_role_goals(
+        base, Role.FAITHFUL, traitor_role_goals=False
+    ).secondary == inject_role_goals(
+        base, Role.FAITHFUL, traitor_role_goals=True
+    ).secondary
+
+
+
 def test_deception_aptitude_splits_the_cast_the_way_the_writing_does() -> None:
     """The mandate is scaled on this, so it has to separate the two groups.
 

@@ -1,11 +1,11 @@
 game:
   name: the-traitors-nz-s02
   players: 20
-  traitors: 3
+  # Starting traitors only: bradley was recruited in episode 9.
+  traitors: 2
   traitor_names:
   - chloe
   - keanu
-  - bradley
   player_names:
   - chloe
   - maruia

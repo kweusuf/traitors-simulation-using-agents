@@ -183,6 +183,13 @@ previous prompts exactly, which is what makes the change measurable rather
 than asserted. See
 [03-config-reference.md](03-config-reference.md#the-traitor-mandate).
 
+> Later correction (2026-10-11): the goal-merge change was split onto its own
+> flag, `traitor_role_goals`, so the two halves can be varied one at a time and
+> the recorded `traitor_mandate: false` arm stays reproducible. "Previous
+> prompts exactly" is now `traitor_mandate: false` **and**
+> `traitor_role_goals: false` together; `traitor_mandate: false` alone drops
+> only the induction text.
+
 ## What is established
 
 - The prompts a drawn traitor receives now require deception and no longer

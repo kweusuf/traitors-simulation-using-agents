@@ -299,7 +299,11 @@ class GameRunner:
         self.tracer.record("game_started", game_id=game_id, seed=seed)
         started = time.monotonic()
         asyncio.run(
-            PhaseEngine(config, env.engine, env.phases()).run(context, resume_at)
+            PhaseEngine(config, env.engine, env.phases()).run(
+                context,
+                resume_at,
+                point.completed_phases if point is not None else (),
+            )
         )
         elapsed = time.monotonic() - started
 
@@ -404,7 +408,7 @@ class GameRunner:
         async def callback(
             agent_id, action_type, legal_targets, extra_instruction=None
         ):
-            self._sync_roles(env, agents)
+            self._sync_roles(env, agents, self.config.game.traitor_role_goals)
             await self._sync_memory(env, agents)
             view = env.observe(agent_id)
             return await runtime.decide(
@@ -525,17 +529,27 @@ class GameRunner:
                     )
 
     @staticmethod
-    def _sync_roles(env: TraitorsEnvironment, agents: dict[str, Agent]) -> None:
+    def _sync_roles(
+        env: TraitorsEnvironment,
+        agents: dict[str, Agent],
+        traitor_role_goals: bool = True,
+    ) -> None:
         """Keep agent roles in step with the engine.
 
         Recruitment flips a faithful player to traitor mid-game; the
         prompt reads `agent.role`, so without this the recruit would
-        keep playing as faithful.
+        keep playing as faithful. `traitor_role_goals` travels with the
+        role change so a converted player's goals are injected under the
+        same flag the run was configured with.
         """
         for pid, role in env.state.roles.items():
             agent = agents.get(pid)
             if agent is not None and agent.role is not role:
-                agent.assign_role(role, env.state.ambitions.get(pid))
+                agent.assign_role(
+                    role,
+                    env.state.ambitions.get(pid),
+                    traitor_role_goals,
+                )
 
     def _build_agents(self, env: TraitorsEnvironment) -> dict[str, Agent]:
         """Create agents with configured personas and the engine's roles."""
@@ -548,7 +562,11 @@ class GameRunner:
                 persona, goals = Persona(description=f"{pid} plays carefully."), Goals()
             agents[pid] = Agent(pid, pid.capitalize(), persona, goals=goals)
         for pid, role in env.state.roles.items():
-            agents[pid].assign_role(role, env.state.ambitions.get(pid))
+            agents[pid].assign_role(
+                role,
+                env.state.ambitions.get(pid),
+                self.config.game.traitor_role_goals,
+            )
         return agents
 
     def _load_personas(self) -> list[tuple[Persona, Goals]]:

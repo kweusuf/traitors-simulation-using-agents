@@ -230,7 +230,7 @@ def test_provider_flag_overrides_config(tmp_path, capsys) -> None:
 def test_base_url_and_model_flags_override_config(tmp_path, capsys) -> None:
     # Remote-Ollama workflow: point a run at another host without
     # editing the YAML (still offline because provider=fake).
-    remote = "http://10.0.0.5:11434"
+    remote = "http://HOST_A:11434"
     code, _ = run_cli(
         ["run", CONFIG, "--provider", "fake", "--model", "remote-model",
          "--base-url", remote, "--quiet"] + base_args(tmp_path),
@@ -264,14 +264,14 @@ def test_concurrency_flag_overrides_config(tmp_path, capsys) -> None:
 def test_batch_accepts_base_url_flag(tmp_path, capsys) -> None:
     code, _ = run_cli(
         ["batch", CONFIG, "--games", "1", "--seed", "7", "--provider", "fake",
-         "--base-url", "http://10.0.0.5:11434", "--quiet"] + base_args(tmp_path),
+         "--base-url", "http://HOST_A:11434", "--quiet"] + base_args(tmp_path),
         capsys,
     )
     assert code == 0
     metrics = json.loads(
         (tmp_path / "runs" / "game-001" / "metrics.json").read_text()
     )
-    assert metrics["model_parameters"]["base_url"] == "http://10.0.0.5:11434"
+    assert metrics["model_parameters"]["base_url"] == "http://HOST_A:11434"
 
 
 def test_progress_printer_reports_rejected_actions(capsys) -> None:

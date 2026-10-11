@@ -1,9 +1,9 @@
 game:
   name: the-traitors-us-s03
   players: 23
-  traitors: 5
+  # Starting traitors only: britney was recruited in episode 9.
+  traitors: 4
   traitor_names:
-  - britney
   - rob
   - danielle
   - carolyn

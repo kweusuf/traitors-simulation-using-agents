@@ -2,10 +2,11 @@
 #
 # The mandate arm is `season_uk_s01.fix_en.rand.yaml` as run in
 # uk-s01-rand-fix_en-mandate-conc8. This file holds that arm's rule block
-# unchanged and flips exactly one rule: `traitor_mandate: false`. The edition
-# is the only other difference - US S02 instead of UK S01, both 22 players and
-# 3 traitors, with the season's own fixed deal pinned rather than the arm's
-# random draw.
+# unchanged and flips `traitor_mandate` to false. The edition is the only
+# other difference - US S02 instead of UK S01, both 22 players, with the
+# season's own fixed deal pinned rather than the arm's random draw. That deal
+# is the corrected US S02 one (`season_us_s02.yaml`): the two starting
+# traitors, phaedra and dan; parvati is not pinned because she was recruited.
 #
 # Because the edition differs, this is not a same-seed A/B against the mandate
 # arm: read it as "what mandate-off play looks like on a second edition". The
@@ -27,18 +28,25 @@
 # practised one. The mandate these two arms differ on is therefore the same
 # instruction on both sides, so this control tests "no mandate" against the
 # mandate as it was actually applied, not against the practised variant.
+#
+# The recorded `us-s02-nomandate-conc8` run predates two corrections and is
+# not comparable to a fresh run of this file: it used the earlier
+# three-traitor deal (phaedra, parvati, dan) and the pre-split flag, where
+# `traitor_mandate: false` also dropped the persona objective. Re-run it
+# before comparing.
 
 game:
   name: the-traitors-us-s02
   players: 22
-  traitors: 3
+  traitors: 2
   # The season's own deal, as in season_us_s02.yaml. The arm drew its traitors
   # from the seed instead; here the draw is pinned so the edition's cast holds.
   traitor_names:
     - phaedra
-    - parvati
     - dan
-  # The treatment flag, and the only rules change from the mandate arm.
+  # The treatment flag: the induction text alone. `traitor_role_goals` stays at
+  # its default (on), so this arm keeps the same objectives the recorded run
+  # had and differs from the mandate arm only in the briefing text.
   traitor_mandate: false
   recruit_on_banish: false
   recruit_choice: true

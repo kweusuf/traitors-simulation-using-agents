@@ -587,4 +587,9 @@ def test_a_response_reports_the_retries_its_own_call_spent() -> None:
     assert response.retries == 2
     assert provider.retries == 2  # the run-wide counter still tracks the run
 
+    # A second, clean call reports zero for itself even though the run-wide
+    # counter still holds the first call's two. A shared counter read at the
+    # end of a call would have credited this one with the other's retries.
+    clean = asyncio.run(provider.generate(MESSAGES, Action, make_config(retries=3)))
+    assert clean.retries == 0
     assert provider.retries == 2

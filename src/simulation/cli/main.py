@@ -151,6 +151,24 @@ def load_run_metrics(game_id: str, runs_dir: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _positive_int(value: str) -> int:
+    """An argparse `type` for a count that must be at least one.
+
+    `llm.max_concurrency` has the same floor, but `validate_assignment` would
+    surface a bad `--concurrency` as a pydantic traceback deep in config
+    loading; rejecting it here keeps the failure at the command line.
+    """
+    try:
+        number = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected an integer, got {value!r}")
+    if number < 1:
+        raise argparse.ArgumentTypeError(
+            f"concurrency must be at least 1, got {number}"
+        )
+    return number
+
+
 def _load_config(args: argparse.Namespace) -> GameConfig:
     config = load_config(args.config)
     if getattr(args, "provider", None):
@@ -159,7 +177,7 @@ def _load_config(args: argparse.Namespace) -> GameConfig:
         config.llm.base_url = args.base_url
     if getattr(args, "model", None):
         config.llm.model = args.model
-    if getattr(args, "concurrency", None):
+    if getattr(args, "concurrency", None) is not None:
         config.llm.max_concurrency = args.concurrency
     return config
 
@@ -762,11 +780,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument(
         "--base-url",
         default=None,
-        help="override llm.base_url (e.g. a remote Ollama at http://10.0.0.5:11434)",
+        help="override llm.base_url (e.g. a remote Ollama at http://HOST_A:11434)",
     )
     run.add_argument(
         "--concurrency",
-        type=int,
+        type=_positive_int,
         default=None,
         help="override llm.max_concurrency (model calls in flight)",
     )
@@ -784,11 +802,11 @@ def build_parser() -> argparse.ArgumentParser:
     batch.add_argument(
         "--base-url",
         default=None,
-        help="override llm.base_url (e.g. a remote Ollama at http://10.0.0.5:11434)",
+        help="override llm.base_url (e.g. a remote Ollama at http://HOST_A:11434)",
     )
     batch.add_argument(
         "--concurrency",
-        type=int,
+        type=_positive_int,
         default=None,
         help="override llm.max_concurrency (model calls in flight)",
     )

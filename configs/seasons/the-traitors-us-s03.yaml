@@ -1,4 +1,10 @@
 # Ground truth for The Traitors (US), Season 3 (Peacock, 2025)
+#
+# Unverified against a cited source: cast list needs a source pass before it
+# is trusted as ground truth. `starting_traitor_count` is normalised to the
+# cast's `traitor_type: original` entries (bob, carolyn, danielle, rob), the
+# only internally consistent reading: there is a single `recruitments` entry
+# (britney) and no recruitment for rob. It was 3 with four originals.
 
 season:
   id: the-traitors-us-s03
@@ -7,7 +13,7 @@ season:
   aired: 2025-01-09/2025-03-06
   episode_count: 12
   contestant_count: 23
-  starting_traitor_count: 3
+  starting_traitor_count: 4
   winner_faction: faithful
   winners: [dolores, dylan, gabby, ivar]
   final_counts:

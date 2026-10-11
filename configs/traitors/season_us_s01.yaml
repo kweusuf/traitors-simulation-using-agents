@@ -1,10 +1,11 @@
 game:
   name: the-traitors-us-s01
   players: 20
-  traitors: 4
+  # Starting traitors only: the role arie was recruited into, not dealt, so
+  # pinning him here would open the replay with one traitor too many.
+  traitors: 3
   traitor_names:
   - cirie
-  - arie
   - christian
   - cody
   player_names:

@@ -52,12 +52,17 @@ class Agent:
         self.ledger_round: int = -1
 
     def assign_role(
-        self, role: Role, ambition: Optional[str] = None
+        self,
+        role: Role,
+        ambition: Optional[str] = None,
+        traitor_role_goals: bool = True,
     ) -> None:
         """Roles come from the engine; role goals are injected here (spec section 13).
 
         `ambition` is the seeded solo/team disposition; it only affects
-        traitors and never enters an observation.
+        traitors and never enters an observation. `traitor_role_goals` is the
+        game flag: off, a traitor keeps the persona's objectives and the
+        injected goals are exactly what they were before the mandate.
         """
         previous = self.role
         if role is Role.TRAITOR and previous is Role.FAITHFUL:
@@ -65,7 +70,9 @@ class Agent:
             self.converted_round = 0
         self.role = role
         self.ambition = ambition
-        self.goals = inject_role_goals(self.base_goals, role, ambition)
+        self.goals = inject_role_goals(
+            self.base_goals, role, ambition, traitor_role_goals
+        )
 
     async def remember(
         self,

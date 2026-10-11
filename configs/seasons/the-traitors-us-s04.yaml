@@ -1,4 +1,8 @@
 # Ground truth for The Traitors (US), Season 4 (Peacock, 2026)
+#
+# Unverified against a cited source: cast list needs a source pass before it
+# is trusted as ground truth. One cast member is still the placeholder id
+# `real_housewives_cast_member`; replace it with the real name and persona.
 
 season:
   id: the-traitors-us-s04

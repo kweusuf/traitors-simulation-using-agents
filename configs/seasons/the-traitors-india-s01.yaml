@@ -1,4 +1,9 @@
 # Ground truth for The Traitors (India), Season 1 (Prime Video, 2025)
+#
+# Unverified against a cited source: cast list and episode timeline need a
+# source pass before they are trusted as ground truth. Note the
+# `recruitments` in episode 9 name the two recruiters banished in that same
+# episode; episode-granular timing cannot resolve whether that order is real.
 
 season:
   id: the-traitors-india-s01

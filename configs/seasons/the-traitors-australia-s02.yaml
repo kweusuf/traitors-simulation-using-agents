@@ -1,4 +1,11 @@
 # Ground truth for The Traitors (Australia), Season 2
+#
+# Unverified against a cited source: cast list and the finale detail need a
+# source pass before they are trusted as ground truth. Notably
+# `starting_traitor_count` is normalised to the cast's `traitor_type:
+# original` entries (camille, sam_mcglone, blake, ash_pollard); it was 3 with
+# four originals. `final_counts` also disagrees with the cast (six people
+# against five finalists) and is left as recorded rather than guessed.
 
 season:
   id: the-traitors-australia-s02
@@ -7,7 +14,7 @@ season:
   aired: 2023-08-13/2023-09-10
   episode_count: 9
   contestant_count: 20
-  starting_traitor_count: 3
+  starting_traitor_count: 4
   winner_faction: none
   winners: []
   final_counts:

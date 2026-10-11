@@ -1,10 +1,10 @@
 game:
   name: the-traitors-australia-s01
   players: 24
-  traitors: 6
+  # Starting traitors only: alex_duggan and kate were recruited (episodes 8
+  # and 10).
+  traitors: 4
   traitor_names:
-  - alex_duggan
-  - kate
   - nigel
   - marielle
   - claire

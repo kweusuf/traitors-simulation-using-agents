@@ -114,6 +114,7 @@ class PhaseEngine:
         self,
         context: PhaseContext,
         resume_at: Optional[tuple[int, int]] = None,
+        resume_completed: tuple[str, ...] = (),
     ) -> None:
         """Run the game until a winner is declared or rounds run out.
 
@@ -123,6 +124,12 @@ class PhaseEngine:
         phase order instead of replaying the phases already recorded.
         The round budget is fresh from the resume point, because a crash
         should not cost the game the rounds it ate.
+
+        `resume_completed` names the phases that already ended in the round
+        being resumed. The normal loop does not need it (`phase_index`
+        already says where to cut), but the finale loops order their phases
+        differently from the config, so they use it to skip work the crashed
+        run already did.
         """
         if not self.engine.started:
             self.engine.start()
@@ -154,7 +161,21 @@ class PhaseEngine:
             opened += 1
 
         if self.engine.state.finale:
-            await self._run_finale(context)
+            # A run restored into a finale round breaks out of the loop above
+            # before it can reopen the round, because `state.finale` is
+            # already set. The finale loops own their round opening, so the
+            # resume point travels with them: otherwise they call
+            # `start_round`, which emits a second `ROUND_STARTED` for a round
+            # the crashed run already announced - the same duplicate the
+            # normal loop was fixed for. `opened == 0` means the resume landed
+            # in the finale; a finale entered during this run is fresh and
+            # must open normally.
+            landed_in_finale = opened == 0
+            await self._run_finale(
+                context,
+                resume_at if landed_in_finale else None,
+                resume_completed if landed_in_finale else (),
+            )
 
         if not self.engine.is_over:
             self.engine.apply_round_limit()
@@ -162,7 +183,12 @@ class PhaseEngine:
         self.engine.begin_phase(GamePhase.GAME_END)
         self.engine.finish()
 
-    async def _run_finale(self, context: PhaseContext) -> None:
+    async def _run_finale(
+        self,
+        context: PhaseContext,
+        resume_at: Optional[tuple[int, int]] = None,
+        resume_completed: tuple[str, ...] = (),
+    ) -> None:
         """Rapid-fire rounds: discussion, side conversations, vote, repeat.
 
         No missions, no night murder, no recruitment. A tie eliminates
@@ -172,15 +198,33 @@ class PhaseEngine:
 
         With `endgame_vote` on, the vote is replaced by the end-or-banish
         vote (see `_run_endgame_finale`).
+
+        `resume_at` is set when the run is being continued inside a finale
+        round: the first iteration reopens that round quietly instead of
+        announcing it a second time, and picks up at the first finale phase
+        that did not already end (`resume_completed`), so a completed phase
+        is not run twice. If every finale phase already ended, the round is
+        complete and the next one is opened normally.
         """
         if self.config.game.endgame_vote:
-            await self._run_endgame_finale(context)
+            await self._run_endgame_finale(context, resume_at, resume_completed)
             return
         stalled = 0
+        first = True
         while not self.engine.is_over and stalled < self.config.game.finale_max_votes:
             before = len(self.engine.state.alive_players)
-            self.engine.start_round()
-            for name in self.FINALE_PHASES:
+            if first and resume_at is not None:
+                self.engine.reopen_round(resume_at[0] + 1)
+                start = _phases_already_run(resume_completed, self.FINALE_PHASES)
+                if start >= len(self.FINALE_PHASES):
+                    # The interrupted round is fully recorded already.
+                    self.engine.start_round()
+                    start = 0
+            else:
+                self.engine.start_round()
+                start = 0
+            first = False
+            for name in self.FINALE_PHASES[start:]:
                 self.engine.begin_phase(_phase_enum(name))
                 await self.phases[name].run(context)
                 self.engine.end_phase()
@@ -190,7 +234,12 @@ class PhaseEngine:
         if not self.engine.is_over:
             self.engine.apply_round_limit(reason="finale_vote_limit")
 
-    async def _run_endgame_finale(self, context: PhaseContext) -> None:
+    async def _run_endgame_finale(
+        self,
+        context: PhaseContext,
+        resume_at: Optional[tuple[int, int]] = None,
+        resume_completed: tuple[str, ...] = (),
+    ) -> None:
         """Finale with the end-or-banish vote (phase 25).
 
         Each iteration runs the round table and private chat, then one
@@ -199,19 +248,50 @@ class PhaseEngine:
         any `banish` runs the normal voting and elimination phases and
         the loop repeats. The game also ends on its own when only two
         players remain, which the engine's win check handles.
+
+        `resume_at` behaves as in `_run_finale`: the resumed finale round
+        is reopened, not announced again, and its already-ended phases are
+        skipped. A completed `end_vote` that did not end the game requested
+        a banishment, so its voting/elimination tail still runs even though
+        the reopened round's vote record is empty.
         """
         stalled = 0
+        first = True
         while not self.engine.is_over and stalled < self.config.game.finale_max_votes:
             before = len(self.engine.state.alive_players)
-            self.engine.start_round()
-            for name in self.ENDGAME_PHASES:
+            resumed_after_end_vote = False
+            tail: tuple[str, ...] = ()
+            if first and resume_at is not None:
+                done = set(resume_completed)
+                start = _phases_already_run(resume_completed, self.ENDGAME_PHASES)
+                # A completed end_vote that did not end the game requested a
+                # banishment, so its voting/elimination tail still has to run
+                # even though the reopened round's vote record is empty.
+                tail = (
+                    tuple(n for n in ("voting", "elimination") if n not in done)
+                    if start >= len(self.ENDGAME_PHASES)
+                    else ()
+                )
+                if start >= len(self.ENDGAME_PHASES) and not tail:
+                    # The interrupted round is fully recorded; open the next.
+                    self.engine.reopen_round(resume_at[0] + 1)
+                    self.engine.start_round()
+                    start = 0
+                else:
+                    self.engine.reopen_round(resume_at[0] + 1)
+                    resumed_after_end_vote = start >= len(self.ENDGAME_PHASES)
+            else:
+                self.engine.start_round()
+                start = 0
+            first = False
+            for name in self.ENDGAME_PHASES[start:]:
                 self.engine.begin_phase(_phase_enum(name))
                 await self.phases[name].run(context)
                 self.engine.end_phase()
                 if self.engine.is_over:
                     return
-            if self.engine.end_vote_requests_banishment():
-                for name in ("voting", "elimination"):
+            if resumed_after_end_vote or self.engine.end_vote_requests_banishment():
+                for name in tail if resumed_after_end_vote else ("voting", "elimination"):
                     self.engine.begin_phase(_phase_enum(name))
                     await self.phases[name].run(context)
                     self.engine.end_phase()
@@ -224,3 +304,18 @@ class PhaseEngine:
 
 def _phase_enum(name: str) -> GamePhase:
     return GamePhase(name)
+
+
+def _phases_already_run(completed: tuple[str, ...], order: tuple[str, ...]) -> int:
+    """How many leading phases of `order` are already in `completed`.
+
+    A round runs its phases in `order`, so the ones a crashed run recorded
+    form a prefix of it; the count is where the resumed run should pick up.
+    """
+    done = set(completed)
+    count = 0
+    for name in order:
+        if name not in done:
+            break
+        count += 1
+    return count

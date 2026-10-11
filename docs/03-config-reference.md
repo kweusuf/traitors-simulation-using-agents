@@ -40,13 +40,14 @@ the measurement or the failure behind it, and the arms that exist are in
 
 | Key | Default | Set | Unset |
 | --- | --- | --- | --- |
-| `traitor_mandate` | **`true`** | A player drawn as a traitor is briefed at induction that the role requires deception: say things you do not believe, argue readings you do not hold, build cases against players you know to be innocent. The *method* is scaled to the persona - one the cast wrote as a deceiver is told invention comes easily, one written as trusting is told to deceive defensively by withholding, deflecting and letting others carry the false case. The core is identical for all of them | The prompts are what they were before the flag existed. This is the control for the finding in [learnings.md](learnings.md#a-persona-blind-deal-handed-the-tower-to-players-who-cannot-lie), written up in [2026-10-10-traitor-mandate.md](2026-10-10-traitor-mandate.md) |
+| `traitor_mandate` | **`true`** | A player drawn as a traitor is briefed at induction that the role requires deception: say things you do not believe, argue readings you do not hold, build cases against players you know to be innocent. The *method* is scaled to the persona - one the cast wrote as a deceiver is told invention comes easily, one written as trusting is told to deceive defensively by withholding, deflecting and letting others carry the false case. The core is identical for all of them | The induction text is dropped; a traitor gets the role's plain alliance paragraph alone. This is the control for the finding in [learnings.md](learnings.md#a-persona-blind-deal-handed-the-tower-to-players-who-cannot-lie), written up in [2026-10-10-traitor-mandate.md](2026-10-10-traitor-mandate.md) |
+| `traitor_role_goals` | **`true`** | A drawn traitor's objectives are the role's alone; the persona's secondary goals are dropped, because several of the cast are written as honest contestants and their goal is close to an instruction to lose once drawn | The pre-mandate merge is restored: the persona's objective sits next to the role's as one task list (`stay_apart_from_the_herd, ensure_traitor_team_wins`) |
 
-A drawn traitor no longer inherits the persona's objectives. The injection
-gives a traitor the role's goals alone, where it used to merge persona goals
-with role goals and hand over both as a task list
-(`stay_apart_from_the_herd, ensure_traitor_team_wins`). The persona still
-supplies the manner, through its description and its traits.
+The mandate change is two knobs, so they can be varied one at a time:
+`traitor_role_goals` keeps the objectives fixed while `traitor_mandate` tests
+the briefing text, and both off restores the prompts exactly as they were
+before the mandate. The persona still supplies the manner either way, through
+its description and its traits.
 
 ## Discussion, repetition and rejection
 

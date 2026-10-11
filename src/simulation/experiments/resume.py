@@ -67,6 +67,11 @@ class ResumePoint:
     awarded_round: int = -1
     award_index: int = 0
     lost_ambitions: list[str] = field(default_factory=list)
+    # Phase names already `PHASE_ENDED` in the round being resumed, in order.
+    # The normal phase loop resumes from `phase_index`, but the finale loops
+    # order their phases differently from `config.phases`, so they cannot use
+    # that index and need the completed names to skip work already done.
+    completed_phases: tuple[str, ...] = ()
 
     def recover_ambitions(
         self, seed: int, player_ids: list[str], traitor_names: list[str]
@@ -167,6 +172,16 @@ def find_resume_point(events: list[Event], phase_order: list[str]) -> ResumePoin
         state=state,
     )
     _fold_bookkeeping(cut, point)
+    # The round being resumed is `round_number + 1` (rebuild_state stepped the
+    # log's last ROUND_STARTED back one). Record which of its phases already
+    # ended, so a finale resume can skip them: its phase order is not the
+    # normal one, so `phase_index` does not map onto it.
+    resumed_round = point.round_number + 1
+    point.completed_phases = tuple(
+        str(event.payload.get("phase", ""))
+        for event in cut
+        if event.type is EventType.PHASE_ENDED and event.round == resumed_round
+    )
     return point
 
 

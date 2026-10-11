@@ -96,6 +96,12 @@ def main() -> None:
     except OllamaError as exc:
         print(f"failed after {time.monotonic() - start:.0f}s: {exc}")
         return
+    except Exception as exc:  # noqa: BLE001 - a probe reports, it does not crash
+        # Anything the transport does not wrap (a bad base_url, a config
+        # value the provider rejects) is still a probe result, not a
+        # traceback the caller has to read.
+        print(f"failed after {time.monotonic() - start:.0f}s: {exc!r}")
+        return
 
     elapsed = time.monotonic() - start
     text = reply.content

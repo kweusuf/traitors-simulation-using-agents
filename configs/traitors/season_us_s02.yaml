@@ -1,10 +1,11 @@
 game:
   name: the-traitors-us-s02
   players: 22
-  traitors: 3
+  # Starting traitors only: parvati was recruited in episode 8, so she is not
+  # part of the deal the season opened with.
+  traitors: 2
   traitor_names:
   - phaedra
-  - parvati
   - dan
   player_names:
   - ct

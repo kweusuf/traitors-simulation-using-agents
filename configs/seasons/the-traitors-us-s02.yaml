@@ -1,4 +1,8 @@
 # Ground truth for The Traitors (US), Season 2 (Peacock, 2024)
+#
+# Unverified against a cited source: cast list needs a source pass before it
+# is trusted as ground truth (add `# https://...` source lines, read by
+# `load_season`).
 
 season:
   id: the-traitors-us-s02

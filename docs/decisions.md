@@ -361,13 +361,14 @@ back cost nothing new. The threshold needed care; see below.
 
 ### A drawn traitor is briefed, and does not inherit the persona's objectives
 
-**Decision.** Two changes, both about the same mismatch. When the deal makes a
-player a traitor, the role is briefed at induction (`game.traitor_mandate`,
-on by default): the role requires deception, and only the *method* is scaled,
-to `Persona.deception_aptitude`. And `inject_role_goals` stops merging the
+**Decision.** Two changes, both about the same mismatch, each behind its own
+flag so they vary one at a time. When the deal makes a player a traitor, the
+role is briefed at induction (`game.traitor_mandate`, on by default): the role
+requires deception, and only the *method* is scaled, to
+`Persona.deception_aptitude`. And `inject_role_goals` stops merging the
 persona's secondary goals into a traitor's list - a traitor gets the role's
-goals alone. The persona still reaches the prompt through its description and
-its traits.
+goals alone (`game.traitor_role_goals`, on by default). The persona still
+reaches the prompt through its description and its traits.
 
 **Reasoning.** The deal does not consult the persona, and the cast was written
 for a faithful game: three personas exist to deceive and nineteen do not,
@@ -376,6 +377,11 @@ drawn as a traitor. Merging then handed a drawn traitor the contradiction
 directly - `stay_apart_from_the_herd` next to `ensure_traitor_team_wins`, in
 the same task list, in a room whose most-frequent accusation is that someone
 has been quiet.
+
+The two flags are what keep the control honest: `traitor_mandate: false` alone
+drops only the induction text, so an arm recorded under it stays reproducible,
+while turning `traitor_role_goals` off as well is what restores the pre-mandate
+prompts.
 
 `persona.py` says persona instructions describe tendencies and never force a
 strategy ("you always lie" is banned), and that still holds: the mandate is

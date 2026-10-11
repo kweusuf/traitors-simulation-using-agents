@@ -188,6 +188,19 @@ def test_resume_point_is_the_last_completed_phase() -> None:
     assert point.state.round_number == 0  # start_round will open round 1
 
 
+def test_resume_point_records_the_resumed_rounds_completed_phases() -> None:
+    """The finale loops need the phase names, not just the phase index."""
+    events = opening() + [
+        ev(6, EventType.PHASE_STARTED, payload={"phase": "round_table"}),
+        ev(7, EventType.PHASE_ENDED, payload={"phase": "round_table"}),
+        ev(8, EventType.PHASE_STARTED, payload={"phase": "private_chat"}),
+    ]
+    point = find_resume_point(events, PHASES)
+
+    assert point.round_number == 0  # the resumed round is 1
+    assert point.completed_phases == ("public_discussion", "round_table")
+
+
 def test_resume_point_discards_a_phase_cut_off_mid_flight() -> None:
     events = opening() + [
         ev(6, EventType.PHASE_STARTED, payload={"phase": "voting"}),

@@ -1,10 +1,9 @@
 game:
   name: the-traitors-india-s01
   players: 20
-  traitors: 5
+  # Starting traitors only: harsh and purav were recruited in episode 9.
+  traitors: 3
   traitor_names:
-  - harsh
-  - purav
   - karan_kundrra
   - raj_kundrra
   - jannat

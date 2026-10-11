@@ -1,4 +1,9 @@
 # Ground truth for The Traitors (NZ), Season 2
+#
+# Unverified against a cited source: cast list needs a source pass before it
+# is trusted as ground truth. `starting_traitor_count` is normalised to the
+# cast's `traitor_type: original` entries (chloe, keanu), which is the only
+# internally consistent reading; it was 3 with two originals and one recruit.
 
 season:
   id: the-traitors-nz-s02
@@ -7,7 +12,7 @@ season:
   aired: 2024-07-01/2024-08-06
   episode_count: 12
   contestant_count: 20
-  starting_traitor_count: 3
+  starting_traitor_count: 2
   winner_faction: traitor
   winners: [chloe]
 

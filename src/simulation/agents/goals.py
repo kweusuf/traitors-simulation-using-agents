@@ -97,14 +97,17 @@ class Goals(StrictModel):
 
 
 def inject_role_goals(
-    persona_goals: Goals, role: Role, ambition: Optional[str] = None
+    persona_goals: Goals,
+    role: Role,
+    ambition: Optional[str] = None,
+    traitor_role_goals: bool = True,
 ) -> Goals:
     """Merge persona objectives with role objectives (spec section 13).
 
     With one exception, and it is the shape of the whole random-deal bug: a
-    traitor does not inherit the persona's objectives. The merge here used to
-    be unconditional, so a drawn traitor was handed their persona goal *next
-    to* the role goal and both were rendered as a task list -
+    drawn traitor does not inherit the persona's objectives. The merge here
+    used to be unconditional, so a drawn traitor was handed their persona goal
+    *next to* the role goal and both were rendered as a task list -
     "stay_apart_from_the_herd, ensure_traitor_team_wins" for imran,
     "stay_loyal_to_your_read, ensure_traitor_team_wins" for meryl. The first
     of each pair is an instruction to behave like the honest contestant the
@@ -115,9 +118,12 @@ def inject_role_goals(
     reach the prompt through `Persona.instructions()` - but it no longer
     supplies the objective. Whoever the draw makes a traitor plays the
     traitor's game; the manner is the persona's, the job is the role's.
+
+    `traitor_role_goals` is the game flag: off restores the pre-mandate merge,
+    so the two halves of the mandate change can be varied one at a time.
     """
     role_primary, role_secondary = ROLE_GOALS[role]
-    if role is Role.TRAITOR:
+    if role is Role.TRAITOR and traitor_role_goals:
         secondary = list(role_secondary)
     else:
         secondary = list(dict.fromkeys([*persona_goals.secondary, *role_secondary]))

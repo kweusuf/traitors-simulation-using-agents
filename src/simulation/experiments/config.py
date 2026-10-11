@@ -150,9 +150,18 @@ class GameSettings(StrictModel):
     # trusting player is told to withhold and deflect rather than to invent
     # detail they cannot keep straight.
     #
-    # Off restores the previous prompts exactly, which is what makes the
-    # claim measurable rather than assumed.
+    # This gates the induction text alone. The companion change - a traitor's
+    # objectives no longer merging the persona's - is its own flag below, so
+    # the two can be varied one at a time; together they are the pre-mandate
+    # prompts restored.
     traitor_mandate: bool = True
+    # Whether a traitor's objectives are the role's alone. On (the default),
+    # `inject_role_goals` drops the persona's secondary goals for a traitor,
+    # because several of the cast are written as honest contestants and their
+    # goal is close to an instruction to lose once drawn. Off restores the
+    # pre-mandate merge (persona objective next to the role's), which is the
+    # other half of the "prompts as they were" control.
+    traitor_role_goals: bool = True
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)
