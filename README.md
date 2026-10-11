@@ -52,6 +52,9 @@ python -m simulation batch configs/traitors/basic.yaml --games 10 --seed 100 --p
 Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
 {ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
 
+To run against a remote model host, the repository ships a container and a
+deployment guide: see [DEPLOY.md](DEPLOY.md).
+
 ## Rules of the game
 
 Everything below is config-driven from the `game:` block. Defaults are
@@ -167,11 +170,11 @@ than dramatic ones.
 
 ### Prompt size: pointers
 
-Three flags in `game:`, all off by default. They address the prompt growing
-without bound - the transcript is around 93% of a late-game prompt, at
-~850 characters a message - and the template collapse that follows, where
-different players emit byte-identical messages because each is equally
-unable to see the room.
+Two of the three address the prompt growing without bound - the transcript is
+around 93% of a late-game prompt, at ~850 characters a message - and the
+template collapse that follows, where different players emit byte-identical
+messages because each is equally unable to see the room. `co_generate_gist`
+is on by default; the other two are not.
 
 - **`co_generate_gist`** asks the model, in the call that writes the
   message, for a one-line pointer to what it just said. No extra

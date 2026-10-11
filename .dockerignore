@@ -1,0 +1,40 @@
+.venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+runs/
+*.local.yaml
+.pytest_cache
+*.egg-info
+build/
+dist/
+.DS_Store
+
+# Build-time inputs the image never reads: it installs from requirements.lock
+# (copied explicitly) and copies only pyproject.toml, README.md and src/.
+tests/
+docs/
+tools/
+configs/
+uv.lock
+deploy_remote.example.sh
+
+# Local agent notes and editor state. Kept out for the same reason as the
+# global gitignore: they carry machine-specific detail, and they must not
+# swell the build context on a machine that does not ignore them.
+.cursor/
+.serena/
+.delta/
+.kilo/
+.vscode/
+.mcp.json
+AGENTS.md
+CLAUDE.md
+cursor_*.md
+
+# Prose is not part of the build; README.md is required by pyproject.toml.
+*.md
+!README.md
