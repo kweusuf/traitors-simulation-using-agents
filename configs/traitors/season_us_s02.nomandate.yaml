@@ -1,0 +1,148 @@
+# Control arm for the traitor-mandate experiment, on a different edition.
+#
+# The mandate arm is `season_uk_s01.fix_en.rand.yaml` as run in
+# uk-s01-rand-fix_en-mandate-conc8. This file holds that arm's rule block
+# unchanged and flips exactly one rule: `traitor_mandate: false`. The edition
+# is the only other difference - US S02 instead of UK S01, both 22 players and
+# 3 traitors, with the season's own fixed deal pinned rather than the arm's
+# random draw.
+#
+# Because the edition differs, this is not a same-seed A/B against the mandate
+# arm: read it as "what mandate-off play looks like on a second edition". The
+# strict control, if one is wanted later, is the UK arm with this same flag off.
+#
+# The cadence rules (`quiet_murder_rounds`, `quiet_banishment_rounds`) are
+# inherited from the arm and held constant on purpose - they pace the game the
+# same way in both arms. They encode UK Series 1's episode order, so they are
+# not a claim about US S02.
+#
+# `max_tokens` is 768, also inherited from the arm, where 512 truncated replies
+# mid-sentence into JSON parse errors. `max_concurrency` here is the base
+# config's 4; this arm was launched with `--concurrency 8`.
+#
+# Both arms sit on the same side of the mandate's aptitude scale. The five
+# players who held the tower in the mandate run score 0.12-0.33 on
+# `deception_aptitude`, and this cast scores 0.25-0.33; every one is below the
+# 0.6 threshold at which the briefing switches from the candid method to the
+# practised one. The mandate these two arms differ on is therefore the same
+# instruction on both sides, so this control tests "no mandate" against the
+# mandate as it was actually applied, not against the practised variant.
+
+game:
+  name: the-traitors-us-s02
+  players: 22
+  traitors: 3
+  # The season's own deal, as in season_us_s02.yaml. The arm drew its traitors
+  # from the seed instead; here the draw is pinned so the edition's cast holds.
+  traitor_names:
+    - phaedra
+    - parvati
+    - dan
+  # The treatment flag, and the only rules change from the mandate arm.
+  traitor_mandate: false
+  recruit_on_banish: false
+  recruit_choice: true
+  recruit_window: true
+  max_recruits: 2
+  agent_memory: true
+  reject_invented_players: true
+  anti_echo_instructions: true
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  max_rounds: 18
+  finale_max_votes: 10
+  quiet_murder_rounds: [1]
+  quiet_banishment_rounds: [8]
+  endgame_vote: true
+  blind_finale_banishments: true
+  shield: true
+  discussion_budget: 2
+  warning_turns: 1
+  nomination_enabled: true
+  revote_enabled: true
+  council_deliberation: true
+  seer: false
+  dagger: false
+  on_trial: false
+
+  player_names:
+    - ct
+    - trishelle
+    - mj
+    - sheree
+    - phaedra
+    - john
+    - peter
+    - kevin
+    - parvati
+    - bergie
+    - dan
+    - janelle
+    - sandra
+    - tamra
+    - larsa
+    - makensy
+    - maks
+    - ekin-su
+    - peppermint
+    - deontay
+    - carly
+    - melinda
+  personas:
+    - us_s02/ct
+    - us_s02/trishelle
+    - us_s02/mj
+    - us_s02/sheree
+    - us_s02/phaedra
+    - us_s02/john
+    - us_s02/peter
+    - us_s02/kevin
+    - us_s02/parvati
+    - us_s02/bergie
+    - us_s02/dan
+    - us_s02/janelle
+    - us_s02/sandra
+    - us_s02/tamra
+    - us_s02/larsa
+    - us_s02/makensy
+    - us_s02/maks
+    - us_s02/ekin-su
+    - us_s02/peppermint
+    - us_s02/deontay
+    - us_s02/carly
+    - us_s02/melinda
+
+phases:
+  - mission
+  - mission
+  - mission
+  - public_discussion
+  - private_chat
+  - round_table
+  - voting
+  - elimination
+  - traitor_night
+
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434  # override per machine
+  temperature: 0.7
+  max_tokens: 768
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4  # the launch overrode this to 8
+  options: {}
+
+seed: 42
+
+observability:
+  enabled: false
+  provider: langfuse

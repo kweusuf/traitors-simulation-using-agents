@@ -35,3 +35,9 @@
 - nz_s02 (20)
 - australia_s01 (24)
 - australia_s02 (20)
+
+## Experiment arms
+- season_uk_s01.fix_en.rand.yaml - the traitor-mandate arm (mandate on)
+- season_us_s02.nomandate.yaml - mandate off on a second edition; its header
+  records what it does and does not control for
+
