@@ -28,6 +28,7 @@ from simulation.experiments.season import (
     load_season,
     render_benchmark,
 )
+from simulation.experiments.timeline import load_metrics, write_timeline
 from simulation.persistence.database import Database
 from simulation.persistence.event_log import Event, EventType
 from simulation.persistence.repositories import SnapshotRepository
@@ -692,6 +693,37 @@ def cmd_benchmark(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_timeline(args: argparse.Namespace) -> int:
+    """Write one run's (or every run's) timeline.md from its event log.
+
+    New games get one automatically from the runner; this command is the
+    backfill path for runs that finished before the digest existed, and
+    the way to regenerate one after a resume.
+    """
+
+    def build_for(run_dir: Path) -> Path:
+        events = load_events(run_dir / "events.jsonl")
+        return write_timeline(run_dir, events, load_metrics(run_dir))
+
+    if args.all:
+        paths = sorted(Path(args.runs_dir).glob("*/events.jsonl"))
+        if not paths:
+            print(f"No games in {args.runs_dir}/")
+            return 0
+        for events_path in paths:
+            path = build_for(events_path.parent)
+            print(f"wrote {path}")
+        return 0
+
+    if not args.game_id:
+        print("error: give a game_id or --all", file=sys.stderr)
+        return 2
+    run_dir = open_run_dir(args.game_id, args.runs_dir)
+    path = build_for(run_dir)
+    print(path.read_text(encoding="utf-8"), end="")
+    return 0
+
+
 def cmd_list_games(args: argparse.Namespace) -> int:
     rows = []
     for events_path in sorted(Path(args.runs_dir).glob("*/events.jsonl")):
@@ -868,6 +900,18 @@ def build_parser() -> argparse.ArgumentParser:
     diagnose.add_argument("game_id")
     diagnose.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
     diagnose.set_defaults(func=cmd_diagnose)
+
+    timeline = sub.add_parser(
+        "timeline",
+        help="write timeline.md, a one-glance per-round milestone digest "
+        "(automatic on run; use --all to backfill older runs)",
+    )
+    timeline.add_argument("game_id", nargs="?", default=None)
+    timeline.add_argument(
+        "--all", action="store_true", help="regenerate the digest for every run"
+    )
+    timeline.add_argument("--runs-dir", default=DEFAULT_RUNS_DIR)
+    timeline.set_defaults(func=cmd_timeline)
 
     benchmark = sub.add_parser(
         "benchmark", help="score a run against a real season's ground truth"

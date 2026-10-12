@@ -35,6 +35,7 @@ from simulation.experiments.lock import RunLock
 from simulation.experiments.resume import load_point
 from simulation.experiments.telemetry import TelemetryRecorder
 from simulation.experiments.replay import build_transcript, render_transcript
+from simulation.experiments.timeline import write_timeline
 from simulation.models.fake import PromptScriptProvider
 from simulation.models.gateway import LLMGateway
 from simulation.models.llm import LLMProvider
@@ -64,6 +65,7 @@ ARTIFACTS = (
     "transcript.txt",
     "metrics.json",
     "llm_calls.jsonl",  # one line per model call: the run's LLM ops log
+    "timeline.md",  # one-glance per-round milestone digest
 )
 
 EventObserver = Callable[[Event], None]
@@ -717,6 +719,10 @@ class GameRunner:
         (run_dir / "metrics.json").write_text(
             json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8"
         )
+        # The one-glance digest, rebuilt from the same persisted events
+        # the transcript came from, so it also covers a resumed run's
+        # full history rather than only the sessions after the crash.
+        write_timeline(run_dir, events, metrics)
 
     def _persist_identity(
         self,
