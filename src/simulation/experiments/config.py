@@ -35,9 +35,12 @@ class GameSettings(StrictModel):
     # Recruitment: when a traitor is banished at the round table, they get
     # to convert one living faithful player before leaving. `max_recruits`
     # caps it for the whole game (0 = no cap); without a cap the faithful
-    # can never empty the traitor team by voting alone.
+    # can never empty the traitor team by voting alone. The default cap is
+    # 4: at 2 a season with three real recruitment attempts ran them out by
+    # round 3, and the capped-out traitors then had no way to refill after
+    # the faithful banished the whole team.
     recruit_on_banish: bool = False
-    max_recruits: int = Field(default=0, ge=0)
+    max_recruits: int = Field(default=4, ge=0)
     # Recruitment as a choice (phase 26): recruitment only opens on the
     # night after a traitor is banished at the round table, and the
     # traitors vote whether to recruit instead of murder. A tie falls to

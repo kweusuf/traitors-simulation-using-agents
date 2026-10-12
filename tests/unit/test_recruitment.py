@@ -151,7 +151,9 @@ def test_recruitment_is_off_by_default() -> None:
     config = GameConfig(game={"players": 6, "traitors": 2})
     assert config.game.recruit_on_banish is False
     assert config.game.recruit_choice is False
-    assert config.game.max_recruits == 0
+    # Recruitment itself is off, but the cap that applies once an arm
+    # turns it on defaults to 4 (0 = uncapped).
+    assert config.game.max_recruits == 4
 
 
 def test_show_configs_use_recruitment_as_a_choice() -> None:

@@ -1,0 +1,129 @@
+# Show-style rules on the US S03 deal: the base season file with the rule
+# block the previous games ran (the fix_en / nomandate block), so this game
+# plays with recruitment, the finale, nominations, the debate clock and the
+# traitor council instead of the bare five-round default.
+#
+# `traitor_mandate` and `traitor_role_goals` stay at their defaults (on):
+# this is a fresh game, not a mandate control. The deal is the season's own
+# starting four (rob, danielle, carolyn, bob) - britney was recruited in the
+# real season and is not part of the opening deal.
+#
+# `max_recruits` is pinned rather than inherited even though 4 is the
+# default as of this file: a resumed run re-reads its config, so any value
+# this game depends on is recorded here (the co_generate_gist lesson).
+game:
+  name: the-traitors-us-s03
+  players: 23
+  # Starting traitors only: britney was recruited in episode 9.
+  traitors: 4
+  traitor_names:
+  - rob
+  - danielle
+  - carolyn
+  - bob
+  recruit_on_banish: false
+  recruit_choice: true
+  recruit_window: true
+  max_recruits: 4
+  agent_memory: true
+  reject_invented_players: true
+  anti_echo_instructions: true
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  max_rounds: 18
+  finale_max_votes: 10
+  # The cadence rules encode UK Series 1's episode order; they pace the game
+  # the same way in every arm that carries them, and are not a claim about
+  # US S03.
+  quiet_murder_rounds: [1]
+  quiet_banishment_rounds: [8]
+  endgame_vote: true
+  blind_finale_banishments: true
+  shield: true
+  discussion_budget: 2
+  warning_turns: 1
+  nomination_enabled: true
+  revote_enabled: true
+  council_deliberation: true
+  seer: false
+  dagger: false
+  on_trial: false
+  player_names:
+  - dolores
+  - dylan
+  - gabby
+  - ivar
+  - britney
+  - tom
+  - rob
+  - ciara
+  - danielle
+  - chrishell
+  - carolyn
+  - sam
+  - bob
+  - wes
+  - niamh
+  - dorinda
+  - roxanne
+  - jeremy
+  - wells
+  - tony
+  - nikki
+  - kristen
+  - boston
+  personas:
+  - us_s03/dolores
+  - us_s03/dylan
+  - us_s03/gabby
+  - us_s03/ivar
+  - us_s03/britney
+  - us_s03/tom
+  - us_s03/rob
+  - us_s03/ciara
+  - us_s03/danielle
+  - us_s03/chrishell
+  - us_s03/carolyn
+  - us_s03/sam
+  - us_s03/bob
+  - us_s03/wes
+  - us_s03/niamh
+  - us_s03/dorinda
+  - us_s03/roxanne
+  - us_s03/jeremy
+  - us_s03/wells
+  - us_s03/tony
+  - us_s03/nikki
+  - us_s03/kristen
+  - us_s03/boston
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: ollama
+  model: hauhau-qwen:latest
+  base_url: http://localhost:11434
+  temperature: 0.7
+  # 512 truncated replies mid-sentence into JSON parse errors in earlier runs.
+  max_tokens: 768
+  reasoning_effort: none
+  timeout_seconds: 300
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

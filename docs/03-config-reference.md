@@ -71,7 +71,7 @@ generated file by hand.
 | Key | Default | Set | Unset |
 | --- | --- | --- | --- |
 | `recruit_on_banish` | `false` | A banished traitor converts one living faithful on the way out, so the tower refills itself. Without a cap the faithful can never empty it by voting alone | The traitor count only ever falls |
-| `max_recruits` | `0` | Caps `recruit_on_banish` for the whole game | `0` = no cap |
+| `max_recruits` | `4` | Caps `recruit_on_banish` and `recruit_choice` for the whole game | `0` = no cap |
 | `recruit_choice` | `false` | Recruitment becomes the traitors' *choice* on the night it opens: they vote recruit-or-murder (a tie murders), offer one living faithful who may decline, and a lone traitor's offer is an ultimatum. Overrides `recruit_on_banish` when both are set | Recruitment happens automatically under `recruit_on_banish`, if that is on |
 | `recruit_window` | `true` | With `recruit_choice` on: the choice opens **only** on the night after a traitor was banished, and is spent that night whether they recruit or kill. This is the show's rule | The choice is offered on every traitor night; a vacancy can be held open indefinitely. Either way the living traitor count may never exceed the starting count |
 
