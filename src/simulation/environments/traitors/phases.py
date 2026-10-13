@@ -645,9 +645,11 @@ async def _run_recruit_night(
 ) -> Optional[PhaseResult]:
     """Run a night's recruit-or-murder choice.
 
-    Returns a phase result when the traitors chose to recruit (the night
-    has no murder), or None when they chose to murder, so the caller runs
-    the normal night. The window is spent either way.
+    Returns a phase result when the recruitment resolved (the night has
+    no murder beyond a landed ultimatum), or None so the caller runs the
+    normal night: either the traitors voted murder, or no valid offer or
+    answer ever landed - a parse failure is not a decline, and must not
+    burn the traitors' turn. The window is spent either way.
     """
     decisions = await asyncio.gather(
         *(_ask(context, actor, ActionType.RECRUIT_DECISION, []) for actor in traitors)
@@ -674,12 +676,25 @@ async def _run_recruit_night(
             engine.submit_action(action)
     target = engine.resolve_recruit_offer()
     victim: Optional[str] = None
-    if target is not None:
-        response = await _ask(context, target, ActionType.RECRUIT_RESPONSE, [])
-        if response is not None:
-            engine.submit_action(response)
-        if target not in engine.state.alive_players:
-            # A lone traitor's ultimatum landed: report the night's death.
-            victim = target
+    if target is None:
+        # No offer parsed, so no player was ever asked: the same
+        # fallback as a failed answer below. A *decline* wastes the
+        # night because that is the show's rule; nobody declining is
+        # not a rule, it is a model failure.
+        engine.spend_recruit_window()
+        return None
+    response = await _ask(context, target, ActionType.RECRUIT_RESPONSE, [])
+    if response is None:
+        # The offered player never produced a valid answer. The window
+        # still closes (the offer cannot be re-asked next round), but
+        # the offer is void and the traitors fall through to the night
+        # kill: a faithful player's parse failure must not silently
+        # cost the traitors their whole turn.
+        engine.spend_recruit_window()
+        return None
+    engine.submit_action(response)
+    if target not in engine.state.alive_players:
+        # A lone traitor's ultimatum landed: report the night's death.
+        victim = target
     engine.spend_recruit_window()
     return {"victim": victim}

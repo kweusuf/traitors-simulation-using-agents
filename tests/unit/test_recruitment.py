@@ -895,6 +895,96 @@ def test_decline_against_a_lone_traitor_murders_the_target() -> None:
     assert events.index(ultimatum[0]) < events.index(deaths[0])
 
 
+def test_failed_response_falls_back_to_the_kill() -> None:
+    """A parse failure on the answer is not a decline: the night still kills.
+
+    Found on us-s03-show-conc8 round 3: the offered player's model failed
+    three times, and the whole night passed with neither a recruit nor a
+    murder - costing the traitors their turn through no choice of theirs.
+    A *decline* still wastes the night; that is the show's rule.
+    """
+    engine = make_engine(players=8, traitors=3, recruit_choice=True)
+    banish_traitor(engine)
+    target = roles_of(engine, Role.FAITHFUL)[0]
+    asked: list[ActionType] = []
+
+    async def flaky(agent_id, action_type, targets):
+        asked.append(action_type)
+        if action_type is ActionType.TRAITOR_MESSAGE:
+            return Action(
+                action=ActionType.TRAITOR_MESSAGE,
+                actor_id=agent_id,
+                content=f"{agent_id} plots",
+            )
+        if action_type is ActionType.RECRUIT_DECISION:
+            return Action(
+                action=ActionType.RECRUIT_DECISION,
+                actor_id=agent_id,
+                content="recruit",
+            )
+        if action_type is ActionType.RECRUIT:
+            return Action(
+                action=ActionType.RECRUIT, actor_id=agent_id, target=target
+            )
+        if action_type is ActionType.RECRUIT_RESPONSE:
+            raise ActionParseError("no valid answer after retries")
+        # NOMINATE and TRAITOR_KILL: first legal target.
+        return Action(action=action_type, actor_id=agent_id, target=targets[0])
+
+    result = run_night(engine, flaky)
+
+    assert ActionType.RECRUIT_RESPONSE in asked
+    # The night fell through to the kill instead of passing for free.
+    assert ActionType.TRAITOR_KILL in asked
+    deaths = night_deaths(engine)
+    assert len(deaths) == 1
+    assert result["victim"] == deaths[0].actor
+    # Nothing was recruited and the window is spent all the same.
+    assert events_of(engine, EventType.ROLE_RECRUITED) == []
+    assert events_of(engine, EventType.RECRUIT_ACCEPTED) == []
+    assert engine.state.roles[target] is Role.FAITHFUL
+    assert engine.recruits_used == 0
+    assert not engine.recruit_window_open()
+
+
+def test_failed_offer_falls_back_to_the_kill() -> None:
+    """No traitor's offer parsed: same fallback, the night still kills."""
+    engine = make_engine(players=8, traitors=3, recruit_choice=True)
+    banish_traitor(engine)
+    asked: list[ActionType] = []
+
+    async def flaky(agent_id, action_type, targets):
+        asked.append(action_type)
+        if action_type is ActionType.TRAITOR_MESSAGE:
+            return Action(
+                action=ActionType.TRAITOR_MESSAGE,
+                actor_id=agent_id,
+                content=f"{agent_id} plots",
+            )
+        if action_type is ActionType.RECRUIT_DECISION:
+            return Action(
+                action=ActionType.RECRUIT_DECISION,
+                actor_id=agent_id,
+                content="recruit",
+            )
+        if action_type is ActionType.RECRUIT:
+            raise ActionParseError("no offer produced")
+        return Action(action=action_type, actor_id=agent_id, target=targets[0])
+
+    result = run_night(engine, flaky)
+
+    assert ActionType.RECRUIT in asked
+    # No target ever landed, so no player was asked to answer.
+    assert ActionType.RECRUIT_RESPONSE not in asked
+    assert ActionType.TRAITOR_KILL in asked
+    deaths = night_deaths(engine)
+    assert len(deaths) == 1
+    assert result["victim"] == deaths[0].actor
+    assert events_of(engine, EventType.ROLE_RECRUITED) == []
+    assert engine.recruits_used == 0
+    assert not engine.recruit_window_open()
+
+
 def test_recruit_response_is_only_for_the_offered_player() -> None:
     engine = make_engine(players=8, traitors=3, recruit_choice=True)
     banish_traitor(engine)
