@@ -7,6 +7,7 @@ __pycache__/
 .gitignore
 runs/
 *.local.yaml
+.env
 .pytest_cache
 *.egg-info
 build/

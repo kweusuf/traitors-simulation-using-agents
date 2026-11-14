@@ -46,10 +46,11 @@ class GameSettings(StrictModel):
     # traitors vote whether to recruit instead of murder. A tie falls to
     # murder. On a recruit night the traitors offer one living faithful
     # player, who may accept or decline; a lone traitor's offer is an
-    # ultimatum (a decline is fatal). Off by default so existing configs
-    # keep the plain `recruit_on_banish` behaviour, which this flag
-    # overrides when both are set.
-    recruit_choice: bool = False
+    # ultimatum (a decline is fatal). On by default: a season that never
+    # recruits departs from the show, so an unset config gets the
+    # recruitment window. `recruit_on_banish` stays off because this flag
+    # overrides it when both are set.
+    recruit_choice: bool = True
     # Whether `recruit_choice` needs the banishment window at all. True
     # (the default) reproduces the show: the traitors get to choose
     # recruit-or-murder only on the night after one of their own was
@@ -355,6 +356,9 @@ class LLMSettings(StrictModel):
     # run gives up; backoff lives in the Ollama provider.
     retries: int = Field(default=3, ge=0)
     max_concurrency: int = Field(default=2, ge=1)
+    # Which environment variable holds the API key for a cloud provider.
+    # Only the name is recorded here; the key lives in a gitignored .env.
+    api_key_env: str = "COMMAND_CODE_API_KEY"
     # Provider-specific knobs the normalized fields do not cover.
     options: dict[str, Any] = Field(default_factory=dict)
 
@@ -369,6 +373,7 @@ class LLMSettings(StrictModel):
             timeout_seconds=self.timeout_seconds,
             retries=self.retries,
             reasoning_effort=self.reasoning_effort,
+            api_key_env=self.api_key_env,
             options=dict(self.options),
         )
 

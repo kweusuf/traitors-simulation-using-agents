@@ -29,6 +29,7 @@ from simulation.experiments.season import (
     render_benchmark,
 )
 from simulation.experiments.timeline import load_metrics, write_timeline
+from simulation.env import load_dotenv
 from simulation.persistence.database import Database
 from simulation.persistence.event_log import Event, EventType
 from simulation.persistence.repositories import SnapshotRepository
@@ -796,7 +797,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="continue a crashed run from its event log (needs --game-id)",
     )
     run.add_argument(
-        "--provider", default=None, choices=["ollama", "fake"], help="override llm.provider"
+        "--provider",
+        default=None,
+        choices=["ollama", "commandcode", "fake"],
+        help="override llm.provider",
     )
     run.add_argument("--model", default=None, help="override llm.model")
     run.add_argument(
@@ -828,7 +832,10 @@ def build_parser() -> argparse.ArgumentParser:
     batch.add_argument("--games", type=int, required=True, help="number of games")
     batch.add_argument("--seed", type=int, default=None, help="base seed for the batch")
     batch.add_argument(
-        "--provider", default=None, choices=["ollama", "fake"], help="override llm.provider"
+        "--provider",
+        default=None,
+        choices=["ollama", "commandcode", "fake"],
+        help="override llm.provider",
     )
     batch.add_argument("--model", default=None, help="override llm.model")
     batch.add_argument(
@@ -930,6 +937,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Optional[list[str]] = None) -> int:
+    # Local credentials live in a gitignored .env; existing shell
+    # variables win, so CI and one-off exports keep working.
+    load_dotenv()
     parser = build_parser()
     args = parser.parse_args(argv)
     try:

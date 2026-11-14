@@ -50,7 +50,24 @@ python -m simulation batch configs/traitors/basic.yaml --games 10 --seed 100 --p
 ```
 
 Useful flags on `run` and `batch`: `--seed`, `--game-id`, `--provider
-{ollama,fake}`, `--runs-dir`, `--db`, `--quiet`.
+{ollama,commandcode,fake}`, `--runs-dir`, `--db`, `--quiet`.
+
+### Command Code Provider API
+
+The `commandcode` provider talks to Command Code's OpenAI-compatible
+endpoint. Put the key in a local `.env` (gitignored; copy `.env.example`)
+and run the tracked India S01 config:
+
+```bash
+cp .env.example .env          # then paste COMMAND_CODE_API_KEY
+uv run --no-sync python tools/smoke_commandcode.py
+uv run --no-sync python -m simulation run \
+  configs/traitors/season_india_s01.commandcode.yaml \
+  --game-id india-s01-mimo
+```
+
+Resume an interrupted run with `--game-id india-s01-mimo --resume
+--idle-seconds 5`.
 
 To run against a remote model host, the repository ships a container and a
 deployment guide: see [DEPLOY.md](DEPLOY.md).

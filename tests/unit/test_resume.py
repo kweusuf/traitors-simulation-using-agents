@@ -45,6 +45,9 @@ def fake_config(**overrides) -> GameConfig:
     config = load_config("configs/traitors/basic.yaml")
     config.llm.provider = "fake"
     config.llm.retries = 0
+    # Resume tests compare role boards; keep the recruitment window out
+    # of a fixture that was written before it was default-on.
+    config.game.recruit_choice = False
     for key, value in overrides.items():
         setattr(config, key, value)
     return config

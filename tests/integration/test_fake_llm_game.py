@@ -127,6 +127,7 @@ def test_four_agent_mini_game(tmp_path) -> None:
 def test_six_player_game_from_basic_config(tmp_path) -> None:
     """Spec section 33: full six-player deterministic game, config-driven."""
     config = load_config("configs/traitors/basic.yaml")
+    config.game.recruit_choice = False
     db = Database()
     env, views, events = run_fake_game(config, seed=config.seed, tmp_path=tmp_path, db=db)
 

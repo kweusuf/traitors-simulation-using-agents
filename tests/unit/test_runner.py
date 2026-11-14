@@ -198,6 +198,9 @@ def test_build_provider_honours_config() -> None:
     assert build_provider(LLMSettings(provider="ollama")).__class__.__name__ == (
         "OllamaProvider"
     )
+    assert build_provider(LLMSettings(provider="commandcode")).__class__.__name__ == (
+        "CommandCodeProvider"
+    )
     with pytest.raises(ValueError, match="unknown llm provider"):
         build_provider(LLMSettings(provider="grok"))
 

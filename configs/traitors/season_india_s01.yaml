@@ -7,6 +7,11 @@ game:
   - karan_kundrra
   - raj_kundrra
   - jannat
+  # 18, not the default 5: the US S03 base replay ran the default and ended
+  # by round limit with 11 players still alive, which is a truncated game
+  # rather than a season. 18 matches the cadence the show-format variants
+  # use, leaving room for recruitment nights to push the endgame later.
+  max_rounds: 18
   player_names:
   - nikita
   - uorfi

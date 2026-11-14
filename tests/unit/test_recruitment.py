@@ -37,7 +37,15 @@ from simulation.persistence.sink import EventSink
 
 def make_engine(seed: int = 42, **game_overrides) -> GameEngine:
     config = GameConfig(
-        game={"players": 6, "traitors": 2, **game_overrides}, seed=seed
+        game={
+            "players": 6,
+            "traitors": 2,
+            # These tests exercise the automatic banishment conversion;
+            # the choice window would override it now that it is default-on.
+            "recruit_choice": False,
+            **game_overrides,
+        },
+        seed=seed,
     )
     engine = GameEngine(config, EventSink("game-001"), seed=seed)
     engine.start()
@@ -147,12 +155,13 @@ def run_night(engine: GameEngine, callback) -> dict:
 # ----------------------------------------------------------------------
 
 
-def test_recruitment_is_off_by_default() -> None:
+def test_recruitment_choice_is_on_by_default() -> None:
     config = GameConfig(game={"players": 6, "traitors": 2})
+    assert config.game.recruit_choice is True
+    # The automatic banishment conversion stays off: the choice owns the
+    # recruitment window.
     assert config.game.recruit_on_banish is False
-    assert config.game.recruit_choice is False
-    # Recruitment itself is off, but the cap that applies once an arm
-    # turns it on defaults to 4 (0 = uncapped).
+    # The cap that applies to the choice window defaults to 4 (0 = uncapped).
     assert config.game.max_recruits == 4
 
 
@@ -538,6 +547,7 @@ def test_full_fake_game_with_recruitment(tmp_path: Path) -> None:
     config = load_config("configs/traitors/basic.yaml")
     config.llm.provider = "fake"
     config.game.recruit_on_banish = True
+    config.game.recruit_choice = False
 
     total_recruits = 0
     for seed in range(1, 11):

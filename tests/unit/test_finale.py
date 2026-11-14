@@ -29,7 +29,9 @@ from simulation.persistence.sink import EventSink
 
 
 def make_engine(seed: int = 42, **game_overrides) -> GameEngine:
-    config = GameConfig(game=game_overrides, seed=seed)
+    config = GameConfig(
+        game={"recruit_choice": False, **game_overrides}, seed=seed
+    )
     engine = GameEngine(config, EventSink("game-001"), seed=seed)
     engine.start()
     return engine
@@ -359,6 +361,8 @@ def test_traitor_prompt_offers_both_alliances() -> None:
 def test_metrics_report_finale_flag_outcomes_and_ambitions(tmp_path: Path) -> None:
     config = load_config("configs/traitors/basic.yaml")
     config.llm.provider = "fake"
+    # This test pins finale/outcome bookkeeping, not recruitment.
+    config.game.recruit_choice = False
     runner = GameRunner(
         config, runs_dir=tmp_path, db=Database(), personas_dir=Path("configs/personas")
     )

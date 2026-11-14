@@ -72,7 +72,7 @@ generated file by hand.
 | --- | --- | --- | --- |
 | `recruit_on_banish` | `false` | A banished traitor converts one living faithful on the way out, so the tower refills itself. Without a cap the faithful can never empty it by voting alone | The traitor count only ever falls |
 | `max_recruits` | `4` | Caps `recruit_on_banish` and `recruit_choice` for the whole game | `0` = no cap |
-| `recruit_choice` | `false` | Recruitment becomes the traitors' *choice* on the night it opens: they vote recruit-or-murder (a tie murders), offer one living faithful who may decline, and a lone traitor's offer is an ultimatum. Overrides `recruit_on_banish` when both are set | Recruitment happens automatically under `recruit_on_banish`, if that is on |
+| `recruit_choice` | `true` | Recruitment becomes the traitors' *choice* on the night it opens: they vote recruit-or-murder (a tie murders), offer one living faithful who may decline, and a lone traitor's offer is an ultimatum. Overrides `recruit_on_banish` when both are set. On by default, gated by `recruit_window` | Recruitment only happens automatically under `recruit_on_banish`, if that is on |
 | `recruit_window` | `true` | With `recruit_choice` on: the choice opens **only** on the night after a traitor was banished, and is spent that night whether they recruit or kill. This is the show's rule | The choice is offered on every traitor night; a vacancy can be held open indefinitely. Either way the living traitor count may never exceed the starting count |
 
 ## The traitor mandate
@@ -253,9 +253,10 @@ banishment happens during a finale that never opens.
 | `communication.public_messages_per_agent` | `1` | How many open turns each player gets per discussion phase | `0` = the phase produces no messages |
 | `communication.private_messages_per_agent` | `2` | How many messages each player gets per private phase, including the traitors-only channel | `0` = no private chat |
 | `communication.transcript_messages_per_prompt` | `40` | How many transcript lines a prompt carries, newest last | `0` = the whole transcript. This is the real cap on prompt growth: the full transcript passes 40k characters in a long game, and every extra token is prompt-evaluation time per call |
-| `llm.provider` | `ollama` | `ollama` for a live model; `fake` plays the whole game deterministically with no model at all, which is what the test suite and a config check use | - |
+| `llm.provider` | `ollama` | `ollama` for a local live model; `commandcode` for the Command Code Provider API (OpenAI-compatible, key from `llm.api_key_env`); `fake` plays the whole game deterministically with no model at all, which is what the test suite and a config check use | - |
 | `llm.model` | `gpt-oss:20b` | The model tag. An identical tag does not imply identical weights across hosts | - |
-| `llm.base_url` | `http://localhost:11434` | Tracked arms carry a `HOST_A` placeholder; the real endpoint belongs in a gitignored `*.local.yaml` or a `--base-url` argument, never in a tracked file ([decisions.md](decisions.md#model-identity-is-an-explicit-variable-never-implicit)) | - |
+| `llm.base_url` | `http://localhost:11434` | Tracked Ollama arms carry a `HOST_A` placeholder; the real endpoint belongs in a gitignored `*.local.yaml` or a `--base-url` argument, never in a tracked file ([decisions.md](decisions.md#model-identity-is-an-explicit-variable-never-implicit)). The Command Code endpoint is public and may be tracked | - |
+| `llm.api_key_env` | `COMMAND_CODE_API_KEY` | The *name* of the environment variable holding a cloud provider's key. The value lives in a gitignored `.env` (copy `.env.example`), never in YAML. `CMD_API_KEY` is accepted as a fallback | - |
 | `llm.max_concurrency` | `2` | Calls the run keeps in flight. Past what a host serves in parallel the extra requests only queue into `timeout_seconds`, so raising it can make a run slower and emptier rather than faster | - |
 | `llm.temperature` / `max_tokens` / `reasoning_effort` | `0.7` / `512` / `medium` | Sampling temperature, the reply cap, and how much thinking the provider is asked for. They sit in the config because they belong to the arm, not to the framework | - |
 | `llm.timeout_seconds` / `retries` | `120` / `3` | Per-call timeout, and extra attempts for transient transport failures before the run gives up | - |

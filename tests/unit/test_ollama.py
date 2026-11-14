@@ -187,6 +187,7 @@ def test_llm_settings_build_model_config() -> None:
     assert config.temperature == 0.3
     assert config.max_tokens == 128
     assert config.timeout_seconds == 30
+    assert config.api_key_env == "COMMAND_CODE_API_KEY"
     assert config.options == {"top_p": 0.9}
 
 

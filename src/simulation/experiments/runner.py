@@ -36,6 +36,7 @@ from simulation.experiments.resume import load_point
 from simulation.experiments.telemetry import TelemetryRecorder
 from simulation.experiments.replay import build_transcript, render_transcript
 from simulation.experiments.timeline import write_timeline
+from simulation.models.commandcode import CommandCodeProvider
 from simulation.models.fake import PromptScriptProvider
 from simulation.models.gateway import LLMGateway
 from simulation.models.llm import LLMProvider
@@ -91,10 +92,13 @@ def build_provider(settings: LLMSettings) -> LLMProvider:
     """Provider from config (spec section 17); no provider code elsewhere."""
     if settings.provider == "ollama":
         return OllamaProvider()
+    if settings.provider == "commandcode":
+        return CommandCodeProvider()
     if settings.provider == "fake":
         return PromptScriptProvider()
     raise ValueError(
-        f"unknown llm provider '{settings.provider}'; expected 'ollama' or 'fake'"
+        f"unknown llm provider '{settings.provider}'; expected 'ollama', "
+        "'commandcode' or 'fake'"
     )
 
 
@@ -109,6 +113,7 @@ def model_identity(settings: LLMSettings) -> tuple[str, dict[str, Any]]:
         "retries": settings.retries,
         "max_concurrency": settings.max_concurrency,
         "base_url": settings.base_url,
+        "api_key_env": settings.api_key_env,
         "options": dict(settings.options),
     }
     return label, parameters

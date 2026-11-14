@@ -30,6 +30,9 @@ class ModelConfig(StrictModel):
     reasoning_effort: str = "medium"
     # Local Ollama server (or any OpenAI-compatible proxy base later).
     base_url: str = "http://localhost:11434"
+    # Name of the environment variable holding a cloud provider's API
+    # key. The value never enters a tracked config, only the name.
+    api_key_env: str = "COMMAND_CODE_API_KEY"
     options: dict[str, Any] = Field(default_factory=dict)
 
 

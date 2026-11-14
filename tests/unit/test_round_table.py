@@ -29,7 +29,12 @@ from simulation.persistence.sink import EventSink
 
 def make_env(players: int = 6, traitors: int = 2, seed: int = 42, **game_overrides):
     config = GameConfig(
-        game={"players": players, "traitors": traitors, **game_overrides},
+        game={
+            "players": players,
+            "traitors": traitors,
+            "recruit_choice": False,
+            **game_overrides,
+        },
         seed=seed,
     )
     db = Database()

@@ -16,6 +16,10 @@ season:
   winner_faction: faithful
   winners: [nikita, uorfi]
   runner_up: [harsh, purav]
+  # Final four: two faithful winners and two recruited traitors.
+  final_counts:
+    faithful: 2
+    traitors: 2
 
 cast:
   - {id: nikita, role: faithful, result: winner, exit_episode: 10}
