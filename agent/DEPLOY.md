@@ -1,5 +1,9 @@
 # Deployment guide: Docker/Podman + native Ollama (remote)
 
+> **Monorepo note:** the project lives in `agent/`. Run the build and rsync
+> commands from `agent/`, or pass `agent/` as the build context from the repo
+> root.
+
 This guide covers bundling the simulation into a container, deploying to a remote machine running Podman with native Ollama, triggering remotely from local, monitoring progress, and pulling run artifacts back.
 
 ## Prerequisites

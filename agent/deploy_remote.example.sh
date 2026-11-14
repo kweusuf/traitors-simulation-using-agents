@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Example script for remote deployment: build, transfer, run, monitor, pull artifacts back.
+# Run this from agent/ (the Docker build context is the current directory).
 # DO NOT commit real values (USER, REMOTE_HOST, paths, registry). Copy and customize locally.
 
 set -euo pipefail

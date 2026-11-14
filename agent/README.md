@@ -1,5 +1,9 @@
 # LLM Social Simulation Framework
 
+> **Monorepo note:** this project was moved into `agent/`. All commands in this
+> file assume the current directory is `agent/`; `runs/` and `configs/` are
+> resolved relative to it.
+
 Configuration-driven framework for running multi-agent LLM social
 simulations. First environment: a text-only game inspired by *The
 Traitors*.

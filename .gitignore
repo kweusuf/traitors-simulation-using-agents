@@ -1,5 +1,5 @@
-runs/*
-!runs/.gitkeep
+agent/runs/*
+!agent/runs/.gitkeep
 __pycache__/
 *.py[cod]
 .venv/
@@ -23,3 +23,10 @@ cursor_*.md
 # they stay out of a public repo.
 AGENTS.md
 CLAUDE.md
+
+# Website build artifacts
+web/node_modules/
+web/.astro/
+web/.vercel/
+web/playwright-report/
+web/test-results/
