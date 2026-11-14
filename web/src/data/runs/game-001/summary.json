@@ -1,0 +1,432 @@
+{
+  "id": "game-001",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "basic_traitors",
+  "season": "basic_traitors",
+  "family": "small games",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "alice",
+      "name": "Alice",
+      "role": "traitor",
+      "ambition": null,
+      "outcome": "unknown",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false
+      },
+      "stats": {
+        "public": 2,
+        "private": 1,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "bob",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "bob": 1,
+          "alice": 5
+        }
+      }
+    },
+    {
+      "id": "bob",
+      "name": "Bob",
+      "role": "faithful",
+      "ambition": null,
+      "outcome": "unknown",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false
+      },
+      "stats": {
+        "public": 2,
+        "private": 1,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "charlie",
+      "name": "Charlie",
+      "role": "faithful",
+      "ambition": null,
+      "outcome": "unknown",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 1
+          },
+          {
+            "id": "david",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "david": 1,
+          "charlie": 3
+        }
+      }
+    },
+    {
+      "id": "david",
+      "name": "David",
+      "role": "faithful",
+      "ambition": null,
+      "outcome": "unknown",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "eve",
+      "name": "Eve",
+      "role": "faithful",
+      "ambition": null,
+      "outcome": "unknown",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "frank",
+      "name": "Frank",
+      "role": "traitor",
+      "ambition": null,
+      "outcome": "unknown",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          }
+        ]
+      }
+    }
+  ],
+  "rounds": 2,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 1,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "bob",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "charlie",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "eve",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "frank",
+          "to": "alice",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "bob",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "bob"
+      }
+    },
+    {
+      "r": 2,
+      "missions": 1,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "charlie",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "eve",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "frank",
+          "to": "charlie",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "david",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "david"
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "elimination",
+    "finale": false,
+    "solo": false,
+    "survivingTraitors": []
+  },
+  "metrics": {
+    "calls": 42,
+    "failedCalls": 0,
+    "providerCalls": 0,
+    "retries": 0,
+    "transportRetries": 0,
+    "parseRetryCalls": 0,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "totalTokens": 0,
+    "promptCharsTotal": 0,
+    "byActionType": {},
+    "model": null,
+    "provider": "fake",
+    "quality": {},
+    "messages": {
+      "private": 10,
+      "public": 20,
+      "ratio_public_private": 2.0
+    },
+    "events": {
+      "total": 104,
+      "byType": {
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "MISSION_COMPLETED": 2,
+        "MISSION_STARTED": 2,
+        "PHASE_ENDED": 14,
+        "PHASE_STARTED": 15,
+        "PLAYER_ELIMINATED": 4,
+        "PRIVATE_MESSAGE": 10,
+        "PUBLIC_MESSAGE": 20,
+        "ROLE_ASSIGNED": 6,
+        "ROUND_STARTED": 2,
+        "SNAPSHOT_CREATED": 14,
+        "TRAITOR_KILL": 2,
+        "VOTE_CAST": 10
+      }
+    },
+    "rejectedActions": 0,
+    "outcomes": {},
+    "survivingTraitors": [],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": false,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "basic_traitors-37578e06",
+    "rounds": 2,
+    "players": 6,
+    "traitors": 2
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 30,
+    "public": 20,
+    "private": 10,
+    "traitor": 0,
+    "host": 0,
+    "calls": 42,
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "totalTokens": 0,
+    "rejectedActions": 0
+  },
+  "config": {
+    "name": "basic_traitors",
+    "players": 6,
+    "traitors": 2,
+    "faithful": 4,
+    "maxRounds": 5,
+    "language": "english",
+    "provider": "fake",
+    "model": "hauhau-qwen:latest",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 512,
+      "reasoning_effort": "none"
+    },
+    "flags": {
+      "max_rounds": 5
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

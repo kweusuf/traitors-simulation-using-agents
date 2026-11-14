@@ -1,0 +1,4165 @@
+{
+  "version": 1,
+  "generatedFrom": [
+    "game-001",
+    "game-003",
+    "game-007",
+    "game-008",
+    "game-009",
+    "game-010",
+    "game-012",
+    "india-s01-fake",
+    "india-s01-mimo",
+    "india-s01-orig-r18-conc4",
+    "smoke-ptr_mem",
+    "smoke-ptr_opt",
+    "smoke-ptr_req",
+    "uk-s01-en3",
+    "uk-s01-fix-en",
+    "uk-s01-fix-hl",
+    "uk-s01-hl",
+    "uk-s01-ledger",
+    "uk-s01-ledger-room",
+    "uk-s01-ptr-mem",
+    "uk-s01-r1",
+    "uk-s01-r2",
+    "uk-s01-r3",
+    "uk-s01-rand-fix_en-conc16",
+    "uk-s01-rand-fix_en-conc4",
+    "uk-s01-rand-fix_en-fresh",
+    "uk-s01-rand-fix_en-fresh2",
+    "uk-s01-rand-fix_en-mandate-conc8",
+    "uk-s01-rep",
+    "us-s02-nomandate-conc8",
+    "us-s03-orig-conc4",
+    "us-s03-show-conc8"
+  ],
+  "totals": {
+    "runs": 32,
+    "playerGames": 635,
+    "messages": 19269,
+    "calls": 24004,
+    "tokens": 179744194
+  },
+  "models": {
+    "fake/hauhau-qwen:latest": {
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "label": "hauhau-qwen:latest"
+    },
+    "ollama/hauhau-qwen:latest": {
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "label": "hauhau-qwen:latest"
+    },
+    "fake/xiaomi/mimo-v2.6-flash": {
+      "provider": "fake",
+      "model": "xiaomi/mimo-v2.6-flash",
+      "label": "mimo-v2.6-flash"
+    },
+    "commandcode/xiaomi/mimo-v2.6-flash": {
+      "provider": "commandcode",
+      "model": "xiaomi/mimo-v2.6-flash",
+      "label": "mimo-v2.6-flash"
+    }
+  },
+  "runs": [
+    {
+      "id": "game-001",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "basic_traitors",
+      "season": "basic_traitors",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 6,
+      "rounds": 2,
+      "traitorCount": 2,
+      "traitors": [
+        "alice",
+        "frank"
+      ],
+      "survivors": [
+        "eve",
+        "frank"
+      ],
+      "eliminations": [
+        {
+          "id": "alice",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "bob",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "charlie",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "david",
+          "round": 2,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "[alice#0] I am watching everyone closely.",
+      "sampleSpeaker": "alice",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "calls": 42,
+      "totalTokens": 0,
+      "messages": 30,
+      "traitorMessages": 0,
+      "hallucination": null,
+      "duplication": null,
+      "secrecyFlags": null,
+      "rejectedActions": 0,
+      "reciprocity": null,
+      "similarityContent": null,
+      "similarityPhrasing": null,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "game-003",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "basic_traitors",
+      "season": "basic_traitors",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 6,
+      "rounds": 2,
+      "traitorCount": 2,
+      "traitors": [
+        "alice",
+        "frank"
+      ],
+      "survivors": [
+        "charlie",
+        "david",
+        "eve"
+      ],
+      "eliminations": [
+        {
+          "id": "alice",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "bob",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "frank",
+          "round": 1,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Good evening. I am Alice. The night is young and we have six of us, but only one of us, Frank, has a hidden blade at their side. I see his eyes scanning the room with a predatory c",
+      "sampleSpeaker": "alice",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 44,
+      "totalTokens": 0,
+      "messages": 30,
+      "traitorMessages": 0,
+      "hallucination": 0.0,
+      "duplication": null,
+      "secrecyFlags": null,
+      "rejectedActions": 0,
+      "reciprocity": null,
+      "similarityContent": null,
+      "similarityPhrasing": null,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "game-007",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "long_game",
+      "season": "long_game",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 21,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alice",
+        "david",
+        "victor"
+      ],
+      "survivors": [
+        "heidi",
+        "peggy",
+        "quinn",
+        "rachel"
+      ],
+      "eliminations": [
+        {
+          "id": "alice",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "bob",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "charlie",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "david",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "eve",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "frank",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "grace",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "judy",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "karen",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "leo",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "mallory",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "nina",
+          "round": 8,
+          "method": "vote"
+        },
+        {
+          "id": "oscar",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "sam",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "tina",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "victor",
+          "round": 2,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Mallory, you mentioned earlier that the early ban phase will inevitably bring some noise, but I think we need to distinguish between useful information and mere suspicion. If someo",
+      "sampleSpeaker": "alice",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": true,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 613,
+      "totalTokens": 4902671,
+      "messages": 393,
+      "traitorMessages": 0,
+      "hallucination": 0.0,
+      "duplication": 0.3257,
+      "secrecyFlags": 9,
+      "rejectedActions": 1,
+      "reciprocity": null,
+      "similarityContent": 0.6045,
+      "similarityPhrasing": 0.9081,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": true,
+      "hasMessages": true
+    },
+    {
+      "id": "game-008",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01",
+      "season": "season_uk_s01",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "hannah",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "aisha",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 8,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "andrea",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "claire",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 12,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 2,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "I'm really struck by how quiet things feel right now; Aisha, since you spoke up earlier about trusting our instincts, I think that's exactly what we need to lean on. It feels like ",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": false,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 841,
+      "totalTokens": 6307679,
+      "messages": 455,
+      "traitorMessages": 16,
+      "hallucination": 0.0,
+      "duplication": 0.433,
+      "secrecyFlags": 0,
+      "rejectedActions": 9,
+      "reciprocity": null,
+      "similarityContent": 0.5134,
+      "similarityPhrasing": 0.8403,
+      "benchmarkScore": 0.3031,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "game-009",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01",
+      "season": "season_uk_s01",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 11,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "aisha",
+        "alyssa",
+        "andrea",
+        "nicky",
+        "rayan",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "amanda",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "claire",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "hannah",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "john",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 5,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "I'm really struck by how calm and collected everyone seems right now. It feels like we're all just trying to get a read on each other before the storm really hits. I was just think",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 852,
+      "totalTokens": 6290515,
+      "messages": 504,
+      "traitorMessages": 29,
+      "hallucination": 0.0,
+      "duplication": 0.4901,
+      "secrecyFlags": 7,
+      "rejectedActions": 5,
+      "reciprocity": null,
+      "similarityContent": 0.5251,
+      "similarityPhrasing": 0.8572,
+      "benchmarkScore": 0.4218,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "game-010",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "basic_traitors",
+      "season": "basic_traitors",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 6,
+      "rounds": 2,
+      "traitorCount": 2,
+      "traitors": [
+        "alice",
+        "frank"
+      ],
+      "survivors": [
+        "eve",
+        "frank"
+      ],
+      "eliminations": [
+        {
+          "id": "alice",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "bob",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "charlie",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "david",
+          "round": 2,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "[alice#0] I am watching everyone closely.",
+      "sampleSpeaker": "alice",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": false,
+      "solo": true,
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "calls": 46,
+      "totalTokens": 0,
+      "messages": 34,
+      "traitorMessages": 0,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.25,
+      "similarityContent": 0.6427,
+      "similarityPhrasing": 0.7524,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "game-012",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "basic_traitors",
+      "season": "basic_traitors",
+      "family": "small games",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 6,
+      "rounds": 2,
+      "traitorCount": 2,
+      "traitors": [
+        "alice",
+        "frank"
+      ],
+      "survivors": [
+        "eve",
+        "frank"
+      ],
+      "eliminations": [
+        {
+          "id": "alice",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "bob",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "charlie",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "david",
+          "round": 2,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "[alice#0] I am watching everyone closely.",
+      "sampleSpeaker": "alice",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": false,
+      "solo": true,
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "calls": 46,
+      "totalTokens": 0,
+      "messages": 34,
+      "traitorMessages": 0,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.25,
+      "similarityContent": 0.6427,
+      "similarityPhrasing": 0.7524,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "india-s01-fake",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "the-traitors-india-s01",
+      "season": "the-traitors-india-s01",
+      "family": "india-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 20,
+      "rounds": 9,
+      "traitorCount": 3,
+      "traitors": [
+        "jannat",
+        "karan_kundrra",
+        "raj_kundrra"
+      ],
+      "survivors": [
+        "sargun",
+        "sudhanshu",
+        "uorfi"
+      ],
+      "eliminations": [
+        {
+          "id": "anshula",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "ashish",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "elnaaz",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "harsh",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "jannat",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "jasmine",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "karan_kundrra",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "kunal",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "lakshmi",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "maheep",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "mukesh",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "nikita",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "nitish",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "purav",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "raftaar",
+          "round": 8,
+          "method": "vote"
+        },
+        {
+          "id": "raj_kundrra",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "sahil",
+          "round": 8,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "[anshula#0] I am watching everyone closely.",
+      "sampleSpeaker": "anshula",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "fake",
+      "model": "xiaomi/mimo-v2.6-flash",
+      "calls": 471,
+      "totalTokens": 0,
+      "messages": 350,
+      "traitorMessages": 8,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.101,
+      "similarityContent": 0.6231,
+      "similarityPhrasing": 0.6867,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "india-s01-mimo",
+      "slug": "india-s01",
+      "label": "India S01 — Code-Switching",
+      "blurb": "English and Hinglish at one table, with a clean duplication score.",
+      "game": "the-traitors-india-s01",
+      "season": "the-traitors-india-s01",
+      "family": "india-s01",
+      "flagship": true,
+      "holdout": false,
+      "seed": 42,
+      "players": 20,
+      "rounds": 10,
+      "traitorCount": 3,
+      "traitors": [
+        "jannat",
+        "karan_kundrra",
+        "raj_kundrra"
+      ],
+      "survivors": [
+        "elnaaz",
+        "jannat",
+        "nitish",
+        "raj_kundrra"
+      ],
+      "eliminations": [
+        {
+          "id": "anshula",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "ashish",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "harsh",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "jasmine",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "karan_kundrra",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "kunal",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "lakshmi",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "maheep",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "mukesh",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "nikita",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "purav",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "raftaar",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "sahil",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "sargun",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "sudhanshu",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "uorfi",
+          "round": 7,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "I'll start by watching how people vote rather than who speaks loudest. Kunal, you've been quiet while others dominate — that can read as either careful or hiding. I'll be paying at",
+      "sampleSpeaker": "anshula",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "commandcode",
+      "model": "xiaomi/mimo-v2.6-flash",
+      "calls": 659,
+      "totalTokens": 4802747,
+      "messages": 468,
+      "traitorMessages": 23,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 3,
+      "rejectedActions": 0,
+      "reciprocity": 0.6939,
+      "similarityContent": 0.6582,
+      "similarityPhrasing": 0.8653,
+      "benchmarkScore": 0.3231,
+      "hasBenchmark": true,
+      "hasDiagnosis": true,
+      "hasMessages": true
+    },
+    {
+      "id": "india-s01-orig-r18-conc4",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "the-traitors-india-s01",
+      "season": "the-traitors-india-s01",
+      "family": "india-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 20,
+      "rounds": 11,
+      "traitorCount": 3,
+      "traitors": [
+        "jannat",
+        "karan_kundrra",
+        "raj_kundrra"
+      ],
+      "survivors": [
+        "harsh",
+        "lakshmi"
+      ],
+      "eliminations": [
+        {
+          "id": "anshula",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "ashish",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "elnaaz",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "jannat",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "jasmine",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "karan_kundrra",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "kunal",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "maheep",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "mukesh",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "nikita",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "nitish",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "purav",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "raftaar",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "raj_kundrra",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "sahil",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "sargun",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "sudhanshu",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "uorfi",
+          "round": 1,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Raja, your earlier mention of the 'quiet' players standing out seems risky. If a faithful player stays silent, they might be hiding a traitor, so maybe we should focus on who spoke",
+      "sampleSpeaker": "anshula",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 663,
+      "totalTokens": 4017366,
+      "messages": 414,
+      "traitorMessages": 5,
+      "hallucination": 0.0072,
+      "duplication": 0.1425,
+      "secrecyFlags": 0,
+      "rejectedActions": 6,
+      "reciprocity": 0.3971,
+      "similarityContent": 0.5517,
+      "similarityPhrasing": 0.8369,
+      "benchmarkScore": 0.5293,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "smoke-ptr_mem",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "smoke",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 15,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "theo",
+        "tom",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "hannah",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 13,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 14,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "[aaron#0] I am watching everyone closely.",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "calls": 1044,
+      "totalTokens": 0,
+      "messages": 838,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.1012,
+      "similarityContent": 0.6325,
+      "similarityPhrasing": 0.7777,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "smoke-ptr_opt",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "smoke",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 15,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "theo",
+        "tom",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "hannah",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 13,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 14,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "[aaron#0] I am watching everyone closely.",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "calls": 1044,
+      "totalTokens": 0,
+      "messages": 838,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.1012,
+      "similarityContent": 0.6325,
+      "similarityPhrasing": 0.7777,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "smoke-ptr_req",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "smoke",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 15,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "theo",
+        "tom",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "hannah",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 13,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 14,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "[aaron#0] I am watching everyone closely.",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "fake",
+      "model": "hauhau-qwen:latest",
+      "calls": 1044,
+      "totalTokens": 0,
+      "messages": 838,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.1012,
+      "similarityContent": 0.6325,
+      "similarityPhrasing": 0.7777,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-en3",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 13,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "aisha",
+        "alyssa",
+        "john",
+        "rayan",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "hannah",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 10,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Iris, you've been quiet all round, but your silence speaks volumes. If someone's been hiding something, they'd be the one watching how much noise the room makes. I'm noticing how s",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1195,
+      "totalTokens": 13975202,
+      "messages": 815,
+      "traitorMessages": 2,
+      "hallucination": 0.0,
+      "duplication": 0.2773,
+      "secrecyFlags": 2,
+      "rejectedActions": 3,
+      "reciprocity": 0.4634,
+      "similarityContent": 0.844,
+      "similarityPhrasing": 0.9593,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-fix-en",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 11,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "amos",
+        "andrea",
+        "claire",
+        "john",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "hannah",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "matt",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 2,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "I'm feeling a bit uneasy about the general chatter; everyone seems so focused on scanning each other that I'm worried someone will slip up and say too much before we've properly es",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 24,
+      "totalTokens": 57887,
+      "messages": 794,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.1977,
+      "secrecyFlags": 13,
+      "rejectedActions": 7,
+      "reciprocity": 0.2267,
+      "similarityContent": 0.751,
+      "similarityPhrasing": 0.9458,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-fix-hl",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_hinglish_fix",
+      "season": "season_uk_s01_hinglish_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "aaron",
+        "amos",
+        "andrea",
+        "hannah"
+      ],
+      "eliminations": [
+        {
+          "id": "aisha",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "wilf",
+          "round": 11,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "The host bola ki debate open hai aur 2 turns left hain, aur sab log khud-ko prove karne ki koshish kar rahe hain. Main dekh raha hoon ki sab kaafi calm hain, lekin kabhi-kabhi log ",
+      "sampleSpeaker": "aaron",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "endgame",
+      "finale": true,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 121,
+      "totalTokens": 1277964,
+      "messages": 907,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.1191,
+      "secrecyFlags": 5,
+      "rejectedActions": 7,
+      "reciprocity": 0.2444,
+      "similarityContent": 0.9426,
+      "similarityPhrasing": 0.9557,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-hl",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_hinglish",
+      "season": "season_uk_s01_hinglish",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 13,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "andrea",
+        "imran",
+        "john",
+        "theo",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "aisha",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "hannah",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 12,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 11,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Maddy, you were saying that the group needs to stay calm and not rush into anything, right? I totally agree with you, honestly. It feels like everyone is a bit on edge, and sometim",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 918,
+      "totalTokens": 11487927,
+      "messages": 544,
+      "traitorMessages": 26,
+      "hallucination": 0.0,
+      "duplication": 0.2886,
+      "secrecyFlags": 0,
+      "rejectedActions": 15,
+      "reciprocity": 0.25,
+      "similarityContent": 0.8975,
+      "similarityPhrasing": 0.9211,
+      "benchmarkScore": 0.3186,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-ledger",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "amos",
+        "andrea",
+        "claire",
+        "imran",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "hannah",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "theo",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 1,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Maddy, you mentioned earlier that the group needs to focus on building trust rather than rushing into accusations. I really resonate with that because I feel like jumping to conclu",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1378,
+      "totalTokens": 7002647,
+      "messages": 848,
+      "traitorMessages": 2,
+      "hallucination": 0.0,
+      "duplication": 0.158,
+      "secrecyFlags": 9,
+      "rejectedActions": 10,
+      "reciprocity": 0.3034,
+      "similarityContent": 0.7117,
+      "similarityPhrasing": 0.9,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-ledger-room",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 13,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "amos",
+        "claire",
+        "imran",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "hannah",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 12,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "theo",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 3,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Maddy, you mentioned the ledger entries were perfectly sequential. That sounds suspicious to me. If the traitor was there to disrupt, they might have caused a break, or if they wer",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1305,
+      "totalTokens": 7898423,
+      "messages": 768,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.1133,
+      "secrecyFlags": 2,
+      "rejectedActions": 5,
+      "reciprocity": 0.3333,
+      "similarityContent": 0.7318,
+      "similarityPhrasing": 0.9104,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-ptr-mem",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 11,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "amos",
+        "hannah",
+        "nicky",
+        "theo",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "aisha",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "claire",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "matt",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 8,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Ivan, you mentioned earlier that you felt safe with the group after our initial interactions. That sounds promising, but I'm curious what specifically made you feel secure. Did we ",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1007,
+      "totalTokens": 6039437,
+      "messages": 706,
+      "traitorMessages": 2,
+      "hallucination": 0.0,
+      "duplication": 0.1686,
+      "secrecyFlags": 1,
+      "rejectedActions": 16,
+      "reciprocity": 0.2976,
+      "similarityContent": 0.7629,
+      "similarityPhrasing": 0.9199,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-r1",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01",
+      "season": "season_uk_s01",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "claire",
+        "hannah",
+        "john",
+        "matt",
+        "rayan"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "andrea",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "theo",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "wilf",
+          "round": 4,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "I've been listening to the early chatter, and I'm trying to keep my head down while I figure out who I can trust. It feels like everyone is scanning the room, looking for cracks in",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 129,
+      "totalTokens": 751389,
+      "messages": 804,
+      "traitorMessages": 2,
+      "hallucination": 0.0,
+      "duplication": 0.2127,
+      "secrecyFlags": 10,
+      "rejectedActions": 5,
+      "reciprocity": 0.1932,
+      "similarityContent": 0.7395,
+      "similarityPhrasing": 0.9483,
+      "benchmarkScore": 0.3707,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-r2",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01",
+      "season": "season_uk_s01",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "aaron",
+        "claire",
+        "hannah",
+        "imran",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aisha",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 8,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "I was struck by what amos said earlier about trusting their gut. It feels like they're just trying to stay safe and keep things moving, which I really respect. I tend to go with my",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 124,
+      "totalTokens": 837720,
+      "messages": 731,
+      "traitorMessages": 2,
+      "hallucination": 0.0,
+      "duplication": 0.2544,
+      "secrecyFlags": 13,
+      "rejectedActions": 7,
+      "reciprocity": 0.2714,
+      "similarityContent": 0.7401,
+      "similarityPhrasing": 0.9419,
+      "benchmarkScore": 0.2669,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-r3",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01",
+      "season": "season_uk_s01",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 44,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "aisha",
+        "alex",
+        "imran"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "alyssa",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "claire",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "hannah",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "wilf",
+          "round": 10,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "I'm listening to everything being said, and I feel a bit overwhelmed by how many voices are trying to speak at once. I was really struck by what you said, [Alex], about the need fo",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "elimination",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1176,
+      "totalTokens": 12492890,
+      "messages": 878,
+      "traitorMessages": 4,
+      "hallucination": 0.0,
+      "duplication": 0.2927,
+      "secrecyFlags": 6,
+      "rejectedActions": 35,
+      "reciprocity": 0.3143,
+      "similarityContent": 0.8308,
+      "similarityPhrasing": 0.9523,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-rand-fix_en-conc16",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 1,
+      "players": 22,
+      "rounds": 7,
+      "traitorCount": 3,
+      "traitors": [
+        "imran",
+        "kieran",
+        "meryl"
+      ],
+      "survivors": [
+        "aisha",
+        "alex",
+        "alyssa",
+        "amanda",
+        "amos",
+        "andrea",
+        "claire",
+        "hannah",
+        "matt",
+        "nicky",
+        "rayan",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "theo",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 5,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "I've been watching Maddy closely, and her hesitation when the early votes came up feels a bit too calculated for someone just trying to blend in. She's the one who seemed to jump i",
+      "sampleSpeaker": "aaron",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 801,
+      "totalTokens": 7789486,
+      "messages": 583,
+      "traitorMessages": 2,
+      "hallucination": 0.0103,
+      "duplication": 0.2676,
+      "secrecyFlags": 1,
+      "rejectedActions": 5,
+      "reciprocity": 0.2836,
+      "similarityContent": 0.8566,
+      "similarityPhrasing": 0.9637,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-rand-fix_en-conc4",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 1,
+      "players": 22,
+      "rounds": 9,
+      "traitorCount": 3,
+      "traitors": [
+        "imran",
+        "kieran",
+        "meryl"
+      ],
+      "survivors": [
+        "alyssa",
+        "amos",
+        "andrea",
+        "hannah",
+        "matt",
+        "rayan",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "aisha",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "alex",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "amanda",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "claire",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "fay",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "imran",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 6,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Nicky, you mentioned earlier that the group feels very tight-knit, but I'm wondering if that closeness is masking some cracks we haven't noticed yet. You seem very calm about it al",
+      "sampleSpeaker": "aaron",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 917,
+      "totalTokens": 10105131,
+      "messages": 634,
+      "traitorMessages": 2,
+      "hallucination": 0.0126,
+      "duplication": 0.2744,
+      "secrecyFlags": 2,
+      "rejectedActions": 14,
+      "reciprocity": 0.3421,
+      "similarityContent": 0.8495,
+      "similarityPhrasing": 0.9588,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-rand-fix_en-fresh",
+      "slug": "uk-s01",
+      "label": "UK S01 — The Season Replay",
+      "blurb": "Twenty-two players, two recruits, a finale, and a solo traitor win.",
+      "game": "season_uk_s01_fix",
+      "season": "the-traitors-uk-s01",
+      "family": "uk-s01",
+      "flagship": true,
+      "holdout": false,
+      "seed": 1,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "imran",
+        "kieran",
+        "meryl"
+      ],
+      "survivors": [
+        "aaron",
+        "alyssa",
+        "amos",
+        "claire",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aisha",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "amanda",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "andrea",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "fay",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "hannah",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "rayan",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 4,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Maddy, you mentioned earlier that the group needs to focus on building trust, and I really resonate with that. It feels like the safest path forward is to keep our conversations op",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1204,
+      "totalTokens": 13057658,
+      "messages": 826,
+      "traitorMessages": 4,
+      "hallucination": 0.0036,
+      "duplication": 0.2906,
+      "secrecyFlags": 2,
+      "rejectedActions": 10,
+      "reciprocity": 0.4568,
+      "similarityContent": 0.7788,
+      "similarityPhrasing": 0.9439,
+      "benchmarkScore": 0.2766,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-rand-fix_en-fresh2",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 1,
+      "players": 22,
+      "rounds": 10,
+      "traitorCount": 3,
+      "traitors": [
+        "imran",
+        "kieran",
+        "meryl"
+      ],
+      "survivors": [
+        "amanda",
+        "claire",
+        "fay",
+        "hannah",
+        "john",
+        "rayan",
+        "tom",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "amos",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "andrea",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "theo",
+          "round": 2,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Ivan, you mentioned earlier that you've been paying close attention to the early rounds. That sounds promising, but I'm curious: what exactly did you notice in the first few intera",
+      "sampleSpeaker": "aaron",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1127,
+      "totalTokens": 16237691,
+      "messages": 729,
+      "traitorMessages": 4,
+      "hallucination": 0.0027,
+      "duplication": 0.2606,
+      "secrecyFlags": 22,
+      "rejectedActions": 16,
+      "reciprocity": 0.2688,
+      "similarityContent": 0.8496,
+      "similarityPhrasing": 0.9573,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-rand-fix_en-mandate-conc8",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 1,
+      "players": 22,
+      "rounds": 11,
+      "traitorCount": 3,
+      "traitors": [
+        "imran",
+        "kieran",
+        "meryl"
+      ],
+      "survivors": [
+        "amanda",
+        "andrea",
+        "claire",
+        "fay",
+        "hannah",
+        "matt"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "amos",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "kieran",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "maddy",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "meryl",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "nicky",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "theo",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "wilf",
+          "round": 8,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Theo, I noticed you mentioned how the group needs to focus on facts rather than just vibes. That makes sense to me, but I'm wondering if we're skipping over some obvious emotional ",
+      "sampleSpeaker": "aaron",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1138,
+      "totalTokens": 15027480,
+      "messages": 741,
+      "traitorMessages": 4,
+      "hallucination": 0.0013,
+      "duplication": 0.2578,
+      "secrecyFlags": 11,
+      "rejectedActions": 14,
+      "reciprocity": 0.2933,
+      "similarityContent": 0.7695,
+      "similarityPhrasing": 0.9407,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "uk-s01-rep",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "season_uk_s01_fix",
+      "season": "season_uk_s01_fix",
+      "family": "uk-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 12,
+      "traitorCount": 3,
+      "traitors": [
+        "alyssa",
+        "amanda",
+        "wilf"
+      ],
+      "survivors": [
+        "amos",
+        "claire",
+        "fay",
+        "hannah",
+        "wilf"
+      ],
+      "eliminations": [
+        {
+          "id": "aaron",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "aisha",
+          "round": 11,
+          "method": "night"
+        },
+        {
+          "id": "alex",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "alyssa",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "amanda",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "andrea",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "imran",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "ivan",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "john",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "kieran",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "maddy",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "matt",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "meryl",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "nicky",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "rayan",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "theo",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "tom",
+          "round": 6,
+          "method": "vote"
+        }
+      ],
+      "sampleQuote": "Theo, your note about the 'quiet' players feeling safe resonated, but I worry that silence is often a traitor's shield rather than a sign of comfort. If someone claims they are jus",
+      "sampleSpeaker": "aaron",
+      "winner": "traitor",
+      "winningTeam": "traitor",
+      "reason": "endgame",
+      "finale": true,
+      "solo": true,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1285,
+      "totalTokens": 9128721,
+      "messages": 831,
+      "traitorMessages": 2,
+      "hallucination": 0.0,
+      "duplication": 0.0674,
+      "secrecyFlags": 0,
+      "rejectedActions": 14,
+      "reciprocity": 0.3373,
+      "similarityContent": 0.7787,
+      "similarityPhrasing": 0.9264,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "us-s02-nomandate-conc8",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "the-traitors-us-s02",
+      "season": "the-traitors-us-s02",
+      "family": "us-s02",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 22,
+      "rounds": 11,
+      "traitorCount": 3,
+      "traitors": [
+        "dan",
+        "parvati",
+        "phaedra"
+      ],
+      "survivors": [
+        "janelle",
+        "kevin",
+        "larsa",
+        "mj",
+        "sheree",
+        "tamra"
+      ],
+      "eliminations": [
+        {
+          "id": "bergie",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "carly",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "ct",
+          "round": 11,
+          "method": "vote"
+        },
+        {
+          "id": "dan",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "deontay",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "ekin-su",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "john",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "makensy",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "maks",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "melinda",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "parvati",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "peppermint",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "peter",
+          "round": 10,
+          "method": "night"
+        },
+        {
+          "id": "phaedra",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "sandra",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "trishelle",
+          "round": 7,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Ekin-su, you mentioned earlier that the group needs to be careful not to get caught up in paranoia. I agree with the sentiment, but I worry that 'careful' can sometimes mean too li",
+      "sampleSpeaker": "bergie",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1100,
+      "totalTokens": 11230632,
+      "messages": 770,
+      "traitorMessages": 4,
+      "hallucination": 0.0039,
+      "duplication": 0.2104,
+      "secrecyFlags": 43,
+      "rejectedActions": 11,
+      "reciprocity": 0.3111,
+      "similarityContent": 0.8168,
+      "similarityPhrasing": 0.9454,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "us-s03-orig-conc4",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "the-traitors-us-s03",
+      "season": "the-traitors-us-s03",
+      "family": "us-s03",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 23,
+      "rounds": 6,
+      "traitorCount": 4,
+      "traitors": [
+        "bob",
+        "carolyn",
+        "danielle",
+        "rob"
+      ],
+      "survivors": [
+        "britney",
+        "carolyn",
+        "ciara",
+        "gabby",
+        "jeremy",
+        "kristen",
+        "niamh",
+        "nikki",
+        "tom",
+        "tony",
+        "wells"
+      ],
+      "eliminations": [
+        {
+          "id": "bob",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "boston",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "chrishell",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "danielle",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "dolores",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "dorinda",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "dylan",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "ivar",
+          "round": 1,
+          "method": "night"
+        },
+        {
+          "id": "rob",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "roxanne",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "sam",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "wes",
+          "round": 2,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "Jessie, you mentioned earlier that you've been feeling a bit isolated. I think that's interesting because sometimes people hide their true colors when they feel disconnected. What ",
+      "sampleSpeaker": "bob",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "round_limit",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 570,
+      "totalTokens": 2708555,
+      "messages": 375,
+      "traitorMessages": 8,
+      "hallucination": 0.0027,
+      "duplication": 0.1333,
+      "secrecyFlags": 6,
+      "rejectedActions": 0,
+      "reciprocity": 0.4615,
+      "similarityContent": 0.5384,
+      "similarityPhrasing": 0.8552,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "us-s03-show-conc8",
+      "slug": "us-s03",
+      "label": "US S03 — The Show Rules",
+      "blurb": "Nominations, councils, a recruit-or-murder night, and a faithful comeback.",
+      "game": "the-traitors-us-s03",
+      "season": "the-traitors-us-s03",
+      "family": "us-s03",
+      "flagship": true,
+      "holdout": false,
+      "seed": 42,
+      "players": 23,
+      "rounds": 10,
+      "traitorCount": 4,
+      "traitors": [
+        "bob",
+        "carolyn",
+        "danielle",
+        "rob"
+      ],
+      "survivors": [
+        "britney",
+        "chrishell",
+        "ciara",
+        "dorinda",
+        "gabby",
+        "kristen",
+        "niamh",
+        "nikki"
+      ],
+      "eliminations": [
+        {
+          "id": "bob",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "boston",
+          "round": 2,
+          "method": "night"
+        },
+        {
+          "id": "carolyn",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "danielle",
+          "round": 10,
+          "method": "vote"
+        },
+        {
+          "id": "dolores",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "dylan",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "ivar",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "jeremy",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "rob",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "roxanne",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "sam",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "tom",
+          "round": 9,
+          "method": "night"
+        },
+        {
+          "id": "tony",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "wells",
+          "round": 7,
+          "method": "night"
+        },
+        {
+          "id": "wes",
+          "round": 8,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "I see Ivar speaking up about the flow of information, which is smart, but let's keep an eye on Sam. Sam has been very quiet so far, offering little to the debate. If Sam stays sile",
+      "sampleSpeaker": "bob",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "ollama",
+      "model": "hauhau-qwen:latest",
+      "calls": 1076,
+      "totalTokens": 6316376,
+      "messages": 759,
+      "traitorMessages": 5,
+      "hallucination": 0.004,
+      "duplication": 0.1831,
+      "secrecyFlags": 8,
+      "rejectedActions": 5,
+      "reciprocity": 0.2955,
+      "similarityContent": 0.7424,
+      "similarityPhrasing": 0.9081,
+      "benchmarkScore": 0.6075,
+      "hasBenchmark": true,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    }
+  ]
+}

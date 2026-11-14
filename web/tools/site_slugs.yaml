@@ -1,0 +1,16 @@
+flagships:
+  us-s03-show-conc8:
+    slug: us-s03
+    label: US S03 — The Show Rules
+    blurb: Nominations, councils, a recruit-or-murder night, and a faithful comeback.
+    season_file: seasons/the-traitors-us-s03.yaml
+  uk-s01-rand-fix_en-fresh:
+    slug: uk-s01
+    label: UK S01 — The Season Replay
+    blurb: Twenty-two players, two recruits, a finale, and a solo traitor win.
+    season_file: seasons/the-traitors-uk-s01.yaml
+  india-s01-mimo:
+    slug: india-s01
+    label: India S01 — Code-Switching
+    blurb: English and Hinglish at one table, with a clean duplication score.
+    season_file: seasons/the-traitors-india-s01.yaml

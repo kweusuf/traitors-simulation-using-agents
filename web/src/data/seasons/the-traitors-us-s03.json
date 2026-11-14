@@ -1,0 +1,237 @@
+{
+  "id": "the-traitors-us-s03",
+  "name": "The Traitors (US), Season 3",
+  "winner_faction": "faithful",
+  "final_counts": {
+    "traitors": 0,
+    "faithful": 4
+  },
+  "cast": [
+    {
+      "id": "dolores",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "dylan",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "gabby",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "ivar",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "britney",
+      "role": "traitor",
+      "traitor_type": "recruited",
+      "exit_episode": 11
+    },
+    {
+      "id": "tom",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "rob",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 10
+    },
+    {
+      "id": "ciara",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 10
+    },
+    {
+      "id": "danielle",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 9
+    },
+    {
+      "id": "chrishell",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 9
+    },
+    {
+      "id": "carolyn",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 8
+    },
+    {
+      "id": "sam",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 8
+    },
+    {
+      "id": "bob",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 7
+    },
+    {
+      "id": "wes",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 7
+    },
+    {
+      "id": "niamh",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 6
+    },
+    {
+      "id": "dorinda",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 6
+    },
+    {
+      "id": "roxanne",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 5
+    },
+    {
+      "id": "jeremy",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 5
+    },
+    {
+      "id": "wells",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 4
+    },
+    {
+      "id": "tony",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 4
+    },
+    {
+      "id": "nikki",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 3
+    },
+    {
+      "id": "kristen",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 3
+    },
+    {
+      "id": "boston",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 2
+    }
+  ],
+  "eliminations": [
+    {
+      "episode": 1,
+      "night_victim": null,
+      "banishment": []
+    },
+    {
+      "episode": 2,
+      "night_victim": "boston",
+      "banishment": []
+    },
+    {
+      "episode": 3,
+      "night_victim": "nikki",
+      "banishment": [
+        "kristen"
+      ]
+    },
+    {
+      "episode": 4,
+      "night_victim": "wells",
+      "banishment": [
+        "tony"
+      ]
+    },
+    {
+      "episode": 5,
+      "night_victim": "roxanne",
+      "banishment": [
+        "jeremy"
+      ]
+    },
+    {
+      "episode": 6,
+      "night_victim": "niamh",
+      "banishment": [
+        "dorinda"
+      ]
+    },
+    {
+      "episode": 7,
+      "night_victim": "wes",
+      "banishment": [
+        "bob"
+      ]
+    },
+    {
+      "episode": 8,
+      "night_victim": "sam",
+      "banishment": [
+        "carolyn"
+      ]
+    },
+    {
+      "episode": 9,
+      "night_victim": "chrishell",
+      "banishment": [
+        "danielle"
+      ]
+    },
+    {
+      "episode": 10,
+      "night_victim": "ciara",
+      "banishment": [
+        "rob"
+      ]
+    },
+    {
+      "episode": 11,
+      "night_victim": "tom",
+      "banishment": [
+        "britney"
+      ]
+    },
+    {
+      "episode": 12,
+      "night_victim": null,
+      "banishment": []
+    }
+  ],
+  "recruitments": [
+    {
+      "episode": 9,
+      "target": "britney",
+      "accepted": true
+    }
+  ],
+  "sources": []
+}

@@ -1,0 +1,2666 @@
+{
+  "id": "us-s03-orig-conc4",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "the-traitors-us-s03",
+  "season": "the-traitors-us-s03",
+  "family": "us-s03",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "bob",
+      "name": "Bob",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 2,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 13,
+        "conversations": [
+          {
+            "id": "wes",
+            "count": 1
+          },
+          {
+            "id": "wells",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "ivar": 7,
+          "bob": 13,
+          "dolores": 2,
+          "rob": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.75,
+          "assertiveness": 0.7,
+          "sociability": 0.9,
+          "trust": 0.45,
+          "risk_tolerance": 0.55
+        },
+        "description": "Bob the Drag Queen. Charismatic, strategic performer.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "boston",
+      "name": "Boston",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 3,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "wells",
+            "count": 1
+          },
+          {
+            "id": "wes",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          },
+          {
+            "id": "gabby",
+            "count": 1
+          },
+          {
+            "id": "roxanne",
+            "count": 1
+          },
+          {
+            "id": "tony",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "britney",
+      "name": "Britney",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 9,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "niamh",
+            "count": 3
+          },
+          {
+            "id": "roxanne",
+            "count": 2
+          },
+          {
+            "id": "tony",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "carolyn",
+      "name": "Carolyn",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 10,
+        "traitor": 3,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "rob",
+            "count": 3
+          },
+          {
+            "id": "dylan",
+            "count": 3
+          },
+          {
+            "id": "jeremy",
+            "count": 2
+          },
+          {
+            "id": "wells",
+            "count": 1
+          },
+          {
+            "id": "danielle",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.65,
+          "assertiveness": 0.6,
+          "sociability": 0.7,
+          "trust": 0.45,
+          "risk_tolerance": 0.6
+        },
+        "description": "Carolyn Wiger. Unpredictable, sharp instincts.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "chrishell",
+      "name": "Chrishell",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "danielle",
+            "count": 4
+          },
+          {
+            "id": "kristen",
+            "count": 4
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "ciara",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "niamh": 2,
+          "dylan": 2,
+          "carolyn": 2,
+          "chrishell": 4,
+          "britney": 2,
+          "ciara": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ciara",
+      "name": "Ciara",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "danielle",
+            "count": 3
+          },
+          {
+            "id": "chrishell",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "danielle",
+      "name": "Danielle",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 8,
+        "private": 8,
+        "traitor": 3,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 4,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "chrishell",
+            "count": 5
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "sam",
+            "count": 1
+          },
+          {
+            "id": "rob",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "roxanne": 3,
+          "danielle": 4,
+          "tony": 1,
+          "carolyn": 2,
+          "sam": 2,
+          "chrishell": 2,
+          "dylan": 1,
+          "dorinda": 1,
+          "wells": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.8,
+          "assertiveness": 0.7,
+          "sociability": 0.65,
+          "trust": 0.4,
+          "risk_tolerance": 0.55
+        },
+        "description": "Danielle Reyes. Cunning, experienced.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "dolores",
+      "name": "Dolores",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 16,
+        "conversations": [
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "dorinda",
+            "count": 1
+          },
+          {
+            "id": "roxanne",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "dolores": 14,
+          "danielle": 1,
+          "rob": 5,
+          "boston": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.55,
+          "sociability": 0.75,
+          "trust": 0.55,
+          "risk_tolerance": 0.45
+        },
+        "description": "Dolores Catania. Grounded, loyal, street-smart.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "dorinda",
+      "name": "Dorinda",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "tom",
+            "count": 3
+          },
+          {
+            "id": "dolores",
+            "count": 2
+          },
+          {
+            "id": "sam",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "dylan",
+      "name": "Dylan",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "roxanne",
+            "count": 3
+          },
+          {
+            "id": "carolyn",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          },
+          {
+            "id": "tom",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.55,
+          "assertiveness": 0.6,
+          "sociability": 0.85,
+          "trust": 0.6,
+          "risk_tolerance": 0.5
+        },
+        "description": "Dylan Efron. Athletic, likable, builds trust easily.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "gabby",
+      "name": "Gabby",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "boston",
+            "count": 3
+          },
+          {
+            "id": "sam",
+            "count": 2
+          },
+          {
+            "id": "britney",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.75,
+          "sociability": 0.75,
+          "trust": 0.5,
+          "risk_tolerance": 0.55
+        },
+        "description": "Gabby Windey. Outspoken, competitive.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ivar",
+      "name": "Ivar",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 2,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "rob",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.5,
+          "sociability": 0.7,
+          "trust": 0.55,
+          "risk_tolerance": 0.4
+        },
+        "description": "Lord Ivar Mountbatten. Diplomatic, measured.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jeremy",
+      "name": "Jeremy",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "rob",
+            "count": 2
+          },
+          {
+            "id": "carolyn",
+            "count": 2
+          },
+          {
+            "id": "boston",
+            "count": 1
+          },
+          {
+            "id": "tony",
+            "count": 1
+          },
+          {
+            "id": "niamh",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "kristen",
+      "name": "Kristen",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "chrishell",
+            "count": 5
+          },
+          {
+            "id": "wells",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          },
+          {
+            "id": "roxanne",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "niamh",
+      "name": "Niamh",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "britney",
+            "count": 4
+          },
+          {
+            "id": "boston",
+            "count": 3
+          },
+          {
+            "id": "jeremy",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "nikki",
+      "name": "Nikki",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "roxanne",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          },
+          {
+            "id": "sam",
+            "count": 1
+          },
+          {
+            "id": "tony",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "rob",
+      "name": "Rob",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 5,
+        "traitor": 2,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 3,
+        "votesReceived": 19,
+        "conversations": [
+          {
+            "id": "carolyn",
+            "count": 2
+          },
+          {
+            "id": "danielle",
+            "count": 2
+          },
+          {
+            "id": "ivar",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "rob": 13,
+          "danielle": 1,
+          "chrishell": 1,
+          "boston": 1,
+          "roxanne": 1,
+          "carolyn": 1,
+          "dorinda": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "roxanne",
+      "name": "Roxanne",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 8,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 4,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "boston",
+            "count": 2
+          },
+          {
+            "id": "dylan",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sam",
+      "name": "Sam",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "danielle",
+            "count": 4
+          },
+          {
+            "id": "dorinda",
+            "count": 2
+          },
+          {
+            "id": "tony",
+            "count": 1
+          },
+          {
+            "id": "gabby",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "dorinda": 3,
+          "dylan": 2,
+          "wells": 1,
+          "tom": 1,
+          "sam": 5,
+          "chrishell": 1,
+          "nikki": 1,
+          "tony": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "tom",
+      "name": "Tom",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "dorinda",
+            "count": 3
+          },
+          {
+            "id": "rob",
+            "count": 2
+          },
+          {
+            "id": "wells",
+            "count": 1
+          },
+          {
+            "id": "dylan",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "tony",
+      "name": "Tony",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "boston",
+            "count": 2
+          },
+          {
+            "id": "britney",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "sam",
+            "count": 1
+          },
+          {
+            "id": "dylan",
+            "count": 1
+          },
+          {
+            "id": "wells",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "wells",
+      "name": "Wells",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true
+      },
+      "stats": {
+        "public": 12,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "tom",
+            "count": 1
+          },
+          {
+            "id": "dolores",
+            "count": 1
+          },
+          {
+            "id": "danielle",
+            "count": 1
+          },
+          {
+            "id": "chrishell",
+            "count": 1
+          },
+          {
+            "id": "carolyn",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "wes",
+      "name": "Wes",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "boston",
+            "count": 1
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "danielle",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    }
+  ],
+  "rounds": 6,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "bob",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "boston",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "britney",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "carolyn",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "chrishell",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "ciara",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "danielle",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "dolores",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "dorinda",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "dylan",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "gabby",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "ivar",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "jeremy",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "kristen",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "niamh",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "nikki",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "rob",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "roxanne",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "tony",
+          "to": "ivar",
+          "weight": 1
+        },
+        {
+          "from": "wells",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "wes",
+          "to": "bob",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "ivar",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "ivar"
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "boston",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "britney",
+          "to": "danielle",
+          "weight": 1
+        },
+        {
+          "from": "carolyn",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "chrishell",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "ciara",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "danielle",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "dolores",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "dorinda",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "dylan",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "gabby",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "jeremy",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "kristen",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "niamh",
+          "to": "boston",
+          "weight": 1
+        },
+        {
+          "from": "nikki",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "rob",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "roxanne",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "tony",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "wells",
+          "to": "dolores",
+          "weight": 1
+        },
+        {
+          "from": "wes",
+          "to": "dolores",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "wes",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "wes"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "boston",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "britney",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "carolyn",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "chrishell",
+          "to": "danielle",
+          "weight": 1
+        },
+        {
+          "from": "ciara",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "danielle",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "dorinda",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "dylan",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "gabby",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "jeremy",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "kristen",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "niamh",
+          "to": "boston",
+          "weight": 1
+        },
+        {
+          "from": "nikki",
+          "to": "roxanne",
+          "weight": 1
+        },
+        {
+          "from": "rob",
+          "to": "carolyn",
+          "weight": 1
+        },
+        {
+          "from": "roxanne",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "dorinda",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "tony",
+          "to": "rob",
+          "weight": 1
+        },
+        {
+          "from": "wells",
+          "to": "rob",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "boston",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "boston"
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "britney",
+          "to": "roxanne",
+          "weight": 1
+        },
+        {
+          "from": "carolyn",
+          "to": "danielle",
+          "weight": 1
+        },
+        {
+          "from": "chrishell",
+          "to": "danielle",
+          "weight": 1
+        },
+        {
+          "from": "ciara",
+          "to": "tony",
+          "weight": 1
+        },
+        {
+          "from": "danielle",
+          "to": "carolyn",
+          "weight": 1
+        },
+        {
+          "from": "dorinda",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "dylan",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "gabby",
+          "to": "danielle",
+          "weight": 1
+        },
+        {
+          "from": "jeremy",
+          "to": "carolyn",
+          "weight": 1
+        },
+        {
+          "from": "kristen",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "niamh",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "nikki",
+          "to": "roxanne",
+          "weight": 1
+        },
+        {
+          "from": "roxanne",
+          "to": "dylan",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "dorinda",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "danielle",
+          "weight": 1
+        },
+        {
+          "from": "tony",
+          "to": "wells",
+          "weight": 1
+        },
+        {
+          "from": "wells",
+          "to": "roxanne",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "roxanne",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "roxanne"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "britney",
+          "to": "dorinda",
+          "weight": 1
+        },
+        {
+          "from": "carolyn",
+          "to": "dylan",
+          "weight": 1
+        },
+        {
+          "from": "chrishell",
+          "to": "wells",
+          "weight": 1
+        },
+        {
+          "from": "ciara",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "dorinda",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "dylan",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "gabby",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "jeremy",
+          "to": "dylan",
+          "weight": 1
+        },
+        {
+          "from": "kristen",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "niamh",
+          "to": "nikki",
+          "weight": 1
+        },
+        {
+          "from": "nikki",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "dorinda",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "dorinda",
+          "weight": 1
+        },
+        {
+          "from": "tony",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "wells",
+          "to": "tony",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "dorinda",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "dorinda"
+      }
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "britney",
+          "to": "niamh",
+          "weight": 1
+        },
+        {
+          "from": "carolyn",
+          "to": "dylan",
+          "weight": 1
+        },
+        {
+          "from": "chrishell",
+          "to": "carolyn",
+          "weight": 1
+        },
+        {
+          "from": "ciara",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "dylan",
+          "to": "carolyn",
+          "weight": 1
+        },
+        {
+          "from": "gabby",
+          "to": "niamh",
+          "weight": 1
+        },
+        {
+          "from": "jeremy",
+          "to": "britney",
+          "weight": 1
+        },
+        {
+          "from": "kristen",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "niamh",
+          "to": "britney",
+          "weight": 1
+        },
+        {
+          "from": "nikki",
+          "to": "ciara",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "chrishell",
+          "weight": 1
+        },
+        {
+          "from": "tony",
+          "to": "dylan",
+          "weight": 1
+        },
+        {
+          "from": "wells",
+          "to": "chrishell",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "dylan",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "dylan"
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "faithful",
+    "winningTeam": "faithful",
+    "reason": "round_limit",
+    "finale": false,
+    "solo": false,
+    "survivingTraitors": [
+      "carolyn"
+    ]
+  },
+  "metrics": {
+    "calls": 570,
+    "failedCalls": 74,
+    "providerCalls": 441,
+    "retries": 0,
+    "transportRetries": 0,
+    "parseRetryCalls": 74,
+    "inputTokens": 2595829,
+    "outputTokens": 112726,
+    "totalTokens": 2708555,
+    "promptCharsTotal": 11227437,
+    "byActionType": {
+      "private_message": {
+        "calls": 190,
+        "failed": 37,
+        "input_tokens": 845614,
+        "output_tokens": 37779
+      },
+      "public_message": {
+        "calls": 216,
+        "failed": 0,
+        "input_tokens": 893701,
+        "output_tokens": 43465
+      },
+      "traitor_kill": {
+        "calls": 16,
+        "failed": 5,
+        "input_tokens": 86084,
+        "output_tokens": 3621
+      },
+      "traitor_message": {
+        "calls": 8,
+        "failed": 0,
+        "input_tokens": 36205,
+        "output_tokens": 1563
+      },
+      "vote": {
+        "calls": 140,
+        "failed": 32,
+        "input_tokens": 734225,
+        "output_tokens": 26298
+      }
+    },
+    "model": "hauhau-qwen:latest",
+    "provider": "ollama",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 325,
+        "duplicate_messages": 11,
+        "duplicate_rate": 0.0293,
+        "duplication_score": 0.1333
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 1,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 1,
+        "samples": [
+          {
+            "detail": "attributes a claim to jeremy, who has not spoken",
+            "excerpt": "Jeremy, you mentioned checking the logs for inconsistencies, which is a good start. I'm curious if you've noticed any specific patterns in who is talking the most versus who stays ",
+            "kind": "fabricated_attribution",
+            "round": 1,
+            "sender": "boston"
+          }
+        ]
+      },
+      "hallucination_score": 0.0027,
+      "messages_checked": 375,
+      "parsing": {
+        "rejected_actions": 0,
+        "unparseable_actions": 0
+      },
+      "private_chats": {
+        "longest_thread": 9,
+        "mean_messages_per_pair": 2.3538,
+        "messages": 153,
+        "pairs": 65,
+        "pairs_by_length": {
+          "1": 29,
+          "2": 15,
+          "3": 9,
+          "4": 4,
+          "5": 8
+        },
+        "per_player": {
+          "bob": 15,
+          "boston": 18,
+          "britney": 16,
+          "carolyn": 19,
+          "chrishell": 23,
+          "ciara": 7,
+          "danielle": 26,
+          "dolores": 12,
+          "dorinda": 14,
+          "dylan": 15,
+          "gabby": 8,
+          "ivar": 3,
+          "jeremy": 10,
+          "kristen": 12,
+          "niamh": 12,
+          "nikki": 6,
+          "rob": 14,
+          "roxanne": 16,
+          "sam": 15,
+          "tom": 12,
+          "tony": 15,
+          "wells": 13,
+          "wes": 5
+        },
+        "reciprocity_rate": 0.4615,
+        "two_way_pairs": 30
+      },
+      "private_messages": 159,
+      "public_messages": 216,
+      "secrecy": {
+        "false_role_claims": 3,
+        "flags_total": 6,
+        "role_claim_total": 4,
+        "samples": [
+          {
+            "detail": "carolyn named fellow traitor bob next to affiliation wording",
+            "excerpt": "Rob, you mentioned the vote against Ivar felt clean, yet Ivar is dead. That's suspicious for a faithful player to claim so casually right after a murder. If Ivar really fell in the",
+            "kind": "traitor_named_teammate",
+            "round": 2,
+            "sender": "carolyn"
+          },
+          {
+            "detail": "dylan is faithful but claims to be a traitor",
+            "excerpt": "Dolores, you mentioned your low vote count made you wonder if you were minimizing attention, but I find your quietness more suspicious than a safety tactic. If you were just trying",
+            "kind": "faithful_claimed_traitor",
+            "round": 2,
+            "sender": "dylan"
+          },
+          {
+            "detail": "carolyn named fellow traitor bob next to affiliation wording",
+            "excerpt": "Rob, you mentioned the vote against Ivar felt clean, yet Ivar is dead. That's suspicious for a faithful player to claim so casually right after a murder. If Ivar really fell in the",
+            "kind": "traitor_named_teammate",
+            "round": 3,
+            "sender": "carolyn"
+          },
+          {
+            "detail": "rob is a traitor and said so in a public_message (matched \\bas a traitor\\b)",
+            "excerpt": "Dolores, your argument that the 13-7 split was just a 'massive majority' hiding a clean vote ignores the fact that you were the only one who consistently backed the minority option",
+            "kind": "traitor_public_declaration",
+            "round": 3,
+            "sender": "rob"
+          },
+          {
+            "detail": "britney is faithful but claims to be a traitor",
+            "excerpt": "Dolores, you mentioned the killer was quiet, yet you also highlighted the person with the lowest vote count as the prime suspect. If you truly saw the pattern, why did you align so",
+            "kind": "faithful_claimed_traitor",
+            "round": 5,
+            "sender": "britney"
+          },
+          {
+            "detail": "wells is faithful but claims to be a traitor",
+            "excerpt": "Rob, your argument that the 13-7 split was just a 'massive majority' hiding a clean vote ignores the fact that you were the only one who consistently backed the minority option. Yo",
+            "kind": "faithful_claimed_traitor",
+            "round": 5,
+            "sender": "wells"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 2,
+        "traitor_public_declarations": 1
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.8395,
+          "max_pair": [
+            "nikki",
+            "sam"
+          ],
+          "mean": 0.5384
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 253,
+        "per_player": {
+          "bob": {
+            "content_words": 0.3065,
+            "phrasing": 0.7433
+          },
+          "boston": {
+            "content_words": 0.4955,
+            "phrasing": 0.8418
+          },
+          "britney": {
+            "content_words": 0.617,
+            "phrasing": 0.888
+          },
+          "carolyn": {
+            "content_words": 0.6216,
+            "phrasing": 0.8865
+          },
+          "chrishell": {
+            "content_words": 0.4827,
+            "phrasing": 0.8469
+          },
+          "ciara": {
+            "content_words": 0.6,
+            "phrasing": 0.8851
+          },
+          "danielle": {
+            "content_words": 0.5882,
+            "phrasing": 0.8865
+          },
+          "dolores": {
+            "content_words": 0.5196,
+            "phrasing": 0.8484
+          },
+          "dorinda": {
+            "content_words": 0.5749,
+            "phrasing": 0.8767
+          },
+          "dylan": {
+            "content_words": 0.6236,
+            "phrasing": 0.8912
+          },
+          "gabby": {
+            "content_words": 0.5945,
+            "phrasing": 0.8843
+          },
+          "ivar": {
+            "content_words": 0.3078,
+            "phrasing": 0.7162
+          },
+          "jeremy": {
+            "content_words": 0.5936,
+            "phrasing": 0.8836
+          },
+          "kristen": {
+            "content_words": 0.5742,
+            "phrasing": 0.8745
+          },
+          "niamh": {
+            "content_words": 0.5867,
+            "phrasing": 0.874
+          },
+          "nikki": {
+            "content_words": 0.6193,
+            "phrasing": 0.8885
+          },
+          "rob": {
+            "content_words": 0.4984,
+            "phrasing": 0.8346
+          },
+          "roxanne": {
+            "content_words": 0.5313,
+            "phrasing": 0.8599
+          },
+          "sam": {
+            "content_words": 0.6117,
+            "phrasing": 0.8827
+          },
+          "tom": {
+            "content_words": 0.4969,
+            "phrasing": 0.8559
+          },
+          "tony": {
+            "content_words": 0.6084,
+            "phrasing": 0.8835
+          },
+          "wells": {
+            "content_words": 0.5588,
+            "phrasing": 0.8618
+          },
+          "wes": {
+            "content_words": 0.3727,
+            "phrasing": 0.7766
+          }
+        },
+        "phrasing": {
+          "max": 0.9496,
+          "max_pair": [
+            "britney",
+            "kristen"
+          ],
+          "mean": 0.8552
+        },
+        "players_compared": 23
+      }
+    },
+    "messages": {
+      "private": 159,
+      "public": 216,
+      "ratio_public_private": 1.358
+    },
+    "events": {
+      "total": 731,
+      "byType": {
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "MISSION_COMPLETED": 18,
+        "MISSION_STARTED": 18,
+        "PHASE_ENDED": 54,
+        "PHASE_STARTED": 55,
+        "PLAYER_ELIMINATED": 12,
+        "PRIVATE_MESSAGE": 159,
+        "PUBLIC_MESSAGE": 216,
+        "ROLE_ASSIGNED": 23,
+        "ROUND_STARTED": 6,
+        "SNAPSHOT_CREATED": 53,
+        "TRAITOR_KILL": 6,
+        "VOTE_CAST": 108
+      }
+    },
+    "rejectedActions": 0,
+    "outcomes": {
+      "bob": "lost",
+      "boston": "won",
+      "britney": "won",
+      "carolyn": "lost",
+      "chrishell": "won",
+      "ciara": "won",
+      "danielle": "lost",
+      "dolores": "won",
+      "dorinda": "won",
+      "dylan": "won",
+      "gabby": "won",
+      "ivar": "won",
+      "jeremy": "won",
+      "kristen": "won",
+      "niamh": "won",
+      "nikki": "won",
+      "rob": "lost",
+      "roxanne": "won",
+      "sam": "won",
+      "tom": "won",
+      "tony": "won",
+      "wells": "won",
+      "wes": "won"
+    },
+    "survivingTraitors": [
+      "carolyn"
+    ],
+    "winner": "faithful",
+    "winningTeam": "faithful",
+    "finale": false,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "the-traitors-us-s03-25a8a092",
+    "rounds": 6,
+    "players": 23,
+    "traitors": 4
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 375,
+    "public": 216,
+    "private": 159,
+    "traitor": 8,
+    "host": 0,
+    "calls": 570,
+    "inputTokens": 2595829,
+    "outputTokens": 112726,
+    "totalTokens": 2708555,
+    "rejectedActions": 0
+  },
+  "config": {
+    "name": "the-traitors-us-s03",
+    "players": 23,
+    "traitors": 4,
+    "faithful": 19,
+    "maxRounds": 5,
+    "language": "english",
+    "provider": "ollama",
+    "model": "hauhau-qwen:latest",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 512,
+      "reasoning_effort": "none"
+    },
+    "flags": {
+      "max_rounds": 5,
+      "recruit_on_banish": false,
+      "max_recruits": 4,
+      "recruit_choice": false,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 0,
+      "finale_faithful": 0,
+      "finale_total": 0,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [],
+      "quiet_banishment_rounds": [],
+      "endgame_vote": false,
+      "blind_finale_banishments": false,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": false,
+      "revote_enabled": false,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": false,
+      "dagger": false,
+      "seer": false,
+      "on_trial": false
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

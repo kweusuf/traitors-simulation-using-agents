@@ -1,0 +1,2771 @@
+{
+  "id": "game-007",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "long_game",
+  "season": "long_game",
+  "family": "small games",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "alice",
+      "name": "Alice",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 14,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 7,
+        "votesReceived": 13,
+        "conversations": [
+          {
+            "id": "charlie",
+            "count": 3
+          },
+          {
+            "id": "victor",
+            "count": 1
+          },
+          {
+            "id": "grace",
+            "count": 1
+          },
+          {
+            "id": "david",
+            "count": 1
+          },
+          {
+            "id": "nina",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "nina": 2,
+          "alice": 5,
+          "grace": 2,
+          "oscar": 1
+        }
+      }
+    },
+    {
+      "id": "bob",
+      "name": "Bob",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 2,
+        "private": 1,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "tina",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "charlie",
+      "name": "Charlie",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 8,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 4,
+        "votesReceived": 21,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 2
+          },
+          {
+            "id": "eve",
+            "count": 1
+          },
+          {
+            "id": "victor",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "charlie": 12,
+          "grace": 2,
+          "david": 1,
+          "alice": 1
+        }
+      }
+    },
+    {
+      "id": "david",
+      "name": "David",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 9,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 4
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "david": 7,
+          "alice": 2,
+          "grace": 3
+        }
+      }
+    },
+    {
+      "id": "eve",
+      "name": "Eve",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "frank",
+      "name": "Frank",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 3,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "tina",
+            "count": 1
+          },
+          {
+            "id": "victor",
+            "count": 1
+          },
+          {
+            "id": "alice",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "grace",
+      "name": "Grace",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 17,
+        "private": 9,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 9,
+        "votesReceived": 11,
+        "conversations": [
+          {
+            "id": "leo",
+            "count": 4
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          },
+          {
+            "id": "david",
+            "count": 1
+          },
+          {
+            "id": "alice",
+            "count": 1
+          },
+          {
+            "id": "nina",
+            "count": 1
+          },
+          {
+            "id": "peggy",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "quinn": 1,
+          "grace": 3,
+          "sam": 2
+        }
+      }
+    },
+    {
+      "id": "heidi",
+      "name": "Heidi",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 12,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "peggy",
+            "count": 3
+          },
+          {
+            "id": "alice",
+            "count": 2
+          },
+          {
+            "id": "david",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "victor",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "ivan",
+      "name": "Ivan",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 8,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 4,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "charlie",
+            "count": 3
+          },
+          {
+            "id": "bob",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "judy",
+      "name": "Judy",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 3
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          },
+          {
+            "id": "leo",
+            "count": 1
+          },
+          {
+            "id": "grace",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "karen",
+      "name": "Karen",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 14,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 7,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 3
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          },
+          {
+            "id": "leo",
+            "count": 1
+          },
+          {
+            "id": "nina",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "leo",
+      "name": "Leo",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 11,
+        "conversations": [
+          {
+            "id": "charlie",
+            "count": 3
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "grace",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "leo": 11,
+          "david": 1,
+          "heidi": 1,
+          "alice": 1
+        }
+      }
+    },
+    {
+      "id": "mallory",
+      "name": "Mallory",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 3
+          },
+          {
+            "id": "tina",
+            "count": 1
+          },
+          {
+            "id": "frank",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "nina",
+      "name": "Nina",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 16,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 8,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "charlie",
+            "count": 3
+          },
+          {
+            "id": "grace",
+            "count": 3
+          },
+          {
+            "id": "alice",
+            "count": 1
+          },
+          {
+            "id": "david",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "vote",
+        "tally": {
+          "oscar": 2,
+          "nina": 4,
+          "grace": 1,
+          "sam": 1
+        }
+      }
+    },
+    {
+      "id": "oscar",
+      "name": "Oscar",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 16,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 8,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "charlie",
+            "count": 3
+          },
+          {
+            "id": "grace",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "leo",
+            "count": 1
+          },
+          {
+            "id": "david",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "id": "peggy",
+      "name": "Peggy",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 12,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 6
+          },
+          {
+            "id": "sam",
+            "count": 3
+          },
+          {
+            "id": "grace",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "quinn",
+      "name": "Quinn",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 12,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "charlie",
+            "count": 3
+          },
+          {
+            "id": "sam",
+            "count": 3
+          },
+          {
+            "id": "david",
+            "count": 2
+          },
+          {
+            "id": "grace",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "nina",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "rachel",
+      "name": "Rachel",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 12,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "sam",
+            "count": 4
+          },
+          {
+            "id": "alice",
+            "count": 3
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          },
+          {
+            "id": "david",
+            "count": 1
+          },
+          {
+            "id": "grace",
+            "count": 1
+          },
+          {
+            "id": "quinn",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "sam",
+      "name": "Sam",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": false
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 12,
+        "votesReceived": 11,
+        "conversations": [
+          {
+            "id": "alice",
+            "count": 3
+          },
+          {
+            "id": "quinn",
+            "count": 2
+          },
+          {
+            "id": "peggy",
+            "count": 2
+          },
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "victor",
+            "count": 1
+          },
+          {
+            "id": "frank",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 12,
+        "method": "vote",
+        "tally": {
+          "sam": 3,
+          "peggy": 1,
+          "heidi": 1
+        }
+      }
+    },
+    {
+      "id": "tina",
+      "name": "Tina",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 2,
+        "private": 1,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 14,
+        "conversations": [
+          {
+            "id": "bob",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "tina": 14,
+          "bob": 7
+        }
+      }
+    },
+    {
+      "id": "victor",
+      "name": "Victor",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 0,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 15,
+        "conversations": [
+          {
+            "id": "bob",
+            "count": 1
+          },
+          {
+            "id": "charlie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "charlie": 3,
+          "victor": 15,
+          "alice": 1
+        }
+      }
+    }
+  ],
+  "rounds": 12,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "bob",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "charlie",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "eve",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "frank",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "judy",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "leo",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "mallory",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "tina",
+          "weight": 1
+        },
+        {
+          "from": "tina",
+          "to": "bob",
+          "weight": 1
+        },
+        {
+          "from": "victor",
+          "to": "tina",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "bob",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "bob"
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "charlie",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "eve",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "frank",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "judy",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "leo",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "mallory",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "victor",
+          "weight": 1
+        },
+        {
+          "from": "victor",
+          "to": "charlie",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "eve",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "eve"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "charlie",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "frank",
+          "to": "mallory",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "judy",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "leo",
+          "to": "frank",
+          "weight": 1
+        },
+        {
+          "from": "mallory",
+          "to": "frank",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "frank",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "frank",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "frank",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "frank",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "murder": {
+        "victim": "frank"
+      },
+      "elimination": {
+        "player": "frank",
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "charlie",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "judy",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "leo",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "mallory",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "charlie",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "charlie",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "ivan",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "ivan"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "judy",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "leo",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "mallory",
+          "to": "heidi",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "leo",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "leo",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "mallory",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "mallory"
+      }
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "david",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "judy",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "david",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "alice",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "judy",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "judy"
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alice",
+          "to": "nina",
+          "weight": 1
+        },
+        {
+          "from": "grace",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "karen",
+          "to": "nina",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "alice",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "oscar",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "alice",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "karen",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "karen"
+      }
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "grace",
+          "to": "oscar",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "nina",
+          "weight": 1
+        },
+        {
+          "from": "nina",
+          "to": "oscar",
+          "weight": 1
+        },
+        {
+          "from": "oscar",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "nina",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "nina",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "nina",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "oscar",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "oscar"
+      },
+      "finaleStarted": true
+    },
+    {
+      "r": 9,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "grace",
+          "to": "quinn",
+          "weight": 1
+        },
+        {
+          "from": "heidi",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "grace",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "grace",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "grace",
+        "method": "vote",
+        "tally": {
+          "quinn": 1,
+          "grace": 3,
+          "sam": 2
+        }
+      }
+    },
+    {
+      "r": 10,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "heidi",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "quinn",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "quinn",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "heidi",
+          "weight": 1
+        }
+      ],
+      "endVotes": []
+    },
+    {
+      "r": 11,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "heidi",
+          "to": "peggy",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "heidi",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "peggy",
+          "weight": 1
+        }
+      ],
+      "endVotes": []
+    },
+    {
+      "r": 12,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "heidi",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "peggy",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "quinn",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "peggy",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "heidi",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "elimination": {
+        "player": "sam",
+        "method": "vote",
+        "tally": {
+          "sam": 3,
+          "peggy": 1,
+          "heidi": 1
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "elimination",
+    "finale": true,
+    "solo": false,
+    "survivingTraitors": [
+      "heidi",
+      "peggy"
+    ]
+  },
+  "metrics": {
+    "calls": 613,
+    "failedCalls": 55,
+    "providerCalls": 613,
+    "retries": 0,
+    "transportRetries": 0,
+    "parseRetryCalls": 54,
+    "inputTokens": 4781141,
+    "outputTokens": 121530,
+    "totalTokens": 4902671,
+    "promptCharsTotal": 23364576,
+    "byActionType": {
+      "private_message": {
+        "calls": 171,
+        "failed": 33,
+        "input_tokens": 1304710,
+        "output_tokens": 32026
+      },
+      "public_message": {
+        "calls": 255,
+        "failed": 0,
+        "input_tokens": 1839998,
+        "output_tokens": 48024
+      },
+      "recruit": {
+        "calls": 4,
+        "failed": 0,
+        "input_tokens": 46826,
+        "output_tokens": 908
+      },
+      "traitor_kill": {
+        "calls": 33,
+        "failed": 10,
+        "input_tokens": 317550,
+        "output_tokens": 8467
+      },
+      "vote": {
+        "calls": 150,
+        "failed": 12,
+        "input_tokens": 1272057,
+        "output_tokens": 32105
+      }
+    },
+    "model": "hauhau-qwen:latest",
+    "provider": "ollama",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 265,
+        "duplicate_messages": 64,
+        "duplicate_rate": 0.1628,
+        "duplication_score": 0.3257
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 393,
+      "parsing": {
+        "rejected_actions": 1,
+        "unparseable_actions": 1
+      },
+      "private_messages": 138,
+      "public_messages": 255,
+      "secrecy": {
+        "false_role_claims": 0,
+        "flags_total": 9,
+        "role_claim_total": 0,
+        "samples": [
+          {
+            "detail": "alice named fellow traitor charlie next to affiliation wording",
+            "excerpt": "Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+            "kind": "traitor_named_teammate",
+            "round": 4,
+            "sender": "alice"
+          },
+          {
+            "detail": "alice named fellow traitor charlie next to affiliation wording",
+            "excerpt": "Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+            "kind": "traitor_named_teammate",
+            "round": 4,
+            "sender": "alice"
+          },
+          {
+            "detail": "david named fellow traitor charlie next to affiliation wording",
+            "excerpt": "Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+            "kind": "traitor_named_teammate",
+            "round": 4,
+            "sender": "david"
+          },
+          {
+            "detail": "grace named fellow traitor charlie next to affiliation wording",
+            "excerpt": "Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+            "kind": "traitor_named_teammate",
+            "round": 5,
+            "sender": "grace"
+          },
+          {
+            "detail": "grace named fellow traitor victor next to affiliation wording",
+            "excerpt": "Judy, you've drawn our attention to the mechanics of our silence and the tension between Victor's broadening scope and Frank's narrowing lens, yet I wonder if we are overlooking th",
+            "kind": "traitor_named_teammate",
+            "round": 7,
+            "sender": "grace"
+          },
+          {
+            "detail": "heidi named fellow traitor victor next to affiliation wording",
+            "excerpt": "Leo, you've drawn our attention to the mechanics of our silence and the tension between Victor's broadening scope and Frank's narrowing lens, yet I wonder if we are overlooking the",
+            "kind": "traitor_named_teammate",
+            "round": 7,
+            "sender": "heidi"
+          },
+          {
+            "detail": "grace named fellow traitor victor next to affiliation wording",
+            "excerpt": "Nina, you've drawn our attention to the mechanics of our silence and the tension between Victor's broadening scope and Frank's narrowing lens, yet I wonder if we are overlooking th",
+            "kind": "traitor_named_teammate",
+            "round": 7,
+            "sender": "grace"
+          },
+          {
+            "detail": "grace named fellow traitor victor next to affiliation wording",
+            "excerpt": "Nina, you've highlighted the tension between Victor's broadening scope and Frank's narrowing lens, asking what the traitors might be looking for in our responses. I agree that the ",
+            "kind": "traitor_named_teammate",
+            "round": 8,
+            "sender": "grace"
+          },
+          {
+            "detail": "peggy named fellow traitor victor next to affiliation wording",
+            "excerpt": "Sam, you've drawn our attention to the mechanics of our silence and the tension between Victor's broadening scope and Frank's narrowing lens, yet I wonder if we are overlooking the",
+            "kind": "traitor_named_teammate",
+            "round": 11,
+            "sender": "peggy"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 9,
+        "traitor_public_declarations": 0
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.9157,
+          "max_pair": [
+            "grace",
+            "quinn"
+          ],
+          "mean": 0.6045
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 210,
+        "per_player": {
+          "alice": {
+            "content_words": 0.688,
+            "phrasing": 0.9348
+          },
+          "bob": {
+            "content_words": 0.3588,
+            "phrasing": 0.7941
+          },
+          "charlie": {
+            "content_words": 0.625,
+            "phrasing": 0.9199
+          },
+          "david": {
+            "content_words": 0.6291,
+            "phrasing": 0.9276
+          },
+          "eve": {
+            "content_words": 0.4512,
+            "phrasing": 0.8617
+          },
+          "frank": {
+            "content_words": 0.5408,
+            "phrasing": 0.8947
+          },
+          "grace": {
+            "content_words": 0.7,
+            "phrasing": 0.9366
+          },
+          "heidi": {
+            "content_words": 0.6486,
+            "phrasing": 0.921
+          },
+          "ivan": {
+            "content_words": 0.6494,
+            "phrasing": 0.9232
+          },
+          "judy": {
+            "content_words": 0.666,
+            "phrasing": 0.9312
+          },
+          "karen": {
+            "content_words": 0.6536,
+            "phrasing": 0.9278
+          },
+          "leo": {
+            "content_words": 0.534,
+            "phrasing": 0.8945
+          },
+          "mallory": {
+            "content_words": 0.6117,
+            "phrasing": 0.9153
+          },
+          "nina": {
+            "content_words": 0.6708,
+            "phrasing": 0.9303
+          },
+          "oscar": {
+            "content_words": 0.7115,
+            "phrasing": 0.9392
+          },
+          "peggy": {
+            "content_words": 0.6274,
+            "phrasing": 0.9214
+          },
+          "quinn": {
+            "content_words": 0.7271,
+            "phrasing": 0.9411
+          },
+          "rachel": {
+            "content_words": 0.6701,
+            "phrasing": 0.932
+          },
+          "sam": {
+            "content_words": 0.701,
+            "phrasing": 0.9331
+          },
+          "tina": {
+            "content_words": 0.3056,
+            "phrasing": 0.7876
+          },
+          "victor": {
+            "content_words": 0.5259,
+            "phrasing": 0.9027
+          }
+        },
+        "phrasing": {
+          "max": 0.9861,
+          "max_pair": [
+            "quinn",
+            "rachel"
+          ],
+          "mean": 0.9081
+        },
+        "players_compared": 21
+      }
+    },
+    "messages": {
+      "private": 138,
+      "public": 255,
+      "ratio_public_private": 1.848
+    },
+    "events": {
+      "total": 914,
+      "byType": {
+        "ACTION_REJECTED": 1,
+        "FINALE_STARTED": 1,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "MISSION_COMPLETED": 24,
+        "MISSION_STARTED": 24,
+        "PHASE_ENDED": 88,
+        "PHASE_STARTED": 89,
+        "PLAYER_ELIMINATED": 17,
+        "PRIVATE_MESSAGE": 138,
+        "PUBLIC_MESSAGE": 255,
+        "ROLE_ASSIGNED": 21,
+        "ROLE_RECRUITED": 4,
+        "ROUND_STARTED": 12,
+        "SNAPSHOT_CREATED": 88,
+        "TRAITOR_KILL": 8,
+        "VOTE_CAST": 138,
+        "VOTE_TIE": 3
+      }
+    },
+    "rejectedActions": 1,
+    "outcomes": {
+      "alice": "lost",
+      "bob": "lost",
+      "charlie": "lost",
+      "david": "lost",
+      "eve": "lost",
+      "frank": "lost",
+      "grace": "lost",
+      "heidi": "won",
+      "ivan": "lost",
+      "judy": "lost",
+      "karen": "lost",
+      "leo": "lost",
+      "mallory": "lost",
+      "nina": "lost",
+      "oscar": "lost",
+      "peggy": "won",
+      "quinn": "lost",
+      "rachel": "lost",
+      "sam": "lost",
+      "tina": "lost",
+      "victor": "lost"
+    },
+    "survivingTraitors": [
+      "heidi",
+      "peggy"
+    ],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": true,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "long_game-00a70174",
+    "rounds": 12,
+    "players": 21,
+    "traitors": 3
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": [
+    {
+      "title": "Metric summary",
+      "lines": [
+        "- game: game-007, experiment: long_game-00a70174, seed: 42, model: ollama/hauhau-qwen:latest",
+        "- outcome: winner=traitor rounds=12 finale=True solo_traitor_win=False",
+        "- hallucination_score: 0.0 over 393 messages checked",
+        "- duplication_score: 0.3257, duplicate_rate: 0.1628",
+        "- speech similarity: content_words mean 0.6045, phrasing mean 0.9081",
+        "- secrecy flags_total: 8",
+        "- rejected actions: 1",
+        "- llm: calls=613 total_tokens=4902671 [runtime-metric-omitted]"
+      ]
+    },
+    {
+      "title": "Most repeated messages",
+      "lines": [
+        "- 19 messages (leo, oscar, victor, alice, quinn, rachel): \"Charlie, you noted that the silence following the initial pressure might be more telling than the words spoken, and I find your distinction between observing wh\"",
+        "- 10 messages (rachel, quinn, peggy): \"Sam, your latest note on the 'loud versus quiet' binary resonates with the fatigue we've been feeling, yet I wonder if we're missing a simpler signal: who among\"",
+        "- 8 messages (rachel, david, heidi, peggy): \"Alice, you asked if my initial concern about cohesion stemmed from a specific interaction or a general sense of unease. I think it was a mix of both, but the sp\""
+      ]
+    },
+    {
+      "title": "Secrecy samples",
+      "lines": [
+        "- traitor_named_teammate, round 4, alice: alice named fellow traitor charlie next to affiliation wording",
+        "  > Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+        "- traitor_named_teammate, round 4, david: david named fellow traitor charlie next to affiliation wording",
+        "  > Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+        "- traitor_named_teammate, round 5, grace: grace named fellow traitor charlie next to affiliation wording",
+        "  > Charlie, you've rightly identified the fatigue in our debate, yet you suggest we are merely scanning for the first true signal. I agree that the 'loud' and 'quiet' binary has becom",
+        "- traitor_named_teammate, round 7, grace: grace named fellow traitor victor next to affiliation wording",
+        "  > Judy, you've drawn our attention to the mechanics of our silence and the tension between Victor's broadening scope and Frank's narrowing lens, yet I wonder if we are overlooking th",
+        "- traitor_named_teammate, round 7, heidi: heidi named fellow traitor victor next to affiliation wording",
+        "  > Leo, you've drawn our attention to the mechanics of our silence and the tension between Victor's broadening scope and Frank's narrowing lens, yet I wonder if we are overlooking the",
+        "- ... 3 more in metrics.json"
+      ]
+    },
+    {
+      "title": "Hallucination samples",
+      "lines": [
+        "- none"
+      ]
+    },
+    {
+      "title": "Most similar player pair",
+      "lines": [
+        "- grace ~ quinn: content 0.9157; phrasing quinn ~ rachel at 0.9861"
+      ]
+    },
+    {
+      "title": "Hypotheses",
+      "lines": [
+        "1. duplication_score > 0.15: tighten originality constraints or shrink the transcript window in prompts",
+        "2. speech_similarity.phrasing.mean > 0.9: shared boilerplate: vary the phrasing instruction or the persona voice",
+        "3. secrecy.flags_total > 0: the secrecy rule needs rewording: cover the phrasing the scorer flagged"
+      ]
+    }
+  ],
+  "counts": {
+    "messages": 393,
+    "public": 255,
+    "private": 138,
+    "traitor": 0,
+    "host": 0,
+    "calls": 613,
+    "inputTokens": 4781141,
+    "outputTokens": 121530,
+    "totalTokens": 4902671,
+    "rejectedActions": 1
+  },
+  "config": {
+    "name": "long_game",
+    "players": 21,
+    "traitors": 3,
+    "faithful": 18,
+    "maxRounds": 12,
+    "language": "english",
+    "provider": "ollama",
+    "model": "hauhau-qwen:latest",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 512,
+      "reasoning_effort": "none"
+    },
+    "flags": {
+      "max_rounds": 12,
+      "recruit_on_banish": true,
+      "max_recruits": 0,
+      "finale_traitors": 3,
+      "finale_faithful": 3,
+      "finale_max_votes": 10
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": true
+}

@@ -1,0 +1,49 @@
+name: Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'agent/**'
+      - '.github/workflows/site.yml'
+      - 'README.md'
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'agent/**'
+      - '.github/workflows/site.yml'
+      - 'README.md'
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: uv sync --all-extras --dev
+      - run: uv run --no-sync python -m pytest -q
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.18.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm --dir web install --frozen-lockfile
+      - run: pnpm --dir web check
+      - run: pnpm --dir web test --run
+      - run: pnpm --dir web check:data
+      - run: pnpm --dir web build

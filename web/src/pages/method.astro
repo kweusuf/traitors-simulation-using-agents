@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { manifest } from '../lib/data';
+---
+
+<BaseLayout
+  title="Method & limits — Round Table"
+  description="Provenance, public-data rules, ground-truth caveats, and known limitations for the Round Table simulation showcase."
+>
+  <section class="relative overflow-hidden border-b border-[var(--border)]">
+    <div class="fog"></div>
+    <div class="page-shell relative py-14 md:py-20">
+      <span class="eyebrow">Method &amp; limits</span>
+      <h1 class="display mt-4 max-w-4xl text-[clamp(2.6rem,6vw,4.6rem)]">
+        Real output. Limited claims.<br /><span class="text-gold">Clear provenance.</span>
+      </h1>
+      <p class="lede mt-5 max-w-3xl">
+        This site exists to show how the framework behaves, not to make claims
+        about the real people whose names appear in the simulations. Every
+        transcript is model-generated fiction.
+      </p>
+    </div>
+  </section>
+
+  <div class="page-shell prose-custom max-w-4xl py-14 md:py-20">
+    <h2>What this is</h2>
+    <p>
+      Round Table is an unofficial, non-commercial research project. It is not
+      affiliated with, endorsed by, or connected to <em>The Traitors</em>, its
+      producers, its broadcasters, or any contestant. No photographs or
+      likenesses are used. Cast sigils are generated from a hash of the player id.
+    </p>
+    <p>
+      The personas are simplified behavioural sketches written from publicly
+      broadcast episodes. They are not psychological profiles, and nothing on this
+      site should be read as a statement about a real person's character,
+      intentions, or conduct.
+    </p>
+
+    <h2>Data provenance</h2>
+    <p>
+      The Python project records each run as a directory under
+      <code>agent/runs/&lt;game_id&gt;/</code>: config, event log, transcript,
+      metrics, per-call telemetry, and, for season runs, a benchmark and
+      diagnosis. Those directories are local artifacts and are never committed.
+    </p>
+    <p>
+      The website is built from <code>web/src/data/</code>, a sanitized JSON export
+      produced by <code>web/tools/export_site_data.py</code>. The exporter is the
+      only path from the run artifacts to the site. It reads the simulation package
+      as a library and writes summaries, round digests, flagship transcripts, and
+      season ground truth.
+    </p>
+    <p>
+      {manifest.totals.runs} completed runs are published: {manifest.totals.playerGames}
+      player-games, {manifest.totals.messages.toLocaleString('en')} messages, and
+      {manifest.totals.calls.toLocaleString('en')} model calls. Three runs have a
+      full transcript; the rest are summary-plus-metrics.
+    </p>
+
+    <h2>What is published</h2>
+    <ul>
+      <li>Outcomes, casts, roles, elimination order, votes, nominations, councils, recruits, and items.</li>
+      <li>Model-generated dialogue for the three flagship runs, verbatim, including code-switching and simulated conflict.</li>
+      <li>Deterministic quality metrics: hallucination, duplication, secrecy, parsing, private-chat reciprocity, and speech similarity.</li>
+      <li>Token and call counts, prompt sizes, retries, and failure classes.</li>
+      <li>Season benchmarks against recorded ground truth, with provenance and caveats.</li>
+    </ul>
+
+    <h2>What is intentionally omitted</h2>
+    <p>
+      The repository is public, so the export strips machine-specific detail.
+      In particular:
+    </p>
+    <ul>
+      <li>Absolute latency, wall-clock run duration, throughput, and in-flight concurrency. These describe one host on one afternoon, not the framework.</li>
+      <li>Endpoint URLs, LAN addresses, and local filesystem paths.</li>
+      <li>Model digests, API keys, and raw provider error bodies.</li>
+      <li><code>game.db</code>, raw <code>llm_calls.jsonl</code>, and raw <code>events.jsonl</code>.</li>
+    </ul>
+    <p>
+      The exporter and a CI check scan the committed JSON for IPv4 addresses,
+      absolute paths, 64-hex digests, key shapes, local hostnames, and forbidden
+      keys. A match fails the data check.
+    </p>
+
+    <h2>Benchmarks are comparisons, not accuracy</h2>
+    <p>
+      A season benchmark is a weighted alignment score between a run and a recorded
+      season file: outcome, traitor roster, banishment and murder alignment and
+      overlap, hit rate, survival curve, final counts, finale, recruitments, and
+      exit order. Components with no data on one side are skipped and their weight
+      is redistributed.
+    </p>
+    <p>
+      Some season files are marked unverified in their headers. The site shows that
+      caveat where it applies. A high score means the simulation's event flow is
+      closer to the recorded season; it does not mean the simulation is accurate
+      about the people or the show's production.
+    </p>
+
+    <h2>Known limits</h2>
+    <p>
+      <strong>Template collapse.</strong> Late-game prompts are mostly transcript.
+      Models copy what they can see, and repeated phrasing is a measured property
+      of the run, not a bug that disappears when ignored.
+    </p>
+    <p>
+      <strong>End-vote disposition.</strong> Faithful players still lean toward
+      ending the game even when a traitor is alive. The hard-coded prompt bias was
+      removed, but the model's disposition remains and is measured.
+    </p>
+    <p>
+      <strong>Small samples.</strong> One run is one story. The ledger, holdout
+      seeds, and paired gates exist because a single win rate is not evidence.
+    </p>
+    <p>
+      <strong>Structural visibility is not the whole prompt.</strong> The boundary
+      explorer shows channel membership. The real prompt also carries the player's
+      role knowledge, memory, beliefs, relationships, and a bounded transcript
+      window.
+    </p>
+
+    <h2>Content note</h2>
+    <p>
+      The transcripts are generated by language models playing a competitive social
+      game. They can contain insults, accusations, manipulation, and strong
+      language. They are fiction produced by the simulation, not statements by the
+      people whose names are used as character labels.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      The source, configs, and full documentation are in the
+      <a href="https://github.com/kweusuf/traitors-simulation-using-agents" target="_blank" rel="noreferrer">GitHub repository</a>.
+      Issues and corrections are welcome there.
+    </p>
+  </div>
+</BaseLayout>

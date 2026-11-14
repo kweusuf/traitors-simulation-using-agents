@@ -1,0 +1,245 @@
+{
+  "id": "the-traitors-uk-s01",
+  "name": "The Traitors (UK), Series 1",
+  "winner_faction": "faithful",
+  "final_counts": {
+    "traitors": 2,
+    "faithful": 3
+  },
+  "cast": [
+    {
+      "id": "aaron",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 12
+    },
+    {
+      "id": "hannah",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 12
+    },
+    {
+      "id": "meryl",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 12
+    },
+    {
+      "id": "wilf",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 12
+    },
+    {
+      "id": "kieran",
+      "role": "traitor",
+      "traitor_type": "recruited",
+      "exit_episode": 12
+    },
+    {
+      "id": "maddy",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "andrea",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 11
+    },
+    {
+      "id": "amanda",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 10
+    },
+    {
+      "id": "fay",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 10
+    },
+    {
+      "id": "theo",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 9
+    },
+    {
+      "id": "amos",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 9
+    },
+    {
+      "id": "alex",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 8
+    },
+    {
+      "id": "rayan",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 7
+    },
+    {
+      "id": "alyssa",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 6
+    },
+    {
+      "id": "matt",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 6
+    },
+    {
+      "id": "tom",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 5
+    },
+    {
+      "id": "john",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 5
+    },
+    {
+      "id": "ivan",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 4
+    },
+    {
+      "id": "imran",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 3
+    },
+    {
+      "id": "claire",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 3
+    },
+    {
+      "id": "nicky",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 2
+    },
+    {
+      "id": "aisha",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 2
+    }
+  ],
+  "eliminations": [
+    {
+      "episode": 1,
+      "night_victim": null,
+      "banishment": []
+    },
+    {
+      "episode": 2,
+      "night_victim": "aisha",
+      "banishment": [
+        "nicky"
+      ]
+    },
+    {
+      "episode": 3,
+      "night_victim": "claire",
+      "banishment": [
+        "imran"
+      ]
+    },
+    {
+      "episode": 4,
+      "night_victim": null,
+      "banishment": [
+        "ivan"
+      ]
+    },
+    {
+      "episode": 5,
+      "night_victim": "john",
+      "banishment": [
+        "tom"
+      ]
+    },
+    {
+      "episode": 6,
+      "night_victim": "matt",
+      "banishment": [
+        "alyssa"
+      ]
+    },
+    {
+      "episode": 7,
+      "night_victim": null,
+      "banishment": [
+        "rayan"
+      ]
+    },
+    {
+      "episode": 8,
+      "night_victim": "alex",
+      "banishment": []
+    },
+    {
+      "episode": 9,
+      "night_victim": "amos",
+      "banishment": [
+        "theo"
+      ]
+    },
+    {
+      "episode": 10,
+      "night_victim": "fay",
+      "banishment": [
+        "amanda"
+      ]
+    },
+    {
+      "episode": 11,
+      "night_victim": "andrea",
+      "banishment": [
+        "maddy"
+      ]
+    },
+    {
+      "episode": 12,
+      "night_victim": null,
+      "banishment": [
+        "kieran",
+        "wilf"
+      ]
+    }
+  ],
+  "recruitments": [
+    {
+      "episode": 7,
+      "target": "alex",
+      "accepted": false
+    },
+    {
+      "episode": 11,
+      "target": "kieran",
+      "accepted": true
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/The_Traitors_(British_TV_series)_series_1",
+    "https://thetraitorsuk.fandom.com/wiki/Series_1",
+    "https://thetraitorsuk.fandom.com/wiki/Series_1,_Episode_12",
+    "https://www.bbc.com/news/entertainment-arts-64074768",
+    "https://www.bbc.co.uk/mediacentre/2022/the-traitors-winners/"
+  ]
+}

@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RunExperience from '../../components/run/RunExperience.tsx';
+import { runs } from '../../lib/data';
+import { loadSummary } from '../../lib/load-run';
+import type { RunSummary } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(
+    runs.map(async (run) => {
+      const summary = await loadSummary(run.id);
+      return {
+        params: { id: run.slug ?? run.id },
+        props: { summary },
+      };
+    }),
+  );
+  return paths.filter((path) => path.props.summary) as {
+    params: { id: string };
+    props: { summary: RunSummary };
+  }[];
+}
+
+const { summary } = Astro.props;
+const title = `${summary.label ?? summary.game} — Round Table`;
+const description =
+  summary.blurb ??
+  `${summary.game}: ${summary.players.length} players, ${summary.rounds} rounds, ${summary.outcome.winningTeam} win.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <RunExperience summary={summary} client:load />
+</BaseLayout>

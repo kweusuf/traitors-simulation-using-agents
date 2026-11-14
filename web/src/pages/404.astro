@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Not found — Round Table" description="This page does not exist." noIndex>
+  <section class="page-shell flex min-h-[60vh] flex-col items-start justify-center py-20">
+    <span class="eyebrow">404</span>
+    <h1 class="display mt-4 text-[clamp(3rem,8vw,6rem)]">Not at this table.</h1>
+    <p class="lede mt-4 max-w-xl">
+      The page you asked for is not part of the archive. The games and the metrics
+      lab are still open.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a class="btn btn-primary" href="/runs">Open the metrics lab</a>
+      <a class="btn btn-ghost" href="/">Back to the landing page</a>
+    </div>
+  </section>
+</BaseLayout>

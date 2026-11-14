@@ -1,0 +1,355 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sigil from '../components/Sigil.astro';
+import OutcomeBadge from '../components/OutcomeBadge.astro';
+import MiniTimeline from '../components/MiniTimeline.astro';
+import { manifest, flagshipRows, runHref } from '../lib/data';
+import { loadMessages, loadSummary } from '../lib/load-run';
+import { formatNumber, formatPercent, formatScore } from '../lib/format';
+import { roleAt, visibleMessages } from '../lib/visibility';
+import type { Message } from '../lib/types';
+
+const ukSummary = await loadSummary('uk-s01-rand-fix_en-fresh');
+const ukMessages = (await loadMessages('uk-s01-rand-fix_en-fresh')) ?? [];
+
+const ringPlayers = (ukSummary?.players ?? []).slice(0, 20);
+const ringNodes = ringPlayers.map((player, index) => {
+  const angle = (index / Math.max(ringPlayers.length, 1)) * Math.PI * 2 - Math.PI / 2;
+  return {
+    player,
+    left: 50 + Math.cos(angle) * 42,
+    top: 50 + Math.sin(angle) * 42,
+  };
+});
+
+const boundaryRound = ukMessages.find((message) => message.channel === 'traitor')?.r ?? 5;
+const traitor = ukSummary?.players.find(
+  (player) =>
+    roleAt(player, boundaryRound) === 'traitor' &&
+    (!player.exit || player.exit.round >= boundaryRound),
+);
+const faithful = ukSummary?.players.find(
+  (player) =>
+    roleAt(player, boundaryRound) === 'faithful' &&
+    (!player.exit || player.exit.round >= boundaryRound),
+);
+
+const allVisibleForTraitor = traitor
+  ? visibleMessages(ukMessages, traitor, boundaryRound, 'player')
+  : [];
+const allVisibleForFaithful = faithful
+  ? visibleMessages(ukMessages, faithful, boundaryRound, 'player')
+  : [];
+
+const traitorSnippet: Message[] = [
+  ...allVisibleForTraitor.filter((message) => message.channel === 'traitor').slice(-1),
+  ...allVisibleForTraitor.filter((message) => message.channel === 'public').slice(-2),
+];
+const faithfulSnippet = allVisibleForFaithful.slice(-4);
+
+const playerName = (id: string) =>
+  ukSummary?.players.find((player) => player.id === id)?.name ?? id;
+const indiaRow = manifest.runs.find((run) => run.id === 'india-s01-mimo');
+
+const pipeline = [
+  ['01', 'Config', 'One YAML sets the cast, rules, mechanics, and provider.'],
+  ['02', 'Phase engine', 'Missions, debate, nominations, votes, night, finale.'],
+  ['03', 'Agent runtime', 'Persona, memory, beliefs, relationships, goals.'],
+  ['04', 'Prompt + gateway', 'A bounded prompt goes to a model behind one interface.'],
+  ['05', 'Rules + events', 'Actions are validated and written to an append-only log.'],
+  ['06', 'Metrics + replay', 'Quality, cost, timeline, benchmark, and projections.'],
+];
+
+const capabilities = [
+  ['Config-driven rules', '30+ mechanics toggled from one YAML, with defaults that keep older configs playing the same game.'],
+  ['Structural secrecy', 'Private and role-private messages are enforced by the router, not by prompt instructions.'],
+  ['Deterministic testing', 'A fake backend plays complete games with no model, so the engine is testable end to end.'],
+  ['Observability', 'Per-call telemetry, deterministic quality scores, diagnosis, and a score ledger.'],
+  ['Experiment gates', 'Paired comparisons with per-dimension thresholds, holdout seeds, and cost guards.'],
+  ['Season replay', 'Pinned casts and traitors, real-season ground truth, and a weighted alignment benchmark.'],
+];
+---
+
+<BaseLayout>
+  <section class="relative overflow-hidden border-b border-[var(--border)]">
+    <div class="fog"></div>
+    <div class="page-shell relative grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.05fr_0.95fr]">
+      <div class="rise min-w-0">
+        <span class="eyebrow">Multi-agent LLM simulation</span>
+        <h1 class="display mt-5 text-[clamp(2.35rem,8.5vw,5.6rem)]">
+          A table of language models,<br />
+          <span class="text-gold">playing to survive.</span>
+        </h1>
+        <p class="lede mt-6 max-w-2xl">
+          Twenty-two players, one castle, no script. This is a config-driven
+          framework for social simulations, replayed on <em>The Traitors</em>.
+          Every game below is real output: prompts, private chats, votes,
+          eliminations, quality scores, and season benchmarks.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a class="btn btn-primary" href="#stories">Explore a game</a>
+          <a class="btn btn-ghost" href="/how-it-works">Read the architecture</a>
+        </div>
+        <div class="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+          <div><p class="stat-value">{manifest.totals.runs}</p><p class="stat-label">recorded runs</p></div>
+          <div><p class="stat-value">{formatNumber(manifest.totals.playerGames)}</p><p class="stat-label">player-games</p></div>
+          <div><p class="stat-value">{formatNumber(manifest.totals.messages)}</p><p class="stat-label">messages</p></div>
+          <div><p class="stat-value">{formatNumber(manifest.totals.calls)}</p><p class="stat-label">model calls</p></div>
+        </div>
+      </div>
+
+      <div class="relative mx-auto min-w-0 w-full max-w-[620px]">
+        <div class="round-table">
+          <div class="core">
+            <div>
+              <p class="font-mono text-[9px] uppercase tracking-[0.22em] text-gold">the round table</p>
+              <p class="mt-2 font-display text-2xl leading-tight">20 minds.<br />One verdict.</p>
+              <p class="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-muted">UK S01 replay</p>
+            </div>
+          </div>
+          {ringNodes.map(({ player, left, top }) => (
+            <div class="hero-sigil" style={`left:${left}%;top:${top}%`}>
+              <Sigil id={player.id} name={player.name} size={44} />
+            </div>
+          ))}
+        </div>
+        <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-[var(--border)] bg-ink/90 px-4 py-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-muted backdrop-blur">
+          hover a sigil · roles revealed inside
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell py-16 md:py-24">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <span class="eyebrow">Inside a run</span>
+        <h2 class="display mt-3 text-[clamp(1.7rem,5.2vw,3.2rem)]">From one YAML to a season.</h2>
+      </div>
+      <p class="max-w-md text-sm leading-6 text-muted">
+        The engine never writes prose. It validates actions, projects information,
+        and records events. The agents are the only source of language.
+      </p>
+    </div>
+    <div class="mt-9 grid gap-3 md:grid-cols-2 lg:grid-cols-6">
+      {pipeline.map(([number, title, copy], index) => (
+        <a
+          href={`/how-it-works#step-${number}`}
+          class="card card-hover group flex min-w-0 flex-col gap-5 p-5"
+        >
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-[10px] tracking-[0.18em] text-gold">{number}</span>
+            <span class="text-muted transition group-hover:translate-x-0.5 group-hover:text-gold" aria-hidden="true">→</span>
+          </div>
+          <div>
+            <p class="font-display text-lg leading-tight">{title}</p>
+            <p class="mt-2 text-[13px] leading-5 text-muted">{copy}</p>
+          </div>
+          {index < pipeline.length - 1 && (
+            <span class="absolute -right-2 top-1/2 hidden h-px w-4 bg-gold/30 lg:block" aria-hidden="true" />
+          )}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="stories" class="border-y border-[var(--border)] bg-black/20 py-16 md:py-24">
+    <div class="page-shell">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span class="eyebrow">Three games</span>
+          <h2 class="display mt-3 text-[clamp(1.7rem,5.2vw,3.2rem)]">Same framework. Three different rooms.</h2>
+        </div>
+        <a class="btn btn-ghost" href="/runs">All {manifest.totals.runs} runs →</a>
+      </div>
+      <div class="mt-9 grid gap-4 lg:grid-cols-3">
+        {flagshipRows.map((run) => (
+          <a href={runHref(run)} class="card card-hover group flex min-w-0 flex-col overflow-hidden">
+            <div class="flex items-center justify-between border-b border-[var(--border)] px-5 py-3">
+              <span class="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">{run.family}</span>
+              <OutcomeBadge winner={run.winningTeam} solo={run.solo} finale={run.finale} compact />
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="font-display text-2xl leading-tight tracking-[-0.03em]">{run.label}</h3>
+              <p class="mt-2 text-[13px] leading-5 text-muted">{run.blurb}</p>
+              <div class="mt-5">
+                <MiniTimeline
+                  eliminations={run.eliminations}
+                  rounds={run.rounds}
+                  survivors={run.survivors}
+                  traitors={run.traitors}
+                  compact
+                />
+              </div>
+              <dl class="mt-5 grid grid-cols-3 gap-2 border-t border-[var(--border)] pt-4">
+                <div><dt class="stat-label">players</dt><dd class="mono mt-1 text-sm">{run.players}</dd></div>
+                <div><dt class="stat-label">calls</dt><dd class="mono mt-1 text-sm">{formatNumber(run.calls)}</dd></div>
+                <div><dt class="stat-label">benchmark</dt><dd class="mono mt-1 text-sm">{formatScore(run.benchmarkScore)}</dd></div>
+              </dl>
+              {run.sampleQuote && (
+                <blockquote class="mt-5 border-l border-gold/40 pl-3 text-[12px] leading-5 text-parchment/75">
+                  “{run.sampleQuote}”
+                  <footer class="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-muted">— {run.sampleSpeaker}</footer>
+                </blockquote>
+              )}
+              <span class="mt-auto inline-flex items-center gap-2 pt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-gold">
+                Open the game
+                <span class="transition group-hover:translate-x-1" aria-hidden="true">→</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell py-16 md:py-24">
+    <div class="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+      <div>
+        <span class="eyebrow">Information is the game</span>
+        <h2 class="display mt-3 text-[clamp(1.7rem,5.2vw,3.2rem)]">Two players. One round. Different rooms.</h2>
+        <p class="lede mt-5">
+          A faithful player and a traitor in the same round do not see the same
+          conversation. The router enforces that structurally: private and
+          traitor-channel messages never reach a non-recipient.
+        </p>
+        <div class="mt-6 rounded-xl border border-[var(--border)] bg-black/20 p-4">
+          <p class="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">what this demo models</p>
+          <p class="mt-2 text-[12px] leading-5 text-muted">
+            Channel visibility only. The real prompt also carries role knowledge,
+            memory, beliefs, and a bounded transcript window.
+          </p>
+        </div>
+        <a class="btn btn-ghost mt-6" href="/how-it-works#boundary">Open the boundary explorer</a>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="card p-5">
+          <div class="flex items-center gap-3">
+            {faithful && <Sigil id={faithful.id} name={faithful.name} role="faithful" size={40} />}
+            <div>
+              <p class="font-display text-lg">{faithful?.name ?? 'Faithful'}</p>
+              <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-faithful">faithful · round {boundaryRound}</p>
+            </div>
+          </div>
+          <div class="mt-4 space-y-3">
+            {faithfulSnippet.length === 0 && <p class="text-xs text-muted">No visible messages in this sample round.</p>}
+            {faithfulSnippet.map((message) => (
+              <div class="message-card" data-channel={message.channel}>
+                <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-muted">
+                  {message.channel} · {playerName(message.from)}
+                </p>
+                <p class="mt-1 line-clamp-4 text-[12px] leading-5 text-parchment/80">{message.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="card border-traitor/25 p-5">
+          <div class="flex items-center gap-3">
+            {traitor && <Sigil id={traitor.id} name={traitor.name} role="traitor" size={40} />}
+            <div>
+              <p class="font-display text-lg">{traitor?.name ?? 'Traitor'}</p>
+              <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-traitor">traitor · round {boundaryRound}</p>
+            </div>
+          </div>
+          <div class="mt-4 space-y-3">
+            {traitorSnippet.length === 0 && <p class="text-xs text-muted">No visible messages in this sample round.</p>}
+            {traitorSnippet.map((message) => (
+              <div class="message-card" data-channel={message.channel}>
+                <p class="font-mono text-[9px] uppercase tracking-[0.12em] text-muted">
+                  {message.channel} · {playerName(message.from)}
+                </p>
+                <p class="mt-1 line-clamp-4 text-[12px] leading-5 text-parchment/80">{message.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-[var(--border)] bg-black/20 py-16 md:py-24">
+    <div class="page-shell">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span class="eyebrow">Capabilities</span>
+          <h2 class="display mt-3 text-[clamp(1.7rem,5.2vw,3.2rem)]">Proof, not vibes.</h2>
+        </div>
+        <a class="btn btn-ghost" href="/runs">Inspect the metrics lab →</a>
+      </div>
+      <div class="mt-9 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {capabilities.map(([title, copy], index) => (
+          <article class="card p-5">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] tracking-[0.18em] text-gold">{String(index + 1).padStart(2, '0')}</span>
+              <span class="h-1.5 w-1.5 rounded-full bg-gold/60" aria-hidden="true" />
+            </div>
+            <h3 class="mt-6 font-display text-xl leading-tight">{title}</h3>
+            <p class="mt-2 text-[13px] leading-5 text-muted">{copy}</p>
+          </article>
+        ))}
+      </div>
+      <div class="mt-8 grid gap-3 sm:grid-cols-3">
+        <div class="card p-4">
+          <p class="stat-value">{formatNumber(manifest.totals.tokens)}</p>
+          <p class="stat-label">model tokens recorded</p>
+        </div>
+        <div class="card p-4">
+          <p class="stat-value">690</p>
+          <p class="stat-label">deterministic tests passing</p>
+        </div>
+        <div class="card p-4">
+          <p class="stat-value">{formatPercent(indiaRow?.duplication ?? 0)}</p>
+          <p class="stat-label">duplication in the India flagship</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell py-16 md:py-24">
+    <div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <span class="eyebrow">Honest limits</span>
+        <h2 class="display mt-3 text-[clamp(1.7rem,5.2vw,3rem)]">What this does not prove.</h2>
+        <p class="lede mt-5">
+          A simulation is evidence about the framework, not about the people whose
+          names appear in it. The project keeps its known failure modes visible.
+        </p>
+      </div>
+      <div class="space-y-3">
+        <div class="card p-5">
+          <p class="font-display text-lg">Template collapse</p>
+          <p class="mt-2 text-[13px] leading-6 text-muted">
+            Long transcripts push models toward the same phrasing. The project
+            measures duplication and speech similarity instead of assuming the
+            room stays distinct.
+          </p>
+        </div>
+        <div class="card p-5">
+          <p class="font-display text-lg">Disposition, not agency</p>
+          <p class="mt-2 text-[13px] leading-6 text-muted">
+            In the end vote, faithful players still lean toward ending the game
+            even when a traitor is alive. That is a model disposition, and it is
+            measured, not hidden.
+          </p>
+        </div>
+        <div class="card p-5">
+          <p class="font-display text-lg">Ground truth is not gospel</p>
+          <p class="mt-2 text-[13px] leading-6 text-muted">
+            Some season files are marked unverified. Benchmarks are labelled as
+            alignment against recorded ground truth, not accuracy.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-12 flex flex-col items-start justify-between gap-5 rounded-2xl border border-gold/25 bg-gold/[0.04] p-6 md:flex-row md:items-center">
+      <div>
+        <p class="font-display text-2xl">Start with the data, then read the code.</p>
+        <p class="mt-1 text-sm text-muted">Every chart links to a run, a round, or a message.</p>
+      </div>
+      <div class="flex gap-2">
+        <a class="btn btn-primary" href="/runs">Open the lab</a>
+        <a class="btn btn-ghost" href="/method">Method &amp; limits</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

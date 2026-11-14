@@ -1,0 +1,18 @@
+---
+interface Props {
+  winner?: string | null;
+  solo?: boolean;
+  finale?: boolean;
+  compact?: boolean;
+}
+
+const { winner, solo = false, finale = false, compact = false } = Astro.props;
+const traitor = winner === 'traitor';
+const label = traitor ? 'Traitor win' : winner === 'faithful' ? 'Faithful win' : 'Unknown result';
+const suffix = solo ? ' · solo' : finale ? ' · finale' : '';
+---
+
+<span class:list={['badge', traitor ? 'badge-traitor' : 'badge-faithful', compact && '!px-2 !py-0.5 !text-[9px]']}>
+  <span aria-hidden="true">{traitor ? '◆' : '◇'}</span>
+  {label}{suffix}
+</span>

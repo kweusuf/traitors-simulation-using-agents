@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RunsLab from '../../components/RunsLab.tsx';
+import { families, manifest, providers, runs } from '../../lib/data';
+
+const flagshipCount = runs.filter((run) => run.flagship).length;
+const benchmarkCount = runs.filter((run) => run.hasBenchmark).length;
+---
+
+<BaseLayout
+  title="Metrics lab — Round Table"
+  description="Filter and compare every completed simulation run: outcomes, casts, duplication, reciprocity, hallucination, cost, and season benchmarks."
+>
+  <section class="relative overflow-hidden border-b border-[var(--border)]">
+    <div class="fog"></div>
+    <div class="page-shell relative py-14 md:py-20">
+      <span class="eyebrow">Metrics lab</span>
+      <h1 class="display mt-4 max-w-4xl text-[clamp(2.6rem,6vw,4.6rem)]">
+        Every run is a row.<br /><span class="text-gold">Every number is traceable.</span>
+      </h1>
+      <p class="lede mt-5 max-w-2xl">
+        {manifest.totals.runs} completed runs, {manifest.totals.playerGames} simulated
+        players, and {manifest.totals.messages.toLocaleString('en')} messages. Filter
+        by cast family, provider, outcome, or quality. Open a run to see the round-by-round
+        evidence.
+      </p>
+      <div class="mt-7 flex flex-wrap gap-2">
+        <span class="badge badge-gold">{flagshipCount} flagship deep dives</span>
+        <span class="badge">{benchmarkCount} season benchmarks</span>
+        <span class="badge">holdout seeds marked</span>
+        <span class="badge">latency intentionally omitted</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="lab" class="page-shell py-10 md:py-14">
+    <RunsLab
+      runs={runs}
+      families={families}
+      providers={providers}
+      totals={manifest.totals}
+      client:load
+    />
+
+    <div class="mt-10 grid gap-3 md:grid-cols-3">
+      <div class="card p-5">
+        <p class="stat-label">How to read quality</p>
+        <p class="mt-2 text-[13px] leading-6 text-muted">
+          Hallucination, duplication, secrecy, and reciprocity are deterministic
+          scores over the run's own messages. Lower is better for the first three;
+          higher is better for reciprocity.
+        </p>
+      </div>
+      <div class="card p-5">
+        <p class="stat-label">Why compare</p>
+        <p class="mt-2 text-[13px] leading-6 text-muted">
+          Paired gates stop a candidate from winning on one metric while quietly
+          regressing on another. Outcome fields are context, not gates.
+        </p>
+      </div>
+      <div class="card p-5">
+        <p class="stat-label">What is missing</p>
+        <p class="mt-2 text-[13px] leading-6 text-muted">
+          Absolute latency and host concurrency are omitted from public data.
+          They describe one machine, not the framework.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

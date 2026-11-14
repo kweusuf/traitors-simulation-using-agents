@@ -1,0 +1,216 @@
+{
+  "id": "the-traitors-india-s01",
+  "name": "The Traitors India, Season 1",
+  "winner_faction": "faithful",
+  "final_counts": {
+    "traitors": 2,
+    "faithful": 2
+  },
+  "cast": [
+    {
+      "id": "nikita",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 10
+    },
+    {
+      "id": "uorfi",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 10
+    },
+    {
+      "id": "harsh",
+      "role": "traitor",
+      "traitor_type": "recruited",
+      "exit_episode": 10
+    },
+    {
+      "id": "purav",
+      "role": "traitor",
+      "traitor_type": "recruited",
+      "exit_episode": 10
+    },
+    {
+      "id": "karan_kundrra",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 9
+    },
+    {
+      "id": "raj_kundrra",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 9
+    },
+    {
+      "id": "jannat",
+      "role": "traitor",
+      "traitor_type": "original",
+      "exit_episode": 8
+    },
+    {
+      "id": "anshula",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 8
+    },
+    {
+      "id": "sudhanshu",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 7
+    },
+    {
+      "id": "sahil",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 7
+    },
+    {
+      "id": "jasmine",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 6
+    },
+    {
+      "id": "mukesh",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 6
+    },
+    {
+      "id": "maheep",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 5
+    },
+    {
+      "id": "ashish",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 5
+    },
+    {
+      "id": "elnaaz",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 4
+    },
+    {
+      "id": "raftaar",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 4
+    },
+    {
+      "id": "nitish",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 3
+    },
+    {
+      "id": "sargun",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 3
+    },
+    {
+      "id": "lakshmi",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 2
+    },
+    {
+      "id": "kunal",
+      "role": "faithful",
+      "traitor_type": null,
+      "exit_episode": 2
+    }
+  ],
+  "eliminations": [
+    {
+      "episode": 1,
+      "night_victim": null,
+      "banishment": []
+    },
+    {
+      "episode": 2,
+      "night_victim": "kunal",
+      "banishment": [
+        "lakshmi"
+      ]
+    },
+    {
+      "episode": 3,
+      "night_victim": "sargun",
+      "banishment": [
+        "nitish"
+      ]
+    },
+    {
+      "episode": 4,
+      "night_victim": "raftaar",
+      "banishment": [
+        "elnaaz"
+      ]
+    },
+    {
+      "episode": 5,
+      "night_victim": "ashish",
+      "banishment": [
+        "maheep"
+      ]
+    },
+    {
+      "episode": 6,
+      "night_victim": "mukesh",
+      "banishment": [
+        "jasmine"
+      ]
+    },
+    {
+      "episode": 7,
+      "night_victim": "sahil",
+      "banishment": [
+        "sudhanshu"
+      ]
+    },
+    {
+      "episode": 8,
+      "night_victim": "anshula",
+      "banishment": [
+        "jannat"
+      ]
+    },
+    {
+      "episode": 9,
+      "night_victim": null,
+      "banishment": [
+        "karan_kundrra",
+        "raj_kundrra"
+      ]
+    },
+    {
+      "episode": 10,
+      "night_victim": null,
+      "banishment": [
+        "harsh",
+        "purav"
+      ]
+    }
+  ],
+  "recruitments": [
+    {
+      "episode": 9,
+      "target": "harsh",
+      "accepted": true
+    },
+    {
+      "episode": 9,
+      "target": "purav",
+      "accepted": true
+    }
+  ],
+  "sources": []
+}
