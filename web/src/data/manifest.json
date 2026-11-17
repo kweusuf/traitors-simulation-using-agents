@@ -9,6 +9,7 @@
     "game-010",
     "game-012",
     "india-s01-fake",
+    "india-s01-go-beam",
     "india-s01-mimo",
     "india-s01-orig-r18-conc4",
     "smoke-ptr_mem",
@@ -35,11 +36,11 @@
     "us-s03-show-conc8"
   ],
   "totals": {
-    "runs": 32,
-    "playerGames": 635,
-    "messages": 19269,
-    "calls": 24004,
-    "tokens": 179744194
+    "runs": 33,
+    "playerGames": 655,
+    "messages": 19696,
+    "calls": 24590,
+    "tokens": 181958629
   },
   "models": {
     "fake/hauhau-qwen:latest": {
@@ -56,6 +57,11 @@
       "provider": "fake",
       "model": "xiaomi/mimo-v2.6-flash",
       "label": "mimo-v2.6-flash"
+    },
+    "commandcode/beam-free": {
+      "provider": "commandcode",
+      "model": "beam-free",
+      "label": "beam-free"
     },
     "commandcode/xiaomi/mimo-v2.6-flash": {
       "provider": "commandcode",
@@ -888,6 +894,134 @@
       "reciprocity": 0.101,
       "similarityContent": 0.6231,
       "similarityPhrasing": 0.6867,
+      "benchmarkScore": null,
+      "hasBenchmark": false,
+      "hasDiagnosis": false,
+      "hasMessages": true
+    },
+    {
+      "id": "india-s01-go-beam",
+      "slug": null,
+      "label": null,
+      "blurb": null,
+      "game": "the-traitors-india-s01",
+      "season": "the-traitors-india-s01",
+      "family": "india-s01",
+      "flagship": false,
+      "holdout": false,
+      "seed": 42,
+      "players": 20,
+      "rounds": 9,
+      "traitorCount": 3,
+      "traitors": [
+        "jannat",
+        "karan_kundrra",
+        "raj_kundrra"
+      ],
+      "survivors": [
+        "elnaaz",
+        "jasmine",
+        "lakshmi",
+        "nitish",
+        "sahil"
+      ],
+      "eliminations": [
+        {
+          "id": "anshula",
+          "round": 4,
+          "method": "vote"
+        },
+        {
+          "id": "ashish",
+          "round": 3,
+          "method": "night"
+        },
+        {
+          "id": "harsh",
+          "round": 7,
+          "method": "vote"
+        },
+        {
+          "id": "jannat",
+          "round": 8,
+          "method": "vote"
+        },
+        {
+          "id": "karan_kundrra",
+          "round": 2,
+          "method": "vote"
+        },
+        {
+          "id": "kunal",
+          "round": 5,
+          "method": "vote"
+        },
+        {
+          "id": "maheep",
+          "round": 5,
+          "method": "night"
+        },
+        {
+          "id": "mukesh",
+          "round": 9,
+          "method": "vote"
+        },
+        {
+          "id": "nikita",
+          "round": 6,
+          "method": "night"
+        },
+        {
+          "id": "purav",
+          "round": 8,
+          "method": "night"
+        },
+        {
+          "id": "raftaar",
+          "round": 4,
+          "method": "night"
+        },
+        {
+          "id": "raj_kundrra",
+          "round": 3,
+          "method": "vote"
+        },
+        {
+          "id": "sargun",
+          "round": 6,
+          "method": "vote"
+        },
+        {
+          "id": "sudhanshu",
+          "round": 1,
+          "method": "vote"
+        },
+        {
+          "id": "uorfi",
+          "round": 1,
+          "method": "night"
+        }
+      ],
+      "sampleQuote": "I'm more wary of sudhanshu than anyone else right now—he's said nothing while everyone else has at least staked a position, and that silence feels like someone waiting to see which",
+      "sampleSpeaker": "anshula",
+      "winner": "faithful",
+      "winningTeam": "faithful",
+      "reason": "elimination",
+      "finale": false,
+      "solo": false,
+      "provider": "commandcode",
+      "model": "beam-free",
+      "calls": 586,
+      "totalTokens": 2214435,
+      "messages": 427,
+      "traitorMessages": 13,
+      "hallucination": 0.0,
+      "duplication": 0.0,
+      "secrecyFlags": 0,
+      "rejectedActions": 0,
+      "reciprocity": 0.6739,
+      "similarityContent": 0.5483,
+      "similarityPhrasing": 0.792,
       "benchmarkScore": null,
       "hasBenchmark": false,
       "hasDiagnosis": false,
