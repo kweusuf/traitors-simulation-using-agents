@@ -359,6 +359,9 @@ class LLMSettings(StrictModel):
     # Which environment variable holds the API key for a cloud provider.
     # Only the name is recorded here; the key lives in a gitignored .env.
     api_key_env: str = "COMMAND_CODE_API_KEY"
+    # Extra request headers for routes that route on them, such as the
+    # session id an OpenAI-compatible proxy uses for prompt caching.
+    extra_headers: dict[str, str] = Field(default_factory=dict)
     # Provider-specific knobs the normalized fields do not cover.
     options: dict[str, Any] = Field(default_factory=dict)
 
@@ -374,6 +377,7 @@ class LLMSettings(StrictModel):
             retries=self.retries,
             reasoning_effort=self.reasoning_effort,
             api_key_env=self.api_key_env,
+            extra_headers=dict(self.extra_headers),
             options=dict(self.options),
         )
 

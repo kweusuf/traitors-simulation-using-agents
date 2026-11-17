@@ -146,6 +146,28 @@ def test_configured_env_wins_over_the_default_name(
     assert seen["headers"]["Authorization"] == "Bearer configured-key"
 
 
+def test_extra_headers_reach_the_request(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MY_CMD_KEY", "secret-from-env")
+    seen: dict[str, Any] = {}
+
+    def poster(url, payload, headers, timeout):
+        seen["headers"] = headers
+        return reply(OK)
+
+    run(
+        cc.CommandCodeProvider(poster=poster),
+        make_config(
+            api_key_env="MY_CMD_KEY",
+            extra_headers={"x-session": "stable-session-id"},
+        ),
+    )
+
+    assert seen["headers"]["x-session"] == "stable-session-id"
+    assert seen["headers"]["Authorization"] == "Bearer secret-from-env"
+
+
 def test_missing_api_key_is_a_clear_config_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -170,6 +192,46 @@ def test_parses_content_and_usage(monkeypatch: pytest.MonkeyPatch) -> None:
     assert response.model == "xiaomi/mimo-v2.6-flash"
     assert response.tokens_used == 12
     assert response.input_tokens == 120
+
+
+def test_leaked_channel_scaffolding_is_stripped(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    leaked = (
+        '{"action": "public_message", "content": "hello"}'
+        "<|end|><|start|>assistant<|channel|>analysis<|message|>"
+        "We need output valid JSON only."
+    )
+    data = json.loads(json.dumps(OK))
+    data["choices"][0]["message"]["content"] = leaked
+
+    response = run(
+        cc.CommandCodeProvider(poster=lambda *a: reply(data)), make_config()
+    )
+
+    assert response.content == '{"action": "public_message", "content": "hello"}'
+    assert json.loads(response.content)["content"] == "hello"
+
+
+def test_final_channel_wins_over_leaked_analysis(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    leaked = (
+        "<|start|>assistant<|channel|>analysis<|message|>"
+        "thinking out loud<|end|>"
+        "<|start|>assistant<|channel|>final<|message|>"
+        '{"action": "public_message", "content": "hello"}'
+    )
+    data = json.loads(json.dumps(OK))
+    data["choices"][0]["message"]["content"] = leaked
+
+    response = run(
+        cc.CommandCodeProvider(poster=lambda *a: reply(data)), make_config()
+    )
+
+    assert json.loads(response.content)["content"] == "hello"
 
 
 def test_retries_transient_status(monkeypatch: pytest.MonkeyPatch) -> None:

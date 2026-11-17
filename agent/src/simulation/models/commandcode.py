@@ -16,6 +16,7 @@ import asyncio
 import http.client
 import json
 import os
+import re
 import threading
 import time
 import urllib.parse
@@ -246,12 +247,78 @@ def _growth_key(payload: dict[str, Any]) -> str:
     return "max_completion_tokens" if "max_completion_tokens" in payload else "max_tokens"
 
 
-def _grow_token_budget(payload: dict[str, Any], ceiling: int = 32768) -> None:
+def _grow_token_budget(payload: dict[str, Any], ceiling: int = 131072) -> None:
     """Double the reply cap after a truncated response, up to `ceiling`."""
     key = _growth_key(payload)
     current = payload.get(key)
     if isinstance(current, int) and current > 0:
         payload[key] = min(current * 2, ceiling)
+
+
+_HARMONY_TOKEN = re.compile(r"<\|[^|>]*\|>")
+_CHANNEL_BLOCK = re.compile(
+    r"<\|channel\|>\s*(?P<channel>[a-zA-Z_]+)\s*<\|message\|>"
+    r"(?P<body>.*?)(?=<\|end\|>|<\|start\|>|\Z)",
+    re.DOTALL,
+)
+
+
+def _first_json_object(text: str) -> str | None:
+    """The first balanced `{...}` object in `text`, or None."""
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+        elif char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+    return None
+
+
+def _sanitize_content(text: str) -> str:
+    """Remove chat-template scaffolding that some routes leak into content.
+
+    A model occasionally emits its Harmony-style channel markers as literal
+    text, so a final-channel reply arrives followed by a second analysis
+    segment. When a final channel is present, its bodies are the reply;
+    otherwise the markers are stripped and, if the leftover tail makes the
+    text unparseable, the first balanced JSON object is kept. Both keep the
+    visible JSON intact, whereas the raw markers poison message text and
+    stored transcripts.
+    """
+    if "<|" not in text:
+        return text
+    finals = [
+        match.group("body")
+        for match in _CHANNEL_BLOCK.finditer(text)
+        if match.group("channel").lower() == "final"
+    ]
+    if finals and any(part.strip() for part in finals):
+        return "".join(finals).strip()
+    cleaned = _HARMONY_TOKEN.sub("", text).strip()
+    try:
+        json.loads(cleaned)
+    except json.JSONDecodeError:
+        candidate = _first_json_object(cleaned)
+        if candidate is not None:
+            return candidate
+    return cleaned
 
 
 def _content_of(message: Any) -> str:
@@ -300,6 +367,7 @@ class CommandCodeProvider:
             "Authorization": f"Bearer {key}",
             "Content-Type": "application/json",
             "User-Agent": "traitors-simulation/0.1",
+            **config.extra_headers,
         }
         started = time.monotonic()
         max_retries = max(0, int(config.retries))
@@ -405,7 +473,7 @@ class CommandCodeProvider:
         choice = choices[0] if isinstance(choices[0], dict) else {}
         finish_reason = choice.get("finish_reason")
         message = choice.get("message")
-        content = _content_of(message)
+        content = _sanitize_content(_content_of(message))
         if finish_reason == "length":
             # A cut-off reply is not an answer, even if some content came
             # back; the runtime would only reject the truncated JSON. Retry
