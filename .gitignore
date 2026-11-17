@@ -30,3 +30,7 @@ web/.astro/
 web/.vercel/
 web/playwright-report/
 web/test-results/
+
+# Site source that a global scripts/ ignore would otherwise hide
+!web/scripts/
+!web/scripts/**
