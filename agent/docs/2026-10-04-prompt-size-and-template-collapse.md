@@ -58,16 +58,15 @@ is another line beginning "Tom, you've been...".
 That predicts something specific, and the prediction held: agents with
 *different* prompts emitting *identical* text. Measured on the diagnostic
 run, the eight players behind one repeated line had eight different prompt
-lengths (3,425 / 4,418 / 4,425 / 4,431 / 4,437 / 4,440 / 5,053 / 5,059), and
-only 2 of 77 prompt lengths were shared across senders. They were not being
-fed the same prompt. They were each equally unable to see the room.
+lengths, and only a small fraction were shared across senders. They were not
+being fed the same prompt. They were each equally unable to see the room.
 
-It also predicted the latency profile, which is prompt-processing cost:
-p50 around 90 seconds per call, climbing with prompt size.
+It also predicted the cost profile, which is prompt processing: calls get
+slower as the prompt grows.
 
-The context window was never the limit. The server reported 131k tokens
-against prompts of about 8k early and roughly 17k by round 3. What grows is
-the transcript, unbounded, until the model stops tracking it.
+The context window was never the limit. The server reported far more
+context than the prompts used. What grows is the transcript, unbounded,
+until the model stops tracking it.
 
 
 ## Two strategies, four arms
@@ -122,7 +121,7 @@ characters is capped.
 
 Public repeat rate, verbatim, public channel only:
 
-| Run | Arm | Msgs | Repeat | Rate | Max shared | p50 prompt | Failed |
+| Run | Arm | Msgs | Repeat | Rate | Max shared | median prompt | Failed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `uk-s01-en3` | base (older) | 574 | 141 | 25% | 9 | 51,995 | 13% |
 | `uk-s01-en4` | base | 225 | 52 | 23% | 8 | 40,626 | 15% |
@@ -158,7 +157,7 @@ lengths and the memory half is neither confirmed nor excluded.
 
 **An earlier explanation was wrong.** The prompt curve flattening in
 `ptr_mem` was first attributed to pointers giving the transcript something to
-decay into. That is not what happened: both pointer arms sit at about 26k
+decay into. That is not what happened: both pointer arms sit at the window cap
 because `transcript_messages_per_prompt: 40` caps the window. The pointer
 memory did not reduce the transcript window. Correcting this matters because
 it points at a different next lever - the window itself, and what happens
@@ -168,10 +167,9 @@ when it is tightened without pointer memory to absorb the loss.
 speech. Whatever the pointers bought, the remaining collapse has another
 cause that this did not identify.
 
-**Latency did not improve.** An early claim that the pointer arm ran four
-times faster with no failures was drawn from 51 calls in round 1. Over the
-full 1,007 calls, `ptr_mem` ran at p50 81s with 14% failures, against the
-base's 94s and 17%. Shorter prompts did not make the host faster. The
+**Latency did not improve.** An early claim that the pointer arm ran much
+faster with no failures was drawn from a partial run. Over the full run it
+matched the baseline. Shorter prompts did not make the host faster. The
 early-round sample was noise.
 
 **Illegal targets persist.** The most recent error in `ptr_req` was

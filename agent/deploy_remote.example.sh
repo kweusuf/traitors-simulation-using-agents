@@ -41,20 +41,23 @@ echo "Pushing to registry..."
 "$BUILDER" push "$REGISTRY:$IMAGE_TAG"
 
 echo "Pulling on remote and running..."
+# Quote every interpolated value for the remote shell. A value containing a
+# single quote would otherwise break out of the command.
+q() { printf '%q' "$1"; }
 # `$REMOTE_RUNS_DIR` must be writable by the container user (uid 1000). On a
 # rootless remote host, either chown the directory to 1000:1000 or run the
 # container with --userns=keep-id.
 ssh "$REMOTE_USER@$REMOTE_HOST" "
   set -euo pipefail
-  podman pull '$REGISTRY:$IMAGE_TAG'
-  mkdir -p '$REMOTE_RUNS_DIR' '$REMOTE_CONFIGS_DIR'
-  podman rm -f '$CONTAINER_NAME' 2>/dev/null || true
-  podman run -d --name '$CONTAINER_NAME' --network host \
-    -v '$REMOTE_RUNS_DIR:/app/runs' \
-    -v '$REMOTE_CONFIGS_DIR:/app/configs:ro' \
-    '$REGISTRY:$IMAGE_TAG' run '$CONFIG_FILE' \
-      --provider '$PROVIDER' --base-url '$BASE_URL' --model '$MODEL'
-  echo 'Container started: $CONTAINER_NAME'
+  podman pull $(q "$REGISTRY:$IMAGE_TAG")
+  mkdir -p $(q "$REMOTE_RUNS_DIR") $(q "$REMOTE_CONFIGS_DIR")
+  podman rm -f $(q "$CONTAINER_NAME") 2>/dev/null || true
+  podman run -d --name $(q "$CONTAINER_NAME") --network host \
+    -v $(q "$REMOTE_RUNS_DIR:/app/runs") \
+    -v $(q "$REMOTE_CONFIGS_DIR:/app/configs:ro") \
+    $(q "$REGISTRY:$IMAGE_TAG") run $(q "$CONFIG_FILE") \
+      --provider $(q "$PROVIDER") --base-url $(q "$BASE_URL") --model $(q "$MODEL")
+  echo 'Container started:' $(q "$CONTAINER_NAME")
 "
 
 echo "Monitoring logs from remote (Ctrl+C to stop following)..."

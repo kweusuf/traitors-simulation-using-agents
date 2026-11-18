@@ -14,6 +14,9 @@ ollama-model/
 *.gguf
 # Local, machine-specific configs (remote Ollama endpoint etc.)
 *.local.yaml
+# Temporary arm files, including a local twin captured by a checkpoint once
+*.tmp
+*.local.yaml.*
 # Local secrets (the tracked template is .env.example)
 .env
 !.env.example
@@ -23,6 +26,13 @@ cursor_*.md
 # they stay out of a public repo.
 AGENTS.md
 CLAUDE.md
+
+# Local editor and agent state
+.kilo/
+.serena/
+.delta/
+.cursor/
+.vscode/
 
 # Website build artifacts
 web/node_modules/
@@ -34,3 +44,8 @@ web/test-results/
 # Site source that a global scripts/ ignore would otherwise hide
 !web/scripts/
 !web/scripts/**
+
+# The local-detail guard lives at the repo root; the same global ignore
+# would otherwise hide it.
+!scripts/
+!scripts/check_no_local_detail.py

@@ -179,6 +179,120 @@ def test_missing_api_key_is_a_clear_config_error(
         run(provider, make_config())
 
 
+def test_other_providers_key_does_not_fall_back_to_command_code(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("COMMAND_CODE_API_KEY", "command-code-key")
+    monkeypatch.delenv("OPENCODE_GO_API_KEY", raising=False)
+    called = False
+
+    def poster(*args: Any) -> tuple[int, bytes]:
+        nonlocal called
+        called = True
+        return reply(OK)
+
+    with pytest.raises(ValueError, match="OPENCODE_GO_API_KEY"):
+        run(
+            cc.CommandCodeProvider(poster=poster),
+            make_config(api_key_env="OPENCODE_GO_API_KEY"),
+        )
+    assert called is False
+
+
+def test_refuses_plain_http_off_loopback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    called = False
+
+    def poster(*args: Any) -> tuple[int, bytes]:
+        nonlocal called
+        called = True
+        return reply(OK)
+
+    with pytest.raises(cc.CommandCodeError, match="refusing to send an API key"):
+        run(
+            cc.CommandCodeProvider(poster=poster),
+            make_config(
+                api_key_env="MY_CMD_KEY",
+                base_url="http://models.example.com/v1",
+            ),
+        )
+    assert called is False
+
+
+def test_allows_loopback_http_for_a_local_proxy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    seen: dict[str, Any] = {}
+
+    def poster(url, payload, headers, timeout):
+        seen["url"] = url
+        return reply(OK)
+
+    run(
+        cc.CommandCodeProvider(poster=poster),
+        make_config(
+            api_key_env="MY_CMD_KEY",
+            base_url="http://127.0.0.1:11434/v1",
+        ),
+    )
+
+    assert seen["url"] == "http://127.0.0.1:11434/v1/chat/completions"
+
+
+def test_transport_option_is_not_sent_to_the_provider(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    config = make_config(
+        api_key_env="MY_CMD_KEY",
+        base_url="http://127.0.0.1:11434/v1",
+        options={"allow_insecure_http": True},
+    )
+
+    payload = cc.build_payload(MESSAGES, Action, config)
+
+    assert "allow_insecure_http" not in payload
+
+
+def test_provider_owned_headers_cannot_be_overridden(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MY_CMD_KEY", "secret")
+
+    with pytest.raises(ValueError, match="may not override"):
+        run(
+            cc.CommandCodeProvider(poster=lambda *a: reply(OK)),
+            make_config(
+                api_key_env="MY_CMD_KEY",
+                extra_headers={"Authorization": "Bearer other"},
+            ),
+        )
+
+
+def test_error_detail_redacts_credentials(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    secret = "Bearer abcdefghijklmnop"
+
+    def poster(*args: Any) -> tuple[int, bytes]:
+        return 401, f'{{"error": "bad {secret}"}}'.encode("utf-8")
+
+    with pytest.raises(cc.CommandCodeError) as caught:
+        run(cc.CommandCodeProvider(poster=poster), make_config(api_key_env="MY_CMD_KEY"))
+
+    assert secret not in str(caught.value)
+    assert "[redacted]" in str(caught.value)
+
+
+def test_api_key_env_must_be_a_name_not_a_value() -> None:
+    with pytest.raises(Exception, match="environment variable name"):
+        make_config(api_key_env="not-an-env-name")
+
+
 # ----------------------------------------------------------------------
 # Parsing and retries
 # ----------------------------------------------------------------------

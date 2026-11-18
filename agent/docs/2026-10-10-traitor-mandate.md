@@ -34,11 +34,11 @@ this way flipped the result, and it was not the flag in the arm's name.
 
 - **The rules.** The configs differ only in transport settings, so the game
   being played is the same game.
-- **Concurrency, or the endpoint.** Neither orders the outcomes: the two runs
-  at one call in flight disagree with each other (traitor on one endpoint,
-  faithful on the other), so neither setting can explain the side that won.
-  What fell as concurrency rose was the round count, which is a consequence of
-  the run ending sooner, not a lever on who ended it.
+- **Concurrency, or the endpoint.** Neither orders the outcomes: the runs at
+  the lowest in-flight level disagree with each other (traitor on one
+  endpoint, faithful on the other), so neither setting can explain the side
+  that won. What fell as concurrency rose was the round count, which is a
+  consequence of the run ending sooner, not a lever on who ended it.
 - **Message volume.** Across the four runs the traitor-to-faithful message
   ratio sat between 0.97 and 1.13 - the room was not talking more or less in
   the runs the faithful won. There is no volume story here.

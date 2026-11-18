@@ -98,8 +98,8 @@ llm:
   # unloads after ~5 idle minutes, and a reload can take a while.
   timeout_seconds: 300
   retries: 3              # extra attempts for timeouts and 5xx
-  # Measured on the remote host: 4 concurrent calls give ~3.4x the
-  # throughput of serial calls (turns within a phase run together).
+  # Turns within a phase run together; the gateway caps how many calls are
+  # in flight at once.
   max_concurrency: 4
   options: {}
 

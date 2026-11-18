@@ -31,11 +31,23 @@ Poster = Callable[
 ]
 
 DEFAULT_API_KEY_ENV = "COMMAND_CODE_API_KEY"
-# The Command Code CLI documents `CMD_API_KEY`; accept it as a fallback
-# so a shell that already has that exported works without renaming.
+# The Command Code CLI documents `CMD_API_KEY`; accept it as an alias for
+# Command Code only. It must never be used when a config names another
+# provider's key variable, or that key would be sent to the wrong host.
 FALLBACK_API_KEY_ENVS = ("CMD_API_KEY",)
 
 RETRY_BACKOFF = (1.0, 2.0, 4.0)
+
+# Plain HTTP is acceptable only for a local model proxy. Anywhere else a
+# bearer token would be readable on the wire.
+_LOOPBACK_HOSTS = frozenset({"localhost", "127.0.0.1", "::1"})
+
+_SECRET_IN_TEXT = re.compile(
+    r"(?i)(?:bearer\s+|sk-|sk_live_|sk_test_|ghp_|gho_|ghs_|github_pat_|"
+    r"glpat_|glpat-|xox[baprs]-|xoxc-|xoxp-|AKIA|AIza|oc_|npm_|pypi-)"
+    r"[A-Za-z0-9_.\-]{6,}"
+)
+_URL_USERINFO = re.compile(r"(?i)(https?://)[^/@\s]+@")
 
 # One live connection per thread, per origin. The call runs in a worker
 # thread from `asyncio.to_thread`, and two threads must not send on one
@@ -160,31 +172,63 @@ def _http_post(
             if reused and not retried:
                 continue
             raise CommandCodeError(
-                f"connection to {url} failed: {exc}", retryable=True
+                f"connection to {_redact(url)} failed: {_redact(str(exc))}",
+                retryable=True,
             ) from exc
         except TimeoutError as exc:
             _drop(url)
             raise CommandCodeError(
-                f"Command Code request to {url} timed out after {timeout}s",
+                f"Command Code request to {_redact(url)} timed out after "
+                f"{timeout}s",
                 retryable=True,
             ) from exc
         except OSError as exc:
             _drop(url)
             raise CommandCodeError(
-                f"connection to {url} failed: {exc}", retryable=True
+                f"connection to {_redact(url)} failed: {_redact(str(exc))}",
+                retryable=True,
             ) from exc
 
-    raise CommandCodeError(f"connection to {url} failed", retryable=True)
+    raise CommandCodeError(
+        f"connection to {_redact(url)} failed", retryable=True
+    )
+
+
+def _redact(text: str) -> str:
+    """Remove credential shapes and URL userinfo from text that may be logged."""
+    text = _URL_USERINFO.sub(r"\1[redacted]@", text)
+    return _SECRET_IN_TEXT.sub("[redacted]", text)
+
+
+def _require_secure_transport(url: str, config: ModelConfig) -> None:
+    """Refuse to put a bearer token on a plaintext non-loopback connection."""
+    parts = urllib.parse.urlsplit(url)
+    if parts.scheme == "https":
+        return
+    if parts.scheme == "http" and (parts.hostname or "").lower() in _LOOPBACK_HOSTS:
+        return
+    if config.options.get("allow_insecure_http") is True:
+        return
+    raise CommandCodeError(
+        "refusing to send an API key over "
+        f"{parts.scheme or 'an unknown scheme'}; use https, a loopback "
+        "address, or set llm.options.allow_insecure_http for a trusted local proxy"
+    )
 
 
 def resolve_api_key(config: ModelConfig) -> str:
-    """The key from `config.api_key_env`, then known Command Code names."""
-    names: list[str] = []
-    if config.api_key_env:
-        names.append(config.api_key_env)
-    for name in (DEFAULT_API_KEY_ENV, *FALLBACK_API_KEY_ENVS):
-        if name not in names:
-            names.append(name)
+    """The key from `config.api_key_env`, or Command Code's own aliases.
+
+    When a config names a different provider's variable, that name is the
+    only one tried. Falling back to `COMMAND_CODE_API_KEY` there would
+    send a Command Code key to the other provider's endpoint.
+    """
+    configured = (config.api_key_env or "").strip()
+    names: list[str] = [configured] if configured else [DEFAULT_API_KEY_ENV]
+    if not configured or configured == DEFAULT_API_KEY_ENV:
+        names.extend(
+            name for name in FALLBACK_API_KEY_ENVS if name not in names
+        )
 
     for name in names:
         value = os.environ.get(name, "").strip()
@@ -192,7 +236,7 @@ def resolve_api_key(config: ModelConfig) -> str:
             return value
     raise ValueError(
         "the commandcode provider needs an API key: set "
-        f"{config.api_key_env or DEFAULT_API_KEY_ENV} in .env "
+        f"{configured or DEFAULT_API_KEY_ENV} in .env "
         "(copy .env.example to .env) or export it in the shell"
     )
 
@@ -217,6 +261,10 @@ def build_payload(
     force_effort = bool(options.pop("send_reasoning_effort", False))
     if effort and (force_effort or effort not in {"none", "off", "false", "0"}):
         payload["reasoning_effort"] = config.reasoning_effort
+
+    # A local transport permission, not a request field. Some OpenAI-shaped
+    # routes reject unknown body arguments, so it must not reach the wire.
+    options.pop("allow_insecure_http", None)
 
     structured = bool(options.pop("json_schema", True))
     if "max_completion_tokens" in options:
@@ -359,10 +407,11 @@ class CommandCodeProvider:
         response_schema: type,
         config: ModelConfig,
     ) -> LLMResponse:
-        key = resolve_api_key(config)
         payload = build_payload(messages, response_schema, config)
         self.calls += 1
         url = f"{config.base_url.rstrip('/')}/chat/completions"
+        _require_secure_transport(url, config)
+        key = resolve_api_key(config)
         headers = {
             "Authorization": f"Bearer {key}",
             "Content-Type": "application/json",
@@ -405,7 +454,7 @@ class CommandCodeProvider:
             if status >= 400:
                 detail = raw.decode("utf-8", errors="replace")
                 error = CommandCodeError(
-                    f"HTTP {status} from {url}: {detail[:500]}",
+                    f"HTTP {status} from {_redact(url)}: {_redact(detail[:500])}",
                     retryable=status >= 500 or status == 429,
                 )
                 if not error.retryable or attempt >= max_retries:
@@ -423,7 +472,8 @@ class CommandCodeProvider:
                 data = json.loads(raw.decode("utf-8"))
             except (UnicodeDecodeError, json.JSONDecodeError) as exc:
                 error = CommandCodeError(
-                    f"non-JSON response from {url}: {raw[:200]!r}",
+                    f"non-JSON response from {_redact(url)}: "
+                    f"{_redact(repr(raw[:200]))}",
                     retryable=True,
                 )
                 if attempt >= max_retries:
@@ -457,17 +507,19 @@ class CommandCodeProvider:
     ) -> LLMResponse:
         if not isinstance(data, dict):
             raise CommandCodeError(
-                f"malformed Command Code response: {str(data)[:200]}",
+                f"malformed Command Code response: {_redact(str(data)[:200])}",
                 retryable=True,
             )
         if data.get("error"):
             raise CommandCodeError(
-                f"Command Code error: {data['error']}", retryable=False
+                f"Command Code error: {_redact(str(data['error']))}",
+                retryable=False,
             )
         choices = data.get("choices")
         if not isinstance(choices, list) or not choices:
             raise CommandCodeError(
-                f"Command Code response has no choices: {str(data)[:200]}",
+                f"Command Code response has no choices: "
+                f"{_redact(str(data)[:200])}",
                 retryable=True,
             )
         choice = choices[0] if isinstance(choices[0], dict) else {}

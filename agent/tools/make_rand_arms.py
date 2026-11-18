@@ -48,17 +48,15 @@ ARMS = ("fix_en", "noecho", "ptr_opt", "ptr_req", "ptr_mem", "ledger",
         "ledger_room")
 
 # One request in flight per arm rather than the tracked four: the sweep runs
-# every arm at once against a single host, and the arms themselves record 8
-# in flight as clean and 16 as degraded, because past what a host serves in
-# parallel the extra requests only queue into the timeout. Seven arms at four
-# apiece would be 28.
+# every arm at once, so each arm gives up its share of the endpoint rather
+# than every arm's calls landing at once.
 SWEEP_CONCURRENCY = 1
 
 # Anchored on the comment the arms carry above the value, so the replacement
 # cannot land on some other `max_concurrency` line. The match count is
 # asserted: a generator that silently stops matching is worse than none.
 CONCURRENCY_BLOCK = re.compile(
-    r"  # 4 in flight,.*?  max_concurrency: \d+\n", re.DOTALL
+    r"  # The in-flight level is kept.*?  max_concurrency: \d+\n", re.DOTALL
 )
 PIN_LINE = re.compile(r"^  traitor_names: \[[^\]]*\]\n", re.MULTILINE)
 SEED_LINE = re.compile(r"^seed: \d+\n", re.MULTILINE)
@@ -73,11 +71,10 @@ HEADER = """\
 #
 {rule}
 #
-# max_concurrency is {conc} in flight per arm rather than {arm_conc}, so all
-# {n} arms can run at once on one host; {n} arms at {arm_conc} apiece would be
-# {naive} in flight. Neither number is a measured host limit: those levels came
-# through a client that announced `Connection: close` on every request, which
-# the server dropped most of the time (see the header of fix_hl).
+# max_concurrency is {conc} in flight per arm rather than {arm_conc}, so the
+# sweep can run several arms at once. An in-flight level, not a measured
+# capacity - see the header of fix_hl for why the earlier readings cannot be
+# read as one.
 #
 # The rest of the file is the tracked arm byte for byte.
 """
@@ -107,10 +104,9 @@ def render(text: str, seed: int, arm_conc: int) -> str:
     text, n_pin = PIN_LINE.subn("", text, count=1)
     text, n_conc = CONCURRENCY_BLOCK.subn(
         f"  # {SWEEP_CONCURRENCY} in flight: the random-deal arms are meant to\n"
-        f"  # run together on one host, so each gives up its share of the host\n"
-        f"  # rather than every arm's calls landing at once. An in-flight level,\n"
-        f"  # not a measured host limit - see the header of fix_hl for why the\n"
-        f"  # earlier host numbers cannot be read as one.\n"
+        f"  # run together, so each gives up its share of the endpoint rather\n"
+        f"  # than every arm's calls landing at once. An in-flight level, not a\n"
+        f"  # measured capacity - see the header of fix_hl.\n"
         f"  # If this run stalls: --resume --idle-seconds 5\n"
         f"  max_concurrency: {SWEEP_CONCURRENCY}\n",
         text, count=1,
@@ -179,9 +175,8 @@ def main() -> None:
         out = CONFIGS / f"season_uk_s01.{name}.rand.yaml"
         out.write_text(
             HEADER.format(
-                source=arm.name, arm=name, n=len(names),
+                source=arm.name, arm=name,
                 arm_conc=raw["llm"]["max_concurrency"],
-                naive=raw["llm"]["max_concurrency"] * len(names),
                 conc=SWEEP_CONCURRENCY,
                 rule=(
                     f"# seed {seed}: the lowest seed whose draw keeps none of\n"

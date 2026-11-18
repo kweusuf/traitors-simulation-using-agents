@@ -144,7 +144,7 @@ alex: your message names 'Otherwise', which is not a player in this game
 `"Otherwise, ..."` is the same shape of ordinary prose as the markers
 already listed, and it is not rare enough to leave out. Same defect class
 as the closed However/Meanwhile entry above: one false positive discards a
-real turn, here on a call that p50s at ~77s.
+real turn, here on an already-slow call.
 
 The run's other two phantom rejections were real — `Ilya`, invented by
 aaron in r1 and again by andrea in r5 — so the gate catches true phantoms

@@ -1,13 +1,13 @@
 # r2 resume variant: identical to season_uk_s01.r2.yaml except
 # max_concurrency is 4 instead of 8.
 #
-# r1 is resuming at concurrency 16 against the same host at the same time.
-# 16 + 8 = 24 in-flight calls was taken to be the load that wedged this host
-# and killed r1 and r2 outright, so the resumed r2 runs at 4 instead. That
-# attribution has since been withdrawn: the losses were coming from the
-# client announcing `Connection: close` on every request, not from how many
-# were in flight (see the header of season_uk_s01.fix_hl.yaml). The value is
-# left at 4 so this run stays comparable to the ones measured against it.
+# r1 was resuming at a higher concurrency at the same time. The combined
+# in-flight load was taken to be what wedged the endpoint and killed r1 and
+# r2 outright, so the resumed r2 runs at 4 instead. That attribution has
+# since been withdrawn: the losses were coming from the client announcing
+# `Connection: close` on every request, not from how many were in flight (see
+# the header of season_uk_s01.fix_hl.yaml). The value is left at 4 so this
+# run stays comparable to the ones measured against it.
 # Game logic is unaffected either way: concurrency only decides how many
 # turns are in flight, not what any of them decide.
 #

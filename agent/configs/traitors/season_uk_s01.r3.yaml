@@ -1,6 +1,6 @@
 # Third UK Series 1 replay: same cast and rules as uk-s01-r2, with
-# max_concurrency doubled from 8 to 16. Runs alongside r2 on the same
-# remote host, so combined load is 24 in-flight calls.
+# max_concurrency doubled. It runs alongside r2, so the two share the
+# endpoint.
 # Season replay: The Traitors (UK), Series 1 (BBC One, 2022).
 #
 # Ground truth lives in configs/seasons/the-traitors-uk-s01.yaml and the

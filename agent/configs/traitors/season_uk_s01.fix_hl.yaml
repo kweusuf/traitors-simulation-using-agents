@@ -21,23 +21,22 @@
 #    otherwise; a server that answers a close-announced request by closing
 #    it turned most calls into `RemoteDisconnected`. The same requests over
 #    a kept-alive connection were not dropped at all, at the same
-#    concurrency, in the same minute. So the in-flight levels recorded here
-#    - one clean, one degraded, one that wedged the host - are observations
+#    concurrency. So the in-flight levels recorded here are observations
 #    made through that client, not a measured host capacity. The provider
 #    now holds its connection (models/ollama.py); re-measure before treating
 #    any in-flight number as a ceiling.
 # 2. The same model tag does not imply the same weights. The two hosts
-#    carried different digests under an identical tag, so a split-host pair
-#    could never have isolated language anyway. Verify the digest on every
+#    carried different weights under an identical tag, so a split-host pair
+#    could never have isolated language anyway. Verify the weights on every
 #    host before treating a pair as single-variable.
 # 3. A single-call smoke test cannot clear a host for a run. One call
 #    returned valid JSON while most calls were being dropped, which is the
 #    same trap from the other side: probe at the concurrency you will run,
 #    over the transport you will run on.
 #
-# Consequence worth fixing separately: a transport failure kills an
-# eight-hour run outright instead of skipping one action. The resume
-# machinery exists for this and tools/run_rand_sweep.py invokes it per arm;
+# Consequence worth fixing separately: a transport failure kills a long run
+# outright instead of skipping one action. The resume machinery exists for
+# this and tools/run_rand_sweep.py invokes it per arm;
 # a run started by hand still dies where it stands. Resume also assumes the
 # failure was transient: an arm that dies in the same phase every time
 # spends its attempts replaying that phase rather than making progress, and
@@ -152,22 +151,17 @@ llm:
   model: hauhau-qwen:latest
   base_url: http://HOST_A:11434  # override per machine; see the header note
   temperature: 0.7
-  # 768, raised from 512. Hinglish output runs long: in this very run it
-  # p50'd at 313 tokens and p99'd at exactly the old 512 cap, with 11
-  # replies truncated mid-sentence and lost to a JSON parse error. 768
-  # clears the observed p99 with headroom without doubling the tail
-  # latency, since only ~2% of replies go past 512.
+  # 768, raised from 512. Some replies were truncated mid-sentence at the
+  # old cap and lost to a JSON parse error. 768 clears the observed tail
+  # with headroom.
   max_tokens: 768
   reasoning_effort: none
   timeout_seconds: 300
   retries: 3
-  # 4 in flight, matching the English control so the pair differs by
-  # language alone, and left at 4 so this run stays comparable to the ones
-  # already recorded on this arm. Not a measured host limit: the readings
-  # that named 8 in flight as clean and 16 as degraded came through a client
-  # that announced `Connection: close` on every request, which this server
-  # dropped most of the time (see the header of fix_hl).
-  # If a run stalls: --resume --idle-seconds 5
+  # The in-flight level is kept for comparability with the runs already
+  # recorded on this arm. Earlier readings came through a client that
+  # dropped requests, so they are not a host capacity; re-measure before
+  # treating this level as a ceiling.
   max_concurrency: 4
   options: {}
 

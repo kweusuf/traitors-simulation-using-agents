@@ -3,7 +3,9 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from simulation.cli.main import run_db_path
+import pytest
+
+from simulation.cli.main import load_run_metrics, open_run_dir, run_db_path
 
 
 class _Args(argparse.Namespace):
@@ -30,3 +32,16 @@ def test_explicit_memory_db_is_not_overridden():
 def test_runs_dir_is_respected():
     args = _Args(runs_dir="elsewhere", db=None)
     assert run_db_path(args, "uk-s01-en5") == str(Path("elsewhere/uk-s01-en5/game.db"))
+
+
+def test_game_id_cannot_escape_the_runs_dir(tmp_path: Path):
+    runs = tmp_path / "runs"
+    runs.mkdir()
+    args = _Args(runs_dir=str(runs), db=None)
+
+    with pytest.raises(ValueError, match="outside"):
+        run_db_path(args, "../escape")
+    with pytest.raises(ValueError, match="outside"):
+        open_run_dir("../escape", str(runs))
+    with pytest.raises(ValueError, match="outside"):
+        load_run_metrics("../escape", str(runs))

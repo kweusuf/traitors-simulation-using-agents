@@ -269,27 +269,26 @@ object afterwards is still unmeasured, and that is open in
 
 ### Verify host state before a long run, not after it fails
 
-**Decision.** Check `/api/ps` for context length and residency before
+**Decision.** Check the server's actual context length and residency before
 launching.
 
 **Reasoning.** Two runs were lost to host state assumed rather than checked:
-the 27B (weights-on-disk arithmetic said it fit; resident memory said
-otherwise) and the context window (`n_ctx: 4096` serving a model that reports
-262144).
+a model whose on-disk size suggested it would fit but whose resident
+footprint did not, and a server process serving a smaller context window
+than the model advertised.
 
-**Benefit.** Both are now a ten-second check instead of a lost run. See
+**Benefit.** Both are now a short check instead of a lost run. See
 [learnings.md](learnings.md#the-hosts-context-size-is-server-state-not-config).
 
 ### Concurrent runs are capped at an in-flight level, not at a measured capacity
 
 **Decision.** `max_concurrency: 4`, two runs at once - kept, not re-derived.
 
-**Reasoning.** The numbers that chose it came through a client that
-announced `Connection: close` on every request, which this server dropped most
-of the time: an in-flight level that looked clean, one that looked degraded,
-and one that wedged the host. They measure the client, so they cannot be read
-as a host capacity. The level is kept because raising it now would move the ground under
-the runs already recorded against these arms.
+**Reasoning.** The readings that chose it came through a client that
+announced `Connection: close` on every request, which the server dropped most
+of the time. They measure the client, so they cannot be read as a host
+capacity. The level is kept because raising it now would move the ground
+under the runs already recorded against these arms.
 
 **Benefit.** With that header gone an in-flight level is a knob again: raise it
 and measure, instead of inheriting a ceiling nobody established. See

@@ -11,9 +11,8 @@ One transport decision lives here rather than in config. The POST runs
 over a kept-alive `http.client` connection, never
 `urllib.request.urlopen`: `urlopen` announces `Connection: close` on
 every request, and a server that answers a close-announced request by
-dropping the connection turns most calls into `RemoteDisconnected`.
-Measured against one such host, 1-2 of 8 requests succeeded with that
-header and 8 of 8 without it, the same moment, no load. The provider's
+dropping the connection turns most calls into `RemoteDisconnected`. The
+same requests over a kept-alive connection are not dropped. The provider's
 retry loop is not compensation for that - it spends its budget and ends
 the run.
 """

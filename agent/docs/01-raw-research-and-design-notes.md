@@ -920,16 +920,16 @@ Source: https://ollama.com/library/qwen3/tags
 
 # 19. Local Mac Strategy
 
-The user has an M4 MacBook Air 13-inch.
-
-Exact unified-memory configuration is still an open question.
+The local development target is a Mac; exact unified-memory configuration is
+still an open question.
 
 General guidance:
 
--   16 GB: small/medium models and carefully managed 20B-class models.
--   24 GB: 20B-class models become much more practical; 30B quantized
-    models may be viable.
--   32 GB: 20B and 30B-class experiments become more comfortable.
+-   Small/medium models and carefully managed 20B-class models fit in a
+    modest unified-memory budget.
+-   20B-class models become practical with more memory; 30B quantized models
+    may be viable.
+-   30B-class experiments become more comfortable with more headroom.
 -   More memory allows larger models and longer contexts.
 
 The experiment does not require one model instance per agent.
@@ -1603,9 +1603,7 @@ Also test:
 
 # 36. Local Hardware Strategy
 
-The user has an M4 MacBook Air.
-
-Exact RAM configuration is not yet known.
+The exact local hardware configuration is not fixed.
 
 The practical strategy is:
 

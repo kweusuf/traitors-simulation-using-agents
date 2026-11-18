@@ -6,11 +6,34 @@ provider-specific code. Ollama lands in Phase 10; cloud providers later.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Optional, Protocol
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from simulation.models.base import ChatMessage, StrictModel
+
+ENV_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+UNSAFE_HEADERS = frozenset(
+    {"authorization", "host", "content-length", "connection", "transfer-encoding"}
+)
+
+
+def check_api_key_env(value: str) -> str:
+    if value and not ENV_NAME.fullmatch(value):
+        raise ValueError(
+            "api_key_env must be an environment variable name, not a value"
+        )
+    return value
+
+
+def check_extra_headers(value: dict[str, str]) -> dict[str, str]:
+    bad = sorted(
+        name for name in value if name.strip().lower() in UNSAFE_HEADERS
+    )
+    if bad:
+        raise ValueError("llm.extra_headers may not override: " + ", ".join(bad))
+    return value
 
 
 class ModelConfig(StrictModel):
@@ -37,6 +60,16 @@ class ModelConfig(StrictModel):
     # session id an OpenAI-compatible proxy uses for prompt caching.
     extra_headers: dict[str, str] = Field(default_factory=dict)
     options: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("api_key_env")
+    @classmethod
+    def _check_api_key_env(cls, value: str) -> str:
+        return check_api_key_env(value)
+
+    @field_validator("extra_headers")
+    @classmethod
+    def _check_extra_headers(cls, value: dict[str, str]) -> dict[str, str]:
+        return check_extra_headers(value)
 
 
 class LLMResponse(StrictModel):

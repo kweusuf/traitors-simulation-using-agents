@@ -384,8 +384,8 @@ def _serve(monkeypatch: Any, *connections: _FakeConnection) -> list[str]:
 
 
 def test_the_default_poster_never_announces_connection_close(monkeypatch) -> None:
-    """The header was the whole bug: a real server dropped 1-2 of 8
-    requests that carried it, and 8 of 8 that did not."""
+    """A close-announced request is dropped by some servers, so the default
+    poster must not announce it."""
     connection = _FakeConnection()
     _serve(monkeypatch, connection)
 

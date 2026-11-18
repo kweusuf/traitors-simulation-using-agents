@@ -585,10 +585,15 @@ class GameRunner:
             raise ValueError(
                 "game.personas is set but no personas directory was provided"
             )
+        base = self.personas_dir.resolve()
         loaded: list[tuple[Persona, Goals]] = []
         for name in names:
             filename = name if name.endswith(".yaml") else f"{name}.yaml"
-            path = self.personas_dir / filename
+            path = (base / filename).resolve()
+            if not path.is_relative_to(base):
+                raise ValueError(
+                    f"persona '{name}' resolves outside the personas directory"
+                )
             if not path.exists():
                 available = sorted(
                     p.stem for p in self.personas_dir.glob("*.yaml")
@@ -696,6 +701,38 @@ class GameRunner:
             "quality": analyse_quality(events),
         }
 
+    def _artifact_config(self) -> dict[str, Any]:
+        """The saved config, with credential-shaped header values removed.
+
+        `base_url` stays: `runs/` is gitignored, the exporter strips it from
+        published data, and `tools/probe_model.py` reads it from a saved run.
+        """
+        data = self.config.model_dump(mode="json")
+        llm = data.get("llm")
+        if isinstance(llm, dict):
+            headers = llm.get("extra_headers")
+            if isinstance(headers, dict):
+                llm["extra_headers"] = {
+                    key: (
+                        "[redacted]"
+                        if any(
+                            part in key.lower()
+                            for part in (
+                                "authorization",
+                                "auth",
+                                "api_key",
+                                "api-key",
+                                "token",
+                                "secret",
+                                "cookie",
+                            )
+                        )
+                        else value
+                    )
+                    for key, value in headers.items()
+                }
+        return data
+
     def _write_artifacts(
         self,
         *,
@@ -706,7 +743,7 @@ class GameRunner:
         metrics: dict[str, Any],
     ) -> None:
         """Write the run directory contents (spec sections 34, 43)."""
-        config_data = self.config.model_dump(mode="json")
+        config_data = self._artifact_config()
         config_data["seed"] = seed
         (run_dir / "config.yaml").write_text(
             yaml.safe_dump(config_data, sort_keys=False), encoding="utf-8"
@@ -756,7 +793,7 @@ class GameRunner:
         games.create(
             game_id,
             experiment_id,
-            self.config.model_dump(mode="json"),
+            self._artifact_config(),
             seed,
             status="completed",
         )

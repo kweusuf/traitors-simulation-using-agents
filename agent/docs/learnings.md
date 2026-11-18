@@ -84,41 +84,36 @@ transcript window is the lever.
 
 ### Weights-on-disk is not resident memory
 
-`hauhau-qwen-27b` reports 17.5 GB on disk (Q4_K_M) but the server held
-**26.6 GB** resident, `size_vram` 15.3 GB, `quantization_level: unknown`
-against `Q4_K_M` on the tag. It timed out at 300s on a **3,721-character**
-prompt - the shortest the game produces - through all 6 retries, in round
-1. Never emitted a token. Reasoning about "does it fit in 24 GB" from the
-file size on disk was wrong; the resident footprint is the number that
-matters, and it is only visible from `/api/ps` while loaded.
+A model can report a small file size on disk and still hold far more
+memory once loaded. Reasoning about whether it fits from the file size
+alone is wrong; the resident footprint is the number that matters, and it
+is only visible from the server's own status endpoint while loaded. Check
+that before a long run rather than discovering it through a timeout.
 
 ### The host's context size is server state, not config
 
-A run died at 4,229 tokens against `n_ctx: 4096`, while the same host and
-model had served `ptr_mem` prompts of 43,039 characters (~10k tokens)
-without complaint. The model reports `context_length: 262144`; Ollama was
-serving it at 4096. **Verify `/api/ps` before a long run** - the setting
-lives in the server process, not the config.
+A run can die on context exhaustion even though the model advertises a
+large context window: the server process may be serving a smaller one.
+**Verify the server's actual context size before a long run** - the
+setting lives in the server process, not in the config.
 
 ### A request that announces `Connection: close` was dropped, at any load
 
 The provider used to POST through `urllib.request.urlopen`, which sends
 `Connection: close` on every request and cannot be told otherwise. Against
-one host, that header alone was the difference between most calls failing and
-none: the same requests over a kept-alive connection were not dropped at all,
-at the same concurrency, in the same minute, and one kept-alive connection
-carried a whole run of requests without a loss. Each drop arrived as
+one server, that header alone was the difference between most calls
+failing and none: the same requests over a kept-alive connection were not
+dropped at all, at the same concurrency. Each drop arrived as
 `RemoteDisconnected` - a *retryable* error, so it spent the retry budget and
 then ended the run.
 
-**This does not make the earlier host numbers wrong; it makes them unreadable
-as capacity.** Every in-flight level recorded here - one clean, one degraded,
-one that wedged the host - was measured through that client, so a loss that
-was really per-request was attributed to how many requests were in flight.
-Re-measure before trusting any of it. The provider now holds its connection
-(`models/ollama.py`), and `tools/probe_model.py` sends its prompt down that
-same transport, because a probe that opens its own connection measures the
-probe.
+**This does not make the earlier readings wrong; it makes them unreadable
+as capacity.** The in-flight levels recorded during that period were
+measured through that client, so a loss that was really per-request was
+attributed to how many requests were in flight. Re-measure before trusting
+any of it. The provider now holds its connection (`models/ollama.py`), and
+`tools/probe_model.py` sends its prompt down that same transport, because a
+probe that opens its own connection measures the probe.
 
 ### A retryable transport failure that exhausts the retries still ends the run
 
@@ -200,11 +195,11 @@ will read.
 - **"Pointer memory flattened the prompt curve."** It did not.
   `transcript_messages_per_prompt: 40` is the cap, and pointer memory never
   touched the window.
-- **"The pointer arm ran four times faster with no failures."** Drawn from
-  51 calls in round 1. Over the full 1,007 calls it matched the baseline.
+- **"The pointer arm ran much faster with no failures."** Drawn from a
+  partial run. Over the full run it matched the baseline.
 - **"38% of messages repeat."** Wrong denominator, corrected above.
-- **"A 27B model will fit in 24 GB."** Arithmetic on the wrong number, and
-  never verified before recommending a run on it.
+- **"A large model will fit in the available memory."** Arithmetic on the
+  wrong number, and never verified before recommending a run on it.
 - **"A paraphrase gate will catch the collapse."** It would reject half the
   messages instead.
 
@@ -224,8 +219,8 @@ paused and where it stopped.
   slots every round.
 - Whether a paraphrased collapse ever occurs, which is the only condition
   under which lowering `repetition_threshold` is right.
-- Latency cost of rejections: p50 rose 24.9s to 70.5s in `uk-s01-rep`, part
-  of which is 21 extra generations on already-large prompts.
+- Cost of rejections: the rejection arm spent extra generations on
+  already-large prompts, so its calls were slower than the baseline's.
 
 ## `uk-s01-ledger` final: traitor win, round 12
 
@@ -310,11 +305,11 @@ traitor wilf survived to the endgame and won solo - the fourth arm in a row
 ending in a traitor win, and the first where no text-quality change moved
 the outcome.
 
-For comparison with the earlier arms, the cost: 1,305 calls, 13.3% failed
-(174), p50 76.8s, p95 126.4s against a 300s timeout. Failures were 104
-illegal-target, 62 repetition, 5 parse and 3 phantom; the repetition gate
-alone rejected 62 turns and 12 of those re-generated successfully. The
-rejections, not the generation, are where the ledger arm's failures live.
+For comparison with the earlier arms, the cost: the run spent a large
+share of its calls on retries. Most failures were illegal-target and
+repetition rejections; the repetition gate alone rejected many turns and
+some re-generated successfully. The rejections, not the generation, are
+where the ledger arm's failures live.
 
 ## Paused: uk-s01-ledger
 
@@ -332,7 +327,7 @@ State at the pause, for comparison when it is picked back up:
 | Eliminations | 7 - tom, amanda, maddy, kieran, alyssa, rayan, alex |
 | Traitors | alyssa, amanda, wilf |
 | **Caught** | **2 of 3** (amanda r2, alyssa r5) |
-| Calls | 842, 12.6% failed, p50 78.6s |
+| Calls | 842, with a high failure rate |
 
 **This is the first run in which the table caught a traitor at all before
 the endgame.** The two prior runs finished 2 of 3 from 17 eliminations,

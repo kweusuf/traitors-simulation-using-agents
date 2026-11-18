@@ -1,13 +1,11 @@
 """An exclusive lock on a run directory, held for the lifetime of a run.
 
 The idle-time guard in `load_point` cannot tell a dead run from a live
-one that is simply slow. UK S01 runs showed a p95 call latency of 558s
-and single phases lasting longer than the 300s threshold, so a perfectly
-healthy run regularly looks abandoned. Resuming one truncates its log
-mid-flight, and the two processes then append with independent sequence
-counters: the run that produced `uk-s01-r3` ended up with 344 sequence
-numbers carrying two contradictory events each and two divergent
-endings in one file.
+one that is simply slow. A long phase can look abandoned even though the
+run is healthy. Resuming one truncates its log mid-flight, and the two
+processes then append with independent sequence counters: one run ended
+up with sequence numbers carrying two contradictory events each and two
+divergent endings in one file.
 
 A lock does not guess. The first process to touch a run directory takes
 an exclusive advisory lock on a file inside it and holds it until it

@@ -6,11 +6,11 @@ from pathlib import Path
 from typing import Any, Literal, Optional
 
 import yaml
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 
 from simulation.engine.state import GamePhase
 from simulation.models.base import StrictModel
-from simulation.models.llm import ModelConfig
+from simulation.models.llm import ModelConfig, check_api_key_env, check_extra_headers
 
 # Phase names that make up the configurable round loop (spec section 7).
 # SETUP opens the game and GAME_END closes it, so neither is configurable.
@@ -364,6 +364,16 @@ class LLMSettings(StrictModel):
     extra_headers: dict[str, str] = Field(default_factory=dict)
     # Provider-specific knobs the normalized fields do not cover.
     options: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("api_key_env")
+    @classmethod
+    def _check_api_key_env(cls, value: str) -> str:
+        return check_api_key_env(value)
+
+    @field_validator("extra_headers")
+    @classmethod
+    def _check_extra_headers(cls, value: dict[str, str]) -> dict[str, str]:
+        return check_extra_headers(value)
 
     def to_model_config(self) -> ModelConfig:
         """Build the provider-facing normalized model config."""

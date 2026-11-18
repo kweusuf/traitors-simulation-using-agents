@@ -1,5 +1,5 @@
 # English control for the end-vote fix (commit d3cec12), run against its
-# Hinglish twin on the same host.
+# Hinglish twin on the same endpoint.
 #
 # Generated from season_uk_s01.run.yaml, which stays as the baseline. The
 # only change is the concurrency, so this run is comparable with
@@ -7,11 +7,11 @@
 # decided by a unanimous `end`, which the old prompt default forced in
 # every one of those runs.
 #
-# Both controls run on the same model-matched host at concurrency 4. They
-# were first split across two hosts, but the second host could not take the
-# load (4/4 concurrent calls failed) and the two carried different weights
-# under the identical model tag, so a split-host pair could not have isolated
-# language. See season_uk_s01.fix_hl.yaml for the evidence.
+# Both controls run on the same model-matched endpoint. They were first split
+# across two endpoints, but the second could not take the load and the two
+# carried different weights under the identical model tag, so a split pair
+# could not have isolated language. See season_uk_s01.fix_hl.yaml for the
+# evidence.
 
 game:
   name: season_uk_s01_fix
@@ -163,22 +163,17 @@ llm:
   model: hauhau-qwen:latest
   base_url: http://HOST_A:11434  # override per machine
   temperature: 0.7
-  # 768, raised from 512. Hinglish output runs long: in the paired run it
-  # p50'd at 313 tokens and p99'd at exactly the old 512 cap, with 11
-  # replies truncated mid-sentence and lost to a JSON parse error. 768
-  # clears the observed p99 with headroom without doubling the tail
-  # latency, since only ~2% of replies go past 512.
+  # 768, raised from 512. Some replies were truncated mid-sentence at the
+  # old cap and lost to a JSON parse error. 768 clears the observed tail
+  # with headroom.
   max_tokens: 768
   reasoning_effort: none
   timeout_seconds: 300
   retries: 3
-  # 4 in flight, matching the Hinglish control so the pair differs by
-  # language alone, and left at 4 so this run stays comparable to the ones
-  # already recorded on this arm. Not a measured host limit: the readings
-  # that named 8 in flight as clean and 16 as degraded came through a client
-  # that announced `Connection: close` on every request, which this server
-  # dropped most of the time (see the header of fix_hl).
-  # If this run stalls: --resume --idle-seconds 5
+  # The in-flight level is kept for comparability with the runs already
+  # recorded on this arm. Earlier readings came through a client that
+  # dropped requests, so they are not a host capacity; re-measure before
+  # treating this level as a ceiling.
   max_concurrency: 4
   options: {}
 

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import ipaddress
 import json
 import re
 import sys
@@ -43,10 +44,26 @@ FORBIDDEN_KEYS = {
 }
 
 IPV4 = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
-LOCAL_PATHS = re.compile(r"(?:/Users/|/Volumes/|/home/|/private/|[A-Za-z]:\\\\|/tmp/)")
+# Candidate IPv6 tokens; `ipaddress` decides whether the token is really an
+# address, so compressed forms such as `2606:4700::1111` are handled without
+# matching ordinary `::` slices in prose or code.
+IPV6_CANDIDATE = re.compile(r"(?<![0-9A-Za-z])([0-9A-Fa-f:]{2,})(?![0-9A-Za-z])")
+LOCAL_PATHS = re.compile(
+    r"(?:/Users/|/Volumes/|/home/|/private/|[A-Za-z]:\\|/tmp/)"
+)
 DIGEST = re.compile(r"\b(?:sha256:)?[0-9a-f]{64}\b", re.IGNORECASE)
-LOCAL_HOST = re.compile(r"\b[a-z0-9][a-z0-9.-]*\.(?:local|lan|internal)\b", re.IGNORECASE)
-API_KEY = re.compile(r"\b(?:sk-|ghp_|glpat-|xox[baprs]-)[A-Za-z0-9_\-]{12,}\b")
+LOCAL_HOST = re.compile(
+    r"\b[a-z0-9][a-z0-9.-]*\.(?:local|lan|internal)\b", re.IGNORECASE
+)
+API_KEY = re.compile(
+    r"\b(?:sk-|sk_live_|sk_test_|ghp_|gho_|ghs_|github_pat_|glpat_|glpat-|"
+    r"xox[baprs]-|xoxc-|xoxp-|AKIA|AIza|oc_|npm_|pypi-)[A-Za-z0-9_\-]{8,}\b"
+)
+JWT = re.compile(
+    r"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"
+)
+BEARER = re.compile(r"\bBearer\s+[A-Za-z0-9_.\-]{12,}\b", re.IGNORECASE)
+PEM = re.compile(r"-----BEGIN [A-Z ]+-----")
 RUNTIME_METRIC = re.compile(
     r"\b(?:latency|duration|in[_-]?flight|throughput|tok/s)[\w\s-]*?[:=]\s*[^\s,;)]+",
     re.IGNORECASE,
@@ -58,9 +75,11 @@ SECRET_PATTERNS = (
     ("digest", DIGEST),
     ("local-host", LOCAL_HOST),
     ("api-key", API_KEY),
+    ("jwt", JWT),
+    ("bearer", BEARER),
+    ("pem", PEM),
     ("base-url", re.compile(r"base_url", re.IGNORECASE)),
     ("api-key-name", re.compile(r"api_key", re.IGNORECASE)),
-    ("sha256", re.compile(r"sha256:", re.IGNORECASE)),
     ("runtime-metric", re.compile(
         r"\b(?:latency|duration|in[_-]?flight|throughput|tok/s)[\w\s-]*?[:=]",
         re.IGNORECASE,
@@ -129,26 +148,83 @@ CONFIG_FLAGS = (
 # ----------------------------------------------------------------------
 
 
+def _ipv6_addresses(text: str) -> list[tuple[re.Match[str], str]]:
+    """Valid, non-loopback IPv6 tokens in `text`, including compressed forms."""
+    found: list[tuple[re.Match[str], str]] = []
+    for match in IPV6_CANDIDATE.finditer(text):
+        token = match.group(1)
+        if token.count(":") < 2:
+            continue
+        try:
+            address = ipaddress.ip_address(token)
+        except ValueError:
+            continue
+        if address.version == 6 and not (
+            address.is_loopback or address.is_unspecified
+        ):
+            found.append((match, token))
+    return found
+
+
+def _replace_ipv6(text: str) -> str:
+    parts: list[str] = []
+    last = 0
+    for match, _token in _ipv6_addresses(text):
+        parts.append(text[last:match.start()])
+        parts.append("HOST_A")
+        last = match.end()
+    parts.append(text[last:])
+    return "".join(parts)
+
+
+def find_secret_shapes(text: str) -> list[tuple[str, str]]:
+    """Every forbidden shape in `text`, including validated IPv6 addresses."""
+    found: list[tuple[str, str]] = []
+    for label, pattern in SECRET_PATTERNS:
+        for match in pattern.finditer(text):
+            found.append((label, match.group(0)))
+    for _match, token in _ipv6_addresses(text):
+        found.append(("ipv6", token))
+    return found
+
+
 def sanitize_text(value: str) -> str:
     """Remove endpoint, path, key, and host-performance shapes from one string."""
     value = IPV4.sub("HOST_A", value)
+    value = _replace_ipv6(value)
     value = LOCAL_PATHS.sub("[local-path]", value)
     value = DIGEST.sub("[digest]", value)
     value = LOCAL_HOST.sub("[host]", value)
+    value = PEM.sub("[redacted-pem]", value)
+    value = JWT.sub("[redacted]", value)
+    value = BEARER.sub("Bearer [redacted]", value)
     value = API_KEY.sub("[redacted]", value)
     value = RUNTIME_METRIC.sub("[runtime-metric-omitted]", value)
     return value
 
 
 def sanitize(value: Any) -> Any:
-    """Recursively sanitize a JSON-like structure."""
+    """Recursively sanitize a JSON-like structure and drop forbidden keys."""
     if isinstance(value, str):
         return sanitize_text(value)
     if isinstance(value, dict):
-        return {sanitize_text(str(k)): sanitize(v) for k, v in value.items()}
+        return {
+            sanitize_text(str(k)): sanitize(v)
+            for k, v in value.items()
+            if str(k) not in FORBIDDEN_KEYS
+        }
     if isinstance(value, (list, tuple)):
         return [sanitize(v) for v in value]
     return value
+
+
+def scan_payload(label: str, payload: Any) -> list[str]:
+    """Find forbidden shapes before anything is written to disk."""
+    text = json.dumps(payload, ensure_ascii=False)
+    return [
+        f"{label}: {name}: {value[:80]}"
+        for name, value in find_secret_shapes(text)
+    ]
 
 
 def etype(event: Any) -> str:
@@ -218,11 +294,14 @@ def load_personas(configs_dir: Path, config: dict[str, Any]) -> dict[str, dict[s
     game = config.get("game", {}) if isinstance(config, dict) else {}
     entries = game.get("personas") or []
     personas: dict[str, dict[str, Any]] = {}
+    personas_dir = (configs_dir / "personas").resolve()
     for entry in entries:
         if not isinstance(entry, str):
             continue
         rel = entry if entry.endswith(".yaml") else f"{entry}.yaml"
-        path = configs_dir / "personas" / rel
+        path = (personas_dir / rel).resolve()
+        if not path.is_relative_to(personas_dir):
+            continue
         data = read_yaml(path)
         if not data:
             continue
@@ -682,7 +761,9 @@ def build_summary(
     benchmark = None
     benchmark_score = benchmark_score_from_markdown(run_dir / "benchmark.md")
     if flagship and flagship.get("season_file"):
-        season_path = configs_dir / str(flagship["season_file"])
+        season_path = (configs_dir / str(flagship["season_file"])).resolve()
+        if not season_path.is_relative_to(configs_dir.resolve()):
+            raise ValueError("flagship season_file resolves outside configs/")
         try:
             season = load_season(season_path)
             result = benchmark_run(events, season)
@@ -875,6 +956,7 @@ def main() -> int:
 
     rows: list[dict[str, Any]] = []
     generated_from: list[str] = []
+    prewrite_failures: list[str] = []
     total_players = total_messages = total_calls = total_tokens = 0
 
     for run_dir in candidates:
@@ -890,6 +972,27 @@ def main() -> int:
             continue
 
         run_out = runs_out / run_id
+        problems = scan_payload(f"{run_id}/summary.json", summary)
+        if flagship and messages:
+            problems.extend(
+                scan_payload(f"{run_id}/messages.json", {"messages": messages})
+            )
+        if summary.get("benchmark"):
+            season_id = summary["benchmark"]["season"]["id"]
+            problems.extend(
+                scan_payload(
+                    f"seasons/{season_id}.json", summary["benchmark"]["season"]
+                )
+            )
+        if problems:
+            prewrite_failures.extend(problems)
+            print(
+                f"  ! {run_id}: sanitization failed before write "
+                f"({problems[0]})",
+                file=sys.stderr,
+            )
+            continue
+
         run_out.mkdir(exist_ok=True)
         (run_out / "summary.json").write_text(
             json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
@@ -946,18 +1049,33 @@ def main() -> int:
         "models": model_labels,
         "runs": rows,
     }
-    (out_dir / "manifest.json").write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    problems = scan_payload("manifest.json", manifest)
+    if problems:
+        prewrite_failures.extend(problems)
+        print(
+            f"  ! manifest.json: sanitization failed before write ({problems[0]})",
+            file=sys.stderr,
+        )
+    else:
+        (out_dir / "manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    if prewrite_failures:
+        print("\nSanitization failed before writing:", file=sys.stderr)
+        for failure in prewrite_failures[:50]:
+            print(f"  {failure}", file=sys.stderr)
+        return 1
 
     if args.check:
         failures: list[str] = []
         for path in sorted(out_dir.rglob("*.json")):
             text = path.read_text(encoding="utf-8")
-            for label, pattern in SECRET_PATTERNS:
-                for match in pattern.finditer(text):
-                    failures.append(f"{path.relative_to(out_dir)}: {label}: {match.group(0)[:80]}")
+            for label, value in find_secret_shapes(text):
+                failures.append(
+                    f"{path.relative_to(out_dir)}: {label}: {value[:80]}"
+                )
         if failures:
             print("\nSanitization check failed:", file=sys.stderr)
             for failure in failures[:50]:

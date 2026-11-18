@@ -1,3 +1,12 @@
 allowBuilds:
   esbuild: true
   sharp: true
+
+overrides:
+  esbuild: ^0.28.1
+
+# picomatch 4.x has a ReDoS advisory with no patched release yet. It is a
+# build-time glob matcher, not part of the served site; revisit when fixed.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-fc5q-39xc-vjpf

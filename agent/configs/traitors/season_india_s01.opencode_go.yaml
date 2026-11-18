@@ -14,7 +14,7 @@
 # rejects namespaced ids with "isn't included in OpenCode Go".
 #
 # max_concurrency is 4 in flight, matching the Command Code replay rather
-# than any measured host limit.
+# than any measured capacity.
 game:
   name: the-traitors-india-s01
   players: 20

@@ -366,9 +366,8 @@ same prompt. Each was equally blind.
 all messages, by pooling public and private into one figure. Public repeats
 at 23% and private at 11%; the pooled number was about 1.6x too high, and a
 private DM repeating text is not the room speaking in one voice. Later, an
-early reading of the pointer arm claimed four-times-better latency with zero
-failures, drawn from 51 calls in round 1 - over the full 1,007 calls it was
-the same as the baseline. Both errors came from reading a partial run as a
+early partial-run reading of the pointer arm claimed a large latency win with
+zero failures; over the full run it was the same as the baseline. Both errors came from reading a partial run as a
 whole one, and both are why the tooling computes rates per channel and the
 tools print sample sizes.
 

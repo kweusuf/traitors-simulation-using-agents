@@ -69,8 +69,8 @@ fellow traitor.
 
 ## 2. Self improvement: what the research says to do
 
-Condensed from the second brief, ranked by cost versus payoff for a local 9B
-model with 30 to 60 minute runs.
+Condensed from the second brief, ranked by cost versus payoff for a local
+model with long-running games.
 
 1. **Paired-seed regression gate on the deterministic quality block.** Change
    one thing, run the same 5 to 10 seeds as the baseline, promote only if
@@ -188,4 +188,4 @@ with `docs/progress.md` conventions.
    game rule change and contradicts our current `recruit_on_banish` behaviour.
 3. Whether to add an economy/pot to the simulation, which touches every
    discussion prompt.
-4. How many runs per iteration to fund given 30 to 60 minutes each.
+4. How many runs per iteration to fund given the cost of each long game.

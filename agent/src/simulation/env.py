@@ -9,6 +9,7 @@ the gitignored `.env`; tracked config records only the variable *name*
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 from typing import MutableMapping, Optional
 
@@ -52,6 +53,15 @@ def load_dotenv(
     """
     target = env if env is not None else os.environ
     resolved = Path(path or os.environ.get("SIMULATION_ENV_FILE") or ".env")
+    try:
+        if resolved.stat().st_mode & 0o077:
+            print(
+                f"warning: {resolved} is readable by other users; "
+                f"run chmod 600 {resolved}",
+                file=sys.stderr,
+            )
+    except OSError:
+        pass
     try:
         text = resolved.read_text(encoding="utf-8")
     except FileNotFoundError:

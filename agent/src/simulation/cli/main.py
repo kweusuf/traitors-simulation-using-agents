@@ -124,8 +124,17 @@ def personas_dir_for(config_path: str | Path) -> Optional[Path]:
     return candidate if candidate.is_dir() else None
 
 
+def _run_path(runs_dir: str, game_id: str) -> Path:
+    """Resolve one run directory, refusing ids that escape `runs_dir`."""
+    base = Path(runs_dir).resolve()
+    path = (base / game_id).resolve()
+    if path == base or not path.is_relative_to(base):
+        raise ValueError(f"game id {game_id!r} is outside {runs_dir}/")
+    return path
+
+
 def open_run_dir(game_id: str, runs_dir: str) -> Path:
-    path = Path(runs_dir) / game_id
+    path = _run_path(runs_dir, game_id)
     if not path.is_dir() or not (path / "events.jsonl").exists():
         available = sorted(
             str(p.parent.name) for p in Path(runs_dir).glob("*/events.jsonl")
@@ -144,7 +153,7 @@ def load_state(game_id: str, runs_dir: str) -> tuple[ReplayState, list[Event]]:
 
 def load_run_metrics(game_id: str, runs_dir: str) -> dict:
     """Read one finished run's metrics.json (compare and diagnose)."""
-    path = Path(runs_dir) / game_id / "metrics.json"
+    path = _run_path(runs_dir, game_id) / "metrics.json"
     if not path.is_file():
         raise ValueError(
             f"no metrics.json for '{game_id}' in {runs_dir}/; "
@@ -210,6 +219,7 @@ def run_db_path(args: argparse.Namespace, game_id: str) -> str:
     explicit = getattr(args, "db", None)
     if explicit:
         return explicit
+    _run_path(args.runs_dir, game_id)  # reject ids that escape the runs dir
     return str(Path(args.runs_dir) / game_id / "game.db")
 
 

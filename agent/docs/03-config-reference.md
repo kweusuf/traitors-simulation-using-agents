@@ -256,7 +256,9 @@ banishment happens during a finale that never opens.
 | `llm.provider` | `ollama` | `ollama` for a local live model; `commandcode` for the Command Code Provider API (OpenAI-compatible, key from `llm.api_key_env`); `fake` plays the whole game deterministically with no model at all, which is what the test suite and a config check use | - |
 | `llm.model` | `gpt-oss:20b` | The model tag. An identical tag does not imply identical weights across hosts | - |
 | `llm.base_url` | `http://localhost:11434` | Tracked Ollama arms carry a `HOST_A` placeholder; the real endpoint belongs in a gitignored `*.local.yaml` or a `--base-url` argument, never in a tracked file ([decisions.md](decisions.md#model-identity-is-an-explicit-variable-never-implicit)). The Command Code endpoint is public and may be tracked | - |
-| `llm.api_key_env` | `COMMAND_CODE_API_KEY` | The *name* of the environment variable holding a cloud provider's key. The value lives in a gitignored `.env` (copy `.env.example`), never in YAML. `CMD_API_KEY` is accepted as a fallback | - |
+| `llm.api_key_env` | `COMMAND_CODE_API_KEY` | The *name* of the environment variable holding a cloud provider's key. The value lives in a gitignored `.env` (copy `.env.example`), never in YAML. `CMD_API_KEY` is accepted as an alias only when this is `COMMAND_CODE_API_KEY`; a config that names another provider's variable never falls back to a Command Code key | A value that is not an environment-variable name is rejected |
+| `llm.extra_headers` | `{}` | Extra request headers. The provider owns `Authorization`, `Host`, and the framing headers and rejects attempts to override them | - |
+| `llm.options.allow_insecure_http` | `false` | Permit a bearer token over plain HTTP to a non-loopback endpoint. Only for a trusted local proxy | The provider refuses non-HTTPS by default |
 | `llm.max_concurrency` | `2` | Calls the run keeps in flight. Past what a host serves in parallel the extra requests only queue into `timeout_seconds`, so raising it can make a run slower and emptier rather than faster | - |
 | `llm.temperature` / `max_tokens` / `reasoning_effort` | `0.7` / `512` / `medium` | Sampling temperature, the reply cap, and how much thinking the provider is asked for. They sit in the config because they belong to the arm, not to the framework | - |
 | `llm.timeout_seconds` / `retries` | `120` / `3` | Per-call timeout, and extra attempts for transient transport failures before the run gives up | - |
@@ -311,11 +313,10 @@ arms is the flag, not a different set of traitors. Changing the cast changes the
 draw, so `make_rand_arms.py` re-derives the seed and re-verifies every file it
 writes rather than trusting the one recorded here.
 
-**The concurrency is cut because they run together.** Seven arms at the tracked
-four apiece would be 28 requests in flight, and the arms themselves record 8 in
-flight as clean and 16 as degraded: past what a host serves in parallel, calls
-queue into the timeout rather than failing loudly. One per arm keeps the sweep
-at 7.
+**The concurrency is cut because they run together.** Running every arm at the
+tracked level would put all of their calls in flight at once; past what the
+endpoint serves in parallel, calls queue into the timeout rather than failing
+loudly. One per arm keeps the sweep bounded.
 
 Run the whole set at once:
 

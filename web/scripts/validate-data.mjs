@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { isIP } from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -6,19 +7,28 @@ import { z } from 'zod';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.resolve(here, '../src/data');
 
+// Keep these in sync with SECRET_PATTERNS in ../tools/export_site_data.py.
 const patterns = [
   ['ipv4', /\b(?:\d{1,3}\.){3}\d{1,3}\b/g],
-  ['local-path', /(?:\/Users\/|\/Volumes\/|\/home\/|\/private\/|[A-Za-z]:\\\\|\/tmp\/)/g],
+  ['local-path', /(?:\/Users\/|\/Volumes\/|\/home\/|\/private\/|[A-Za-z]:\\|\/tmp\/)/g],
   ['digest', /\b(?:sha256:)?[0-9a-f]{64}\b/gi],
   ['local-host', /\b[a-z0-9][a-z0-9.-]*\.(?:local|lan|internal)\b/gi],
-  ['api-key', /\b(?:sk-|ghp_|glpat-|xox[baprs]-)[A-Za-z0-9_-]{12,}\b/g],
+  [
+    'api-key',
+    /\b(?:sk-|sk_live_|sk_test_|ghp_|gho_|ghs_|github_pat_|glpat_|glpat-|xox[baprs]-|xoxc-|xoxp-|AKIA|AIza|oc_|npm_|pypi-)[A-Za-z0-9_-]{8,}\b/g,
+  ],
+  ['jwt', /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g],
+  ['bearer', /\bBearer\s+[A-Za-z0-9_.-]{12,}\b/gi],
+  ['pem', /-----BEGIN [A-Z ]+-----/g],
   ['base-url', /base_url/gi],
   ['api-key-name', /api_key/gi],
   [
     'runtime-metric',
-    /\b(?:latency|duration|in[_-]?flight|throughput|tok\/s)[\w\s-]*?[:=]/gi,
+    /\b(?:latency|duration|in[_-]?flight|throughput|tok\/s)[\w\s-]*?[:=]\s*[^\s,;)]+/gi,
   ],
 ];
+
+const ipv6Candidate = /(?<![0-9A-Za-z])([0-9A-Fa-f:]{2,})(?![0-9A-Za-z])/g;
 
 const failures = [];
 function fail(message) {
@@ -146,6 +156,18 @@ for (const file of walk(dataDir)) {
     const match = pattern.exec(text);
     if (match) {
       fail(`${path.relative(dataDir, file)} contains ${label}: ${match[0].slice(0, 60)}`);
+    }
+  }
+  for (const match of text.matchAll(ipv6Candidate)) {
+    const token = match[1];
+    if (
+      token.includes(':') &&
+      token !== '::1' &&
+      token !== '::' &&
+      isIP(token) === 6
+    ) {
+      fail(`${path.relative(dataDir, file)} contains ipv6: ${token.slice(0, 60)}`);
+      break;
     }
   }
 }

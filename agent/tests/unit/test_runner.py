@@ -212,6 +212,24 @@ def test_model_identity_shape() -> None:
     assert parameters["options"] == {}
 
 
+def test_saved_config_redacts_secret_headers_and_keeps_endpoint(tmp_path: Path) -> None:
+    config = fake_config()
+    config.llm.base_url = "http://models.example.com:11434"
+    config.llm.extra_headers = {
+        "x-api-key": "local-secret",
+        "x-session": "stable-session-id",
+    }
+
+    result = make_runner(tmp_path, config=config).run(game_id="game-001", seed=42)
+    saved = yaml.safe_load((result.run_dir / "config.yaml").read_text())
+
+    # The endpoint stays so tools/probe_model.py can read it; the exporter
+    # strips it from published data and runs/ is gitignored.
+    assert saved["llm"]["base_url"] == "http://models.example.com:11434"
+    assert saved["llm"]["extra_headers"]["x-api-key"] == "[redacted]"
+    assert saved["llm"]["extra_headers"]["x-session"] == "stable-session-id"
+
+
 # ----------------------------------------------------------------------
 # LLM telemetry and quality metrics (Phase 15)
 # ----------------------------------------------------------------------
