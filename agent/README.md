@@ -78,11 +78,13 @@ deployment guide: see [DEPLOY.md](DEPLOY.md).
 
 ## Rules of the game
 
-Everything below is config-driven from the `game:` block. Defaults are
-chosen so a bare config plays the plain game; every optional mechanic is
-off unless a config turns it on. Every key, with what it does when it is
-enabled and when it is not, is listed in
-[`docs/03-config-reference.md`](docs/03-config-reference.md).
+Everything below is config-driven from the `game:` block. The framework's
+own defaults are chosen so a bare config plays the plain game; every
+optional mechanic is off unless a config turns it on. The shipped
+`configs/traitors/season_*.opencode_go.yaml` files turn on the
+show-faithful set (see [Show-faithful season defaults](#show-faithful-season-defaults)).
+Every key, with what it does when it is enabled and when it is not, is
+listed in [`docs/03-config-reference.md`](docs/03-config-reference.md).
 
 ### Setup
 
@@ -101,16 +103,33 @@ season config extends with a third mission, is:
 
 | Phase | What happens |
 | --- | --- |
-| `mission` | a team task; how many run per round is just how many times the phase is listed |
+| `mission` | a team task that banks money and can earn the round's item; list it once per mission |
 | `public_discussion` | everyone speaks in the open |
 | `private_chat` | side conversations, plus a traitors-only channel |
 | `round_table` | open nomination of suspects |
 | `voting` | everyone votes; the most-voted player is banished |
-| `elimination` | the banishment resolves and the role is revealed |
-| `traitor_night` | the traitors argue on their private channel, pick a victim, and the night plays out |
+| `elimination` | the banishment resolves and the banished role is revealed |
+| `traitor_night` | the traitors argue on their private channel, pick a victim, and the night plays out (a successful defense mission can block the kill) |
 
 An incomplete phase is always replayed from its start, so a crash during
 an elimination cannot banish the same player twice.
+
+### Missions and the prize pot
+
+A mission resolves from `mission_success_probability` (`1.0` always
+succeeds). A success banks `mission_reward` into `state.prize_pot` and
+wins that round's item (shield/dagger/seer, when enabled); a failure banks
+and awards nothing. On a round listed in `mission_defense_rounds`, a
+successful mission also stops that night's murder, as the show's
+defensive missions do. The money and mini-games are abstracted: the
+outcome is seeded, not played challenge by challenge.
+
+### Reveal timing
+
+A round-table banishment reveals the banished player's affiliation, as the
+show does. A murder does not: `elimination_method` records `vote` or
+`night`, and the projector only reveals a `vote` elimination (a murder
+victim is always faithful anyway, since traitors cannot be murdered).
 
 ### Winning
 
@@ -180,6 +199,20 @@ All off by default, all independent:
   majority of final picks wins.
 - `discussion_budget` / `warning_turns` — a hosted discussion clock;
   `0` disables it and keeps one-turn-each phases.
+
+### Show-faithful season defaults
+
+The shipped `configs/traitors/season_*.opencode_go.yaml` set the values
+that make the game match the show, because a bare config cannot: the final
+five is cast-size specific, and the show has no parity or round-timeout
+victory. Those season configs set `max_rounds: 18`, `finale_total: 5` (with
+`finale_traitors`/`finale_faithful`), `endgame_vote: true`,
+`blind_finale_banishments: true`, `revote_enabled: true`,
+`nomination_enabled: true`, `shield: true`, `dagger: true`,
+`max_recruits: 0`, plus `mission_reward` and
+`mission_success_probability`. The framework defaults stay plain
+(parity on, finale off, items off) so a minimal config and the generic
+engine behave predictably.
 
 ### Seasonal cadence
 

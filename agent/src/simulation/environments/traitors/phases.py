@@ -166,14 +166,21 @@ async def _run_debate(context: PhaseContext) -> None:
 
 
 class MissionPhase:
-    """Basic mission abstraction: the group attempt resolves successfully."""
+    """A mission banks money and earns the round's item on success.
+
+    A season sets `mission_success_probability` below 1.0 to let a mission
+    fail (no money, no item); 1.0 keeps the deterministic always-succeed
+    behaviour and skips the RNG draw, so the seeded stream is unchanged.
+    """
 
     name = "mission"
 
     async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
         engine = context.engine
+        probability = context.config.game.mission_success_probability
+        success = True if probability >= 1.0 else engine.rng.random() < probability
         engine.start_mission()
-        engine.complete_mission(success=True)
+        engine.complete_mission(success=success)
         return None
 
 
@@ -472,6 +479,11 @@ class TraitorNightPhase:
             # Seasonal cadence: the traitor night does nothing at all,
             # which means no council, no nomination and no kill.
             engine.skip_night_murder()
+            return {"victim": None}
+        if engine.mission_blocks_murder():
+            # A successful defense mission this round: the traitors are
+            # not allowed to kill tonight.
+            engine.skip_night_murder(reason="mission_defense")
             return {"victim": None}
         traitors = sorted(
             p for p in engine.state.alive_players

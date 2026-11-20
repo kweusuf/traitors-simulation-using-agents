@@ -665,6 +665,7 @@ class GameRunner:
             "winner": state.winner,
             "winning_team": state.winning_team.value if state.winning_team else None,
             "rounds": state.round_number,
+            "prize_pot": state.prize_pot,
             "players": len(state.players),
             "traitors": self.config.game.traitors,
             "duration_seconds": round(elapsed, 3),

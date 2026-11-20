@@ -701,3 +701,67 @@ def test_full_fake_game_with_all_four_flags(tmp_path: Path) -> None:
     assert replay.items == saved["items"]
 
     assert "Item awarded:" in render_transcript(result.events)
+
+
+# ----------------------------------------------------------------------
+# Missions bank money and earn items (D4)
+# ----------------------------------------------------------------------
+
+
+def test_mission_success_banks_the_pot_and_failure_does_not() -> None:
+    engine = make_engine(mission_reward=500, shield=True, seed=7)
+    engine.start_round()
+    engine.begin_phase(GamePhase.MISSION)
+
+    engine.start_mission()
+    engine.complete_mission(success=True)
+    assert engine.state.prize_pot == 500
+    assert len(events_of(engine, EventType.ITEM_AWARDED)) == 1
+
+    engine.start_mission()
+    engine.complete_mission(success=False)
+    assert engine.state.prize_pot == 500  # a failed mission banks nothing
+    assert len(events_of(engine, EventType.ITEM_AWARDED)) == 1  # and wins nothing
+
+
+def test_mission_defense_round_can_block_the_murder() -> None:
+    engine = make_engine(mission_defense_rounds=[1], seed=7)
+    engine.start_round()  # round 1
+    engine.begin_phase(GamePhase.MISSION)
+    engine.start_mission()
+    engine.complete_mission(success=True)
+    assert engine.mission_blocks_murder() is True
+
+    # A failed mission does not trigger the defense.
+    engine = make_engine(mission_defense_rounds=[1], seed=7)
+    engine.start_round()
+    engine.begin_phase(GamePhase.MISSION)
+    engine.start_mission()
+    engine.complete_mission(success=False)
+    assert engine.mission_blocks_murder() is False
+
+
+# ----------------------------------------------------------------------
+# Reveal timing: a murder hides its victim's role, a banishment shows it (D9)
+# ----------------------------------------------------------------------
+
+
+def test_murder_hides_the_victims_role_but_banishment_reveals_it() -> None:
+    engine = make_engine(seed=7)
+    projector = InformationProjector(engine.router)
+
+    viewer = roles_of(engine, Role.FAITHFUL)[0]
+    murdered = next(
+        p for p in roles_of(engine, Role.FAITHFUL) if p != viewer
+    )
+    engine.eliminate(murdered, method="night")
+    view = projector.project(engine.state, viewer)
+    assert murdered not in view.known_roles  # a murder is not announced
+
+    banished = next(
+        p for p in engine.state.alive_players
+        if p != viewer and engine.state.roles[p] is Role.FAITHFUL
+    )
+    engine.eliminate(banished, method="vote")
+    view = projector.project(engine.state, viewer)
+    assert view.known_roles[banished] is Role.FAITHFUL  # a banishment is

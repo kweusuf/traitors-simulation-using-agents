@@ -122,8 +122,8 @@ class PhaseEngine:
         continued after a crash: the engine already holds that round's
         state, so the loop opens the round and starts partway through the
         phase order instead of replaying the phases already recorded.
-        The round budget is fresh from the resume point, because a crash
-        should not cost the game the rounds it ate.
+        The crash keeps the rounds already on the record and consumes only
+        the rounds left in `max_rounds`; a resume never adds rounds.
 
         `resume_completed` names the phases that already ended in the round
         being resumed. The normal loop does not need it (`phase_index`
@@ -134,10 +134,20 @@ class PhaseEngine:
         if not self.engine.started:
             self.engine.start()
         max_rounds = self.config.game.max_rounds
-        resume_round, resume_phase = resume_at if resume_at else (None, 0)
+        if resume_at is not None:
+            resume_round, resume_phase = resume_at
+            # A crash costs time, not rounds: the rounds already on the
+            # record are kept, and only the rounds left in the configured
+            # budget run. A fresh `max_rounds` here would let a resumed
+            # game exceed its cap, making the effective length depend on
+            # how often it crashed.
+            budget = max(0, max_rounds - resume_round)
+        else:
+            resume_round, resume_phase = None, 0
+            budget = max_rounds
         opened = 0
 
-        for _ in range(max_rounds):
+        for _ in range(budget):
             if self.engine.is_over or self.engine.state.finale:
                 break
             if opened == 0 and resume_at is not None:

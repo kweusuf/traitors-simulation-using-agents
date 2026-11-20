@@ -227,17 +227,21 @@ def rebuild_state(events: list[Event]) -> GameState:
             state.round_number = max(state.round_number, event.round)
         elif event.type is EventType.PLAYER_ELIMINATED and event.actor:
             state.players[event.actor].alive = False
+            state.players[event.actor].elimination_method = payload.get("method")
             state.alive_players.discard(event.actor)
             state.eliminated_players.add(event.actor)
             if state.finale:
                 # Blind finale: the role stays hidden until the game ends.
                 state.finale_eliminated.add(event.actor)
         elif event.type is EventType.MISSION_COMPLETED:
+            reward = int(payload.get("reward", 0))
+            state.prize_pot += reward
             state.missions.append(
                 MissionState(
                     round_number=event.round,
                     completed=True,
                     outcome=bool(payload.get("success")),
+                    reward=reward,
                 )
             )
         elif event.type is EventType.ITEM_AWARDED and event.actor:

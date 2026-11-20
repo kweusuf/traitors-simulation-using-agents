@@ -582,9 +582,24 @@ class GameEngine:
         """True when this round is configured to skip the round-table vote."""
         return self.state.round_number in self.config.game.quiet_banishment_rounds
 
-    def skip_night_murder(self) -> None:
+    def mission_blocks_murder(self) -> bool:
+        """True when this round's successful mission prevents the murder.
+
+        The show runs occasional defensive missions: bank enough and the
+        traitors are not allowed to kill that night. This fires only on a
+        round listed in `mission_defense_rounds`, and only when a mission
+        on that round already succeeded.
+        """
+        if self.state.round_number not in self.config.game.mission_defense_rounds:
+            return False
+        return any(
+            m.round_number == self.state.round_number and m.completed and m.outcome
+            for m in self.state.missions
+        )
+
+    def skip_night_murder(self, reason: str = "quiet_round") -> None:
         """Record that the traitor night did nothing this round."""
-        self._emit(EventType.MURDER_SKIPPED, payload={"reason": "quiet_round"})
+        self._emit(EventType.MURDER_SKIPPED, payload={"reason": reason})
 
     def skip_banishment(self) -> None:
         """Record that the round table voted on nobody this round."""
@@ -1158,6 +1173,7 @@ class GameEngine:
         if player_id not in self.state.alive_players:
             raise ValueError(f"player '{player_id}' is not alive")
         self.state.players[player_id].alive = False
+        self.state.players[player_id].elimination_method = method
         self.state.alive_players.discard(player_id)
         self.state.eliminated_players.add(player_id)
         if self.state.finale:
@@ -1342,10 +1358,22 @@ class GameEngine:
             raise ValueError("no mission in progress")
         mission.completed = True
         mission.outcome = success
-        self._emit(EventType.MISSION_COMPLETED, payload={"success": success})
-        if self._awarded_round != self.state.round_number:
+        # A successful mission banks money (the show's prize pot) and wins
+        # the round's item; a failed one banks nothing and awards nothing.
+        reward = self.config.game.mission_reward if success else 0
+        mission.reward = reward
+        self.state.prize_pot += reward
+        self._emit(
+            EventType.MISSION_COMPLETED,
+            payload={
+                "success": success,
+                "reward": reward,
+                "prize_pot": self.state.prize_pot,
+            },
+        )
+        if success and self._awarded_round != self.state.round_number:
             # One item per round, right after the round's first
-            # completed mission (a round may run several missions).
+            # successful mission (a round may run several missions).
             self._awarded_round = self.state.round_number
             self._award_item()
 

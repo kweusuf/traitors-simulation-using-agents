@@ -225,7 +225,7 @@ class GameSettings(StrictModel):
     # Finale: normal play stops when exactly `finale_traitors` traitors
     # and `finale_faithful` faithful are alive, and rapid-fire voting
     # decides the winner (0/0 disables the finale and keeps the plain
-    # parity win).
+    # parity win). The season configs set the show's final five.
     finale_traitors: int = Field(default=0, ge=0)
     finale_faithful: int = Field(default=0, ge=0)
     # The show starts its endgame at the final five, whatever the split,
@@ -280,6 +280,15 @@ class GameSettings(StrictModel):
     dagger: bool = False
     seer: bool = False
     on_trial: bool = False
+    # Missions: a successful mission banks `mission_reward` into the prize
+    # pot and wins the round's item; a failed one banks and awards nothing.
+    # `mission_success_probability` 1.0 keeps the deterministic
+    # always-succeed behaviour; below it the seeded RNG decides. On a round
+    # listed in `mission_defense_rounds`, a successful mission also stops
+    # that night's murder (the show's defensive missions).
+    mission_reward: int = Field(default=0, ge=0)
+    mission_success_probability: float = Field(default=1.0, ge=0.0, le=1.0)
+    mission_defense_rounds: list[int] = Field(default_factory=list)
     player_names: Optional[list[str]] = None
     # Pin the traitor roles to named players instead of drawing them from
     # the seed. Used to replay a real season, where the traitors are known.

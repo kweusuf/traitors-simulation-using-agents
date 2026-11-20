@@ -36,7 +36,22 @@ class RecordingPhase:
 
 def build(phases: list[str], winner_in=None, max_rounds: int = 3, seed: int = 42):
     config = GameConfig(
-        game={"players": 6, "traitors": 2, "max_rounds": max_rounds},
+        game={
+            "players": 6,
+            "traitors": 2,
+            "max_rounds": max_rounds,
+            # These tests isolate phase ordering and the round budget, so
+            # they opt out of the show-faithful defaults (finale, hosted
+            # round table, items) that would otherwise add phases/actions.
+            "finale_traitors": 0,
+            "finale_faithful": 0,
+            "finale_total": 0,
+            "endgame_vote": False,
+            "nomination_enabled": False,
+            "revote_enabled": False,
+            "shield": False,
+            "dagger": False,
+        },
         phases=phases,
         seed=seed,
     )
@@ -159,7 +174,7 @@ def test_resume_reopens_the_round_instead_of_announcing_it_again() -> None:
     round spent the calls its completed phases had already made.
     """
     phases = ["mission", "public_discussion", "voting", "elimination"]
-    engine, log, phase_engine, context = build(phases, max_rounds=2)
+    engine, log, phase_engine, context = build(phases, max_rounds=3)
     # Restored into round 2, whose ROUND_STARTED the crashed run already
     # wrote: mission finished and the crash came during public_discussion.
     engine._started = True
@@ -180,6 +195,33 @@ def test_resume_reopens_the_round_instead_of_announcing_it_again() -> None:
     assert [name for _, name in log] == [
         "public_discussion", "voting", "elimination",  # remainder of round 2
         "mission", "public_discussion", "voting", "elimination",  # round 3
+    ]
+
+
+def test_resume_never_exceeds_max_rounds() -> None:
+    """A resume consumes the remaining budget; it does not add rounds.
+
+    With `max_rounds=2` and the crash in round 2, round 2 is the last round
+    the game may run. The resume reopens it and stops there instead of
+    granting a fresh two-round window that would push the game past its
+    configured length - the overrun that made a season's effective length
+    depend on how often it crashed.
+    """
+    phases = ["mission", "public_discussion", "voting", "elimination"]
+    engine, log, phase_engine, context = build(phases, max_rounds=2)
+    engine._started = True
+    engine.state.round_number = 1
+    engine.sink.emit(EventType.ROUND_STARTED, round_number=2, phase="")
+
+    resume_phase = phases.index("public_discussion")
+    asyncio.run(phase_engine.run(context, resume_at=(1, resume_phase)))
+
+    announced = [
+        e.round for e in engine.sink.events if e.type is EventType.ROUND_STARTED
+    ]
+    assert announced == [2]  # no round 3: the budget was already spent
+    assert [name for _, name in log] == [
+        "public_discussion", "voting", "elimination",  # remainder of round 2
     ]
 
 

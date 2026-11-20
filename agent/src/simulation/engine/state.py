@@ -38,12 +38,18 @@ class PlayerState(StrictModel):
     player_id: str
     name: str
     alive: bool = True
+    # How the player left the game: "vote" (banished at the round table),
+    # "night" (murdered), or None while alive. The show reveals a banished
+    # player's affiliation but not a murder victim's, so the projector
+    # reads this to decide what the room is allowed to know.
+    elimination_method: Optional[str] = None
 
 
 class MissionState(StrictModel):
     round_number: int
     completed: bool = False
     outcome: Optional[bool] = None  # True = success, False = failed
+    reward: int = 0  # money this mission added to the prize pot
 
 
 class GameState(StrictModel):
@@ -56,6 +62,9 @@ class GameState(StrictModel):
     roles: dict[str, Role] = Field(default_factory=dict)
     votes: dict[str, str] = Field(default_factory=dict)  # voter_id -> target_id
     missions: list[MissionState] = Field(default_factory=list)
+    # Money the group has banked from successful missions (the show's
+    # prize pot). Abstract units; a season config sets the reward size.
+    prize_pot: int = 0
     winner: Optional[str] = None  # winning player/team label, e.g. "faithful"
     winning_team: Optional[Role] = None
     # Rapid-fire finale is running (config `finale_traitors`/`finale_faithful`).

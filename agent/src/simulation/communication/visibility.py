@@ -134,9 +134,15 @@ class InformationProjector:
                 if role is Role.TRAITOR:
                     known[pid] = role
 
-        # Publicly eliminated players reveal their roles by default.
+        # Publicly eliminated players reveal their roles by default, but
+        # only when banished at the round table (method "vote"). The show
+        # does not announce a murder victim's affiliation - and a murder
+        # victim is always faithful anyway, since traitors cannot be
+        # murdered - so a "night" elimination stays hidden.
         if self._reveal_on_elimination:
             for pid in state.eliminated_players:
+                if state.players[pid].elimination_method == "night":
+                    continue
                 if (
                     self._blind_finale
                     and state.winner is None
