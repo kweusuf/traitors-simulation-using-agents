@@ -1,0 +1,104 @@
+# Nz S02 replay on OpenCode Go.
+#
+# The season block is season_nz_s02.yaml byte for byte; the llm block
+# is the OpenCode Go route. The session header is unique to this
+# replay so prompt caching is not shared with the other seasons.
+#
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  max_rounds: 18
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-nz-s02
+  players: 20
+  # Starting traitors only: bradley was recruited in episode 9.
+  traitors: 2
+  traitor_names:
+  - chloe
+  - keanu
+  player_names:
+  - chloe
+  - maruia
+  - noel
+  - brittany
+  - donna
+  - keanu
+  - bradley
+  - bailey
+  - aaron
+  - elliott
+  - kate
+  - jannaia
+  - ryan
+  - teejay
+  - jess
+  - kimberly
+  - jacinda
+  - liam
+  - sonny
+  - thomas
+  personas:
+  - nz_s02/chloe
+  - nz_s02/maruia
+  - nz_s02/noel
+  - nz_s02/brittany
+  - nz_s02/donna
+  - nz_s02/keanu
+  - nz_s02/bradley
+  - nz_s02/bailey
+  - nz_s02/aaron
+  - nz_s02/elliott
+  - nz_s02/kate
+  - nz_s02/jannaia
+  - nz_s02/ryan
+  - nz_s02/teejay
+  - nz_s02/jess
+  - nz_s02/kimberly
+  - nz_s02/jacinda
+  - nz_s02/liam
+  - nz_s02/sonny
+  - nz_s02/thomas
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: commandcode
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-nz-s02-opencode
+  temperature: 0.7
+  # DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit inside the
+  # completion budget alongside the visible reply.
+  max_tokens: 32768
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  # Eight of these run together; keep each arm's share of the route modest.
+  max_concurrency: 2
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

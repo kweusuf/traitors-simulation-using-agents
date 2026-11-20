@@ -16,6 +16,18 @@
 # max_concurrency is 4 in flight, matching the Command Code replay rather
 # than any measured capacity.
 game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
   name: the-traitors-india-s01
   players: 20
   # Starting traitors only: harsh and purav were recruited in episode 9.
@@ -87,20 +99,20 @@ communication:
   transcript_messages_per_prompt: 40
 llm:
   provider: commandcode
-  model: beam-free
+  model: deepseek-v4.1-flash
   base_url: https://opencode.ai/inference/go/openai/v1
   api_key_env: OPENCODE_GO_API_KEY
   extra_headers:
     x-opencode-session: traitors-india-s01
   temperature: 0.7
-  # 32768. Beam Free is a reasoning model, so hidden reasoning tokens sit
+  # 32768. DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit
   # inside the completion budget alongside the visible reply. A recruit
   # prompt once burned 32768 tokens on reasoning and still ended on
   # finish_reason=length, so the provider doubles this again on a
   # truncated reply.
   max_tokens: 32768
-  # Beam Free accepts low/medium/high/xhigh/max. Medium produced reasoning
-  # runs long enough to hit the old cap on complex prompts; `none` would
+  # DeepSeek V4.1 Flash 1017 accepts low/high/max. This replay keeps low so
+  # the hidden reasoning fits inside the completion budget; `none` would
   # omit the field and let the route pick a default.
   reasoning_effort: low
   timeout_seconds: 600

@@ -1,0 +1,112 @@
+# Us S03 replay on OpenCode Go.
+#
+# The season block is season_us_s03.yaml byte for byte; the llm block
+# is the OpenCode Go route. The session header is unique to this
+# replay so prompt caching is not shared with the other seasons.
+#
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  max_rounds: 18
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-us-s03
+  players: 23
+  # Starting traitors only: britney was recruited in episode 9.
+  traitors: 4
+  traitor_names:
+  - rob
+  - danielle
+  - carolyn
+  - bob
+  player_names:
+  - dolores
+  - dylan
+  - gabby
+  - ivar
+  - britney
+  - tom
+  - rob
+  - ciara
+  - danielle
+  - chrishell
+  - carolyn
+  - sam
+  - bob
+  - wes
+  - niamh
+  - dorinda
+  - roxanne
+  - jeremy
+  - wells
+  - tony
+  - nikki
+  - kristen
+  - boston
+  personas:
+  - us_s03/dolores
+  - us_s03/dylan
+  - us_s03/gabby
+  - us_s03/ivar
+  - us_s03/britney
+  - us_s03/tom
+  - us_s03/rob
+  - us_s03/ciara
+  - us_s03/danielle
+  - us_s03/chrishell
+  - us_s03/carolyn
+  - us_s03/sam
+  - us_s03/bob
+  - us_s03/wes
+  - us_s03/niamh
+  - us_s03/dorinda
+  - us_s03/roxanne
+  - us_s03/jeremy
+  - us_s03/wells
+  - us_s03/tony
+  - us_s03/nikki
+  - us_s03/kristen
+  - us_s03/boston
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: commandcode
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-us-s03-opencode
+  temperature: 0.7
+  # DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit inside the
+  # completion budget alongside the visible reply.
+  max_tokens: 32768
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  # Eight of these run together; keep each arm's share of the route modest.
+  max_concurrency: 2
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

@@ -1,0 +1,105 @@
+# Australia S02 replay on OpenCode Go.
+#
+# The season block is season_australia_s02.yaml byte for byte; the llm block
+# is the OpenCode Go route. The session header is unique to this
+# replay so prompt caching is not shared with the other seasons.
+#
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  max_rounds: 18
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-australia-s02
+  players: 20
+  traitors: 4
+  traitor_names:
+  - camille
+  - sam_mcglone
+  - blake
+  - ash_pollard
+  player_names:
+  - camille
+  - sam_mcglone
+  - blake
+  - sarah
+  - liam
+  - gloria
+  - hannah
+  - keith
+  - simone
+  - luke_toki
+  - annabel
+  - roha
+  - ian_zaro
+  - paul_de_gelder
+  - ash_pollard
+  - paeden
+  - gyton
+  - milly
+  - jessika
+  - nicole
+  personas:
+  - australia_s02/camille
+  - australia_s02/sam_mcglone
+  - australia_s02/blake
+  - australia_s02/sarah
+  - australia_s02/liam
+  - australia_s02/gloria
+  - australia_s02/hannah
+  - australia_s02/keith
+  - australia_s02/simone
+  - australia_s02/luke_toki
+  - australia_s02/annabel
+  - australia_s02/roha
+  - australia_s02/ian_zaro
+  - australia_s02/paul_de_gelder
+  - australia_s02/ash_pollard
+  - australia_s02/paeden
+  - australia_s02/gyton
+  - australia_s02/milly
+  - australia_s02/jessika
+  - australia_s02/nicole
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: commandcode
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-australia-s02-opencode
+  temperature: 0.7
+  # DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit inside the
+  # completion budget alongside the visible reply.
+  max_tokens: 32768
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  # Eight of these run together; keep each arm's share of the route modest.
+  max_concurrency: 2
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse
