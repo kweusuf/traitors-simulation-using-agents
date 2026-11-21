@@ -50,8 +50,8 @@ def make_view(**overrides) -> AgentView:
     return AgentView(**defaults)
 
 
-def build(view: AgentView | None = None, **kwargs) -> list:
-    builder = PromptBuilder()
+def build(view: AgentView | None = None, builder_kwargs: dict | None = None, **kwargs) -> list:
+    builder = PromptBuilder(**(builder_kwargs or {}))
     params: dict = dict(
         action_type=ActionType.PUBLIC_MESSAGE,
         legal_targets=[],
@@ -498,3 +498,68 @@ def test_end_vote_json_hint_offers_no_answer_of_its_own() -> None:
     )
     assert "'end' or 'banish'" in user
 
+
+
+# ----------------------------------------------------------------------
+# Traitor-bias levers (all opt-in)
+# ----------------------------------------------------------------------
+
+
+def test_reveal_traitor_count_is_opt_in() -> None:
+    off = build(action_type=ActionType.PUBLIC_MESSAGE)[-1].content
+    on = build(
+        action_type=ActionType.PUBLIC_MESSAGE,
+        builder_kwargs={"reveal_traitor_count": True, "traitor_count": 3},
+    )[-1].content
+    assert "began with 3 traitors" not in off
+    assert "began with 3 traitors" in on
+
+
+def test_evidence_accusations_only_on_the_accusation() -> None:
+    on = build(
+        action_type=ActionType.ACCUSE,
+        builder_kwargs={"evidence_accusations": True},
+    )[-1].content
+    off = build(action_type=ActionType.ACCUSE)[-1].content
+    assert "discount a nomination that supplies no evidence" in on
+    assert "discount a nomination that supplies no evidence" not in off
+
+
+def test_contradiction_audit_adds_a_cross_check() -> None:
+    on = build(
+        action_type=ActionType.PUBLIC_MESSAGE,
+        builder_kwargs={"contradiction_audit": True},
+    )[-1].content
+    off = build(action_type=ActionType.PUBLIC_MESSAGE)[-1].content
+    assert "conflicts with" in on
+    assert "conflicts with" not in off
+
+
+def test_recruitment_caution_targets_the_response() -> None:
+    on = build(
+        action_type=ActionType.RECRUIT_RESPONSE,
+        builder_kwargs={"recruitment_caution": True},
+    )[-1].content
+    off = build(action_type=ActionType.RECRUIT_RESPONSE)[-1].content
+    assert "Decline if the offer looks like a trap" in on
+    assert "Decline if the offer looks like a trap" not in off
+
+
+def test_vote_signal_tallies_public_nominations() -> None:
+    from simulation.environments.traitors.phases import _vote_signal_line
+
+    class _Action:
+        def __init__(self, target: str) -> None:
+            self.target = target
+
+    class _Engine:
+        def __init__(self, targets: list[str]) -> None:
+            self._targets = targets
+
+        def accusations(self):
+            return [_Action(t) for t in self._targets]
+
+    line = _vote_signal_line(_Engine(["bob", "bob", "charlie"]))
+    assert line is not None
+    assert "bob (2)" in line and "charlie (1)" in line
+    assert _vote_signal_line(_Engine([])) is None

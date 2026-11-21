@@ -43,7 +43,11 @@ async def _ask(
         return None
 
 
-async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None:
+async def _ask_all_alive(
+    context: PhaseContext,
+    action_type: ActionType,
+    extra_instruction: Optional[str] = None,
+) -> None:
     """One action per alive player.
 
     Turns are decided concurrently, capped by the gateway's
@@ -62,6 +66,7 @@ async def _ask_all_alive(context: PhaseContext, action_type: ActionType) -> None
                 actor,
                 action_type,
                 legal_targets(engine.state, actor, action_type, allow_self),
+                extra_instruction,
             )
             for actor in sorted(engine.state.alive_players)
         )
@@ -352,6 +357,28 @@ class PrivateChatPhase:
         return None
 
 
+def _vote_signal_line(engine) -> Optional[str]:
+    """The round's public nomination tally, for the ballot prompt.
+
+    Accusations are already public, so this leaks nothing hidden. It is a
+    coordination aid, not a vote: the ballot still asks for the player's own
+    read, and the line says so.
+    """
+    counts: dict[str, int] = {}
+    for action in engine.accusations():
+        if action.target:
+            counts[action.target] = counts.get(action.target, 0) + 1
+    if not counts:
+        return None
+    ordered = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    body = ", ".join(f"{name} ({count})" for name, count in ordered)
+    return (
+        "Public nominations so far this round: " + body + ". "
+        "Vote your own read, but if the room is converging, say why you join "
+        "or why you do not; a split ballot hands the round to the traitors."
+    )
+
+
 class VotingPhase:
     """The banishment ballot, plus the show's restricted revote on a tie.
 
@@ -371,7 +398,11 @@ class VotingPhase:
             # votes are requested at all and the tally stays empty.
             engine.skip_banishment()
             return None
-        await _ask_all_alive(context, ActionType.VOTE)
+        await _ask_all_alive(
+            context,
+            ActionType.VOTE,
+            _vote_signal_line(engine) if engine.config.game.vote_signal else None,
+        )
         tally = engine.tally_votes()
         if engine.revote_available(tally):
             engine.call_revote(tally.top)

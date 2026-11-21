@@ -128,6 +128,11 @@ class PromptBuilder:
         ledger_lines: Optional[list[str]] = None,
         standing_lines: Optional[list[str]] = None,
         traitor_mandate: bool = True,
+        evidence_accusations: bool = False,
+        contradiction_audit: bool = False,
+        recruitment_caution: bool = False,
+        reveal_traitor_count: bool = False,
+        traitor_count: Optional[int] = None,
     ) -> None:
         self.suspicion_ledger = suspicion_ledger
         # Where this player stands with the people they have dealt with,
@@ -164,6 +169,15 @@ class PromptBuilder:
         # give them no way to hold a false line. Off is the control for
         # measuring that claim, not a recommendation.
         self.traitor_mandate = traitor_mandate
+        # Traitor-bias experiment levers (see the implementation plan). All
+        # default off; each arm turns exactly one on so its effect can be
+        # attributed. `traitor_count` is the starting count, shown only when
+        # `reveal_traitor_count` is on.
+        self.evidence_accusations = evidence_accusations
+        self.contradiction_audit = contradiction_audit
+        self.recruitment_caution = recruitment_caution
+        self.reveal_traitor_count = reveal_traitor_count
+        self.traitor_count = traitor_count
 
     def _language_rule(self) -> list[str]:
         """The directive that moves an agent's speech into another language.
@@ -293,6 +307,11 @@ class PromptBuilder:
             f"Current phase: {view.phase.value}.",
             f"Required action type: {action_type.value}.",
         ]
+        if self.reveal_traitor_count and self.traitor_count:
+            lines.append(
+                f"The game began with {self.traitor_count} traitors among you. "
+                "Their number is public; their identities are not."
+            )
         if "shield" in view.items:
             lines.append(
                 "You hold the shield: it blocks the next murder attempt on "
@@ -533,6 +552,60 @@ class PromptBuilder:
                 "doubt. Use reason_summary to name the specific thing that "
                 "settled it."
             )
+        if self.evidence_accusations:
+            if action_type is ActionType.ACCUSE:
+                lines.append(
+                    "Name the exact thing that makes them a suspect: a claim "
+                    "they made that does not hold up, a vote that did not fit "
+                    "what they had been saying, or a contradiction. The room is "
+                    "told to discount a nomination that supplies no evidence."
+                )
+            elif action_type is ActionType.REBUT:
+                lines.append(
+                    "Answer the evidence the room has actually offered, point "
+                    "by point, rather than restating that you are innocent."
+                )
+            elif action_type is ActionType.VOTE:
+                lines.append(
+                    "Weigh evidence over volume: an accusation with no specific "
+                    "claim behind it is weak, and one that cites a real "
+                    "contradiction is strong."
+                )
+        if self.contradiction_audit and action_type in (
+            ActionType.PUBLIC_MESSAGE,
+            ActionType.PRIVATE_MESSAGE,
+            ActionType.ACCUSE,
+            ActionType.REBUT,
+            ActionType.VOTE,
+        ):
+            lines.append(
+                "Before you act, check what the players you suspect have said "
+                "across rounds. If one of their claims now conflicts with "
+                "something they said or did earlier, name that contradiction; "
+                "if you cannot find one, say what you would have expected a "
+                "traitor to do and whether they did it."
+            )
+        if self.recruitment_caution:
+            if action_type is ActionType.RECRUIT_DECISION:
+                lines.append(
+                    "Recruiting spends tonight's murder and brings in an ally "
+                    "you cannot vet; prefer the murder unless the recruit "
+                    "clearly outweighs the kill. The room will also suspect a "
+                    "player who changes sides under pressure."
+                )
+            elif action_type is ActionType.RECRUIT_RESPONSE:
+                lines.append(
+                    "Weigh the offer coldly: accepting makes you a traitor, but "
+                    "a recruit is often suspected for changing sides and the "
+                    "tower may already be exposed. Decline if the offer looks "
+                    "like a trap or the traitors are nearly caught."
+                )
+            elif action_type is ActionType.RECRUIT:
+                lines.append(
+                    "The player you recruit may refuse, and a recruit draws "
+                    "suspicion; choose someone whose loyalty to the tower is "
+                    "likely and whose defection would not expose you."
+                )
         if legal_targets:
             lines.append("Legal targets: " + ", ".join(sorted(legal_targets)))
         else:

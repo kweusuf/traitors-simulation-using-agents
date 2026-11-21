@@ -166,6 +166,23 @@ class GameSettings(StrictModel):
     # pre-mandate merge (persona objective next to the role's), which is the
     # other half of the "prompts as they were" control.
     traitor_role_goals: bool = True
+    # Traitor-bias experiment levers (all off; one lever per arm). See
+    # docs/2026-11-21-traitor-bias-implementation-plan.md.
+    #
+    # `evidence_accusations`: instruct accusers to name the specific claim
+    # or vote behind a nomination, and voters to discount accusations that
+    # supply none. `contradiction_audit`: tell every player to cross-check a
+    # suspect's claims across rounds and name a contradiction (or say they
+    # could not find one). `vote_signal`: show the round's public
+    # nominations as a tally in the ballot prompt so the room can
+    # consolidate. `recruitment_caution`: put the cost of recruiting and of
+    # accepting into the traitor/recruit prompts. `reveal_traitor_count`:
+    # state the starting number of traitors (not their identities).
+    evidence_accusations: bool = False
+    contradiction_audit: bool = False
+    vote_signal: bool = False
+    recruitment_caution: bool = False
+    reveal_traitor_count: bool = False
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)
