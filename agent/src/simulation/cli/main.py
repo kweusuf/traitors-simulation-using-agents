@@ -188,6 +188,8 @@ def _load_config(args: argparse.Namespace) -> GameConfig:
         config.llm.base_url = args.base_url
     if getattr(args, "model", None):
         config.llm.model = args.model
+    if getattr(args, "reasoning_effort", None) is not None:
+        config.llm.reasoning_effort = args.reasoning_effort
     if getattr(args, "concurrency", None) is not None:
         config.llm.max_concurrency = args.concurrency
     return config
@@ -809,10 +811,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument(
         "--provider",
         default=None,
-        choices=["ollama", "commandcode", "fake"],
+        choices=["ollama", "openai_compat", "fake"],
         help="override llm.provider",
     )
     run.add_argument("--model", default=None, help="override llm.model")
+    run.add_argument("--reasoning-effort", default=None, help="override llm.reasoning_effort")
     run.add_argument(
         "--idle-seconds",
         type=int,
@@ -844,10 +847,11 @@ def build_parser() -> argparse.ArgumentParser:
     batch.add_argument(
         "--provider",
         default=None,
-        choices=["ollama", "commandcode", "fake"],
+        choices=["ollama", "openai_compat", "fake"],
         help="override llm.provider",
     )
     batch.add_argument("--model", default=None, help="override llm.model")
+    batch.add_argument("--reasoning-effort", default=None, help="override llm.reasoning_effort")
     batch.add_argument(
         "--base-url",
         default=None,

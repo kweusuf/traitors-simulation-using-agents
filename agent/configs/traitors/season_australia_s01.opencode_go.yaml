@@ -93,7 +93,7 @@ communication:
   private_messages_per_agent: 2
   transcript_messages_per_prompt: 40
 llm:
-  provider: commandcode
+  provider: openai_compat
   model: deepseek-v4.1-flash
   base_url: https://opencode.ai/inference/go/openai/v1
   api_key_env: OPENCODE_GO_API_KEY

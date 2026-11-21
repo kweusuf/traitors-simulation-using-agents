@@ -1,13 +1,12 @@
-"""Command Code Provider API (OpenAI-compatible Chat Completions).
+"""OpenAI-compatible provider (Chat Completions).
 
-Command Code exposes the same models through an OpenAI-shaped endpoint:
-`POST {base_url}/chat/completions` with a bearer token. Structured output
-is requested with `response_format: {type: "json_schema"}`; if that
-particular route rejects the field, the provider retries the call once
-without it and remembers that the route is prompt-only for the rest of
-the run. No game-logic code depends on this module.
-
-Docs: https://commandcode.ai/docs/provider
+Talks to any OpenAI-shaped endpoint via `POST {base_url}/chat/completions`
+with a bearer token. Structured output is requested with
+`response_format: {type: "json_schema"}`; if that particular route rejects
+the field, the provider retries the call once without it and remembers that
+the route is prompt-only for the rest of the run. No game-logic code
+depends on this module: the endpoint, model, and key variable all come from
+the config.
 """
 
 from __future__ import annotations
@@ -30,11 +29,7 @@ Poster = Callable[
     [str, dict[str, Any], dict[str, str], float], tuple[int, bytes]
 ]
 
-DEFAULT_API_KEY_ENV = "COMMAND_CODE_API_KEY"
-# The Command Code CLI documents `CMD_API_KEY`; accept it as an alias for
-# Command Code only. It must never be used when a config names another
-# provider's key variable, or that key would be sent to the wrong host.
-FALLBACK_API_KEY_ENVS = ("CMD_API_KEY",)
+DEFAULT_API_KEY_ENV = "OPENAI_COMPAT_API_KEY"
 
 RETRY_BACKOFF = (1.0, 2.0, 4.0)
 
@@ -55,8 +50,8 @@ _URL_USERINFO = re.compile(r"(?i)(https?://)[^/@\s]+@")
 _KEEPALIVE = threading.local()
 
 
-class CommandCodeError(RuntimeError):
-    """Command Code request, transport, or response failure.
+class OpenAICompatError(RuntimeError):
+    """OpenAI-compatible request, transport, or response failure.
 
     `retryable` marks a transient failure (timeout, unreachable host,
     HTTP 429/5xx, malformed body). `retries` is how many transport
@@ -171,25 +166,25 @@ def _http_post(
             _drop(url)
             if reused and not retried:
                 continue
-            raise CommandCodeError(
+            raise OpenAICompatError(
                 f"connection to {_redact(url)} failed: {_redact(str(exc))}",
                 retryable=True,
             ) from exc
         except TimeoutError as exc:
             _drop(url)
-            raise CommandCodeError(
-                f"Command Code request to {_redact(url)} timed out after "
+            raise OpenAICompatError(
+                f"OpenAI-compatible request to {_redact(url)} timed out after "
                 f"{timeout}s",
                 retryable=True,
             ) from exc
         except OSError as exc:
             _drop(url)
-            raise CommandCodeError(
+            raise OpenAICompatError(
                 f"connection to {_redact(url)} failed: {_redact(str(exc))}",
                 retryable=True,
             ) from exc
 
-    raise CommandCodeError(
+    raise OpenAICompatError(
         f"connection to {_redact(url)} failed", retryable=True
     )
 
@@ -209,7 +204,7 @@ def _require_secure_transport(url: str, config: ModelConfig) -> None:
         return
     if config.options.get("allow_insecure_http") is True:
         return
-    raise CommandCodeError(
+    raise OpenAICompatError(
         "refusing to send an API key over "
         f"{parts.scheme or 'an unknown scheme'}; use https, a loopback "
         "address, or set llm.options.allow_insecure_http for a trusted local proxy"
@@ -217,27 +212,19 @@ def _require_secure_transport(url: str, config: ModelConfig) -> None:
 
 
 def resolve_api_key(config: ModelConfig) -> str:
-    """The key from `config.api_key_env`, or Command Code's own aliases.
+    """The key named by `config.api_key_env`, defaulting to our own variable.
 
-    When a config names a different provider's variable, that name is the
-    only one tried. Falling back to `COMMAND_CODE_API_KEY` there would
-    send a Command Code key to the other provider's endpoint.
+    Only the configured variable is read. A config that names another
+    provider's key variable therefore never falls back to this provider's
+    default, so its key cannot be sent to the wrong host.
     """
-    configured = (config.api_key_env or "").strip()
-    names: list[str] = [configured] if configured else [DEFAULT_API_KEY_ENV]
-    if not configured or configured == DEFAULT_API_KEY_ENV:
-        names.extend(
-            name for name in FALLBACK_API_KEY_ENVS if name not in names
-        )
-
-    for name in names:
-        value = os.environ.get(name, "").strip()
-        if value:
-            return value
+    name = (config.api_key_env or "").strip() or DEFAULT_API_KEY_ENV
+    value = os.environ.get(name, "").strip()
+    if value:
+        return value
     raise ValueError(
-        "the commandcode provider needs an API key: set "
-        f"{configured or DEFAULT_API_KEY_ENV} in .env "
-        "(copy .env.example to .env) or export it in the shell"
+        "the openai_compat provider needs an API key: set "
+        f"{name} in .env (copy .env.example to .env) or export it in the shell"
     )
 
 
@@ -385,8 +372,8 @@ def _content_of(message: Any) -> str:
     return ""
 
 
-class CommandCodeProvider:
-    """Implements the LLMProvider protocol against Command Code."""
+class OpenAICompatProvider:
+    """Implements the LLMProvider protocol against an OpenAI-compatible endpoint."""
 
     def __init__(self, poster: Poster | None = None) -> None:
         self._poster: Poster = poster or _http_post
@@ -432,7 +419,7 @@ class CommandCodeProvider:
                 status, raw = await asyncio.to_thread(
                     self._poster, url, body, headers, float(config.timeout_seconds)
                 )
-            except CommandCodeError as exc:
+            except OpenAICompatError as exc:
                 if not exc.retryable or attempt >= max_retries:
                     exc.retries = spent
                     raise
@@ -453,7 +440,7 @@ class CommandCodeProvider:
 
             if status >= 400:
                 detail = raw.decode("utf-8", errors="replace")
-                error = CommandCodeError(
+                error = OpenAICompatError(
                     f"HTTP {status} from {_redact(url)}: {_redact(detail[:500])}",
                     retryable=status >= 500 or status == 429,
                 )
@@ -471,7 +458,7 @@ class CommandCodeProvider:
             try:
                 data = json.loads(raw.decode("utf-8"))
             except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-                error = CommandCodeError(
+                error = OpenAICompatError(
                     f"non-JSON response from {_redact(url)}: "
                     f"{_redact(repr(raw[:200]))}",
                     retryable=True,
@@ -489,7 +476,7 @@ class CommandCodeProvider:
 
             try:
                 return self._parse(data, config, started, retries=spent)
-            except CommandCodeError as exc:
+            except OpenAICompatError as exc:
                 if not exc.retryable or attempt >= max_retries:
                     exc.retries = spent
                     raise
@@ -506,19 +493,19 @@ class CommandCodeProvider:
         self, data: Any, config: ModelConfig, started: float, retries: int = 0
     ) -> LLMResponse:
         if not isinstance(data, dict):
-            raise CommandCodeError(
-                f"malformed Command Code response: {_redact(str(data)[:200])}",
+            raise OpenAICompatError(
+                f"malformed OpenAI-compatible response: {_redact(str(data)[:200])}",
                 retryable=True,
             )
         if data.get("error"):
-            raise CommandCodeError(
-                f"Command Code error: {_redact(str(data['error']))}",
+            raise OpenAICompatError(
+                f"OpenAI-compatible error: {_redact(str(data['error']))}",
                 retryable=False,
             )
         choices = data.get("choices")
         if not isinstance(choices, list) or not choices:
-            raise CommandCodeError(
-                f"Command Code response has no choices: "
+            raise OpenAICompatError(
+                f"OpenAI-compatible response has no choices: "
                 f"{_redact(str(data)[:200])}",
                 retryable=True,
             )
@@ -530,15 +517,15 @@ class CommandCodeProvider:
             # A cut-off reply is not an answer, even if some content came
             # back; the runtime would only reject the truncated JSON. Retry
             # with a larger cap instead.
-            raise CommandCodeError(
-                "Command Code reply hit the token cap "
+            raise OpenAICompatError(
+                "OpenAI-compatible reply hit the token cap "
                 f"(finish_reason=length, {len(content)} chars)",
                 retryable=True,
                 truncated=True,
             )
         if not content:
-            raise CommandCodeError(
-                "Command Code response has no message content: "
+            raise OpenAICompatError(
+                "OpenAI-compatible response has no message content: "
                 f"{str(data)[:200]}",
                 retryable=True,
             )

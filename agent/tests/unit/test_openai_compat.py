@@ -1,4 +1,4 @@
-"""Unit tests for the Command Code Provider API (OpenAI-compatible).
+"""Unit tests for the OpenAI-compatible Provider API (OpenAI-compatible).
 
 Every test injects a fake poster, so no network call is made.
 """
@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-import simulation.models.commandcode as cc
+import simulation.models.openai_compat as cc
 from simulation.actions.actions import Action
 from simulation.models.base import ChatMessage
 from simulation.models.llm import ModelConfig
@@ -35,9 +35,9 @@ OK = {
 
 def make_config(**overrides: Any) -> ModelConfig:
     base: dict[str, Any] = {
-        "provider": "commandcode",
+        "provider": "openai_compat",
         "name": "xiaomi/mimo-v2.6-flash",
-        "base_url": "https://api.commandcode.ai/provider/v1",
+        "base_url": "https://api.example.test/v1",
         "temperature": 0.2,
         "max_tokens": 256,
         "timeout_seconds": 7,
@@ -53,7 +53,7 @@ def reply(data: Any, status: int = 200) -> tuple[int, bytes]:
 
 
 def run(
-    provider: cc.CommandCodeProvider,
+    provider: cc.OpenAICompatProvider,
     config: ModelConfig,
     schema: type = Action,
 ) -> cc.LLMResponse:
@@ -108,7 +108,7 @@ def test_max_completion_tokens_replaces_max_tokens() -> None:
 def test_api_key_comes_from_configured_env(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret-from-env")
+    monkeypatch.setenv("MY_KEY", "secret-from-env")
     seen: dict[str, Any] = {}
 
     def poster(url, payload, headers, timeout):
@@ -117,12 +117,12 @@ def test_api_key_comes_from_configured_env(
         return reply(OK)
 
     run(
-        cc.CommandCodeProvider(poster=poster),
-        make_config(api_key_env="MY_CMD_KEY"),
+        cc.OpenAICompatProvider(poster=poster),
+        make_config(api_key_env="MY_KEY"),
     )
 
     assert seen["url"] == (
-        "https://api.commandcode.ai/provider/v1/chat/completions"
+        "https://api.example.test/v1/chat/completions"
     )
     assert seen["headers"]["Authorization"] == "Bearer secret-from-env"
 
@@ -130,8 +130,8 @@ def test_api_key_comes_from_configured_env(
 def test_configured_env_wins_over_the_default_name(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "default-key")
-    monkeypatch.setenv("MY_CMD_KEY", "configured-key")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "default-key")
+    monkeypatch.setenv("MY_KEY", "configured-key")
     seen: dict[str, Any] = {}
 
     def poster(url, payload, headers, timeout):
@@ -139,8 +139,8 @@ def test_configured_env_wins_over_the_default_name(
         return reply(OK)
 
     run(
-        cc.CommandCodeProvider(poster=poster),
-        make_config(api_key_env="MY_CMD_KEY"),
+        cc.OpenAICompatProvider(poster=poster),
+        make_config(api_key_env="MY_KEY"),
     )
 
     assert seen["headers"]["Authorization"] == "Bearer configured-key"
@@ -149,7 +149,7 @@ def test_configured_env_wins_over_the_default_name(
 def test_extra_headers_reach_the_request(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret-from-env")
+    monkeypatch.setenv("MY_KEY", "secret-from-env")
     seen: dict[str, Any] = {}
 
     def poster(url, payload, headers, timeout):
@@ -157,9 +157,9 @@ def test_extra_headers_reach_the_request(
         return reply(OK)
 
     run(
-        cc.CommandCodeProvider(poster=poster),
+        cc.OpenAICompatProvider(poster=poster),
         make_config(
-            api_key_env="MY_CMD_KEY",
+            api_key_env="MY_KEY",
             extra_headers={"x-session": "stable-session-id"},
         ),
     )
@@ -171,18 +171,18 @@ def test_extra_headers_reach_the_request(
 def test_missing_api_key_is_a_clear_config_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    for name in ("COMMAND_CODE_API_KEY", "CMD_API_KEY"):
+    for name in ("OPENAI_COMPAT_API_KEY", "OPENAI_COMPAT_API_KEY"):
         monkeypatch.delenv(name, raising=False)
-    provider = cc.CommandCodeProvider(poster=lambda *a: reply(OK))
+    provider = cc.OpenAICompatProvider(poster=lambda *a: reply(OK))
 
     with pytest.raises(ValueError, match="needs an API key"):
         run(provider, make_config())
 
 
-def test_other_providers_key_does_not_fall_back_to_command_code(
+def test_other_providers_key_does_not_fall_back_to_default(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "command-code-key")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "default-key")
     monkeypatch.delenv("OPENCODE_GO_API_KEY", raising=False)
     called = False
 
@@ -193,7 +193,7 @@ def test_other_providers_key_does_not_fall_back_to_command_code(
 
     with pytest.raises(ValueError, match="OPENCODE_GO_API_KEY"):
         run(
-            cc.CommandCodeProvider(poster=poster),
+            cc.OpenAICompatProvider(poster=poster),
             make_config(api_key_env="OPENCODE_GO_API_KEY"),
         )
     assert called is False
@@ -202,7 +202,7 @@ def test_other_providers_key_does_not_fall_back_to_command_code(
 def test_refuses_plain_http_off_loopback(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    monkeypatch.setenv("MY_KEY", "secret")
     called = False
 
     def poster(*args: Any) -> tuple[int, bytes]:
@@ -210,11 +210,11 @@ def test_refuses_plain_http_off_loopback(
         called = True
         return reply(OK)
 
-    with pytest.raises(cc.CommandCodeError, match="refusing to send an API key"):
+    with pytest.raises(cc.OpenAICompatError, match="refusing to send an API key"):
         run(
-            cc.CommandCodeProvider(poster=poster),
+            cc.OpenAICompatProvider(poster=poster),
             make_config(
-                api_key_env="MY_CMD_KEY",
+                api_key_env="MY_KEY",
                 base_url="http://models.example.com/v1",
             ),
         )
@@ -224,7 +224,7 @@ def test_refuses_plain_http_off_loopback(
 def test_allows_loopback_http_for_a_local_proxy(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    monkeypatch.setenv("MY_KEY", "secret")
     seen: dict[str, Any] = {}
 
     def poster(url, payload, headers, timeout):
@@ -232,9 +232,9 @@ def test_allows_loopback_http_for_a_local_proxy(
         return reply(OK)
 
     run(
-        cc.CommandCodeProvider(poster=poster),
+        cc.OpenAICompatProvider(poster=poster),
         make_config(
-            api_key_env="MY_CMD_KEY",
+            api_key_env="MY_KEY",
             base_url="http://127.0.0.1:11434/v1",
         ),
     )
@@ -245,9 +245,9 @@ def test_allows_loopback_http_for_a_local_proxy(
 def test_transport_option_is_not_sent_to_the_provider(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    monkeypatch.setenv("MY_KEY", "secret")
     config = make_config(
-        api_key_env="MY_CMD_KEY",
+        api_key_env="MY_KEY",
         base_url="http://127.0.0.1:11434/v1",
         options={"allow_insecure_http": True},
     )
@@ -260,13 +260,13 @@ def test_transport_option_is_not_sent_to_the_provider(
 def test_provider_owned_headers_cannot_be_overridden(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    monkeypatch.setenv("MY_KEY", "secret")
 
     with pytest.raises(ValueError, match="may not override"):
         run(
-            cc.CommandCodeProvider(poster=lambda *a: reply(OK)),
+            cc.OpenAICompatProvider(poster=lambda *a: reply(OK)),
             make_config(
-                api_key_env="MY_CMD_KEY",
+                api_key_env="MY_KEY",
                 extra_headers={"Authorization": "Bearer other"},
             ),
         )
@@ -275,14 +275,14 @@ def test_provider_owned_headers_cannot_be_overridden(
 def test_error_detail_redacts_credentials(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MY_CMD_KEY", "secret")
+    monkeypatch.setenv("MY_KEY", "secret")
     secret = "Bearer abcdefghijklmnop"
 
     def poster(*args: Any) -> tuple[int, bytes]:
         return 401, f'{{"error": "bad {secret}"}}'.encode("utf-8")
 
-    with pytest.raises(cc.CommandCodeError) as caught:
-        run(cc.CommandCodeProvider(poster=poster), make_config(api_key_env="MY_CMD_KEY"))
+    with pytest.raises(cc.OpenAICompatError) as caught:
+        run(cc.OpenAICompatProvider(poster=poster), make_config(api_key_env="MY_KEY"))
 
     assert secret not in str(caught.value)
     assert "[redacted]" in str(caught.value)
@@ -299,8 +299,8 @@ def test_api_key_env_must_be_a_name_not_a_value() -> None:
 
 
 def test_parses_content_and_usage(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
-    response = run(cc.CommandCodeProvider(poster=lambda *a: reply(OK)), make_config())
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
+    response = run(cc.OpenAICompatProvider(poster=lambda *a: reply(OK)), make_config())
 
     assert json.loads(response.content)["content"] == "hello"
     assert response.model == "xiaomi/mimo-v2.6-flash"
@@ -311,7 +311,7 @@ def test_parses_content_and_usage(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_leaked_channel_scaffolding_is_stripped(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     leaked = (
         '{"action": "public_message", "content": "hello"}'
         "<|end|><|start|>assistant<|channel|>analysis<|message|>"
@@ -321,7 +321,7 @@ def test_leaked_channel_scaffolding_is_stripped(
     data["choices"][0]["message"]["content"] = leaked
 
     response = run(
-        cc.CommandCodeProvider(poster=lambda *a: reply(data)), make_config()
+        cc.OpenAICompatProvider(poster=lambda *a: reply(data)), make_config()
     )
 
     assert response.content == '{"action": "public_message", "content": "hello"}'
@@ -331,7 +331,7 @@ def test_leaked_channel_scaffolding_is_stripped(
 def test_final_channel_wins_over_leaked_analysis(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     leaked = (
         "<|start|>assistant<|channel|>analysis<|message|>"
         "thinking out loud<|end|>"
@@ -342,14 +342,14 @@ def test_final_channel_wins_over_leaked_analysis(
     data["choices"][0]["message"]["content"] = leaked
 
     response = run(
-        cc.CommandCodeProvider(poster=lambda *a: reply(data)), make_config()
+        cc.OpenAICompatProvider(poster=lambda *a: reply(data)), make_config()
     )
 
     assert json.loads(response.content)["content"] == "hello"
 
 
 def test_retries_transient_status(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     monkeypatch.setattr(cc, "RETRY_BACKOFF", (0.0, 0.0, 0.0))
     statuses = [500, 429, 200]
     calls: list[dict[str, Any]] = []
@@ -360,7 +360,7 @@ def test_retries_transient_status(monkeypatch: pytest.MonkeyPatch) -> None:
                      statuses[len(calls) - 1])
 
     response = run(
-        cc.CommandCodeProvider(poster=poster), make_config(retries=3)
+        cc.OpenAICompatProvider(poster=poster), make_config(retries=3)
     )
 
     assert len(calls) == 3
@@ -370,7 +370,7 @@ def test_retries_transient_status(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_provider_counts_retries_for_metrics(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     monkeypatch.setattr(cc, "RETRY_BACKOFF", (0.0, 0.0, 0.0))
     statuses = [500, 200]
 
@@ -378,7 +378,7 @@ def test_provider_counts_retries_for_metrics(
         status = statuses.pop(0)
         return reply(OK if status == 200 else {"error": "x"}, status)
 
-    provider = cc.CommandCodeProvider(poster=poster)
+    provider = cc.OpenAICompatProvider(poster=poster)
     run(provider, make_config(retries=1))
 
     assert provider.calls == 1
@@ -386,20 +386,20 @@ def test_provider_counts_retries_for_metrics(
 
 
 def test_does_not_retry_auth_failure(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     calls: list[int] = []
 
     def poster(url, payload, headers, timeout):
         calls.append(1)
         return 401, b'{"error": "bad key"}'
 
-    with pytest.raises(cc.CommandCodeError, match="HTTP 401"):
-        run(cc.CommandCodeProvider(poster=poster), make_config(retries=3))
+    with pytest.raises(cc.OpenAICompatError, match="HTTP 401"):
+        run(cc.OpenAICompatProvider(poster=poster), make_config(retries=3))
     assert len(calls) == 1
 
 
 def test_retries_a_malformed_body(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     monkeypatch.setattr(cc, "RETRY_BACKOFF", (0.0, 0.0, 0.0))
     bodies = [b"not json", json.dumps(OK).encode("utf-8")]
 
@@ -407,7 +407,7 @@ def test_retries_a_malformed_body(monkeypatch: pytest.MonkeyPatch) -> None:
         return 200, bodies.pop(0)
 
     response = run(
-        cc.CommandCodeProvider(poster=poster), make_config(retries=1)
+        cc.OpenAICompatProvider(poster=poster), make_config(retries=1)
     )
     assert json.loads(response.content)["content"] == "hello"
 
@@ -415,7 +415,7 @@ def test_retries_a_malformed_body(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_truncated_reply_retries_with_a_larger_budget(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     monkeypatch.setattr(cc, "RETRY_BACKOFF", (0.0, 0.0, 0.0))
     payloads: list[dict[str, Any]] = []
     replies = [
@@ -435,7 +435,7 @@ def test_truncated_reply_retries_with_a_larger_budget(
         return reply(replies.pop(0))
 
     response = run(
-        cc.CommandCodeProvider(poster=poster), make_config(retries=1)
+        cc.OpenAICompatProvider(poster=poster), make_config(retries=1)
     )
 
     assert json.loads(response.content)["content"] == "hello"
@@ -451,7 +451,7 @@ def test_truncated_reply_retries_with_a_larger_budget(
 def test_rejected_json_schema_retries_prompt_only_and_latches(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("COMMAND_CODE_API_KEY", "k")
+    monkeypatch.setenv("OPENAI_COMPAT_API_KEY", "k")
     seen: list[dict[str, Any]] = []
 
     def poster(url, payload, headers, timeout):
@@ -460,7 +460,7 @@ def test_rejected_json_schema_retries_prompt_only_and_latches(
             return 400, b'{"error": "response_format is not supported"}'
         return reply(OK)
 
-    provider = cc.CommandCodeProvider(poster=poster)
+    provider = cc.OpenAICompatProvider(poster=poster)
     config = make_config()
 
     first = run(provider, config)

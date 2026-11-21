@@ -2,14 +2,14 @@
 
 The season run hit the token cap because a public message that reads as
 ~1,000 characters reported 5,000-7,000 output tokens. This sends one real
-prompt from a run through Command Code and reports the output-token count
+prompt from a run through OpenAI-compatible and reports the output-token count
 and the visible reply length, so `reasoning_effort` can be compared on the
 same input instead of guessed at.
 
 Usage:
-  uv run --no-sync python tools/probe_commandcode.py \
+  uv run --no-sync python tools/probe_openai_compat.py \
       --run runs/india-s01-mimo --effort low
-  uv run --no-sync python tools/probe_commandcode.py --run ... --effort none
+  uv run --no-sync python tools/probe_openai_compat.py --run ... --effort none
 """
 from __future__ import annotations
 
@@ -32,15 +32,13 @@ from simulation.agents.persona import Persona  # noqa: E402
 from simulation.env import load_dotenv  # noqa: E402
 from simulation.engine.state import Role  # noqa: E402
 from simulation.models.base import ChatMessage  # noqa: E402
-from simulation.models.commandcode import (  # noqa: E402
-    CommandCodeError,
-    CommandCodeProvider,
+from simulation.models.openai_compat import (  # noqa: E402
+    OpenAICompatError,
+    OpenAICompatProvider,
 )
 from simulation.models.llm import ModelConfig  # noqa: E402
 
-DEFAULT_MODEL = "xiaomi/mimo-v2.6-flash"
-DEFAULT_BASE_URL = "https://api.commandcode.ai/provider/v1"
-
+DEFAULT_MODEL = "deepseek-v4.1-flash"
 
 def real_messages(run: Path, target_round: int) -> list[ChatMessage]:
     events = [json.loads(line) for line in open(run / "events.jsonl")]
@@ -90,10 +88,14 @@ def main() -> None:
     print(f"effort: {args.effort}")
     print(f"max_tokens: {args.max_tokens}")
 
+    base_url = args.base_url or os.environ.get("OPENAI_COMPAT_BASE_URL")
+    if not base_url:
+        parser.error("set OPENAI_COMPAT_BASE_URL or pass --base-url")
+
     config = ModelConfig(
-        provider="commandcode",
+        provider="openai_compat",
         name=args.model,
-        base_url=args.base_url or DEFAULT_BASE_URL,
+        base_url=base_url,
         temperature=0.7,
         max_tokens=args.max_tokens,
         timeout_seconds=600,
@@ -101,7 +103,7 @@ def main() -> None:
         reasoning_effort=args.effort,
         options={"send_reasoning_effort": True} if args.force_effort else {},
     )
-    provider = CommandCodeProvider()
+    provider = OpenAICompatProvider()
     start = time.monotonic()
     try:
         response = asyncio.run(
@@ -114,7 +116,7 @@ def main() -> None:
     except ValueError as exc:
         print(f"config error: {exc}")
         return
-    except CommandCodeError as exc:
+    except OpenAICompatError as exc:
         print(f"failed after {time.monotonic() - start:.0f}s: {exc}")
         return
 

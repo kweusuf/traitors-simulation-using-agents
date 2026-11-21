@@ -36,7 +36,7 @@ from simulation.experiments.resume import load_point
 from simulation.experiments.telemetry import TelemetryRecorder
 from simulation.experiments.replay import build_transcript, render_transcript
 from simulation.experiments.timeline import write_timeline
-from simulation.models.commandcode import CommandCodeProvider
+from simulation.models.openai_compat import OpenAICompatProvider
 from simulation.models.fake import PromptScriptProvider
 from simulation.models.gateway import LLMGateway
 from simulation.models.llm import LLMProvider
@@ -92,13 +92,13 @@ def build_provider(settings: LLMSettings) -> LLMProvider:
     """Provider from config (spec section 17); no provider code elsewhere."""
     if settings.provider == "ollama":
         return OllamaProvider()
-    if settings.provider == "commandcode":
-        return CommandCodeProvider()
+    if settings.provider == "openai_compat":
+        return OpenAICompatProvider()
     if settings.provider == "fake":
         return PromptScriptProvider()
     raise ValueError(
         f"unknown llm provider '{settings.provider}'; expected 'ollama', "
-        "'commandcode' or 'fake'"
+        "'openai_compat' or 'fake'"
     )
 
 

@@ -55,7 +55,7 @@ class ModelConfig(StrictModel):
     base_url: str = "http://localhost:11434"
     # Name of the environment variable holding a cloud provider's API
     # key. The value never enters a tracked config, only the name.
-    api_key_env: str = "COMMAND_CODE_API_KEY"
+    api_key_env: str = "OPENAI_COMPAT_API_KEY"
     # Extra request headers for routes that route on them, such as the
     # session id an OpenAI-compatible proxy uses for prompt caching.
     extra_headers: dict[str, str] = Field(default_factory=dict)

@@ -13,7 +13,7 @@
 # The model id is the flat Go id, not a namespaced canonical one: the route
 # rejects namespaced ids with "isn't included in OpenCode Go".
 #
-# max_concurrency is 4 in flight, matching the Command Code replay rather
+# max_concurrency is 4 in flight, matching the OpenAI-compatible replay rather
 # than any measured capacity.
 game:
   mission_reward: 1000
@@ -98,7 +98,7 @@ communication:
   private_messages_per_agent: 2
   transcript_messages_per_prompt: 40
 llm:
-  provider: commandcode
+  provider: openai_compat
   model: deepseek-v4.1-flash
   base_url: https://opencode.ai/inference/go/openai/v1
   api_key_env: OPENCODE_GO_API_KEY

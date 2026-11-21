@@ -367,7 +367,7 @@ class LLMSettings(StrictModel):
     max_concurrency: int = Field(default=2, ge=1)
     # Which environment variable holds the API key for a cloud provider.
     # Only the name is recorded here; the key lives in a gitignored .env.
-    api_key_env: str = "COMMAND_CODE_API_KEY"
+    api_key_env: str = "OPENAI_COMPAT_API_KEY"
     # Extra request headers for routes that route on them, such as the
     # session id an OpenAI-compatible proxy uses for prompt caching.
     extra_headers: dict[str, str] = Field(default_factory=dict)

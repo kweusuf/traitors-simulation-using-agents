@@ -37,8 +37,6 @@
 - australia_s02 (20)
 
 ## Experiment arms
-- season_india_s01.commandcode.yaml - India S01, original traitors pinned, on
-  the Command Code Provider API (`xiaomi/mimo-v2.6-flash`); key from `.env`
 - season_uk_s01.fix_en.rand.yaml - the traitor-mandate arm (mandate on)
 - season_us_s02.nomandate.yaml - mandate off on a second edition; its header
   records what it does and does not control for

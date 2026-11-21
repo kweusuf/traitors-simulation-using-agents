@@ -1,14 +1,14 @@
-"""One real Command Code call: auth, model id, and JSON output.
+"""One real OpenAI-compatible call: auth, model id, and JSON output.
 
 A full game is an expensive way to discover a typo in the key or that the
 route rejects `response_format`. This sends one action-shaped prompt
 through the same provider a run uses and reports what came back.
 
 Usage:
-  uv run --no-sync python tools/smoke_commandcode.py
-  uv run --no-sync python tools/smoke_commandcode.py --model xiaomi/mimo-v2.6-flash
+  uv run --no-sync python tools/smoke_openai_compat.py
+  uv run --no-sync python tools/smoke_openai_compat.py --model deepseek-v4.1-flash
 
-Reads COMMAND_CODE_API_KEY (or CMD_API_KEY) from the gitignored .env.
+Reads OPENAI_COMPAT_API_KEY from the gitignored .env.
 """
 from __future__ import annotations
 
@@ -25,21 +25,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from simulation.actions.actions import ActionType, action_schema  # noqa: E402
 from simulation.env import load_dotenv  # noqa: E402
 from simulation.models.base import ChatMessage  # noqa: E402
-from simulation.models.commandcode import (  # noqa: E402
-    CommandCodeError,
-    CommandCodeProvider,
+from simulation.models.openai_compat import (  # noqa: E402
+    OpenAICompatError,
+    OpenAICompatProvider,
 )
 from simulation.models.llm import ModelConfig  # noqa: E402
 
-DEFAULT_MODEL = "xiaomi/mimo-v2.6-flash"
-DEFAULT_BASE_URL = "https://api.commandcode.ai/provider/v1"
-
+DEFAULT_MODEL = "deepseek-v4.1-flash"
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--base-url", default=None)
-    parser.add_argument("--key-env", default="COMMAND_CODE_API_KEY")
+    parser.add_argument("--key-env", default="OPENAI_COMPAT_API_KEY")
     parser.add_argument(
         "--reasoning-effort",
         default="none",
@@ -48,11 +46,9 @@ def main() -> None:
     args = parser.parse_args()
 
     load_dotenv()
-    base_url = (
-        args.base_url
-        or os.environ.get("COMMAND_CODE_BASE_URL")
-        or DEFAULT_BASE_URL
-    )
+    base_url = args.base_url or os.environ.get("OPENAI_COMPAT_BASE_URL")
+    if not base_url:
+        parser.error("set OPENAI_COMPAT_BASE_URL or pass --base-url")
 
     schema = action_schema(ActionType.PUBLIC_MESSAGE)
     messages = [
@@ -74,7 +70,7 @@ def main() -> None:
         ),
     ]
     config = ModelConfig(
-        provider="commandcode",
+        provider="openai_compat",
         name=args.model,
         base_url=base_url,
         temperature=0.7,
@@ -87,14 +83,14 @@ def main() -> None:
 
     print(f"model:  {args.model}")
     print(f"host:   {base_url}")
-    provider = CommandCodeProvider()
+    provider = OpenAICompatProvider()
     started = time.monotonic()
     try:
         response = asyncio.run(provider.generate(messages, schema, config))
     except ValueError as exc:
         print(f"config error: {exc}")
         return
-    except CommandCodeError as exc:
+    except OpenAICompatError as exc:
         print(f"failed after {time.monotonic() - started:.0f}s: {exc}")
         return
     except Exception as exc:  # noqa: BLE001 - a smoke test reports, it does not crash
