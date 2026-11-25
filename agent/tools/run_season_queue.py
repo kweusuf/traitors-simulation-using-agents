@@ -224,6 +224,7 @@ def run_one(
     backoff: int,
     poll_seconds: int,
     faithful: bool = False,
+    free_only: bool = False,
 ) -> str:
     global _child
     attempt = 0
@@ -264,9 +265,10 @@ def run_one(
 
         # An exhausted quota is a reason to change model, not to wait.
         kind = classify_failure(stdout_path, start_offset)
+        model_limit = len(MODELS) - 1 if free_only else len(MODELS)
         if (
             kind in {"rate_limit", "unavailable"}
-            and state["model_index"] + 1 < len(MODELS)
+            and state["model_index"] + 1 < model_limit
         ):
             previous = model
             state["model_index"] += 1
@@ -358,6 +360,11 @@ def main() -> int:
         action="store_true",
         help="enable the faithful package (voting record + faithful mandate)",
     )
+    parser.add_argument(
+        "--free-only",
+        action="store_true",
+        help="never advance to the paid model; back off when free models are limited",
+    )
     args = parser.parse_args()
     if args.start_model_index < 0 or args.start_model_index >= len(MODELS):
         parser.error(f"--start-model-index must be between 0 and {len(MODELS) - 1}")
@@ -432,6 +439,7 @@ def main() -> int:
             backoff=args.backoff,
             poll_seconds=args.poll,
             faithful=args.faithful,
+            free_only=args.free_only,
         )
         if result == "completed":
             if game_id not in state["completed"]:
