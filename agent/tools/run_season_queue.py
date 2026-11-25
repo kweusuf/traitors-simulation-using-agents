@@ -164,7 +164,12 @@ def save_state(state: dict[str, Any]) -> None:
 
 
 def command_for(
-    config: str, game_id: str, concurrency: int, model: str, effort: str
+    config: str,
+    game_id: str,
+    concurrency: int,
+    model: str,
+    effort: str,
+    faithful: bool = False,
 ) -> list[str]:
     command = [
         "uv",
@@ -184,6 +189,8 @@ def command_for(
         "--reasoning-effort",
         effort,
     ]
+    if faithful:
+        command += ["--voting-record", "--faithful-mandate"]
     if has_events(game_id):
         command += ["--resume", "--idle-seconds", "5"]
     return command
@@ -216,6 +223,7 @@ def run_one(
     max_attempts: int,
     backoff: int,
     poll_seconds: int,
+    faithful: bool = False,
 ) -> str:
     global _child
     attempt = 0
@@ -226,7 +234,9 @@ def run_one(
             return "completed"
 
         model, effort = MODELS[state["model_index"]]
-        command = command_for(config, game_id, concurrency, model, effort)
+        command = command_for(
+            config, game_id, concurrency, model, effort, faithful
+        )
         run_dir(game_id).mkdir(parents=True, exist_ok=True)
         stdout_path = run_dir(game_id) / "queue_stdout.log"
         start_offset = stdout_path.stat().st_size if stdout_path.exists() else 0
@@ -343,6 +353,11 @@ def main() -> int:
         default="",
         help="wait until this tagged queue's state is finished before starting",
     )
+    parser.add_argument(
+        "--faithful",
+        action="store_true",
+        help="enable the faithful package (voting record + faithful mandate)",
+    )
     args = parser.parse_args()
     if args.start_model_index < 0 or args.start_model_index >= len(MODELS):
         parser.error(f"--start-model-index must be between 0 and {len(MODELS) - 1}")
@@ -416,6 +431,7 @@ def main() -> int:
             max_attempts=args.max_attempts,
             backoff=args.backoff,
             poll_seconds=args.poll,
+            faithful=args.faithful,
         )
         if result == "completed":
             if game_id not in state["completed"]:

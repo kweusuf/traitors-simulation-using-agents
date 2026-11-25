@@ -190,6 +190,10 @@ def _load_config(args: argparse.Namespace) -> GameConfig:
         config.llm.model = args.model
     if getattr(args, "reasoning_effort", None) is not None:
         config.llm.reasoning_effort = args.reasoning_effort
+    if getattr(args, "voting_record", False):
+        config.game.voting_record = True
+    if getattr(args, "faithful_mandate", False):
+        config.game.faithful_mandate = True
     if getattr(args, "concurrency", None) is not None:
         config.llm.max_concurrency = args.concurrency
     return config
@@ -816,6 +820,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     run.add_argument("--model", default=None, help="override llm.model")
     run.add_argument("--reasoning-effort", default=None, help="override llm.reasoning_effort")
+    run.add_argument("--voting-record", action="store_true", help="override game.voting_record")
+    run.add_argument("--faithful-mandate", action="store_true", help="override game.faithful_mandate")
     run.add_argument(
         "--idle-seconds",
         type=int,
