@@ -136,6 +136,9 @@ One lever each, copied from `season_uk_s01.opencode_go.yaml`:
 | `season_uk_s01.bias_reveal_count.yaml` | `reveal_traitor_count: true` | Faithful calibrate the count |
 | `season_uk_s01.bias_items_off.yaml` | shield/dagger off | Isolate double-vote amplification |
 | `season_uk_s01.bias_rand4.yaml` | random deal, 4 traitors | Larger bloc effect |
+| `season_uk_s01.bias_voterecord.yaml` | `voting_record: true` | Faithful use vote history |
+| `season_uk_s01.bias_faithfulmandate.yaml` | `faithful_mandate: true` | Faithful method brief |
+| `season_uk_s01.bias_faithfulpkg.yaml` | voting_record + faithful_mandate | Combined faithful kit |
 
 Run template (from `agent/`):
 
@@ -161,8 +164,32 @@ Then compare with
 
 ## Status log
 
+- 2026-11-25: Faithful-side research + first enhancements. Votes were never
+  shown to the agents (`VOTE_CAST` was logged but not projected), so the
+  faithful lacked the strongest real-game signal. Added `vote_history` plus
+  a public `voting_record` (with revealed-traitor cross-references) and a
+  `faithful_mandate` induction brief, both default off, with arms
+  `bias_voterecord`, `bias_faithfulmandate`, `bias_faithfulpkg`. 726 tests
+  green. Design: `2026-11-25-faithful-mechanism-research-and-enhancement.md`.
+
 - 2026-11-21: Phase 0 implemented — `win_rate.py`, `tools/win_rate_report.py`,
   tests, and the baseline above.
+- 2026-11-25: Random-deal marathon at 7 completed: 6 traitor / 1 faithful
+  (86%, CI 49-97) vs pinned 8/10 (80%) — no reduction from randomising
+  traitors, so the casting hypothesis is not supported at this sample. The
+  bias is more likely structural; the gameplay levers still need a real N.
+- 2026-11-23: Added random-deal configs for all ten seasons
+  (`season_*.rand.opencode_go.yaml`, `traitor_names` removed) and queue
+  options `--random-traitors` / `--wait-for-tag`. A full random-traitors
+  marathon (tag `rand`, starting on beam-free) is queued to start
+  automatically when the v2 marathon finishes.
+- 2026-11-22: Pilot experiment harness added (`tools/run_bias_experiments.py`).
+  `iceman-contributor-free` is blocked by the account's "trains on request
+  data" setting and `longcat-2.5-free` returned 429 then 410, so the pilot was
+  briefly on paid `deepseek-v4.1-flash`, then moved to the working free
+  `hy4-flash-free` (tag `biash`; control/ledger/evidence/rand, n=1 paired
+  seed), running alongside M1's last game without contention. Full screening
+  (N=40-60) still pending.
 - 2026-11-21: Levers implemented behind default-off flags in `config.py`,
   `PromptBuilder` (evidence accusations, contradiction audit, recruitment
   caution, reveal traitor count), and `VotingPhase` (vote signal). All 11

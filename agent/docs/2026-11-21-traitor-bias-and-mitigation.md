@@ -286,6 +286,19 @@ the arm label in the game id.
 
 ---
 
+## Update 2026-11-25 — the random-deal marathon
+
+The full random-traitors marathon (`traitor_names` removed, same rules, same
+ten seasons) reached 7 completed games: **6 traitor / 1 faithful = 86%
+(95% CI 49-97%)**, against the pinned v2 marathon's **8/10 = 80% (49-94%)**.
+At this sample the two are indistinguishable, so **casting is not supported
+as the dominant cause**: randomising the traitors did not lower the rate.
+The one faithful-looking pilot result was a single game. The bias looks more
+structural — information asymmetry, faithful detection/evidence weaknesses,
+traitor coordination, and the endgame math — than a property of pinned
+season casts. The gameplay levers still need a real N to test; a single game
+per arm cannot resolve a 10-point move.
+
 ## Sources
 
 - Winners by season (ReadersFusion): traitors 12 / faithful 10 across 23
