@@ -22,6 +22,7 @@ from simulation.actions.validator import (
 from simulation.actions.repetition import find_repeat, repeat_reason
 from simulation.agents.agent import Agent
 from simulation.agents.voting_record import voting_record_lines
+from simulation.engine.state import GameState
 from simulation.agents.ledger import (
     DEFAULT_ALLY_SIZE,
     DEFAULT_SUSPECT_SIZE,
@@ -79,6 +80,7 @@ class AgentRuntime:
         ledger_suspects: int = DEFAULT_SUSPECT_SIZE,
         ledger_allies: int = DEFAULT_ALLY_SIZE,
         voting_record: bool = False,
+        game_state: Optional[GameState] = None,
     ) -> None:
         self.agents = agents
         self.gateway = gateway
@@ -129,6 +131,7 @@ class AgentRuntime:
         self.ledger_suspects = ledger_suspects
         self.ledger_allies = ledger_allies
         self.voting_record = voting_record
+        self.game_state = game_state
         # Counts ledger generations, for the run summary. The ledger costs an
         # extra call per player per round, so a run that silently made ten
         # thousand of them would otherwise look identical to one that did not.
@@ -195,10 +198,10 @@ class AgentRuntime:
                 agent.beliefs, self.ledger_suspects, self.ledger_allies
             )
             builder._standing_lines = agent.relationships.stand_lines()
-        if self.voting_record:
+        if self.voting_record and self.game_state is not None:
             builder.voting_record = True
             builder._voting_record_lines = voting_record_lines(
-                self.engine.state, view.known_roles
+                self.game_state, view.known_roles
             )
         messages = builder.build(
             agent_id=agent_id,

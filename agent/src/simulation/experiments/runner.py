@@ -304,6 +304,7 @@ class GameRunner:
             ledger_suspects=config.game.ledger_suspects,
             ledger_allies=config.game.ledger_allies,
             voting_record=config.game.voting_record,
+            game_state=env.engine.state,
         )
         context = PhaseContext(
             engine=env.engine,
