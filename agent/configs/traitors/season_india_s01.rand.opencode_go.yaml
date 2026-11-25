@@ -1,0 +1,124 @@
+# Random-deal marathon arm: traitor_names removed so the seed draws
+# the traitors from the whole cast. Base: season_india_s01.opencode_go.yaml.
+
+# Season replay on the OpenCode Go subscription.
+#
+# Everything below the `llm:` block is season_india_s01.yaml byte for byte,
+# including the pin on the season's original starting traitors
+# (karan_kundrra, raj_kundrra, jannat); harsh and purav were recruits, not
+# originals.
+#
+# The endpoint is public, so this file is tracked. The API key is not: it
+# comes from OPENCODE_GO_API_KEY in the gitignored .env (see .env.example).
+#
+# The route requires a stable `x-opencode-session` header so it can route
+# and cache prompts; without it the request fails with MissingSessionID.
+# The model id is the flat Go id, not a namespaced canonical one: the route
+# rejects namespaced ids with "isn't included in OpenCode Go".
+#
+# max_concurrency is 4 in flight, matching the OpenAI-compatible replay rather
+# than any measured capacity.
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-india-s01
+  players: 20
+  # Starting traitors only: harsh and purav were recruited in episode 9.
+  traitors: 3
+  # 18, not the default 5: the US S03 base replay ran the default and ended
+  # by round limit with 11 players still alive, which is a truncated game
+  # rather than a season. 18 matches the cadence the show-format variants
+  # use, leaving room for recruitment nights to push the endgame later.
+  max_rounds: 18
+  player_names:
+  - nikita
+  - uorfi
+  - harsh
+  - purav
+  - karan_kundrra
+  - raj_kundrra
+  - jannat
+  - anshula
+  - sudhanshu
+  - sahil
+  - jasmine
+  - mukesh
+  - maheep
+  - ashish
+  - elnaaz
+  - raftaar
+  - nitish
+  - sargun
+  - lakshmi
+  - kunal
+  personas:
+  - india_s01/nikita
+  - india_s01/uorfi
+  - india_s01/harsh
+  - india_s01/purav
+  - india_s01/karan_kundrra
+  - india_s01/raj_kundrra
+  - india_s01/jannat
+  - india_s01/anshula
+  - india_s01/sudhanshu
+  - india_s01/sahil
+  - india_s01/jasmine
+  - india_s01/mukesh
+  - india_s01/maheep
+  - india_s01/ashish
+  - india_s01/elnaaz
+  - india_s01/raftaar
+  - india_s01/nitish
+  - india_s01/sargun
+  - india_s01/lakshmi
+  - india_s01/kunal
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: openai_compat
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-india-s01
+  temperature: 0.7
+  # 32768. DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit
+  # inside the completion budget alongside the visible reply. A recruit
+  # prompt once burned 32768 tokens on reasoning and still ended on
+  # finish_reason=length, so the provider doubles this again on a
+  # truncated reply.
+  max_tokens: 32768
+  # DeepSeek V4.1 Flash 1017 accepts low/high/max. This replay keeps low so
+  # the hidden reasoning fits inside the completion budget; `none` would
+  # omit the field and let the route pick a default.
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  max_concurrency: 4
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

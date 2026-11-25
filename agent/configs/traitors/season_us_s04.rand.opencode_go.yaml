@@ -1,0 +1,110 @@
+# Random-deal marathon arm: traitor_names removed so the seed draws
+# the traitors from the whole cast. Base: season_us_s04.opencode_go.yaml.
+
+# Us S04 replay on OpenCode Go.
+#
+# The season block is season_us_s04.yaml byte for byte; the llm block
+# is the OpenCode Go route. The session header is unique to this
+# replay so prompt caching is not shared with the other seasons.
+#
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  max_rounds: 18
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-us-s04
+  players: 23
+  # Starting traitors only: donna was recruited in episode 7.
+  traitors: 3
+  player_names:
+  - rob_rausch
+  - maura
+  - nikki_garcia
+  - lana
+  - rachel
+  - dorinda
+  - carsten
+  - lisa_rinna
+  - taran
+  - candace
+  - johnny
+  - donna
+  - real_housewives_cast_member
+  - ian
+  - kristen
+  - yamir
+  - hercules
+  - patti
+  - jamie
+  - cameron
+  - mark
+  - tiffany
+  - michaela
+  personas:
+  - us_s04/rob_rausch
+  - us_s04/maura
+  - us_s04/nikki_garcia
+  - us_s04/lana
+  - us_s04/rachel
+  - us_s04/dorinda
+  - us_s04/carsten
+  - us_s04/lisa_rinna
+  - us_s04/taran
+  - us_s04/candace
+  - us_s04/johnny
+  - us_s04/donna
+  - us_s04/real_housewives_cast_member
+  - us_s04/ian
+  - us_s04/kristen
+  - us_s04/yamir
+  - us_s04/hercules
+  - us_s04/patti
+  - us_s04/jamie
+  - us_s04/cameron
+  - us_s04/mark
+  - us_s04/tiffany
+  - us_s04/michaela
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: openai_compat
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-us-s04-opencode
+  temperature: 0.7
+  # DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit inside the
+  # completion budget alongside the visible reply.
+  max_tokens: 32768
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  # Eight of these run together; keep each arm's share of the route modest.
+  max_concurrency: 2
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

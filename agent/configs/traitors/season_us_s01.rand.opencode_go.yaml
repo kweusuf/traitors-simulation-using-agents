@@ -1,0 +1,105 @@
+# Random-deal marathon arm: traitor_names removed so the seed draws
+# the traitors from the whole cast. Base: season_us_s01.opencode_go.yaml.
+
+# Us S01 replay on OpenCode Go.
+#
+# The season block is season_us_s01.yaml byte for byte; the llm block
+# is the OpenCode Go route. The session header is unique to this
+# replay so prompt caching is not shared with the other seasons.
+#
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  max_rounds: 18
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-us-s01
+  players: 20
+  # Starting traitors only: the role arie was recruited into, not dealt, so
+  # pinning him here would open the replay with one traitor too many.
+  traitors: 3
+  player_names:
+  - cirie
+  - andie
+  - quentin
+  - arie
+  - kate
+  - christian
+  - stephenie
+  - rachel
+  - shelbe
+  - anjelica
+  - cody
+  - amanda
+  - michael
+  - brandi
+  - ryan
+  - azra
+  - bam
+  - reza
+  - geraldine
+  - robert
+  personas:
+  - us_s01/cirie
+  - us_s01/andie
+  - us_s01/quentin
+  - us_s01/arie
+  - us_s01/kate
+  - us_s01/christian
+  - us_s01/stephenie
+  - us_s01/rachel
+  - us_s01/shelbe
+  - us_s01/anjelica
+  - us_s01/cody
+  - us_s01/amanda
+  - us_s01/michael
+  - us_s01/brandi
+  - us_s01/ryan
+  - us_s01/azra
+  - us_s01/bam
+  - us_s01/reza
+  - us_s01/geraldine
+  - us_s01/robert
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: openai_compat
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-us-s01-opencode
+  temperature: 0.7
+  # DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit inside the
+  # completion budget alongside the visible reply.
+  max_tokens: 32768
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  # Eight of these run together; keep each arm's share of the route modest.
+  max_concurrency: 2
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

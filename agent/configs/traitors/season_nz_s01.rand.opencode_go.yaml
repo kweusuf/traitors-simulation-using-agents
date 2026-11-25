@@ -1,0 +1,101 @@
+# Random-deal marathon arm: traitor_names removed so the seed draws
+# the traitors from the whole cast. Base: season_nz_s01.opencode_go.yaml.
+
+# Nz S01 replay on OpenCode Go.
+#
+# The season block is season_nz_s01.yaml byte for byte; the llm block
+# is the OpenCode Go route. The session header is unique to this
+# replay so prompt caching is not shared with the other seasons.
+#
+game:
+  mission_reward: 1000
+  mission_success_probability: 0.85
+  max_rounds: 18
+  finale_traitors: 2
+  finale_faithful: 3
+  finale_total: 5
+  endgame_vote: true
+  blind_finale_banishments: true
+  revote_enabled: true
+  nomination_enabled: true
+  shield: true
+  dagger: true
+  max_recruits: 0
+  name: the-traitors-nz-s01
+  players: 19
+  traitors: 3
+  player_names:
+  - anna
+  - brooke
+  - sam
+  - murray
+  - mark
+  - nicky
+  - dane
+  - cathrine
+  - jess
+  - stephen
+  - laura
+  - rahul
+  - katie
+  - max
+  - mel
+  - john
+  - jj
+  - leighton
+  - brittany
+  personas:
+  - nz_s01/anna
+  - nz_s01/brooke
+  - nz_s01/sam
+  - nz_s01/murray
+  - nz_s01/mark
+  - nz_s01/nicky
+  - nz_s01/dane
+  - nz_s01/cathrine
+  - nz_s01/jess
+  - nz_s01/stephen
+  - nz_s01/laura
+  - nz_s01/rahul
+  - nz_s01/katie
+  - nz_s01/max
+  - nz_s01/mel
+  - nz_s01/john
+  - nz_s01/jj
+  - nz_s01/leighton
+  - nz_s01/brittany
+phases:
+- mission
+- mission
+- mission
+- public_discussion
+- private_chat
+- round_table
+- voting
+- elimination
+- traitor_night
+communication:
+  public_messages_per_agent: 1
+  private_messages_per_agent: 2
+  transcript_messages_per_prompt: 40
+llm:
+  provider: openai_compat
+  model: deepseek-v4.1-flash
+  base_url: https://opencode.ai/inference/go/openai/v1
+  api_key_env: OPENCODE_GO_API_KEY
+  extra_headers:
+    x-opencode-session: traitors-nz-s01-opencode
+  temperature: 0.7
+  # DeepSeek V4.1 Flash 1017 is a reasoning model, so hidden reasoning tokens sit inside the
+  # completion budget alongside the visible reply.
+  max_tokens: 32768
+  reasoning_effort: low
+  timeout_seconds: 600
+  retries: 3
+  # Eight of these run together; keep each arm's share of the route modest.
+  max_concurrency: 2
+  options: {}
+seed: 42
+observability:
+  enabled: false
+  provider: langfuse

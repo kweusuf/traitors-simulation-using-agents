@@ -80,6 +80,21 @@ UNAVAILABLE_MARKERS = (
     "no such model",
     "does not exist",
 )
+# A dropped network or a failed DNS lookup is not the season's fault, so it
+# must not consume the attempt budget: a ten-minute outage once burned
+# twenty attempts on every in-flight season and marked them failed.
+NETWORK_MARKERS = (
+    "connection to ",
+    "errno 8",
+    "nodename nor servname",
+    "temporary failure in name resolution",
+    "name resolution",
+    "connection reset",
+    "connection aborted",
+    "connection refused",
+    "network is unreachable",
+    "eof occurred",
+)
 
 _child: subprocess.Popen[str] | None = None
 
@@ -122,6 +137,8 @@ def classify_failure(path: Path, offset: int) -> str:
             text = handle.read().lower()
     except OSError:
         return "other"
+    if any(marker in text for marker in NETWORK_MARKERS):
+        return "network"
     if any(marker in text for marker in RATE_LIMIT_MARKERS):
         return "rate_limit"
     if any(marker in text for marker in UNAVAILABLE_MARKERS):
@@ -201,7 +218,10 @@ def run_one(
     poll_seconds: int,
 ) -> str:
     global _child
-    for attempt in range(1, max_attempts + 1):
+    attempt = 0
+    network_retries = 0
+    while attempt < max_attempts:
+        attempt += 1
         if is_complete(game_id):
             return "completed"
 
@@ -249,6 +269,23 @@ def run_one(
             time.sleep(5)
             continue
 
+        if kind == "network":
+            network_retries += 1
+            if network_retries > 120:
+                log(
+                    f"{label}: still no network after {network_retries} "
+                    f"retries; giving up on {game_id}"
+                )
+                break
+            delay = min(backoff * (2 ** min(network_retries - 1, 5)), 300)
+            log(
+                f"{label}: network unavailable on {model}; retrying in "
+                f"{delay}s (not consuming the attempt budget)"
+            )
+            time.sleep(delay)
+            attempt -= 1  # a dropped network is not the season's fault
+            continue
+
         delay = min(backoff * (2 ** min(attempt - 1, 5)), 300)
         log(
             f"{label}: exited with code {code} on {model} "
@@ -260,6 +297,24 @@ def run_one(
     return "failed"
 
 
+def _wait_for_tag(tag: str, expected: int, poll_seconds: int) -> None:
+    """Block until another tagged queue has finished its season set."""
+    path = RUNS / f"season_queue_state.{tag}.json"
+    log(f"waiting for tag '{tag}' to finish before starting ({path.name})")
+    deadline = time.time() + 48 * 3600
+    while time.time() < deadline:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            data = {}
+        done = len(set(data.get("completed", [])) | set(data.get("failed", [])))
+        if done >= expected:
+            log(f"tag '{tag}' finished ({done}/{expected}); starting")
+            return
+        time.sleep(poll_seconds)
+    log(f"tag '{tag}' did not finish within 48h; starting anyway")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true", help="print the plan and exit")
@@ -267,14 +322,60 @@ def main() -> int:
     parser.add_argument("--max-attempts", type=int, default=20, help="attempts per season")
     parser.add_argument("--backoff", type=int, default=30, help="base retry delay in seconds")
     parser.add_argument("--poll", type=int, default=10, help="process poll interval in seconds")
+    parser.add_argument(
+        "--tag",
+        default="",
+        help="namespace suffix for run ids and separate state/log (parallel marathons)",
+    )
+    parser.add_argument(
+        "--start-model-index",
+        type=int,
+        default=0,
+        help="model index a fresh tagged queue starts at (0 = the first model)",
+    )
+    parser.add_argument(
+        "--random-traitors",
+        action="store_true",
+        help="use the season_*.rand.opencode_go.yaml configs (no pinned traitors)",
+    )
+    parser.add_argument(
+        "--wait-for-tag",
+        default="",
+        help="wait until this tagged queue's state is finished before starting",
+    )
     args = parser.parse_args()
+    if args.start_model_index < 0 or args.start_model_index >= len(MODELS):
+        parser.error(f"--start-model-index must be between 0 and {len(MODELS) - 1}")
+
+    global STATE_PATH, LOG_PATH
+    suffix = f"-{args.tag}" if args.tag else ""
+    if args.tag:
+        STATE_PATH = RUNS / f"season_queue_state.{args.tag}.json"
+        LOG_PATH = RUNS / f"season_queue.{args.tag}.log"
+    state_existed = STATE_PATH.exists()
 
     RUNS.mkdir(parents=True, exist_ok=True)
     LOG_PATH.touch(exist_ok=True)
     state = load_state()
+    if not state_existed and args.start_model_index:
+        state["model_index"] = args.start_model_index
+        save_state(state)
+
+    seasons = [
+        (label, config, f"{game_id}{suffix}")
+        for label, config, game_id in SEASONS
+    ]
+    if args.random_traitors:
+        seasons = [
+            (label, config.replace(".opencode_go.yaml", ".rand.opencode_go.yaml"), game_id)
+            for label, config, game_id in seasons
+        ]
+        missing = [config for _, config, _ in seasons if not (CONFIGS / config).exists()]
+        if missing:
+            parser.error("missing random configs: " + ", ".join(missing))
 
     if args.dry_run:
-        for label, config, game_id in SEASONS:
+        for label, config, game_id in seasons:
             status = "completed" if is_complete(game_id) else (
                 "resume" if has_events(game_id) else "fresh"
             )
@@ -285,12 +386,22 @@ def main() -> int:
     signal.signal(signal.SIGINT, handle_signal)
 
     log("season queue starting")
-    log("model plan: " + " -> ".join(model for model, _ in MODELS))
-    for label, config, game_id in SEASONS:
+    log(f"tag: {args.tag or '(default)'} | run ids suffix: {suffix or '(none)'}")
+    log(
+        "starting model: "
+        + MODELS[state["model_index"]][0]
+        + " | plan: "
+        + " -> ".join(model for model, _ in MODELS)
+    )
+    if args.wait_for_tag:
+        _wait_for_tag(args.wait_for_tag, len(SEASONS), 60)
+    for label, config, game_id in seasons:
         if is_complete(game_id):
             log(f"{label}: already completed; skipping")
             if game_id not in state["completed"]:
                 state["completed"].append(game_id)
+            if game_id in state["failed"]:
+                state["failed"].remove(game_id)
             save_state(state)
             continue
 
@@ -309,6 +420,8 @@ def main() -> int:
         if result == "completed":
             if game_id not in state["completed"]:
                 state["completed"].append(game_id)
+            if game_id in state["failed"]:
+                state["failed"].remove(game_id)
         elif game_id not in state["failed"]:
             state["failed"].append(game_id)
         save_state(state)
