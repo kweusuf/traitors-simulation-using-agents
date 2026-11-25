@@ -52,6 +52,21 @@ class MissionState(StrictModel):
     reward: int = 0  # money this mission added to the prize pot
 
 
+class VoteRecord(StrictModel):
+    """One ballot a player cast, kept for the public voting record.
+
+    Votes are public in the show, but the simulation never showed them back
+    to the agents. This record is what lets a faithful player cross-reference
+    who voted for a revealed traitor (a clearing signal) and who a revealed
+    traitor voted for.
+    """
+
+    round_number: int
+    voter_id: str
+    target_id: str
+    ballot: str = "first"  # "first" or "revote"
+
+
 class GameState(StrictModel):
     game_id: str
     round_number: int = 0
@@ -61,6 +76,7 @@ class GameState(StrictModel):
     eliminated_players: set[str] = Field(default_factory=set)
     roles: dict[str, Role] = Field(default_factory=dict)
     votes: dict[str, str] = Field(default_factory=dict)  # voter_id -> target_id
+    vote_history: list[VoteRecord] = Field(default_factory=list)
     missions: list[MissionState] = Field(default_factory=list)
     # Money the group has banked from successful missions (the show's
     # prize pot). Abstract units; a season config sets the reward size.

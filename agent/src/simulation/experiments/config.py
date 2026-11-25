@@ -183,6 +183,12 @@ class GameSettings(StrictModel):
     vote_signal: bool = False
     recruitment_caution: bool = False
     reveal_traitor_count: bool = False
+    # `voting_record`: show the public vote history, with revealed-traitor
+    # cross-references, to every player. `faithful_mandate`: brief the
+    # faithful at induction on using the record, testing claims, and
+    # consolidating votes.
+    voting_record: bool = False
+    faithful_mandate: bool = False
     memory_decay: float = Field(default=0.6, gt=0.0, le=1.0)
     memory_floor: float = Field(default=0.5, ge=0.0)
     memory_items_in_prompt: int = Field(default=6, ge=1, le=20)

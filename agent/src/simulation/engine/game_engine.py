@@ -13,7 +13,14 @@ from typing import Optional
 
 from simulation.actions.actions import Action, ActionType
 from simulation.communication.channels import Channel, Message
-from simulation.engine.state import GamePhase, GameState, MissionState, PlayerState, Role
+from simulation.engine.state import (
+    GamePhase,
+    GameState,
+    MissionState,
+    PlayerState,
+    Role,
+    VoteRecord,
+)
 from simulation.engine.rules import RuleValidator, ValidationResult
 from simulation.experiments.config import GameConfig
 from simulation.communication.router import MessageRouter
@@ -370,6 +377,14 @@ class GameEngine:
                 # so replay and the clash metrics can tell them apart.
                 self._revote_votes[action.actor_id] = action.target
                 self._revote_weights[action.actor_id] = weight
+                self.state.vote_history.append(
+                    VoteRecord(
+                        round_number=self.state.round_number,
+                        voter_id=action.actor_id,
+                        target_id=action.target,
+                        ballot="revote",
+                    )
+                )
                 self._emit(
                     EventType.VOTE_CAST,
                     actor=action.actor_id,
@@ -383,6 +398,13 @@ class GameEngine:
                 return ValidationResult.accepted()
             self.state.votes[action.actor_id] = action.target
             self._vote_weights[action.actor_id] = weight
+            self.state.vote_history.append(
+                VoteRecord(
+                    round_number=self.state.round_number,
+                    voter_id=action.actor_id,
+                    target_id=action.target,
+                )
+            )
             self._emit(
                 EventType.VOTE_CAST,
                 actor=action.actor_id,

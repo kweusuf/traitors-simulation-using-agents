@@ -34,6 +34,7 @@ from simulation.engine.state import (
     GameState,
     MissionState,
     PlayerState,
+    VoteRecord,
     Role,
 )
 from simulation.persistence.event_log import Event, EventType
@@ -242,6 +243,15 @@ def rebuild_state(events: list[Event]) -> GameState:
                     completed=True,
                     outcome=bool(payload.get("success")),
                     reward=reward,
+                )
+            )
+        elif event.type is EventType.VOTE_CAST and event.actor and event.targets:
+            state.vote_history.append(
+                VoteRecord(
+                    round_number=event.round,
+                    voter_id=event.actor,
+                    target_id=event.targets[0],
+                    ballot=str(payload.get("ballot", "first")),
                 )
             )
         elif event.type is EventType.ITEM_AWARDED and event.actor:

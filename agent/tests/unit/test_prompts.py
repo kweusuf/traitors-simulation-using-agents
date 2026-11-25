@@ -50,8 +50,16 @@ def make_view(**overrides) -> AgentView:
     return AgentView(**defaults)
 
 
-def build(view: AgentView | None = None, builder_kwargs: dict | None = None, **kwargs) -> list:
+def build(
+    view: AgentView | None = None,
+    builder_kwargs: dict | None = None,
+    role: Role = Role.FAITHFUL,
+    voting_lines: list[str] | None = None,
+    **kwargs,
+) -> list:
     builder = PromptBuilder(**(builder_kwargs or {}))
+    if voting_lines is not None:
+        builder._voting_record_lines = list(voting_lines)
     params: dict = dict(
         action_type=ActionType.PUBLIC_MESSAGE,
         legal_targets=[],
@@ -60,7 +68,7 @@ def build(view: AgentView | None = None, builder_kwargs: dict | None = None, **k
     params.update(kwargs)
     return builder.build(
         agent_id="alice",
-        role=Role.FAITHFUL,
+        role=role,
         persona=Persona(
             description="Careful player.",
             personality={"analytical": 0.9, "trust": 0.3},
@@ -563,3 +571,35 @@ def test_vote_signal_tallies_public_nominations() -> None:
     assert line is not None
     assert "bob (2)" in line and "charlie (1)" in line
     assert _vote_signal_line(_Engine([])) is None
+
+
+def test_faithful_mandate_is_opt_in_and_faithful_only() -> None:
+    on = build(
+        action_type=ActionType.PUBLIC_MESSAGE,
+        builder_kwargs={"faithful_mandate": True},
+    )[0].content
+    off = build(action_type=ActionType.PUBLIC_MESSAGE)[0].content
+    traitor = build(
+        action_type=ActionType.PUBLIC_MESSAGE,
+        role=Role.TRAITOR,
+        builder_kwargs={"faithful_mandate": True},
+    )[0].content
+    assert "How to play as a faithful" in on
+    assert "How to play as a faithful" not in off
+    assert "How to play as a faithful" not in traitor
+
+
+def test_voting_record_lines_render_when_enabled() -> None:
+    lines = ["bob voted: r1->alice", "alice was revealed as a traitor"]
+    on = build(
+        action_type=ActionType.PUBLIC_MESSAGE,
+        builder_kwargs={"voting_record": True},
+        voting_lines=lines,
+    )[-1].content
+    off = build(
+        action_type=ActionType.PUBLIC_MESSAGE,
+        builder_kwargs={"voting_record": True},
+    )[-1].content
+    assert "Public voting record so far" in on
+    assert "bob voted: r1->alice" in on
+    assert "Public voting record so far" not in off

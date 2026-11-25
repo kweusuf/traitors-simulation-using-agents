@@ -285,6 +285,8 @@ class GameRunner:
                 recruitment_caution=config.game.recruitment_caution,
                 reveal_traitor_count=config.game.reveal_traitor_count,
                 traitor_count=config.game.traitors,
+                voting_record=config.game.voting_record,
+                faithful_mandate=config.game.faithful_mandate,
                 want_gist=config.game.co_generate_gist,
                 gist_required=config.game.gist_required,
             ),
@@ -301,6 +303,7 @@ class GameRunner:
             suspicion_ledger=config.game.suspicion_ledger,
             ledger_suspects=config.game.ledger_suspects,
             ledger_allies=config.game.ledger_allies,
+            voting_record=config.game.voting_record,
         )
         context = PhaseContext(
             engine=env.engine,

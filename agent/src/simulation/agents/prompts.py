@@ -48,6 +48,26 @@ _LEDGER_PHASES = frozenset({
     ActionType.SHARE_INFORMATION,
 })
 
+_FAITHFUL_MANDATE = (
+    "How to play as a faithful:",
+    "- You have no private information; the public record is your evidence. "
+    "Track who votes for whom and cross-reference it with roles that have "
+    "been revealed.",
+    "- A player who kept voting for a revealed traitor is probably faithful, "
+    "and a player a revealed traitor targeted is probably cleared; a revealed "
+    "traitor's own votes point at faithful players.",
+    "- Treat a suspicion as a hypothesis, not a verdict: ask what would "
+    "disprove it, and ask the suspect to elaborate so you can compare their "
+    "account with the record.",
+    "- Consistency alone is weak evidence; look for a claim that conflicts "
+    "with the vote record or with what the player said earlier.",
+    "- A split vote hands the round to the traitors. Agree a target with "
+    "credible allies and converge, but do not follow the crowd without a "
+    "reason.",
+    "- Do not brand yourself a traitor hunter or over-commit; surviving is "
+    "part of the job.",
+)
+
 # Actions where the player is speaking to the room and can move others.
 _SPEECH_ACTIONS = frozenset({
     ActionType.PUBLIC_MESSAGE,
@@ -133,6 +153,8 @@ class PromptBuilder:
         recruitment_caution: bool = False,
         reveal_traitor_count: bool = False,
         traitor_count: Optional[int] = None,
+        voting_record: bool = False,
+        faithful_mandate: bool = False,
     ) -> None:
         self.suspicion_ledger = suspicion_ledger
         # Where this player stands with the people they have dealt with,
@@ -178,6 +200,9 @@ class PromptBuilder:
         self.recruitment_caution = recruitment_caution
         self.reveal_traitor_count = reveal_traitor_count
         self.traitor_count = traitor_count
+        self.voting_record = voting_record
+        self.faithful_mandate = faithful_mandate
+        self._voting_record_lines: list[str] = []
 
     def _language_rule(self) -> list[str]:
         """The directive that moves an agent's speech into another language.
@@ -288,6 +313,9 @@ class PromptBuilder:
                 "anyone else is a traitor. The other traitors may back you "
                 "or may plot against you."
             )
+            lines.append("")
+        if role is Role.FAITHFUL and self.faithful_mandate:
+            lines.extend(_FAITHFUL_MANDATE)
             lines.append("")
         lines.append("Stay in character. Reason only from the information you are given.")
         return "\n".join(lines)
@@ -504,6 +532,13 @@ class PromptBuilder:
             # talking about an artefact that does not exist in the game.
             lines.append("Where your own read of the table stands:")
             lines.extend(self._ledger_lines)
+        if (
+            self.voting_record
+            and self._voting_record_lines
+            and action_type in _LEDGER_PHASES
+        ):
+            lines.append("Public voting record so far (votes are public):")
+            lines.extend(self._voting_record_lines)
         if action_type in _SPEECH_ACTIONS and self.suspicion_ledger:
             # The agenda is not only for the ballot. A player arguing a case
             # they have not written down reasons from the last message they
