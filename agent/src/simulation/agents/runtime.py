@@ -380,7 +380,26 @@ class AgentRuntime:
             return agent.ledger          # already refreshed this round
 
         current = agent.beliefs.prompt_lines()
-        prompt = ledger_prompt(view, current, view.round_number)
+        evidence: list[str] = []
+        if self.game_state is not None:
+            evidence.extend(voting_record_lines(self.game_state, view.known_roles))
+            for pid in sorted(view.eliminated_players):
+                method = self.game_state.players[pid].elimination_method
+                role = view.known_roles.get(pid)
+                suffix = f", revealed {role.value}" if role else ""
+                evidence.append(f"{pid} is out ({method}{suffix})")
+        for message in view.public_transcript[-8:]:
+            text = " ".join(message.content.split())
+            evidence.append(
+                f"round {message.round_number} {message.sender_id}: {text[:160]}"
+            )
+        prompt = ledger_prompt(
+            view,
+            current,
+            view.round_number,
+            evidence=evidence[-16:],
+            standing=agent.relationships.stand_lines(),
+        )
         messages = [
             ChatMessage(
                 role="system",

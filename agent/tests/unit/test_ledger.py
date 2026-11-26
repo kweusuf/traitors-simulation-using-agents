@@ -28,6 +28,7 @@ from simulation.agents.ledger import (
     Ledger,
     apply_ledger,
     ledger_lines,
+    ledger_prompt,
     ledger_schema,
     parse_ledger,
 )
@@ -481,3 +482,26 @@ def test_a_bare_list_reply_is_accepted() -> None:
 
 def test_unparseable_reply_leaves_the_ledger_empty() -> None:
     assert parse_ledger("not json at all").suspects == []
+
+def test_ledger_prompt_carries_evidence_and_feelings() -> None:
+    view = make_view(round_number=3)
+    text = ledger_prompt(
+        view,
+        current=[],
+        round_number=3,
+        evidence=[
+            "wilf is out (vote, revealed traitor)",
+            "round 2 bob: I was with amos when the light went out",
+        ],
+        standing=["bob: you trust them (two defences)"],
+    )
+    assert "What you have seen and heard" in text
+    assert "wilf is out (vote, revealed traitor)" in text
+    assert "How you currently feel about the others" in text
+    assert "bob: you trust them" in text
+
+
+def test_ledger_prompt_without_evidence_has_no_digest() -> None:
+    text = ledger_prompt(make_view(), current=[], round_number=2)
+    assert "What you have seen and heard" not in text
+    assert "How you currently feel" not in text

@@ -153,6 +153,8 @@ def ledger_prompt(
     round_number: int,
     suspects: int = DEFAULT_SUSPECT_SIZE,
     allies: int = DEFAULT_ALLY_SIZE,
+    evidence: Iterable[str] = (),
+    standing: Iterable[str] = (),
 ) -> str:
     """The user message for the ledger call.
 
@@ -165,6 +167,14 @@ def ledger_prompt(
         f"Round {round_number}. Players still in the game: "
         + ", ".join(sorted(view.alive_players)),
     ]
+    evidence = list(evidence)
+    if evidence:
+        lines.append("\nWhat you have seen and heard (your own notes):")
+        lines.extend(f"  {line}" for line in evidence)
+    standing = list(standing)
+    if standing:
+        lines.append("\nHow you currently feel about the others:")
+        lines.extend(f"  {line}" for line in standing)
     if current:
         lines.append(
             "\nYour lists so far (oldest first):\n  " + "\n  ".join(current)
