@@ -19,8 +19,12 @@ uv run --no-sync python -m pytest -q
 uv run --no-sync python -m simulation run configs/traitors/basic.yaml --provider fake
 ```
 
-See [`agent/README.md`](agent/README.md) for the full documentation. The
-game mechanics and how they map to the television show are documented in
+The shipped `season_*.opencode_go.yaml` configs enable opening
+self-introductions, a private suspicion ledger, a public voting record with
+a faithful brief, self-interested recruitment, and rule-based host twists
+(a weak-tower recruit and a no-murder cooldown), so those are the default
+game. See [`agent/README.md`](agent/README.md) for the full documentation.
+The game mechanics and how they map to the television show are documented in
 [`agent/docs/2026-11-19-traitors-mechanics-and-drift.md`](agent/docs/2026-11-19-traitors-mechanics-and-drift.md);
 the shipped `season_*.opencode_go.yaml` configs enable the show-faithful
 rules (final-five endgame, missions/prize pot, recruitment, items).

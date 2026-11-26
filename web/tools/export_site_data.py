@@ -140,6 +140,20 @@ CONFIG_FLAGS = (
     "dagger",
     "seer",
     "on_trial",
+    "introductions",
+    "voting_record",
+    "faithful_mandate",
+    "suspicion_ledger",
+    "evidence_accusations",
+    "contradiction_audit",
+    "vote_signal",
+    "recruitment_caution",
+    "reveal_traitor_count",
+    "mission_reward",
+    "mission_success_probability",
+    "mission_defense_rounds",
+    "recruit_weak_tower_threshold",
+    "murder_cooldown_after_rounds",
 )
 
 

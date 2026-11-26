@@ -22,6 +22,9 @@ uv run --no-sync python ../web/tools/export_site_data.py \
   --runs-dir runs --configs-dir configs --out ../web/src/data --check
 ```
 
+Every run page lists the mechanics that were switched on, read from the
+run's own config snapshot, so new leagues show up there automatically.
+
 ## Check and build
 
 ```bash

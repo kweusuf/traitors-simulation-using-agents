@@ -68,6 +68,15 @@ const capabilities = [
   ['Experiment gates', 'Paired comparisons with per-dimension thresholds, holdout seeds, and cost guards.'],
   ['Season replay', 'Pinned casts and traitors, real-season ground truth, and a weighted alignment benchmark.'],
 ];
+
+const newMechanics = [
+  ['Opening introductions', 'Round 1 opens with every player giving a public background — name, origin, profession — in character, so later suspicion has something to stand on.'],
+  ['Private thoughts', 'Each player keeps a private, per-round read of suspects and cleared allies, grounded in the vote record, revealed eliminations, recent lines, and their own trust and suspicion.'],
+  ['Faithful evidence', 'The public voting record is shown back to the room with revealed-traitor cross-references, and faithful get an induction brief on how to use it.'],
+  ['Self-interested recruitment', 'A recruit weighs their own chance to win instead of declining out of loyalty; joining is a legitimate path, and refusing a lone traitor’s offer is fatal.'],
+  ['Host twists', 'Rule-based pacing: a nearly empty tower may recruit off-cooldown, and a long unpunished run forces a no-murder night. Deterministic, logged, never targeted at a person.'],
+  ['On by default', 'The shipped season configs enable the new mechanics; every run page lists exactly what was switched on.'],
+];
 ---
 
 <BaseLayout>
@@ -294,13 +303,37 @@ const capabilities = [
           <p class="stat-label">model tokens recorded</p>
         </div>
         <div class="card p-4">
-          <p class="stat-value">690</p>
+          <p class="stat-value">735</p>
           <p class="stat-label">deterministic tests passing</p>
         </div>
         <div class="card p-4">
           <p class="stat-value">{formatPercent(indiaRow?.duplication ?? 0)}</p>
           <p class="stat-label">duplication in the India flagship</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-[var(--border)] bg-black/20 py-16 md:py-24">
+    <div class="page-shell">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span class="eyebrow">New mechanics</span>
+          <h2 class="display mt-3 text-[clamp(1.7rem,5.2vw,3.2rem)]">The latest additions.</h2>
+        </div>
+        <a class="btn btn-ghost" href="/runs">See them on a run →</a>
+      </div>
+      <div class="mt-9 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {newMechanics.map(([title, copy], index) => (
+          <article class="card p-5">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] tracking-[0.18em] text-gold">{String(index + 1).padStart(2, '0')}</span>
+              <span class="h-1.5 w-1.5 rounded-full bg-gold/60" aria-hidden="true" />
+            </div>
+            <h3 class="mt-6 font-display text-xl leading-tight">{title}</h3>
+            <p class="mt-2 text-[13px] leading-5 text-muted">{copy}</p>
+          </article>
+        ))}
       </div>
     </div>
   </section>

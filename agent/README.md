@@ -102,6 +102,7 @@ season config extends with a third mission, is:
 
 | Phase | What happens |
 | --- | --- |
+| `introductions` | round 1 only: every player gives a short public background (name, origin, profession) before any suspicion |
 | `mission` | a team task that banks money and can earn the round's item; list it once per mission |
 | `public_discussion` | everyone speaks in the open |
 | `private_chat` | side conversations, plus a traitors-only channel |
@@ -129,6 +130,29 @@ A round-table banishment reveals the banished player's affiliation, as the
 show does. A murder does not: `elimination_method` records `vote` or
 `night`, and the projector only reveals a `vote` elimination (a murder
 victim is always faithful anyway, since traitors cannot be murdered).
+
+### Private thoughts
+
+Each player can keep a private suspicion ledger: a ranked suspects list and
+a short cleared-allies list, refreshed once per round by a dedicated
+generation. It is shown only to that player, and it is fed a compact digest
+of the public vote record, revealed eliminations, the last public messages,
+and the player's own trust/suspicion. `suspicion_ledger` is the flag; the
+season configs turn it on.
+
+### Recruitment decisions
+
+A recruited faithful is told to decide for their own game, not out of
+loyalty: joining is a legitimate winning move, and refusing a lone
+traitor's offer is fatal. This removes the old bias toward declining.
+
+### Host twists
+
+Two rule-based, logged pacing rules (never an LLM referee and never aimed
+at a person): `recruit_weak_tower_threshold` lets a tower at or below N
+recruit off-cooldown, and `murder_cooldown_after_rounds` forces a
+no-murder night after N rounds without a traitor banished. Both write a
+`HOST_INTERVENTION` event.
 
 ### Winning
 
@@ -196,6 +220,14 @@ All off by default, all independent:
 - `council_deliberation` — the night's kill is decided in two rounds:
   sequential proposals, then a simultaneous hold-or-switch where the
   majority of final picks wins.
+- `introductions` — a round-1 public self-introduction phase.
+- `voting_record` — shows the public vote history, with revealed-traitor
+  cross-references, in prompts.
+- `faithful_mandate` — an induction brief for faithful players.
+- `suspicion_ledger` — a private, per-round suspect/allies read (one extra
+  generation per living player per round).
+- `recruit_weak_tower_threshold` / `murder_cooldown_after_rounds` — the two
+  rule-based host twists.
 - `discussion_budget` / `warning_turns` — a hosted discussion clock;
   `0` disables it and keeps one-turn-each phases.
 
@@ -209,9 +241,12 @@ victory. Those season configs set `max_rounds: 18`, `finale_total: 5` (with
 `blind_finale_banishments: true`, `revote_enabled: true`,
 `nomination_enabled: true`, `shield: true`, `dagger: true`,
 `max_recruits: 0`, plus `mission_reward` and
-`mission_success_probability`. The framework defaults stay plain
-(parity on, finale off, items off) so a minimal config and the generic
-engine behave predictably.
+`mission_success_probability`, and the newer mechanics:
+`introductions: true`, `voting_record: true`, `faithful_mandate: true`,
+`suspicion_ledger: true`, `recruit_weak_tower_threshold: 1`,
+`murder_cooldown_after_rounds: 4`. The framework defaults stay plain
+(parity on, finale off, items off, new mechanics off) so a minimal config
+and the generic engine behave predictably.
 
 ### Seasonal cadence
 
