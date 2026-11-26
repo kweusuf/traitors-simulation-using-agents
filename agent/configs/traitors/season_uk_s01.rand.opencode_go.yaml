@@ -14,6 +14,12 @@
 # on-screen behaviour.
 
 game:
+  introductions: true
+  voting_record: true
+  faithful_mandate: true
+  suspicion_ledger: true
+  recruit_weak_tower_threshold: 1
+  murder_cooldown_after_rounds: 4
   mission_reward: 1000
   mission_success_probability: 0.85
   revote_enabled: true
