@@ -129,6 +129,35 @@ def has_events(game_id: str) -> bool:
     return events.exists() and events.stat().st_size > 0
 
 
+def has_finished_phase(game_id: str) -> bool:
+    """Whether the log has a completed phase, i.e. is actually resumable.
+
+    A crash during the opening introductions leaves events (game start,
+    roles, the phase started) but no PHASE_ENDED. Resuming that log is
+    refused by design ("this is a fresh run, not a resume"), so the queue
+    must discard it and start over rather than retry the same resume.
+    """
+    path = run_dir(game_id) / "events.jsonl"
+    if not path.exists():
+        return False
+    try:
+        with path.open("r", encoding="utf-8", errors="replace") as handle:
+            for line in handle:
+                if '"PHASE_ENDED"' in line:
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def discard_unresumable(game_id: str) -> None:
+    """Move a partial with no finished phase out of the run path."""
+    source = run_dir(game_id)
+    destination = RUNS / "_discarded" / f"{game_id}-{int(time.time())}"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    source.rename(destination)
+
+
 def classify_failure(path: Path, offset: int) -> str:
     """Classify one attempt's failure from the output it wrote this attempt."""
     try:
@@ -245,6 +274,9 @@ def run_one(
         attempt += 1
         if is_complete(game_id):
             return "completed"
+        if has_events(game_id) and not has_finished_phase(game_id):
+            discard_unresumable(game_id)
+            log(f"{label}: discarded a partial with no finished phase; starting fresh")
 
         model, effort = MODELS[state["model_index"]]
         command = command_for(
