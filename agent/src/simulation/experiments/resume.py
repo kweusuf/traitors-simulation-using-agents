@@ -229,6 +229,11 @@ def rebuild_state(events: list[Event]) -> GameState:
         elif event.type is EventType.PLAYER_ELIMINATED and event.actor:
             state.players[event.actor].alive = False
             state.players[event.actor].elimination_method = payload.get("method")
+            if (
+                payload.get("method") == "vote"
+                and state.roles.get(event.actor) is Role.TRAITOR
+            ):
+                state.last_traitor_banish_round = event.round
             state.alive_players.discard(event.actor)
             state.eliminated_players.add(event.actor)
             if state.finale:
@@ -245,6 +250,11 @@ def rebuild_state(events: list[Event]) -> GameState:
                     reward=reward,
                 )
             )
+        elif (
+            event.type is EventType.MURDER_SKIPPED
+            and payload.get("reason") == "murder_cooldown"
+        ):
+            state.last_murder_cooldown_round = event.round
         elif event.type is EventType.VOTE_CAST and event.actor and event.targets:
             state.vote_history.append(
                 VoteRecord(

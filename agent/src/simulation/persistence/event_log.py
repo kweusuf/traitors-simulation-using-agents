@@ -22,6 +22,7 @@ class EventType(str, Enum):
     # out, `DEBATE_CLOSED` when the closing turns are spent and the
     # vote is forced.
     HOST_WARNING = "HOST_WARNING"
+    HOST_INTERVENTION = "HOST_INTERVENTION"
     DEBATE_CLOSED = "DEBATE_CLOSED"
     # Hosted round table (audit fix, phase 2): the host names the
     # nominated suspects, announces who faces the revote, and reports

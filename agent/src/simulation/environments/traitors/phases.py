@@ -562,10 +562,19 @@ class TraitorNightPhase:
                 if action is not None:
                     engine.submit_action(action)
         if engine.recruit_window_open():
+            if engine.recruit_window_host_imposed():
+                engine.record_host_intervention(
+                    "recruit_weak_tower", traitors=len(traitors)
+                )
             result = await _run_recruit_night(context, engine, traitors)
             if result is not None:
                 return result
             # The vote chose murder: fall through to the normal night.
+        if engine.murder_cooldown_active():
+            # Host twist: the traitors have gone unpunished too long, so
+            # this night is a no-murder night.
+            engine.apply_murder_cooldown()
+            return {"victim": None}
         # The shortlist is frozen before any kill is requested, so the
         # kill's legal targets (and the validator) see exactly who may
         # die tonight.

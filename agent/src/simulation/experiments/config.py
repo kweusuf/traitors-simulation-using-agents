@@ -186,6 +186,13 @@ class GameSettings(StrictModel):
     # `introductions`: a round-1 opening where every player gives a short
     # public background (name, origin, profession) before any suspicion.
     introductions: bool = False
+    # Host twists (rule-based, not an LLM moderator). `weak_tower`: skip the
+    # after-a-traitor-banishment cooldown and allow a recruit when the living
+    # traitors are at or below this count (0 = off). `murder_cooldown`: after
+    # this many rounds with no traitor banished, one night has no murder
+    # (0 = off).
+    recruit_weak_tower_threshold: int = Field(default=0, ge=0)
+    murder_cooldown_after_rounds: int = Field(default=0, ge=0)
     # `voting_record`: show the public vote history, with revealed-traitor
     # cross-references, to every player. `faithful_mandate`: brief the
     # faithful at induction on using the record, testing claims, and

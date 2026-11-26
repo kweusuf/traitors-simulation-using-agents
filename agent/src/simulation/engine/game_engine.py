@@ -923,18 +923,55 @@ class GameEngine:
         game = self.config.game
         if not game.recruit_choice or self.state.finale:
             return False
-        if game.recruit_window and not self._recruit_window:
-            return False
-        if game.max_recruits and self.recruits_used >= game.max_recruits:
-            return False
         roles = self.state.roles
         alive = self.state.alive_players
         living = [p for p in alive if roles.get(p) is Role.TRAITOR]
         if not living:
             return False
+        weak = bool(game.recruit_weak_tower_threshold) and (
+            len(living) <= game.recruit_weak_tower_threshold
+        )
+        if game.recruit_window and not self._recruit_window and not weak:
+            return False
+        if game.max_recruits and self.recruits_used >= game.max_recruits:
+            return False
         if len(living) >= self.traitor_capacity:
             return False  # the tower is full; only a murder is left
         return any(roles.get(p) is Role.FAITHFUL for p in alive)
+
+    def recruit_window_host_imposed(self) -> bool:
+        """Whether a weak tower is the reason the recruit window is open."""
+        game = self.config.game
+        if not game.recruit_weak_tower_threshold or self._recruit_window:
+            return False
+        living = [
+            p for p in self.state.alive_players
+            if self.state.roles.get(p) is Role.TRAITOR
+        ]
+        return bool(living) and len(living) <= game.recruit_weak_tower_threshold
+
+    def murder_cooldown_active(self) -> bool:
+        """A host-ordered no-murder night after a long run without a catch."""
+        rounds = self.config.game.murder_cooldown_after_rounds
+        if not rounds:
+            return False
+        anchor = max(
+            self.state.last_traitor_banish_round,
+            self.state.last_murder_cooldown_round,
+        )
+        return self.state.round_number - anchor >= rounds
+
+    def apply_murder_cooldown(self) -> None:
+        self.state.last_murder_cooldown_round = self.state.round_number
+        self.record_host_intervention(
+            "murder_cooldown", round=self.state.round_number
+        )
+        self.skip_night_murder(reason="murder_cooldown")
+
+    def record_host_intervention(self, kind: str, **payload) -> None:
+        self._emit(
+            EventType.HOST_INTERVENTION, payload={"kind": kind, **payload}
+        )
 
     def spend_recruit_window(self) -> None:
         """Close tonight's recruitment window, whichever way it went."""
@@ -1225,6 +1262,7 @@ class GameEngine:
         # tonight's recruitment window (see `recruit_window_open`).
         if method == "vote" and self.state.roles.get(player_id) is Role.TRAITOR:
             self._recruit_window = True
+            self.state.last_traitor_banish_round = self.state.round_number
         self.check_win()
 
     def _apply_recruit(self, player_id: str, by: str) -> None:

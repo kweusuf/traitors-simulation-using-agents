@@ -170,6 +170,9 @@ def command_for(
     model: str,
     effort: str,
     faithful: bool = False,
+    private_thoughts: bool = False,
+    introductions: bool = False,
+    host_twists: bool = False,
 ) -> list[str]:
     command = [
         "uv",
@@ -191,6 +194,12 @@ def command_for(
     ]
     if faithful:
         command += ["--voting-record", "--faithful-mandate"]
+    if private_thoughts:
+        command += ["--suspicion-ledger"]
+    if introductions:
+        command += ["--introductions"]
+    if host_twists:
+        command += ["--recruit-weak-tower", "1", "--murder-cooldown", "4"]
     if has_events(game_id):
         command += ["--resume", "--idle-seconds", "5"]
     return command
@@ -225,6 +234,9 @@ def run_one(
     poll_seconds: int,
     faithful: bool = False,
     free_only: bool = False,
+    private_thoughts: bool = False,
+    introductions: bool = False,
+    host_twists: bool = False,
 ) -> str:
     global _child
     attempt = 0
@@ -236,7 +248,8 @@ def run_one(
 
         model, effort = MODELS[state["model_index"]]
         command = command_for(
-            config, game_id, concurrency, model, effort, faithful
+            config, game_id, concurrency, model, effort, faithful,
+            private_thoughts, introductions, host_twists,
         )
         run_dir(game_id).mkdir(parents=True, exist_ok=True)
         stdout_path = run_dir(game_id) / "queue_stdout.log"
@@ -365,6 +378,21 @@ def main() -> int:
         action="store_true",
         help="never advance to the paid model; back off when free models are limited",
     )
+    parser.add_argument(
+        "--private-thoughts",
+        action="store_true",
+        help="enable the private suspicion ledger (extra call per player per round)",
+    )
+    parser.add_argument(
+        "--introductions",
+        action="store_true",
+        help="open each game with a public self-introduction round",
+    )
+    parser.add_argument(
+        "--host-twists",
+        action="store_true",
+        help="allow a weak-tower recruit and a no-murder cooldown (rule-based host)",
+    )
     args = parser.parse_args()
     if args.start_model_index < 0 or args.start_model_index >= len(MODELS):
         parser.error(f"--start-model-index must be between 0 and {len(MODELS) - 1}")
@@ -440,6 +468,9 @@ def main() -> int:
             poll_seconds=args.poll,
             faithful=args.faithful,
             free_only=args.free_only,
+            private_thoughts=args.private_thoughts,
+            introductions=args.introductions,
+            host_twists=args.host_twists,
         )
         if result == "completed":
             if game_id not in state["completed"]:

@@ -194,6 +194,14 @@ def _load_config(args: argparse.Namespace) -> GameConfig:
         config.game.voting_record = True
     if getattr(args, "faithful_mandate", False):
         config.game.faithful_mandate = True
+    if getattr(args, "suspicion_ledger", False):
+        config.game.suspicion_ledger = True
+    if getattr(args, "introductions", False):
+        config.game.introductions = True
+    if getattr(args, "recruit_weak_tower", None) is not None:
+        config.game.recruit_weak_tower_threshold = args.recruit_weak_tower
+    if getattr(args, "murder_cooldown", None) is not None:
+        config.game.murder_cooldown_after_rounds = args.murder_cooldown
     if getattr(args, "concurrency", None) is not None:
         config.llm.max_concurrency = args.concurrency
     return config
@@ -822,6 +830,10 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--reasoning-effort", default=None, help="override llm.reasoning_effort")
     run.add_argument("--voting-record", action="store_true", help="override game.voting_record")
     run.add_argument("--faithful-mandate", action="store_true", help="override game.faithful_mandate")
+    run.add_argument("--suspicion-ledger", action="store_true", help="override game.suspicion_ledger")
+    run.add_argument("--introductions", action="store_true", help="override game.introductions")
+    run.add_argument("--recruit-weak-tower", type=int, default=None, help="weak-tower recruit threshold")
+    run.add_argument("--murder-cooldown", type=int, default=None, help="rounds without a catch before a no-murder night")
     run.add_argument(
         "--idle-seconds",
         type=int,

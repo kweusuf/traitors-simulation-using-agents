@@ -78,6 +78,10 @@ class GameState(StrictModel):
     roles: dict[str, Role] = Field(default_factory=dict)
     votes: dict[str, str] = Field(default_factory=dict)  # voter_id -> target_id
     vote_history: list[VoteRecord] = Field(default_factory=list)
+    # Host-twist bookkeeping: when a traitor was last banished and when the
+    # last no-murder cooldown fired, so a resumed run can continue the rule.
+    last_traitor_banish_round: int = 0
+    last_murder_cooldown_round: int = 0
     missions: list[MissionState] = Field(default_factory=list)
     # Money the group has banked from successful missions (the show's
     # prize pot). Abstract units; a season config sets the reward size.
