@@ -1,0 +1,3187 @@
+{
+  "id": "us-s01-opencode-go",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "the-traitors-us-s01",
+  "season": "the-traitors-us-s01",
+  "family": "us-s01",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "amanda",
+      "name": "Amanda",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 16,
+        "votesCast": 4,
+        "votesReceived": 15,
+        "conversations": [
+          {
+            "id": "kate",
+            "count": 3
+          },
+          {
+            "id": "rachel",
+            "count": 3
+          },
+          {
+            "id": "robert",
+            "count": 1
+          },
+          {
+            "id": "ryan",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "arie": 4,
+          "amanda": 11,
+          "michael": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "andie",
+      "name": "Andie",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": false
+      },
+      "stats": {
+        "public": 32,
+        "private": 21,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 4,
+        "votesCast": 10,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "michael",
+            "count": 10
+          },
+          {
+            "id": "shelbe",
+            "count": 8
+          },
+          {
+            "id": "christian",
+            "count": 2
+          },
+          {
+            "id": "rachel",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 11,
+        "method": "vote",
+        "tally": {
+          "cirie": 1,
+          "andie": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.5,
+          "sociability": 0.6,
+          "trust": 0.6,
+          "risk_tolerance": 0.4
+        },
+        "description": "Andie Thurmond. Observant, cautious, loyal.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "anjelica",
+      "name": "Anjelica",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 22,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 4,
+        "votesCast": 7,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "amanda",
+            "count": 4
+          },
+          {
+            "id": "rachel",
+            "count": 1
+          },
+          {
+            "id": "brandi",
+            "count": 1
+          },
+          {
+            "id": "shelbe",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "kate": 2,
+          "christian": 3,
+          "anjelica": 5
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "arie",
+      "name": "Arie",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 17,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 17,
+        "votesCast": 5,
+        "votesReceived": 18,
+        "conversations": [
+          {
+            "id": "christian",
+            "count": 3
+          },
+          {
+            "id": "bam",
+            "count": 3
+          },
+          {
+            "id": "michael",
+            "count": 2
+          },
+          {
+            "id": "shelbe",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "arie": 13,
+          "geraldine": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.6,
+          "sociability": 0.8,
+          "trust": 0.45,
+          "risk_tolerance": 0.55
+        },
+        "description": "Arie Luyendyk Jr. Charming, recruited late.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "azra",
+      "name": "Azra",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true
+      },
+      "stats": {
+        "public": 32,
+        "private": 20,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 2,
+        "votesCast": 11,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "cirie",
+            "count": 13
+          },
+          {
+            "id": "kate",
+            "count": 4
+          },
+          {
+            "id": "christian",
+            "count": 2
+          },
+          {
+            "id": "cody",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "bam",
+      "name": "Bam",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 8,
+        "votesCast": 3,
+        "votesReceived": 12,
+        "conversations": [
+          {
+            "id": "shelbe",
+            "count": 3
+          },
+          {
+            "id": "arie",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "bam": 12,
+          "arie": 2,
+          "amanda": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "brandi",
+      "name": "Brandi",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 18,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 0,
+        "votesCast": 6,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "michael",
+            "count": 5
+          },
+          {
+            "id": "cody",
+            "count": 2
+          },
+          {
+            "id": "anjelica",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "christian",
+      "name": "Christian",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 26,
+        "private": 11,
+        "traitor": 7,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 10,
+        "votesCast": 8,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "arie",
+            "count": 6
+          },
+          {
+            "id": "azra",
+            "count": 3
+          },
+          {
+            "id": "andie",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "vote",
+        "tally": {
+          "christian": 4,
+          "kate": 3,
+          "stephenie": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.65,
+          "sociability": 0.7,
+          "trust": 0.45,
+          "risk_tolerance": 0.55
+        },
+        "description": "Christian de la Torre. Smooth talker, defensive under pressure.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "cirie",
+      "name": "Cirie",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true
+      },
+      "stats": {
+        "public": 31,
+        "private": 20,
+        "traitor": 8,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 2,
+        "votesCast": 11,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "azra",
+            "count": 18
+          },
+          {
+            "id": "amanda",
+            "count": 2
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.9,
+          "assertiveness": 0.6,
+          "sociability": 0.8,
+          "trust": 0.4,
+          "risk_tolerance": 0.5
+        },
+        "description": "Cirie Fields. Veteran reality player, highly strategic, social manipulator in best sense.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "cody",
+      "name": "Cody",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 9,
+        "votesCast": 1,
+        "votesReceived": 14,
+        "conversations": [
+          {
+            "id": "brandi",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "cody": 14,
+          "michael": 6
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.7,
+          "sociability": 0.7,
+          "trust": 0.45,
+          "risk_tolerance": 0.6
+        },
+        "description": "Cody Calafiore. Competitive, can be overconfident.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "geraldine",
+      "name": "Geraldine",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 21,
+        "private": 14,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 0,
+        "votesCast": 7,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "stephenie",
+            "count": 14
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "kate",
+      "name": "Kate",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 32,
+        "private": 13,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 10,
+        "votesCast": 10,
+        "votesReceived": 9,
+        "conversations": [
+          {
+            "id": "amanda",
+            "count": 6
+          },
+          {
+            "id": "azra",
+            "count": 4
+          },
+          {
+            "id": "michael",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 10,
+        "method": "vote",
+        "tally": {
+          "kate": 4,
+          "cirie": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "michael",
+      "name": "Michael",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 21,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 18,
+        "votesCast": 6,
+        "votesReceived": 16,
+        "conversations": [
+          {
+            "id": "andie",
+            "count": 5
+          },
+          {
+            "id": "reza",
+            "count": 3
+          },
+          {
+            "id": "brandi",
+            "count": 2
+          },
+          {
+            "id": "kate",
+            "count": 1
+          },
+          {
+            "id": "shelbe",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "anjelica": 2,
+          "michael": 10
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "quentin",
+      "name": "Quentin",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [
+        "shield"
+      ],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 7,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 18,
+        "votesCast": 2,
+        "votesReceived": 16,
+        "conversations": [
+          {
+            "id": "stephenie",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "quentin": 17,
+          "amanda": 1,
+          "bam": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.8,
+          "assertiveness": 0.5,
+          "sociability": 0.55,
+          "trust": 0.5,
+          "risk_tolerance": 0.4
+        },
+        "description": "Quentin Jiles. Analytical, reads people well.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "rachel",
+      "name": "Rachel",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "amanda",
+            "count": 6
+          },
+          {
+            "id": "andie",
+            "count": 1
+          },
+          {
+            "id": "anjelica",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "reza",
+      "name": "Reza",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 0,
+        "votesCast": 4,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "michael",
+            "count": 4
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "robert",
+      "name": "Robert",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "amanda",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ryan",
+      "name": "Ryan",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 9,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 0,
+        "votesCast": 3,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "amanda",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "shelbe",
+      "name": "Shelbe",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true
+      },
+      "stats": {
+        "public": 32,
+        "private": 17,
+        "traitor": 7,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 3,
+        "votesCast": 11,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "andie",
+            "count": 7
+          },
+          {
+            "id": "bam",
+            "count": 3
+          },
+          {
+            "id": "arie",
+            "count": 2
+          },
+          {
+            "id": "stephenie",
+            "count": 2
+          },
+          {
+            "id": "cody",
+            "count": 1
+          },
+          {
+            "id": "michael",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "stephenie",
+      "name": "Stephenie",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 27,
+        "private": 16,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 3,
+        "votesCast": 9,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "geraldine",
+            "count": 12
+          },
+          {
+            "id": "quentin",
+            "count": 2
+          },
+          {
+            "id": "shelbe",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "kate": 1,
+          "stephenie": 3,
+          "andie": 2
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    }
+  ],
+  "rounds": 11,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "quentin"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "amanda",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "andie",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "arie",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "bam",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "brandi",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "cody",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "geraldine",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "michael",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "quentin",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "reza",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "robert",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "ryan",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "cody",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "michael",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "cody",
+          "michael"
+        ],
+        "counts": {
+          "michael": 7,
+          "cody": 9,
+          "azra": 1,
+          "amanda": 1,
+          "quentin": 2
+        },
+        "accusations": {
+          "amanda": "michael",
+          "andie": "michael",
+          "anjelica": "cody",
+          "arie": "michael",
+          "azra": "michael",
+          "bam": "cody",
+          "brandi": "michael",
+          "christian": "michael",
+          "cirie": "azra",
+          "cody": "amanda",
+          "geraldine": "quentin",
+          "kate": "cody",
+          "michael": "cody",
+          "quentin": "cody",
+          "rachel": "cody",
+          "reza": "michael",
+          "robert": "cody",
+          "ryan": "cody",
+          "shelbe": "cody",
+          "stephenie": "quentin"
+        }
+      },
+      "elimination": {
+        "player": "cody",
+        "method": "vote",
+        "tally": {
+          "cody": 14,
+          "michael": 6
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "shelbe",
+        "by": "cirie",
+        "accepted": true
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "anjelica"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "amanda",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "andie",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "quentin",
+          "weight": 2
+        },
+        {
+          "from": "arie",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "bam",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "brandi",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "geraldine",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "michael",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "quentin",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "reza",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "ryan",
+          "to": "quentin",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "quentin",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "quentin",
+          "amanda"
+        ],
+        "counts": {
+          "quentin": 16,
+          "amanda": 2,
+          "bam": 1
+        },
+        "accusations": {
+          "amanda": "quentin",
+          "andie": "quentin",
+          "anjelica": "quentin",
+          "arie": "quentin",
+          "azra": "quentin",
+          "bam": "quentin",
+          "brandi": "quentin",
+          "christian": "quentin",
+          "cirie": "quentin",
+          "geraldine": "quentin",
+          "kate": "quentin",
+          "michael": "quentin",
+          "quentin": "amanda",
+          "rachel": "quentin",
+          "reza": "quentin",
+          "robert": "amanda",
+          "ryan": "quentin",
+          "shelbe": "bam",
+          "stephenie": "quentin"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "robert",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "robert"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "michael"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "amanda",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "andie",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "arie",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "bam",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "brandi",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "geraldine",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "michael",
+          "to": "bam",
+          "weight": 2
+        },
+        {
+          "from": "rachel",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "reza",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "ryan",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "bam",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "amanda",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "bam",
+          "amanda"
+        ],
+        "counts": {
+          "arie": 4,
+          "bam": 7,
+          "cirie": 1,
+          "amanda": 4,
+          "christian": 1
+        },
+        "accusations": {
+          "amanda": "arie",
+          "andie": "bam",
+          "anjelica": "bam",
+          "arie": "bam",
+          "azra": "cirie",
+          "bam": "arie",
+          "brandi": "bam",
+          "christian": "arie",
+          "cirie": "amanda",
+          "geraldine": "amanda",
+          "kate": "bam",
+          "michael": "bam",
+          "rachel": "amanda",
+          "reza": "arie",
+          "ryan": "amanda",
+          "shelbe": "bam",
+          "stephenie": "christian"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "ryan",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "ryan"
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "geraldine"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "amanda",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "andie",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "arie",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "brandi",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "geraldine",
+          "to": "amanda",
+          "weight": 2
+        },
+        {
+          "from": "kate",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "michael",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "reza",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "amanda",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "amanda",
+          "arie"
+        ],
+        "counts": {
+          "arie": 4,
+          "amanda": 9,
+          "michael": 1
+        },
+        "accusations": {
+          "amanda": "arie",
+          "andie": "amanda",
+          "anjelica": "amanda",
+          "arie": "amanda",
+          "azra": "amanda",
+          "brandi": "michael",
+          "christian": "amanda",
+          "cirie": "amanda",
+          "geraldine": "amanda",
+          "kate": "amanda",
+          "michael": "arie",
+          "rachel": "amanda",
+          "reza": "arie",
+          "shelbe": "arie"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "reza",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "reza"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "brandi"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "andie",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "arie",
+          "to": "geraldine",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "brandi",
+          "to": "arie",
+          "weight": 2
+        },
+        {
+          "from": "christian",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "geraldine",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "michael",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "rachel",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "arie",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "arie",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "arie",
+          "michael"
+        ],
+        "counts": {
+          "arie": 9,
+          "michael": 3,
+          "anjelica": 1
+        },
+        "accusations": {
+          "andie": "arie",
+          "anjelica": "arie",
+          "arie": "michael",
+          "azra": "arie",
+          "brandi": "michael",
+          "christian": "anjelica",
+          "cirie": "michael",
+          "geraldine": "arie",
+          "kate": "arie",
+          "michael": "arie",
+          "rachel": "arie",
+          "shelbe": "arie",
+          "stephenie": "arie"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "rachel",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "rachel"
+      }
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "anjelica"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "andie",
+          "to": "anjelica",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "michael",
+          "weight": 2
+        },
+        {
+          "from": "azra",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "brandi",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "geraldine",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "michael",
+          "to": "anjelica",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "michael",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "michael",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "michael",
+          "christian"
+        ],
+        "counts": {
+          "michael": 7,
+          "anjelica": 1,
+          "christian": 2
+        },
+        "accusations": {
+          "andie": "michael",
+          "anjelica": "michael",
+          "azra": "michael",
+          "brandi": "anjelica",
+          "cirie": "michael",
+          "geraldine": "michael",
+          "kate": "christian",
+          "michael": "christian",
+          "shelbe": "michael",
+          "stephenie": "michael"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "brandi",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "brandi"
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "cirie"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "andie",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "anjelica",
+          "to": "christian",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "anjelica",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "anjelica",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "anjelica",
+          "weight": 2
+        },
+        {
+          "from": "geraldine",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "christian",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "anjelica",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "christian",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "christian",
+          "anjelica"
+        ],
+        "counts": {
+          "christian": 4,
+          "kate": 2,
+          "anjelica": 2,
+          "shelbe": 1
+        },
+        "accusations": {
+          "andie": "christian",
+          "anjelica": "christian",
+          "azra": "christian",
+          "christian": "kate",
+          "cirie": "anjelica",
+          "geraldine": "kate",
+          "kate": "christian",
+          "shelbe": "anjelica",
+          "stephenie": "shelbe"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "geraldine",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "geraldine"
+      }
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "cirie"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "andie",
+          "to": "christian",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "christian",
+          "weight": 1
+        },
+        {
+          "from": "christian",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "kate",
+          "weight": 2
+        },
+        {
+          "from": "kate",
+          "to": "christian",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "stephenie",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "christian",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "christian",
+          "kate"
+        ],
+        "counts": {
+          "kate": 3,
+          "christian": 3,
+          "stephenie": 1
+        },
+        "accusations": {
+          "andie": "kate",
+          "azra": "christian",
+          "christian": "kate",
+          "cirie": "kate",
+          "kate": "christian",
+          "shelbe": "stephenie",
+          "stephenie": "christian"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "christian",
+        "method": "vote",
+        "tally": {
+          "christian": 4,
+          "kate": 3,
+          "stephenie": 1
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "azra",
+        "by": "cirie",
+        "accepted": true
+      }
+    },
+    {
+      "r": 9,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "cirie"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "azra",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "stephenie",
+          "weight": 2
+        },
+        {
+          "from": "kate",
+          "to": "andie",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "stephenie",
+          "weight": 1
+        },
+        {
+          "from": "stephenie",
+          "to": "andie",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "kate",
+          "stephenie"
+        ],
+        "counts": {
+          "stephenie": 2,
+          "kate": 2,
+          "andie": 1,
+          "shelbe": 1
+        },
+        "accusations": {
+          "andie": "stephenie",
+          "azra": "kate",
+          "cirie": "andie",
+          "kate": "shelbe",
+          "shelbe": "stephenie",
+          "stephenie": "kate"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "stephenie",
+        "method": "vote",
+        "tally": {
+          "kate": 1,
+          "stephenie": 3,
+          "andie": 2
+        }
+      },
+      "finaleStarted": true
+    },
+    {
+      "r": 10,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "andie",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "kate",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "cirie",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "kate",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "andie",
+          "choice": "banish"
+        },
+        {
+          "player": "azra",
+          "choice": "banish"
+        },
+        {
+          "player": "cirie",
+          "choice": "end"
+        },
+        {
+          "player": "kate",
+          "choice": "banish"
+        },
+        {
+          "player": "shelbe",
+          "choice": "banish"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "kate",
+          "azra"
+        ],
+        "counts": {
+          "cirie": 1,
+          "kate": 3,
+          "azra": 1
+        },
+        "accusations": {
+          "andie": "cirie",
+          "azra": "kate",
+          "cirie": "kate",
+          "kate": "azra",
+          "shelbe": "kate"
+        }
+      },
+      "elimination": {
+        "player": "kate",
+        "method": "vote",
+        "tally": {
+          "kate": 4,
+          "cirie": 1
+        }
+      }
+    },
+    {
+      "r": 11,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "andie",
+          "to": "cirie",
+          "weight": 1
+        },
+        {
+          "from": "azra",
+          "to": "andie",
+          "weight": 1
+        },
+        {
+          "from": "cirie",
+          "to": "andie",
+          "weight": 1
+        },
+        {
+          "from": "shelbe",
+          "to": "andie",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "andie",
+          "choice": "banish"
+        },
+        {
+          "player": "azra",
+          "choice": "banish"
+        },
+        {
+          "player": "cirie",
+          "choice": "end"
+        },
+        {
+          "player": "shelbe",
+          "choice": "banish"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "andie",
+          "shelbe"
+        ],
+        "counts": {
+          "shelbe": 1,
+          "andie": 3
+        },
+        "accusations": {
+          "andie": "shelbe",
+          "azra": "andie",
+          "cirie": "andie",
+          "shelbe": "andie"
+        }
+      },
+      "elimination": {
+        "player": "andie",
+        "method": "vote",
+        "tally": {
+          "cirie": 1,
+          "andie": 3
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "endgame",
+    "finale": true,
+    "solo": false,
+    "survivingTraitors": [
+      "azra",
+      "cirie",
+      "shelbe"
+    ]
+  },
+  "metrics": {
+    "calls": 805,
+    "failedCalls": 32,
+    "providerCalls": 805,
+    "retries": 7,
+    "transportRetries": 7,
+    "parseRetryCalls": 26,
+    "inputTokens": 6882611,
+    "outputTokens": 3635079,
+    "totalTokens": 10517690,
+    "promptCharsTotal": 27743779,
+    "byActionType": {
+      "accuse": {
+        "calls": 132,
+        "failed": 8,
+        "input_tokens": 1172947,
+        "output_tokens": 630870
+      },
+      "end_vote": {
+        "calls": 9,
+        "failed": 0,
+        "input_tokens": 120582,
+        "output_tokens": 25272
+      },
+      "private_message": {
+        "calls": 209,
+        "failed": 6,
+        "input_tokens": 1612071,
+        "output_tokens": 729998
+      },
+      "public_message": {
+        "calls": 243,
+        "failed": 0,
+        "input_tokens": 1952894,
+        "output_tokens": 1179079
+      },
+      "rebut": {
+        "calls": 22,
+        "failed": 0,
+        "input_tokens": 223060,
+        "output_tokens": 120952
+      },
+      "recruit": {
+        "calls": 6,
+        "failed": 3,
+        "input_tokens": 56651,
+        "output_tokens": 39714
+      },
+      "recruit_decision": {
+        "calls": 4,
+        "failed": 0,
+        "input_tokens": 42393,
+        "output_tokens": 7792
+      },
+      "recruit_response": {
+        "calls": 2,
+        "failed": 0,
+        "input_tokens": 16825,
+        "output_tokens": 3223
+      },
+      "traitor_kill": {
+        "calls": 20,
+        "failed": 3,
+        "input_tokens": 219923,
+        "output_tokens": 72949
+      },
+      "traitor_message": {
+        "calls": 22,
+        "failed": 0,
+        "input_tokens": 228411,
+        "output_tokens": 159914
+      },
+      "vote": {
+        "calls": 136,
+        "failed": 12,
+        "input_tokens": 1236854,
+        "output_tokens": 665316
+      }
+    },
+    "model": "hy4-flash-free",
+    "provider": "openai_compat",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 614,
+        "duplicate_messages": 0,
+        "duplicate_rate": 0.0,
+        "duplication_score": 0.0
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 614,
+      "parsing": {
+        "rejected_actions": 6,
+        "unparseable_actions": 6
+      },
+      "private_chats": {
+        "longest_thread": 31,
+        "mean_messages_per_pair": 6.2727,
+        "messages": 207,
+        "pairs": 33,
+        "pairs_by_length": {
+          "1": 2,
+          "2": 9,
+          "3": 1,
+          "4": 8,
+          "5": 13
+        },
+        "per_player": {
+          "amanda": 31,
+          "andie": 36,
+          "anjelica": 10,
+          "arie": 20,
+          "azra": 45,
+          "bam": 11,
+          "brandi": 13,
+          "christian": 20,
+          "cirie": 37,
+          "cody": 6,
+          "geraldine": 26,
+          "kate": 21,
+          "michael": 37,
+          "quentin": 4,
+          "rachel": 13,
+          "reza": 7,
+          "robert": 3,
+          "ryan": 4,
+          "shelbe": 36,
+          "stephenie": 34
+        },
+        "reciprocity_rate": 0.8485,
+        "two_way_pairs": 28
+      },
+      "private_messages": 225,
+      "public_messages": 389,
+      "secrecy": {
+        "false_role_claims": 4,
+        "flags_total": 9,
+        "role_claim_total": 6,
+        "samples": [
+          {
+            "detail": "christian is a traitor and said so in a public_message (matched \\bas a traitor\\b)",
+            "excerpt": "Amanda, your last reply to Michael is what I'm answering. You granted that the Rachel mark still had no ending, then let Reza's question about Arie do the traveling for you. That i",
+            "kind": "traitor_public_declaration",
+            "round": 4,
+            "sender": "christian"
+          },
+          {
+            "detail": "anjelica is faithful but claims to be a traitor",
+            "excerpt": "Brandi, I accept that my Arie swap was not settled; it stays a weak read, and I won't spend it to defend myself. Michael, my ballot goes to you because of your latest turn. You dem",
+            "kind": "faithful_claimed_traitor",
+            "round": 6,
+            "sender": "anjelica"
+          },
+          {
+            "detail": "brandi is faithful but claims to be a traitor",
+            "excerpt": "Anjelica, you told me Rachel's rule had no previous payoff, and I accepted that weakness. What I did not accept was the way Arie got a different exchange rate: his missing beginnin",
+            "kind": "faithful_claimed_traitor",
+            "round": 6,
+            "sender": "brandi"
+          },
+          {
+            "detail": "cirie is a traitor and said so in a public_message (matched \\bas a traitor\\b)",
+            "excerpt": "Anjelica, your admission to Brandi that Rachel's pullback is what carried Arie upward leaves a problem now that Brandi is gone: the question Brandi asked had not been answered, onl",
+            "kind": "traitor_public_declaration",
+            "round": 7,
+            "sender": "cirie"
+          },
+          {
+            "detail": "geraldine is faithful but claims to be a traitor",
+            "excerpt": "Kate, when you answered Azra, you made letting Christian go depend on a confrontation that can no longer happen: Rachel and Anjelica face to face, with both replies still in play. ",
+            "kind": "faithful_claimed_traitor",
+            "round": 7,
+            "sender": "geraldine"
+          },
+          {
+            "detail": "stephenie is faithful but claims to be a traitor",
+            "excerpt": "Shelbe, I’m putting you forward. When Andie asked you to produce the older line that justified your shift, you treated the absence as something to set aside; when Anjelica could no",
+            "kind": "faithful_claimed_traitor",
+            "round": 7,
+            "sender": "stephenie"
+          },
+          {
+            "detail": "cirie named fellow traitor shelbe next to affiliation wording",
+            "excerpt": "Stephenie, I still have Kate's unfinished check in the margin, but your answer to her sets a freshness requirement that your own Shelbe case does not meet. You made Kate show a lat",
+            "kind": "traitor_named_teammate",
+            "round": 8,
+            "sender": "cirie"
+          },
+          {
+            "detail": "azra named fellow traitor cirie next to affiliation wording",
+            "excerpt": "Andie, I had already placed this on you before Shelbe spoke, so I am not borrowing her route. What stands out in your last turn is that you made Kate’s possible reply about Cirie t",
+            "kind": "traitor_named_teammate",
+            "round": 11,
+            "sender": "azra"
+          },
+          {
+            "detail": "azra named fellow traitor shelbe next to affiliation wording",
+            "excerpt": "Andie, I had already placed this on you before Shelbe spoke, so I am not borrowing her route. What stands out in your last turn is that you made Kate’s possible reply about Cirie t",
+            "kind": "traitor_named_teammate",
+            "round": 11,
+            "sender": "azra"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 3,
+        "traitor_public_declarations": 2
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.8746,
+          "max_pair": [
+            "christian",
+            "cirie"
+          ],
+          "mean": 0.6399
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 190,
+        "per_player": {
+          "amanda": {
+            "content_words": 0.6797,
+            "phrasing": 0.8706
+          },
+          "andie": {
+            "content_words": 0.4331,
+            "phrasing": 0.3343
+          },
+          "anjelica": {
+            "content_words": 0.7307,
+            "phrasing": 0.8797
+          },
+          "arie": {
+            "content_words": 0.6898,
+            "phrasing": 0.8736
+          },
+          "azra": {
+            "content_words": 0.7014,
+            "phrasing": 0.8823
+          },
+          "bam": {
+            "content_words": 0.607,
+            "phrasing": 0.86
+          },
+          "brandi": {
+            "content_words": 0.6676,
+            "phrasing": 0.8714
+          },
+          "christian": {
+            "content_words": 0.7205,
+            "phrasing": 0.8739
+          },
+          "cirie": {
+            "content_words": 0.7243,
+            "phrasing": 0.882
+          },
+          "cody": {
+            "content_words": 0.5201,
+            "phrasing": 0.8306
+          },
+          "geraldine": {
+            "content_words": 0.698,
+            "phrasing": 0.878
+          },
+          "kate": {
+            "content_words": 0.7125,
+            "phrasing": 0.8795
+          },
+          "michael": {
+            "content_words": 0.6896,
+            "phrasing": 0.875
+          },
+          "quentin": {
+            "content_words": 0.5979,
+            "phrasing": 0.8434
+          },
+          "rachel": {
+            "content_words": 0.6672,
+            "phrasing": 0.8684
+          },
+          "reza": {
+            "content_words": 0.6525,
+            "phrasing": 0.8553
+          },
+          "robert": {
+            "content_words": 0.5554,
+            "phrasing": 0.8406
+          },
+          "ryan": {
+            "content_words": 0.344,
+            "phrasing": 0.1484
+          },
+          "shelbe": {
+            "content_words": 0.7157,
+            "phrasing": 0.8818
+          },
+          "stephenie": {
+            "content_words": 0.6906,
+            "phrasing": 0.8769
+          }
+        },
+        "phrasing": {
+          "max": 0.9822,
+          "max_pair": [
+            "azra",
+            "cirie"
+          ],
+          "mean": 0.8053
+        },
+        "players_compared": 20
+      }
+    },
+    "messages": {
+      "private": 225,
+      "public": 389,
+      "ratio_public_private": 1.729
+    },
+    "events": {
+      "total": 1172,
+      "byType": {
+        "ACTION_REJECTED": 6,
+        "DAGGER_USED": 8,
+        "END_VOTE_CAST": 9,
+        "FINALE_STARTED": 1,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "ITEM_AWARDED": 9,
+        "MISSION_COMPLETED": 27,
+        "MISSION_STARTED": 27,
+        "NOMINATION_TALLY": 11,
+        "PHASE_ENDED": 90,
+        "PHASE_STARTED": 91,
+        "PLAYER_ELIMINATED": 17,
+        "PRIVATE_MESSAGE": 225,
+        "PUBLIC_MESSAGE": 389,
+        "RECRUIT_ACCEPTED": 2,
+        "RECRUIT_CHOICE_MADE": 2,
+        "RECRUIT_OFFERED": 2,
+        "ROLE_ASSIGNED": 20,
+        "ROLE_RECRUITED": 2,
+        "ROUND_STARTED": 11,
+        "SNAPSHOT_CREATED": 90,
+        "TRAITOR_KILL": 6,
+        "VOTE_CAST": 124
+      }
+    },
+    "rejectedActions": 6,
+    "outcomes": {
+      "amanda": "lost",
+      "andie": "lost",
+      "anjelica": "lost",
+      "arie": "lost",
+      "azra": "won",
+      "bam": "lost",
+      "brandi": "lost",
+      "christian": "lost",
+      "cirie": "won",
+      "cody": "lost",
+      "geraldine": "lost",
+      "kate": "lost",
+      "michael": "lost",
+      "quentin": "lost",
+      "rachel": "lost",
+      "reza": "lost",
+      "robert": "lost",
+      "ryan": "lost",
+      "shelbe": "won",
+      "stephenie": "lost"
+    },
+    "survivingTraitors": [
+      "azra",
+      "cirie",
+      "shelbe"
+    ],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": true,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "the-traitors-us-s01-93461b6a",
+    "rounds": 11,
+    "players": 20,
+    "traitors": 3
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 614,
+    "public": 389,
+    "private": 225,
+    "traitor": 22,
+    "host": 0,
+    "calls": 805,
+    "inputTokens": 6882611,
+    "outputTokens": 3635079,
+    "totalTokens": 10517690,
+    "rejectedActions": 6
+  },
+  "config": {
+    "name": "the-traitors-us-s01",
+    "players": 20,
+    "traitors": 3,
+    "faithful": 17,
+    "maxRounds": 18,
+    "language": "english",
+    "provider": "openai_compat",
+    "model": "hy4-flash-free",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 32768,
+      "reasoning_effort": "high"
+    },
+    "flags": {
+      "max_rounds": 18,
+      "recruit_on_banish": false,
+      "max_recruits": 0,
+      "recruit_choice": true,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 2,
+      "finale_faithful": 3,
+      "finale_total": 5,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [],
+      "quiet_banishment_rounds": [],
+      "endgame_vote": true,
+      "blind_finale_banishments": true,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": true,
+      "revote_enabled": true,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": true,
+      "dagger": true,
+      "seer": false,
+      "on_trial": false,
+      "suspicion_ledger": false,
+      "mission_reward": 1000,
+      "mission_success_probability": 0.85,
+      "mission_defense_rounds": []
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

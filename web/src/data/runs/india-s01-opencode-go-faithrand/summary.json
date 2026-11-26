@@ -1,0 +1,3030 @@
+{
+  "id": "india-s01-opencode-go-faithrand",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "the-traitors-india-s01",
+  "season": "the-traitors-india-s01",
+  "family": "india-s01",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "anshula",
+      "name": "Anshula",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 1,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "raftaar",
+            "count": 3
+          },
+          {
+            "id": "jasmine",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ashish",
+      "name": "Ashish",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 13,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 10,
+        "votesCast": 4,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "mukesh",
+            "count": 4
+          },
+          {
+            "id": "maheep",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "elnaaz",
+      "name": "Elnaaz",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 9,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "kunal",
+            "count": 8
+          },
+          {
+            "id": "lakshmi",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "harsh",
+      "name": "Harsh",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 13,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 10,
+        "votesCast": 4,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "raftaar",
+            "count": 3
+          },
+          {
+            "id": "mukesh",
+            "count": 1
+          },
+          {
+            "id": "elnaaz",
+            "count": 1
+          },
+          {
+            "id": "lakshmi",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "harsh": 7,
+          "kunal": 4,
+          "purav": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.55,
+          "assertiveness": 0.6,
+          "sociability": 0.85,
+          "trust": 0.55,
+          "risk_tolerance": 0.5
+        },
+        "description": "Harsh Gujral. Comedic, social connector.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jannat",
+      "name": "Jannat",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": false
+      },
+      "stats": {
+        "public": 31,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 10,
+        "votesCast": 10,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "nikita",
+            "count": 5
+          },
+          {
+            "id": "purav",
+            "count": 3
+          },
+          {
+            "id": "raftaar",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 10,
+        "method": "vote",
+        "tally": {
+          "purav": 1,
+          "jannat": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.5,
+          "sociability": 0.65,
+          "trust": 0.5,
+          "risk_tolerance": 0.45
+        },
+        "description": "Jannat Zubair Rahmani. Young influencer, perceptive, tends to stay diplomatic.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jasmine",
+      "name": "Jasmine",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 3,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "anshula",
+            "count": 1
+          },
+          {
+            "id": "mukesh",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "karan_kundrra",
+      "name": "Karan_kundrra",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [
+        "shield"
+      ],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 1,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 12,
+        "votesCast": 1,
+        "votesReceived": 16,
+        "conversations": [
+          {
+            "id": "purav",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "karan_kundrra": 16,
+          "raftaar": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.65,
+          "assertiveness": 0.7,
+          "sociability": 0.8,
+          "trust": 0.45,
+          "risk_tolerance": 0.55
+        },
+        "description": "Karan Kundrra. Charismatic, can read room.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "kunal",
+      "name": "Kunal",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 9,
+        "votesCast": 6,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "elnaaz",
+            "count": 7
+          },
+          {
+            "id": "sargun",
+            "count": 2
+          },
+          {
+            "id": "nikita",
+            "count": 1
+          },
+          {
+            "id": "lakshmi",
+            "count": 1
+          },
+          {
+            "id": "nitish",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "lakshmi",
+      "name": "Lakshmi",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 28,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 7,
+        "votesCast": 9,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "sudhanshu",
+            "count": 4
+          },
+          {
+            "id": "mukesh",
+            "count": 3
+          },
+          {
+            "id": "harsh",
+            "count": 1
+          },
+          {
+            "id": "elnaaz",
+            "count": 1
+          },
+          {
+            "id": "kunal",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "lakshmi": 4,
+          "purav": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "maheep",
+      "name": "Maheep",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 18,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 4,
+        "votesCast": 5,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "nitish",
+            "count": 7
+          },
+          {
+            "id": "mukesh",
+            "count": 3
+          },
+          {
+            "id": "raj_kundrra",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "maheep": 6,
+          "jannat": 3,
+          "kunal": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "mukesh",
+      "name": "Mukesh",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 13,
+        "votesCast": 3,
+        "votesReceived": 15,
+        "conversations": [
+          {
+            "id": "ashish",
+            "count": 2
+          },
+          {
+            "id": "jasmine",
+            "count": 1
+          },
+          {
+            "id": "lakshmi",
+            "count": 1
+          },
+          {
+            "id": "maheep",
+            "count": 1
+          },
+          {
+            "id": "uorfi",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "mukesh": 16,
+          "kunal": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "nikita",
+      "name": "Nikita",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 20,
+        "traitor": 7,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 4,
+        "votesCast": 10,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "sudhanshu",
+            "count": 13
+          },
+          {
+            "id": "purav",
+            "count": 4
+          },
+          {
+            "id": "jannat",
+            "count": 3
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.85,
+          "assertiveness": 0.5,
+          "sociability": 0.55,
+          "trust": 0.45,
+          "risk_tolerance": 0.4
+        },
+        "description": "Nikita Luther. Poker player, observant and strategic; plays cautiously and reads people well.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "find_traitors",
+            "stay_under_radar"
+          ]
+        }
+      }
+    },
+    {
+      "id": "nitish",
+      "name": "Nitish",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 26,
+        "private": 11,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 8,
+        "votesCast": 8,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "maheep",
+            "count": 8
+          },
+          {
+            "id": "kunal",
+            "count": 1
+          },
+          {
+            "id": "sargun",
+            "count": 1
+          },
+          {
+            "id": "sudhanshu",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "vote",
+        "tally": {
+          "nikita": 3,
+          "nitish": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "purav",
+      "name": "Purav",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 29,
+        "private": 17,
+        "traitor": 7,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 5,
+        "votesCast": 10,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "sudhanshu",
+            "count": 7
+          },
+          {
+            "id": "nikita",
+            "count": 5
+          },
+          {
+            "id": "jannat",
+            "count": 3
+          },
+          {
+            "id": "sahil",
+            "count": 2
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.75,
+          "assertiveness": 0.55,
+          "sociability": 0.6,
+          "trust": 0.5,
+          "risk_tolerance": 0.45
+        },
+        "description": "Purav Jha. Strategic, observant.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "raftaar",
+      "name": "Raftaar",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 8,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 11,
+        "votesCast": 2,
+        "votesReceived": 18,
+        "conversations": [
+          {
+            "id": "harsh",
+            "count": 2
+          },
+          {
+            "id": "jannat",
+            "count": 1
+          },
+          {
+            "id": "anshula",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "raftaar": 15,
+          "ashish": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "raj_kundrra",
+      "name": "Raj_kundrra",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 22,
+        "private": 9,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 3,
+        "votesCast": 7,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "mukesh",
+            "count": 3
+          },
+          {
+            "id": "sargun",
+            "count": 3
+          },
+          {
+            "id": "purav",
+            "count": 2
+          },
+          {
+            "id": "maheep",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "raj_kundrra": 8,
+          "sudhanshu": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.6,
+          "sociability": 0.6,
+          "trust": 0.45,
+          "risk_tolerance": 0.5
+        },
+        "description": "Raj Kundrra. Calculated, guarded.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sahil",
+      "name": "Sahil",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 3,
+        "votesCast": 5,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "purav",
+            "count": 5
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "sahil": 8,
+          "jannat": 2,
+          "lakshmi": 2,
+          "nitish": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sargun",
+      "name": "Sargun",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 21,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 0,
+        "votesCast": 7,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "mukesh",
+            "count": 3
+          },
+          {
+            "id": "kunal",
+            "count": 2
+          },
+          {
+            "id": "raj_kundrra",
+            "count": 2
+          },
+          {
+            "id": "nitish",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sudhanshu",
+      "name": "Sudhanshu",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 29,
+        "private": 18,
+        "traitor": 7,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 2,
+        "votesCast": 10,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "nikita",
+            "count": 13
+          },
+          {
+            "id": "purav",
+            "count": 4
+          },
+          {
+            "id": "nitish",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "uorfi",
+      "name": "Uorfi",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 9,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 1,
+        "votesCast": 3,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "mukesh",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.4,
+          "assertiveness": 0.9,
+          "sociability": 0.9,
+          "trust": 0.5,
+          "risk_tolerance": 0.65
+        },
+        "description": "Uorfi Javed. Bold, outspoken and unfiltered; draws attention but forms strong bonds.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "build_alliances"
+          ]
+        }
+      }
+    }
+  ],
+  "rounds": 10,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 13,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "karan_kundrra"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anshula",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "ashish",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "elnaaz",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "harsh",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "jannat",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "jasmine",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "karan_kundrra",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "kunal",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "maheep",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "mukesh",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "raftaar",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "sahil",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "karan_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "uorfi",
+          "to": "karan_kundrra",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "karan_kundrra",
+          "raftaar"
+        ],
+        "counts": {
+          "raftaar": 4,
+          "karan_kundrra": 12,
+          "ashish": 1,
+          "harsh": 1,
+          "anshula": 1,
+          "uorfi": 1
+        },
+        "accusations": {
+          "anshula": "raftaar",
+          "ashish": "karan_kundrra",
+          "elnaaz": "karan_kundrra",
+          "harsh": "ashish",
+          "jannat": "karan_kundrra",
+          "jasmine": "raftaar",
+          "karan_kundrra": "raftaar",
+          "kunal": "karan_kundrra",
+          "lakshmi": "karan_kundrra",
+          "maheep": "raftaar",
+          "mukesh": "karan_kundrra",
+          "nikita": "harsh",
+          "nitish": "karan_kundrra",
+          "purav": "anshula",
+          "raftaar": "karan_kundrra",
+          "raj_kundrra": "karan_kundrra",
+          "sahil": "uorfi",
+          "sargun": "karan_kundrra",
+          "sudhanshu": "karan_kundrra",
+          "uorfi": "karan_kundrra"
+        }
+      },
+      "elimination": {
+        "player": "jasmine",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "jasmine"
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "maheep"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anshula",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "ashish",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "elnaaz",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "harsh",
+          "to": "ashish",
+          "weight": 1
+        },
+        {
+          "from": "jannat",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "kunal",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "maheep",
+          "to": "raftaar",
+          "weight": 2
+        },
+        {
+          "from": "mukesh",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "ashish",
+          "weight": 1
+        },
+        {
+          "from": "raftaar",
+          "to": "ashish",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "sahil",
+          "to": "ashish",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "raftaar",
+          "weight": 1
+        },
+        {
+          "from": "uorfi",
+          "to": "raftaar",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "ashish",
+          "raftaar"
+        ],
+        "counts": {
+          "maheep": 2,
+          "raftaar": 7,
+          "ashish": 9
+        },
+        "accusations": {
+          "anshula": "maheep",
+          "ashish": "raftaar",
+          "elnaaz": "ashish",
+          "harsh": "ashish",
+          "jannat": "raftaar",
+          "kunal": "maheep",
+          "lakshmi": "raftaar",
+          "maheep": "raftaar",
+          "mukesh": "raftaar",
+          "nikita": "raftaar",
+          "nitish": "ashish",
+          "purav": "ashish",
+          "raftaar": "ashish",
+          "raj_kundrra": "raftaar",
+          "sahil": "ashish",
+          "sargun": "ashish",
+          "sudhanshu": "ashish",
+          "uorfi": "ashish"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "anshula",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "anshula"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "harsh"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "ashish",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "elnaaz",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "harsh",
+          "to": "mukesh",
+          "weight": 2
+        },
+        {
+          "from": "jannat",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "kunal",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "maheep",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "mukesh",
+          "to": "kunal",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "sahil",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "mukesh",
+          "weight": 1
+        },
+        {
+          "from": "uorfi",
+          "to": "mukesh",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "mukesh",
+          "kunal"
+        ],
+        "counts": {
+          "kunal": 3,
+          "mukesh": 13
+        },
+        "accusations": {
+          "ashish": "kunal",
+          "elnaaz": "kunal",
+          "harsh": "mukesh",
+          "jannat": "mukesh",
+          "kunal": "mukesh",
+          "lakshmi": "mukesh",
+          "maheep": "mukesh",
+          "mukesh": "kunal",
+          "nikita": "mukesh",
+          "nitish": "mukesh",
+          "purav": "mukesh",
+          "raj_kundrra": "mukesh",
+          "sahil": "mukesh",
+          "sargun": "mukesh",
+          "sudhanshu": "mukesh",
+          "uorfi": "mukesh"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "uorfi",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "uorfi"
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "jannat"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "ashish",
+          "to": "harsh",
+          "weight": 1
+        },
+        {
+          "from": "elnaaz",
+          "to": "harsh",
+          "weight": 1
+        },
+        {
+          "from": "harsh",
+          "to": "kunal",
+          "weight": 1
+        },
+        {
+          "from": "jannat",
+          "to": "purav",
+          "weight": 2
+        },
+        {
+          "from": "kunal",
+          "to": "harsh",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "purav",
+          "weight": 1
+        },
+        {
+          "from": "maheep",
+          "to": "harsh",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "harsh",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "kunal",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "harsh",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "purav",
+          "weight": 1
+        },
+        {
+          "from": "sahil",
+          "to": "kunal",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "kunal",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "harsh",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "harsh",
+          "purav"
+        ],
+        "counts": {
+          "purav": 3,
+          "harsh": 9,
+          "kunal": 2
+        },
+        "accusations": {
+          "ashish": "purav",
+          "elnaaz": "harsh",
+          "harsh": "kunal",
+          "jannat": "kunal",
+          "kunal": "harsh",
+          "lakshmi": "harsh",
+          "maheep": "harsh",
+          "nikita": "harsh",
+          "nitish": "harsh",
+          "purav": "harsh",
+          "raj_kundrra": "purav",
+          "sahil": "purav",
+          "sargun": "harsh",
+          "sudhanshu": "harsh"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "ashish",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "ashish"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "sargun"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "elnaaz",
+          "to": "sahil",
+          "weight": 1
+        },
+        {
+          "from": "jannat",
+          "to": "sahil",
+          "weight": 1
+        },
+        {
+          "from": "kunal",
+          "to": "sahil",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "sahil",
+          "weight": 1
+        },
+        {
+          "from": "maheep",
+          "to": "sahil",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "jannat",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "lakshmi",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "jannat",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "sahil",
+          "weight": 1
+        },
+        {
+          "from": "sahil",
+          "to": "lakshmi",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "sahil",
+          "weight": 2
+        },
+        {
+          "from": "sudhanshu",
+          "to": "nitish",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "nitish",
+          "jannat"
+        ],
+        "counts": {
+          "jannat": 3,
+          "sahil": 3,
+          "nitish": 4,
+          "kunal": 1,
+          "lakshmi": 1
+        },
+        "accusations": {
+          "elnaaz": "jannat",
+          "jannat": "sahil",
+          "kunal": "jannat",
+          "lakshmi": "nitish",
+          "maheep": "sahil",
+          "nikita": "jannat",
+          "nitish": "kunal",
+          "purav": "lakshmi",
+          "raj_kundrra": "sahil",
+          "sahil": "nitish",
+          "sargun": "nitish",
+          "sudhanshu": "nitish"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "elnaaz",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "elnaaz"
+      }
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "jannat"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "jannat",
+          "to": "maheep",
+          "weight": 2
+        },
+        {
+          "from": "kunal",
+          "to": "maheep",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "maheep",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "jannat",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "maheep",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "jannat",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "maheep",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "kunal",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "jannat",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "jannat",
+          "kunal"
+        ],
+        "counts": {
+          "maheep": 2,
+          "jannat": 3,
+          "raj_kundrra": 1,
+          "kunal": 3,
+          "lakshmi": 1
+        },
+        "accusations": {
+          "jannat": "maheep",
+          "kunal": "jannat",
+          "lakshmi": "raj_kundrra",
+          "maheep": "kunal",
+          "nikita": "lakshmi",
+          "nitish": "maheep",
+          "purav": "jannat",
+          "raj_kundrra": "kunal",
+          "sargun": "kunal",
+          "sudhanshu": "jannat"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "kunal",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "kunal"
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "lakshmi"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "jannat",
+          "to": "raj_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "raj_kundrra",
+          "weight": 2
+        },
+        {
+          "from": "nikita",
+          "to": "raj_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "raj_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "raj_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "raj_kundrra",
+          "to": "sudhanshu",
+          "weight": 1
+        },
+        {
+          "from": "sargun",
+          "to": "raj_kundrra",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "raj_kundrra",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "raj_kundrra",
+          "sudhanshu"
+        ],
+        "counts": {
+          "sudhanshu": 2,
+          "jannat": 1,
+          "raj_kundrra": 2,
+          "purav": 1,
+          "lakshmi": 1,
+          "nitish": 1
+        },
+        "accusations": {
+          "jannat": "sudhanshu",
+          "lakshmi": "jannat",
+          "nikita": "raj_kundrra",
+          "nitish": "sudhanshu",
+          "purav": "raj_kundrra",
+          "raj_kundrra": "purav",
+          "sargun": "lakshmi",
+          "sudhanshu": "nitish"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "sargun",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "sargun"
+      }
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "nitish"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "jannat",
+          "to": "nikita",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "nitish",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "nitish",
+          "weight": 1
+        },
+        {
+          "from": "nitish",
+          "to": "nikita",
+          "weight": 2
+        },
+        {
+          "from": "purav",
+          "to": "nitish",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "nitish",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "nitish",
+          "lakshmi"
+        ],
+        "counts": {
+          "purav": 1,
+          "nitish": 3,
+          "lakshmi": 1,
+          "nikita": 1
+        },
+        "accusations": {
+          "jannat": "purav",
+          "lakshmi": "nitish",
+          "nikita": "lakshmi",
+          "nitish": "nikita",
+          "purav": "nitish",
+          "sudhanshu": "nitish"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "nitish",
+        "method": "vote",
+        "tally": {
+          "nikita": 3,
+          "nitish": 4
+        }
+      },
+      "finaleStarted": true
+    },
+    {
+      "r": 9,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "jannat",
+          "to": "lakshmi",
+          "weight": 1
+        },
+        {
+          "from": "lakshmi",
+          "to": "purav",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "lakshmi",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "lakshmi",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "lakshmi",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "jannat",
+          "choice": "banish"
+        },
+        {
+          "player": "lakshmi",
+          "choice": "banish"
+        },
+        {
+          "player": "nikita",
+          "choice": "end"
+        },
+        {
+          "player": "purav",
+          "choice": "end"
+        },
+        {
+          "player": "sudhanshu",
+          "choice": "end"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "lakshmi",
+          "nikita"
+        ],
+        "counts": {
+          "nikita": 2,
+          "lakshmi": 3
+        },
+        "accusations": {
+          "jannat": "nikita",
+          "lakshmi": "nikita",
+          "nikita": "lakshmi",
+          "purav": "lakshmi",
+          "sudhanshu": "lakshmi"
+        }
+      },
+      "elimination": {
+        "player": "lakshmi",
+        "method": "vote",
+        "tally": {
+          "lakshmi": 4,
+          "purav": 1
+        }
+      }
+    },
+    {
+      "r": 10,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "jannat",
+          "to": "purav",
+          "weight": 1
+        },
+        {
+          "from": "nikita",
+          "to": "jannat",
+          "weight": 1
+        },
+        {
+          "from": "purav",
+          "to": "jannat",
+          "weight": 1
+        },
+        {
+          "from": "sudhanshu",
+          "to": "jannat",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "jannat",
+          "choice": "banish"
+        },
+        {
+          "player": "nikita",
+          "choice": "end"
+        },
+        {
+          "player": "purav",
+          "choice": "end"
+        },
+        {
+          "player": "sudhanshu",
+          "choice": "end"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "jannat",
+          "nikita"
+        ],
+        "counts": {
+          "nikita": 1,
+          "jannat": 3
+        },
+        "accusations": {
+          "jannat": "nikita",
+          "nikita": "jannat",
+          "purav": "jannat",
+          "sudhanshu": "jannat"
+        }
+      },
+      "elimination": {
+        "player": "jannat",
+        "method": "vote",
+        "tally": {
+          "purav": 1,
+          "jannat": 3
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "endgame",
+    "finale": true,
+    "solo": false,
+    "survivingTraitors": [
+      "nikita",
+      "purav",
+      "sudhanshu"
+    ]
+  },
+  "metrics": {
+    "calls": 728,
+    "failedCalls": 19,
+    "providerCalls": 263,
+    "retries": 3,
+    "transportRetries": 38,
+    "parseRetryCalls": 16,
+    "inputTokens": 4153688,
+    "outputTokens": 1936398,
+    "totalTokens": 6090086,
+    "promptCharsTotal": 16316468,
+    "byActionType": {
+      "accuse": {
+        "calls": 114,
+        "failed": 1,
+        "input_tokens": 652200,
+        "output_tokens": 383761
+      },
+      "end_vote": {
+        "calls": 9,
+        "failed": 0,
+        "input_tokens": 88584,
+        "output_tokens": 27416
+      },
+      "private_message": {
+        "calls": 178,
+        "failed": 6,
+        "input_tokens": 994250,
+        "output_tokens": 329035
+      },
+      "public_message": {
+        "calls": 242,
+        "failed": 0,
+        "input_tokens": 1224325,
+        "output_tokens": 523205
+      },
+      "rebut": {
+        "calls": 20,
+        "failed": 0,
+        "input_tokens": 137263,
+        "output_tokens": 108165
+      },
+      "traitor_kill": {
+        "calls": 24,
+        "failed": 4,
+        "input_tokens": 169211,
+        "output_tokens": 39176
+      },
+      "traitor_message": {
+        "calls": 21,
+        "failed": 0,
+        "input_tokens": 138795,
+        "output_tokens": 85165
+      },
+      "vote": {
+        "calls": 120,
+        "failed": 8,
+        "input_tokens": 749060,
+        "output_tokens": 440475
+      }
+    },
+    "model": "hy4-flash-free",
+    "provider": "openai_compat",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 542,
+        "duplicate_messages": 0,
+        "duplicate_rate": 0.0,
+        "duplication_score": 0.0018
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 543,
+      "parsing": {
+        "rejected_actions": 3,
+        "unparseable_actions": 3
+      },
+      "private_chats": {
+        "longest_thread": 26,
+        "mean_messages_per_pair": 4.9143,
+        "messages": 172,
+        "pairs": 35,
+        "pairs_by_length": {
+          "1": 5,
+          "2": 9,
+          "3": 4,
+          "4": 6,
+          "5": 11
+        },
+        "per_player": {
+          "anshula": 6,
+          "ashish": 7,
+          "elnaaz": 18,
+          "harsh": 9,
+          "jannat": 17,
+          "jasmine": 4,
+          "karan_kundrra": 1,
+          "kunal": 24,
+          "lakshmi": 14,
+          "maheep": 23,
+          "mukesh": 27,
+          "nikita": 44,
+          "nitish": 21,
+          "purav": 36,
+          "raftaar": 12,
+          "raj_kundrra": 13,
+          "sahil": 7,
+          "sargun": 14,
+          "sudhanshu": 43,
+          "uorfi": 4
+        },
+        "reciprocity_rate": 0.7429,
+        "two_way_pairs": 26
+      },
+      "private_messages": 193,
+      "public_messages": 350,
+      "secrecy": {
+        "false_role_claims": 3,
+        "flags_total": 8,
+        "role_claim_total": 4,
+        "samples": [
+          {
+            "detail": "raftaar is faithful but claims to be a traitor",
+            "excerpt": "Jasmine's contradiction is the one thing I owe an answer on: I was referring to the live round, not her opening line, and I should have said that then instead of pivoting. That's o",
+            "kind": "faithful_claimed_traitor",
+            "round": 2,
+            "sender": "raftaar"
+          },
+          {
+            "detail": "nitish is faithful but claims to be a traitor",
+            "excerpt": "Sudhanshu, I can accept that my Maheep question came after several people hit me. But you and Raj then treated that same r1 Raftaar question as important, so you cannot use the que",
+            "kind": "faithful_claimed_traitor",
+            "round": 6,
+            "sender": "nitish"
+          },
+          {
+            "detail": "lakshmi is faithful but claims to be a traitor",
+            "excerpt": "Sudhanshu, your case against me begins with a misread: my last written accusation named Nikita, not Nitish, so I won't explain a switch you invented. Nikita, on the Ashish row, I d",
+            "kind": "faithful_claimed_traitor",
+            "round": 9,
+            "sender": "lakshmi"
+          },
+          {
+            "detail": "nikita named fellow traitor sudhanshu next to affiliation wording",
+            "excerpt": "Jannat, there was no earlier line of yours that I am pretending to find. My r6 was an overextended follow-up, and I have already discounted it; you are making that same mark prove ",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "nikita"
+          },
+          {
+            "detail": "nikita named fellow traitor purav next to affiliation wording",
+            "excerpt": "Jannat, I can answer your r9 challenge briefly: I will not lean on my r6 mark against you, and my r8 vote was about Nitish’s explanation of his own phase, not a continuation of the",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "nikita"
+          },
+          {
+            "detail": "sudhanshu named fellow traitor nikita next to affiliation wording",
+            "excerpt": "Jannat, in r9 your paragraph ended at Nikita while your tally entry sat beside Lakshmi. That is the part I cannot set aside: after acknowledging the same break between prose and ta",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "sudhanshu"
+          },
+          {
+            "detail": "purav is a traitor and said so in a public_message (matched \\bas a traitor\\b)",
+            "excerpt": "Jannat, Nikita's r10 question is the one I am keeping: your r3 Mukesh vote was already public before the Purav item you later treated as live enough for r4. Nothing in your r10 ans",
+            "kind": "traitor_public_declaration",
+            "round": 10,
+            "sender": "purav"
+          },
+          {
+            "detail": "purav named fellow traitor sudhanshu next to affiliation wording",
+            "excerpt": "Jannat, Nikita's r10 question is the one I am keeping: your r3 Mukesh vote was already public before the Purav item you later treated as live enough for r4. Nothing in your r10 ans",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "purav"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 4,
+        "traitor_public_declarations": 1
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.8702,
+          "max_pair": [
+            "nikita",
+            "sudhanshu"
+          ],
+          "mean": 0.604
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 190,
+        "per_player": {
+          "anshula": {
+            "content_words": 0.5656,
+            "phrasing": 0.8316
+          },
+          "ashish": {
+            "content_words": 0.6064,
+            "phrasing": 0.8704
+          },
+          "elnaaz": {
+            "content_words": 0.6393,
+            "phrasing": 0.8785
+          },
+          "harsh": {
+            "content_words": 0.6379,
+            "phrasing": 0.8656
+          },
+          "jannat": {
+            "content_words": 0.6508,
+            "phrasing": 0.9025
+          },
+          "jasmine": {
+            "content_words": 0.3692,
+            "phrasing": 0.7443
+          },
+          "karan_kundrra": {
+            "content_words": 0.402,
+            "phrasing": 0.7845
+          },
+          "kunal": {
+            "content_words": 0.6729,
+            "phrasing": 0.8956
+          },
+          "lakshmi": {
+            "content_words": 0.6624,
+            "phrasing": 0.9036
+          },
+          "maheep": {
+            "content_words": 0.665,
+            "phrasing": 0.8992
+          },
+          "mukesh": {
+            "content_words": 0.5875,
+            "phrasing": 0.8532
+          },
+          "nikita": {
+            "content_words": 0.6145,
+            "phrasing": 0.8932
+          },
+          "nitish": {
+            "content_words": 0.6657,
+            "phrasing": 0.9048
+          },
+          "purav": {
+            "content_words": 0.629,
+            "phrasing": 0.8935
+          },
+          "raftaar": {
+            "content_words": 0.5536,
+            "phrasing": 0.8272
+          },
+          "raj_kundrra": {
+            "content_words": 0.6661,
+            "phrasing": 0.905
+          },
+          "sahil": {
+            "content_words": 0.6246,
+            "phrasing": 0.8769
+          },
+          "sargun": {
+            "content_words": 0.6691,
+            "phrasing": 0.9002
+          },
+          "sudhanshu": {
+            "content_words": 0.6005,
+            "phrasing": 0.8814
+          },
+          "uorfi": {
+            "content_words": 0.5981,
+            "phrasing": 0.8645
+          }
+        },
+        "phrasing": {
+          "max": 0.9757,
+          "max_pair": [
+            "nikita",
+            "sudhanshu"
+          ],
+          "mean": 0.8688
+        },
+        "players_compared": 20
+      }
+    },
+    "messages": {
+      "private": 193,
+      "public": 350,
+      "ratio_public_private": 1.813
+    },
+    "events": {
+      "total": 1086,
+      "byType": {
+        "ACTION_REJECTED": 3,
+        "DAGGER_USED": 7,
+        "END_VOTE_CAST": 9,
+        "FINALE_STARTED": 1,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "ITEM_AWARDED": 8,
+        "MISSION_COMPLETED": 34,
+        "MISSION_STARTED": 34,
+        "NOMINATION_TALLY": 10,
+        "PHASE_ENDED": 91,
+        "PHASE_STARTED": 92,
+        "PLAYER_ELIMINATED": 17,
+        "PRIVATE_MESSAGE": 193,
+        "PUBLIC_MESSAGE": 350,
+        "ROLE_ASSIGNED": 20,
+        "ROUND_STARTED": 10,
+        "SNAPSHOT_CREATED": 85,
+        "TRAITOR_KILL": 7,
+        "VOTE_CAST": 112
+      }
+    },
+    "rejectedActions": 3,
+    "outcomes": {
+      "anshula": "lost",
+      "ashish": "lost",
+      "elnaaz": "lost",
+      "harsh": "lost",
+      "jannat": "lost",
+      "jasmine": "lost",
+      "karan_kundrra": "lost",
+      "kunal": "lost",
+      "lakshmi": "lost",
+      "maheep": "lost",
+      "mukesh": "lost",
+      "nikita": "won",
+      "nitish": "lost",
+      "purav": "won",
+      "raftaar": "lost",
+      "raj_kundrra": "lost",
+      "sahil": "lost",
+      "sargun": "lost",
+      "sudhanshu": "won",
+      "uorfi": "lost"
+    },
+    "survivingTraitors": [
+      "nikita",
+      "purav",
+      "sudhanshu"
+    ],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": true,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "the-traitors-india-s01-dc5584ce",
+    "rounds": 10,
+    "players": 20,
+    "traitors": 3
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 543,
+    "public": 350,
+    "private": 193,
+    "traitor": 21,
+    "host": 0,
+    "calls": 728,
+    "inputTokens": 4153688,
+    "outputTokens": 1936398,
+    "totalTokens": 6090086,
+    "rejectedActions": 3
+  },
+  "config": {
+    "name": "the-traitors-india-s01",
+    "players": 20,
+    "traitors": 3,
+    "faithful": 17,
+    "maxRounds": 18,
+    "language": "english",
+    "provider": "openai_compat",
+    "model": "hy4-flash-free",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 32768,
+      "reasoning_effort": "high"
+    },
+    "flags": {
+      "max_rounds": 18,
+      "recruit_on_banish": false,
+      "max_recruits": 0,
+      "recruit_choice": true,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 2,
+      "finale_faithful": 3,
+      "finale_total": 5,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [],
+      "quiet_banishment_rounds": [],
+      "endgame_vote": true,
+      "blind_finale_banishments": true,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": true,
+      "revote_enabled": true,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": true,
+      "dagger": true,
+      "seer": false,
+      "on_trial": false,
+      "voting_record": true,
+      "faithful_mandate": true,
+      "suspicion_ledger": false,
+      "evidence_accusations": false,
+      "contradiction_audit": false,
+      "vote_signal": false,
+      "recruitment_caution": false,
+      "reveal_traitor_count": false,
+      "mission_reward": 1000,
+      "mission_success_probability": 0.85,
+      "mission_defense_rounds": []
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

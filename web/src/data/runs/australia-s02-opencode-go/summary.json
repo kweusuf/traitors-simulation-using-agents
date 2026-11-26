@@ -1,0 +1,2849 @@
+{
+  "id": "australia-s02-opencode-go",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "the-traitors-australia-s02",
+  "season": "the-traitors-australia-s02",
+  "family": "australia-s02",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "annabel",
+      "name": "Annabel",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 22,
+        "private": 14,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 8,
+        "votesCast": 5,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "simone",
+            "count": 7
+          },
+          {
+            "id": "hannah",
+            "count": 6
+          },
+          {
+            "id": "gyton",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "annabel": 7,
+          "blake": 2
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ash_pollard",
+      "name": "Ash_pollard",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true
+      },
+      "stats": {
+        "public": 28,
+        "private": 17,
+        "traitor": 8,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 3,
+        "votesCast": 8,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "blake",
+            "count": 16
+          },
+          {
+            "id": "camille",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "blake",
+      "name": "Blake",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 18,
+        "traitor": 8,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 20,
+        "votesCast": 9,
+        "votesReceived": 11,
+        "conversations": [
+          {
+            "id": "ash_pollard",
+            "count": 15
+          },
+          {
+            "id": "paeden",
+            "count": 2
+          },
+          {
+            "id": "jessika",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "camille",
+      "name": "Camille",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true
+      },
+      "stats": {
+        "public": 26,
+        "private": 14,
+        "traitor": 8,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 0,
+        "votesCast": 9,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "ian_zaro",
+            "count": 11
+          },
+          {
+            "id": "paul_de_gelder",
+            "count": 2
+          },
+          {
+            "id": "ash_pollard",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "gloria",
+      "name": "Gloria",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false
+      },
+      "stats": {
+        "public": 27,
+        "private": 13,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 4,
+        "votesCast": 9,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "keith",
+            "count": 9
+          },
+          {
+            "id": "ian_zaro",
+            "count": 2
+          },
+          {
+            "id": "roha",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "gloria": 4,
+          "roha": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "gyton",
+      "name": "Gyton",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 4,
+        "votesCast": 3,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "annabel",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "sam_mcglone": 5,
+          "gyton": 9,
+          "keith": 2,
+          "blake": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "hannah",
+      "name": "Hannah",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 21,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 0,
+        "votesCast": 7,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "annabel",
+            "count": 7
+          },
+          {
+            "id": "paeden",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ian_zaro",
+      "name": "Ian_zaro",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 26,
+        "private": 16,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 10,
+        "votesCast": 8,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "roha",
+            "count": 8
+          },
+          {
+            "id": "camille",
+            "count": 5
+          },
+          {
+            "id": "milly",
+            "count": 2
+          },
+          {
+            "id": "gloria",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "vote",
+        "tally": {
+          "ian_zaro": 7,
+          "jessika": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jessika",
+      "name": "Jessika",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 24,
+        "private": 11,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 1,
+        "votesCast": 8,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "simone",
+            "count": 9
+          },
+          {
+            "id": "annabel",
+            "count": 1
+          },
+          {
+            "id": "blake",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "keith",
+      "name": "Keith",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 20,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 16,
+        "votesCast": 6,
+        "votesReceived": 15,
+        "conversations": [
+          {
+            "id": "gloria",
+            "count": 5
+          },
+          {
+            "id": "nicole",
+            "count": 4
+          },
+          {
+            "id": "paul_de_gelder",
+            "count": 2
+          },
+          {
+            "id": "luke_toki",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "keith": 6,
+          "blake": 5
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "liam",
+      "name": "Liam",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 9,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 0,
+        "votesCast": 3,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "keith",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "luke_toki",
+      "name": "Luke_toki",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 0,
+        "votesCast": 5,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "sam_mcglone",
+            "count": 7
+          },
+          {
+            "id": "keith",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "milly",
+      "name": "Milly",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "sarah",
+            "count": 2
+          },
+          {
+            "id": "ian_zaro",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "nicole",
+      "name": "Nicole",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [
+        "shield"
+      ],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 2,
+        "votesCast": 5,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "keith",
+            "count": 6
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "nicole": 6,
+          "keith": 3,
+          "blake": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "paeden",
+      "name": "Paeden",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 8,
+        "votesCast": 1,
+        "votesReceived": 18,
+        "conversations": [
+          {
+            "id": "blake",
+            "count": 1
+          },
+          {
+            "id": "sam_mcglone",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "paeden": 18,
+          "simone": 1,
+          "sam_mcglone": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "paul_de_gelder",
+      "name": "Paul_de_gelder",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 8,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 12,
+        "votesCast": 2,
+        "votesReceived": 14,
+        "conversations": [
+          {
+            "id": "camille",
+            "count": 2
+          },
+          {
+            "id": "keith",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "paul_de_gelder": 15,
+          "sam_mcglone": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "roha",
+      "name": "Roha",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true
+      },
+      "stats": {
+        "public": 26,
+        "private": 13,
+        "traitor": 4,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 2,
+        "votesCast": 9,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "ian_zaro",
+            "count": 11
+          },
+          {
+            "id": "gloria",
+            "count": 2
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sam_mcglone",
+      "name": "Sam_mcglone",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 14,
+        "private": 8,
+        "traitor": 3,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 20,
+        "votesCast": 4,
+        "votesReceived": 18,
+        "conversations": [
+          {
+            "id": "luke_toki",
+            "count": 7
+          },
+          {
+            "id": "paeden",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "sam_mcglone": 10,
+          "keith": 5
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sarah",
+      "name": "Sarah",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 3,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "milly",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "simone",
+      "name": "Simone",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false
+      },
+      "stats": {
+        "public": 18,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 3,
+        "votesCast": 5,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "jessika",
+            "count": 6
+          },
+          {
+            "id": "annabel",
+            "count": 6
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    }
+  ],
+  "rounds": 9,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "nicole"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "annabel",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "ash_pollard",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "gyton",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "simone",
+          "weight": 1
+        },
+        {
+          "from": "keith",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "liam",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "luke_toki",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "milly",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "nicole",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "paeden",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "paul_de_gelder",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "sam_mcglone",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "sarah",
+          "to": "paeden",
+          "weight": 1
+        },
+        {
+          "from": "simone",
+          "to": "paeden",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "paeden",
+          "paul_de_gelder"
+        ],
+        "counts": {
+          "paeden": 8,
+          "sam_mcglone": 3,
+          "simone": 2,
+          "paul_de_gelder": 5,
+          "ian_zaro": 2
+        },
+        "accusations": {
+          "annabel": "paeden",
+          "ash_pollard": "paeden",
+          "blake": "sam_mcglone",
+          "camille": "paeden",
+          "gloria": "paeden",
+          "gyton": "paeden",
+          "hannah": "paeden",
+          "ian_zaro": "sam_mcglone",
+          "jessika": "simone",
+          "keith": "paul_de_gelder",
+          "liam": "paul_de_gelder",
+          "luke_toki": "paeden",
+          "milly": "ian_zaro",
+          "nicole": "paul_de_gelder",
+          "paeden": "sam_mcglone",
+          "paul_de_gelder": "simone",
+          "roha": "paul_de_gelder",
+          "sam_mcglone": "paeden",
+          "sarah": "ian_zaro",
+          "simone": "paul_de_gelder"
+        }
+      },
+      "elimination": {
+        "player": "sarah",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "sarah"
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "blake"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "ash_pollard",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "paul_de_gelder",
+          "weight": 2
+        },
+        {
+          "from": "camille",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "gyton",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "keith",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "liam",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "luke_toki",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "milly",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "nicole",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "paul_de_gelder",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "sam_mcglone",
+          "to": "paul_de_gelder",
+          "weight": 1
+        },
+        {
+          "from": "simone",
+          "to": "paul_de_gelder",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "sam_mcglone",
+          "paul_de_gelder"
+        ],
+        "counts": {
+          "sam_mcglone": 8,
+          "paul_de_gelder": 7,
+          "roha": 1,
+          "simone": 1,
+          "annabel": 1
+        },
+        "accusations": {
+          "annabel": "sam_mcglone",
+          "ash_pollard": "paul_de_gelder",
+          "blake": "paul_de_gelder",
+          "camille": "roha",
+          "gloria": "paul_de_gelder",
+          "gyton": "sam_mcglone",
+          "hannah": "paul_de_gelder",
+          "ian_zaro": "sam_mcglone",
+          "jessika": "sam_mcglone",
+          "keith": "paul_de_gelder",
+          "liam": "sam_mcglone",
+          "luke_toki": "simone",
+          "milly": "annabel",
+          "nicole": "sam_mcglone",
+          "paul_de_gelder": "sam_mcglone",
+          "roha": "sam_mcglone",
+          "sam_mcglone": "paul_de_gelder",
+          "simone": "paul_de_gelder"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "milly",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "milly"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "luke_toki"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "annabel",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "ash_pollard",
+          "to": "gyton",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "gyton",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "gyton",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "gyton",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "gyton",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "gyton",
+          "weight": 1
+        },
+        {
+          "from": "keith",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "liam",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "luke_toki",
+          "to": "gyton",
+          "weight": 2
+        },
+        {
+          "from": "nicole",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "sam_mcglone",
+          "to": "gyton",
+          "weight": 1
+        },
+        {
+          "from": "simone",
+          "to": "gyton",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "blake",
+          "gyton"
+        ],
+        "counts": {
+          "blake": 5,
+          "gyton": 4,
+          "keith": 2,
+          "roha": 1,
+          "sam_mcglone": 4
+        },
+        "accusations": {
+          "annabel": "blake",
+          "ash_pollard": "gyton",
+          "blake": "keith",
+          "camille": "roha",
+          "gloria": "blake",
+          "gyton": "sam_mcglone",
+          "hannah": "sam_mcglone",
+          "ian_zaro": "gyton",
+          "jessika": "gyton",
+          "keith": "blake",
+          "liam": "keith",
+          "luke_toki": "sam_mcglone",
+          "nicole": "gyton",
+          "roha": "sam_mcglone",
+          "sam_mcglone": "blake",
+          "simone": "blake"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "liam",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "liam"
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "keith"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "annabel",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "ash_pollard",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "keith",
+          "to": "sam_mcglone",
+          "weight": 2
+        },
+        {
+          "from": "luke_toki",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "nicole",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "sam_mcglone",
+          "weight": 1
+        },
+        {
+          "from": "sam_mcglone",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "simone",
+          "to": "keith",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "sam_mcglone",
+          "blake"
+        ],
+        "counts": {
+          "blake": 4,
+          "jessika": 1,
+          "keith": 4,
+          "sam_mcglone": 5
+        },
+        "accusations": {
+          "annabel": "blake",
+          "ash_pollard": "jessika",
+          "blake": "keith",
+          "camille": "keith",
+          "gloria": "sam_mcglone",
+          "hannah": "sam_mcglone",
+          "ian_zaro": "blake",
+          "jessika": "sam_mcglone",
+          "keith": "blake",
+          "luke_toki": "blake",
+          "nicole": "sam_mcglone",
+          "roha": "sam_mcglone",
+          "sam_mcglone": "keith",
+          "simone": "keith"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "sam_mcglone",
+        "method": "vote",
+        "tally": {
+          "sam_mcglone": 10,
+          "keith": 5
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "roha",
+        "by": "ash_pollard",
+        "accepted": true
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "gloria"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "annabel",
+          "to": "nicole",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "nicole",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "blake",
+          "weight": 2
+        },
+        {
+          "from": "hannah",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "nicole",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "nicole",
+          "weight": 1
+        },
+        {
+          "from": "keith",
+          "to": "nicole",
+          "weight": 1
+        },
+        {
+          "from": "luke_toki",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "nicole",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "simone",
+          "to": "nicole",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "blake",
+          "keith"
+        ],
+        "counts": {
+          "nicole": 2,
+          "keith": 5,
+          "blake": 6
+        },
+        "accusations": {
+          "annabel": "nicole",
+          "ash_pollard": "nicole",
+          "blake": "keith",
+          "camille": "keith",
+          "gloria": "blake",
+          "hannah": "blake",
+          "ian_zaro": "blake",
+          "jessika": "keith",
+          "keith": "blake",
+          "luke_toki": "keith",
+          "nicole": "blake",
+          "roha": "keith",
+          "simone": "blake"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "luke_toki",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "luke_toki"
+      }
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "ash_pollard"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "annabel",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "ash_pollard",
+          "to": "keith",
+          "weight": 2
+        },
+        {
+          "from": "blake",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "keith",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "keith",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "keith",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "keith",
+          "blake"
+        ],
+        "counts": {
+          "keith": 5,
+          "ash_pollard": 1,
+          "blake": 4,
+          "annabel": 1
+        },
+        "accusations": {
+          "annabel": "keith",
+          "ash_pollard": "keith",
+          "blake": "keith",
+          "camille": "keith",
+          "gloria": "ash_pollard",
+          "hannah": "blake",
+          "ian_zaro": "blake",
+          "jessika": "blake",
+          "keith": "blake",
+          "roha": "keith",
+          "simone": "annabel"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "simone",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "simone"
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "gloria"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "ash_pollard",
+          "to": "annabel",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "annabel",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "annabel",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "annabel",
+          "weight": 2
+        },
+        {
+          "from": "hannah",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "ian_zaro",
+          "to": "annabel",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "blake",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "annabel",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "annabel",
+          "ian_zaro"
+        ],
+        "counts": {
+          "ian_zaro": 2,
+          "annabel": 6,
+          "blake": 1
+        },
+        "accusations": {
+          "annabel": "ian_zaro",
+          "ash_pollard": "annabel",
+          "blake": "annabel",
+          "camille": "annabel",
+          "gloria": "annabel",
+          "hannah": "ian_zaro",
+          "ian_zaro": "annabel",
+          "jessika": "blake",
+          "roha": "annabel"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "hannah",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "hannah"
+      }
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "gloria"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "ash_pollard",
+          "to": "ian_zaro",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "ian_zaro",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "ian_zaro",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "ian_zaro",
+          "weight": 2
+        },
+        {
+          "from": "ian_zaro",
+          "to": "jessika",
+          "weight": 1
+        },
+        {
+          "from": "jessika",
+          "to": "ian_zaro",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "ian_zaro",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "ian_zaro",
+          "ash_pollard"
+        ],
+        "counts": {
+          "ian_zaro": 6,
+          "ash_pollard": 1
+        },
+        "accusations": {
+          "ash_pollard": "ian_zaro",
+          "blake": "ian_zaro",
+          "camille": "ian_zaro",
+          "gloria": "ian_zaro",
+          "ian_zaro": "ash_pollard",
+          "jessika": "ian_zaro",
+          "roha": "ian_zaro"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "jessika",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "jessika"
+      },
+      "finaleStarted": true
+    },
+    {
+      "r": 9,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "ash_pollard",
+          "to": "gloria",
+          "weight": 1
+        },
+        {
+          "from": "blake",
+          "to": "gloria",
+          "weight": 1
+        },
+        {
+          "from": "camille",
+          "to": "gloria",
+          "weight": 1
+        },
+        {
+          "from": "gloria",
+          "to": "roha",
+          "weight": 1
+        },
+        {
+          "from": "roha",
+          "to": "gloria",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "ash_pollard",
+          "choice": "end"
+        },
+        {
+          "player": "blake",
+          "choice": "banish"
+        },
+        {
+          "player": "camille",
+          "choice": "end"
+        },
+        {
+          "player": "gloria",
+          "choice": "banish"
+        },
+        {
+          "player": "roha",
+          "choice": "banish"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "gloria",
+          "ash_pollard"
+        ],
+        "counts": {
+          "gloria": 4,
+          "ash_pollard": 1
+        },
+        "accusations": {
+          "ash_pollard": "gloria",
+          "blake": "gloria",
+          "camille": "gloria",
+          "gloria": "ash_pollard",
+          "roha": "gloria"
+        }
+      },
+      "elimination": {
+        "player": "gloria",
+        "method": "vote",
+        "tally": {
+          "gloria": 4,
+          "roha": 1
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "endgame",
+    "finale": true,
+    "solo": false,
+    "survivingTraitors": [
+      "ash_pollard",
+      "blake",
+      "camille",
+      "roha"
+    ]
+  },
+  "metrics": {
+    "calls": 749,
+    "failedCalls": 32,
+    "providerCalls": 749,
+    "retries": 8,
+    "transportRetries": 8,
+    "parseRetryCalls": 26,
+    "inputTokens": 6331734,
+    "outputTokens": 3267085,
+    "totalTokens": 9598819,
+    "promptCharsTotal": 25214929,
+    "byActionType": {
+      "accuse": {
+        "calls": 116,
+        "failed": 3,
+        "input_tokens": 1006814,
+        "output_tokens": 546968
+      },
+      "end_vote": {
+        "calls": 5,
+        "failed": 0,
+        "input_tokens": 63312,
+        "output_tokens": 8627
+      },
+      "private_message": {
+        "calls": 190,
+        "failed": 3,
+        "input_tokens": 1400168,
+        "output_tokens": 596972
+      },
+      "public_message": {
+        "calls": 221,
+        "failed": 0,
+        "input_tokens": 1748362,
+        "output_tokens": 1043178
+      },
+      "rebut": {
+        "calls": 18,
+        "failed": 0,
+        "input_tokens": 182737,
+        "output_tokens": 103319
+      },
+      "recruit": {
+        "calls": 3,
+        "failed": 0,
+        "input_tokens": 35325,
+        "output_tokens": 21445
+      },
+      "recruit_decision": {
+        "calls": 3,
+        "failed": 0,
+        "input_tokens": 35418,
+        "output_tokens": 10402
+      },
+      "recruit_response": {
+        "calls": 1,
+        "failed": 0,
+        "input_tokens": 8267,
+        "output_tokens": 1922
+      },
+      "traitor_kill": {
+        "calls": 34,
+        "failed": 8,
+        "input_tokens": 374874,
+        "output_tokens": 98974
+      },
+      "traitor_message": {
+        "calls": 31,
+        "failed": 0,
+        "input_tokens": 328484,
+        "output_tokens": 205352
+      },
+      "vote": {
+        "calls": 127,
+        "failed": 18,
+        "input_tokens": 1147973,
+        "output_tokens": 629926
+      }
+    },
+    "model": "hy4-flash-free",
+    "provider": "openai_compat",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 570,
+        "duplicate_messages": 0,
+        "duplicate_rate": 0.0,
+        "duplication_score": 0.0
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 570,
+      "parsing": {
+        "rejected_actions": 6,
+        "unparseable_actions": 6
+      },
+      "private_chats": {
+        "longest_thread": 31,
+        "mean_messages_per_pair": 7.7917,
+        "messages": 187,
+        "pairs": 24,
+        "pairs_by_length": {
+          "1": 2,
+          "2": 4,
+          "3": 4,
+          "4": 5,
+          "5": 9
+        },
+        "per_player": {
+          "annabel": 31,
+          "ash_pollard": 33,
+          "blake": 36,
+          "camille": 22,
+          "gloria": 21,
+          "gyton": 4,
+          "hannah": 14,
+          "ian_zaro": 41,
+          "jessika": 18,
+          "keith": 33,
+          "liam": 3,
+          "luke_toki": 16,
+          "milly": 7,
+          "nicole": 10,
+          "paeden": 6,
+          "paul_de_gelder": 8,
+          "roha": 23,
+          "sam_mcglone": 16,
+          "sarah": 4,
+          "simone": 28
+        },
+        "reciprocity_rate": 0.875,
+        "two_way_pairs": 21
+      },
+      "private_messages": 218,
+      "public_messages": 352,
+      "secrecy": {
+        "false_role_claims": 2,
+        "flags_total": 6,
+        "role_claim_total": 2,
+        "samples": [
+          {
+            "detail": "blake named fellow traitor sam_mcglone next to affiliation wording",
+            "excerpt": "The case against me is wrong because it turns a question Paeden already put on the table into a hidden-test prop. He asked for the first name I had flagged before his poke; I gave ",
+            "kind": "traitor_named_teammate",
+            "round": 3,
+            "sender": "blake"
+          },
+          {
+            "detail": "gloria is faithful but claims to be a traitor",
+            "excerpt": "Ash, I owe you a clearer answer than I gave before. I was not asking Blake's silence to close Ian's file; I was checking whether Blake could explain his own switch without leaning ",
+            "kind": "faithful_claimed_traitor",
+            "round": 4,
+            "sender": "gloria"
+          },
+          {
+            "detail": "simone is faithful but claims to be a traitor",
+            "excerpt": "Keith, your Blake accusation leaned on the Paeden item staying unexplained, but Blake has now named Annabel and called it minor. That does not erase Blake's later switches for me, ",
+            "kind": "faithful_claimed_traitor",
+            "round": 4,
+            "sender": "simone"
+          },
+          {
+            "detail": "ash_pollard named fellow traitor blake next to affiliation wording",
+            "excerpt": "Annabel, the piece of your Blake case I can actually use is the request for an observed action of yours that he saw before he named you. That is fair, but it does not tell me where",
+            "kind": "traitor_named_teammate",
+            "round": 5,
+            "sender": "ash_pollard"
+          },
+          {
+            "detail": "roha named fellow traitor blake next to affiliation wording",
+            "excerpt": "Keith, the piece I am testing is your reply to Annabel: you pushed back on using a missing speaker to steady her case, then asked her for a concern from the earlier stretch. I agre",
+            "kind": "traitor_named_teammate",
+            "round": 6,
+            "sender": "roha"
+          },
+          {
+            "detail": "roha named fellow traitor camille next to affiliation wording",
+            "excerpt": "Gloria, your answer to Camille did not touch the part she actually asked: why an Ian exchange only you can now describe was enough to drive a double ballot. You turned that into a ",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "roha"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 4,
+        "traitor_public_declarations": 0
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.902,
+          "max_pair": [
+            "ash_pollard",
+            "camille"
+          ],
+          "mean": 0.6428
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 190,
+        "per_player": {
+          "annabel": {
+            "content_words": 0.6409,
+            "phrasing": 0.841
+          },
+          "ash_pollard": {
+            "content_words": 0.7336,
+            "phrasing": 0.9228
+          },
+          "blake": {
+            "content_words": 0.709,
+            "phrasing": 0.9166
+          },
+          "camille": {
+            "content_words": 0.7267,
+            "phrasing": 0.9185
+          },
+          "gloria": {
+            "content_words": 0.6987,
+            "phrasing": 0.9123
+          },
+          "gyton": {
+            "content_words": 0.6609,
+            "phrasing": 0.9074
+          },
+          "hannah": {
+            "content_words": 0.7242,
+            "phrasing": 0.9223
+          },
+          "ian_zaro": {
+            "content_words": 0.721,
+            "phrasing": 0.9237
+          },
+          "jessika": {
+            "content_words": 0.7039,
+            "phrasing": 0.919
+          },
+          "keith": {
+            "content_words": 0.6801,
+            "phrasing": 0.9156
+          },
+          "liam": {
+            "content_words": 0.6415,
+            "phrasing": 0.8957
+          },
+          "luke_toki": {
+            "content_words": 0.5679,
+            "phrasing": 0.805
+          },
+          "milly": {
+            "content_words": 0.5722,
+            "phrasing": 0.891
+          },
+          "nicole": {
+            "content_words": 0.5385,
+            "phrasing": 0.7121
+          },
+          "paeden": {
+            "content_words": 0.3982,
+            "phrasing": 0.7811
+          },
+          "paul_de_gelder": {
+            "content_words": 0.6395,
+            "phrasing": 0.8991
+          },
+          "roha": {
+            "content_words": 0.7074,
+            "phrasing": 0.9204
+          },
+          "sam_mcglone": {
+            "content_words": 0.6665,
+            "phrasing": 0.9166
+          },
+          "sarah": {
+            "content_words": 0.4271,
+            "phrasing": 0.8397
+          },
+          "simone": {
+            "content_words": 0.6972,
+            "phrasing": 0.9164
+          }
+        },
+        "phrasing": {
+          "max": 0.9808,
+          "max_pair": [
+            "ash_pollard",
+            "blake"
+          ],
+          "mean": 0.8838
+        },
+        "players_compared": 20
+      }
+    },
+    "messages": {
+      "private": 218,
+      "public": 352,
+      "ratio_public_private": 1.615
+    },
+    "events": {
+      "total": 1054,
+      "byType": {
+        "ACTION_REJECTED": 6,
+        "DAGGER_USED": 7,
+        "END_VOTE_CAST": 5,
+        "FINALE_STARTED": 1,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "ITEM_AWARDED": 8,
+        "MISSION_COMPLETED": 24,
+        "MISSION_STARTED": 24,
+        "NOMINATION_TALLY": 9,
+        "PHASE_ENDED": 77,
+        "PHASE_STARTED": 78,
+        "PLAYER_ELIMINATED": 16,
+        "PRIVATE_MESSAGE": 218,
+        "PUBLIC_MESSAGE": 352,
+        "RECRUIT_ACCEPTED": 1,
+        "RECRUIT_CHOICE_MADE": 1,
+        "RECRUIT_OFFERED": 1,
+        "ROLE_ASSIGNED": 20,
+        "ROLE_RECRUITED": 1,
+        "ROUND_STARTED": 9,
+        "SNAPSHOT_CREATED": 77,
+        "TRAITOR_KILL": 7,
+        "VOTE_CAST": 109
+      }
+    },
+    "rejectedActions": 6,
+    "outcomes": {
+      "annabel": "lost",
+      "ash_pollard": "won",
+      "blake": "won",
+      "camille": "won",
+      "gloria": "lost",
+      "gyton": "lost",
+      "hannah": "lost",
+      "ian_zaro": "lost",
+      "jessika": "lost",
+      "keith": "lost",
+      "liam": "lost",
+      "luke_toki": "lost",
+      "milly": "lost",
+      "nicole": "lost",
+      "paeden": "lost",
+      "paul_de_gelder": "lost",
+      "roha": "won",
+      "sam_mcglone": "lost",
+      "sarah": "lost",
+      "simone": "lost"
+    },
+    "survivingTraitors": [
+      "ash_pollard",
+      "blake",
+      "camille",
+      "roha"
+    ],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": true,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "the-traitors-australia-s02-56da73f2",
+    "rounds": 9,
+    "players": 20,
+    "traitors": 4
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 570,
+    "public": 352,
+    "private": 218,
+    "traitor": 31,
+    "host": 0,
+    "calls": 749,
+    "inputTokens": 6331734,
+    "outputTokens": 3267085,
+    "totalTokens": 9598819,
+    "rejectedActions": 6
+  },
+  "config": {
+    "name": "the-traitors-australia-s02",
+    "players": 20,
+    "traitors": 4,
+    "faithful": 16,
+    "maxRounds": 18,
+    "language": "english",
+    "provider": "openai_compat",
+    "model": "hy4-flash-free",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 32768,
+      "reasoning_effort": "high"
+    },
+    "flags": {
+      "max_rounds": 18,
+      "recruit_on_banish": false,
+      "max_recruits": 0,
+      "recruit_choice": true,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 2,
+      "finale_faithful": 3,
+      "finale_total": 5,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [],
+      "quiet_banishment_rounds": [],
+      "endgame_vote": true,
+      "blind_finale_banishments": true,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": true,
+      "revote_enabled": true,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": true,
+      "dagger": true,
+      "seer": false,
+      "on_trial": false,
+      "suspicion_ledger": false,
+      "mission_reward": 1000,
+      "mission_success_probability": 0.85,
+      "mission_defense_rounds": []
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

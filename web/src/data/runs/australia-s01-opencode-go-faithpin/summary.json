@@ -1,0 +1,4429 @@
+{
+  "id": "australia-s01-opencode-go-faithpin",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "the-traitors-australia-s01",
+  "season": "the-traitors-australia-s01",
+  "family": "australia-s01",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "alex_duggan",
+      "name": "Alex_duggan",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 7,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 14,
+        "votesCast": 2,
+        "votesReceived": 15,
+        "conversations": [
+          {
+            "id": "marielle",
+            "count": 1
+          },
+          {
+            "id": "fi",
+            "count": 1
+          },
+          {
+            "id": "mark",
+            "count": 1
+          },
+          {
+            "id": "matt",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "nigel": 3,
+          "matt": 4,
+          "alex_duggan": 15,
+          "paul": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.7,
+          "sociability": 0.75,
+          "trust": 0.4,
+          "risk_tolerance": 0.6
+        },
+        "description": "Alex Duggan. Model, smooth talker, recruited and won.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "angus",
+      "name": "Angus",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 32,
+        "private": 18,
+        "traitor": 9,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 15,
+        "votesCast": 11,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "nigel",
+            "count": 9
+          },
+          {
+            "id": "chloe",
+            "count": 7
+          },
+          {
+            "id": "claire",
+            "count": 1
+          },
+          {
+            "id": "lewis",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 10,
+        "method": "vote",
+        "tally": {
+          "millie": 2,
+          "angus": 8,
+          "matt": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.6,
+          "sociability": 0.65,
+          "trust": 0.45,
+          "risk_tolerance": 0.5
+        },
+        "description": "Angus McNicol. Sales manager, traitor.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "chloe",
+      "name": "Chloe",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true,
+        "13": true,
+        "14": false
+      },
+      "stats": {
+        "public": 42,
+        "private": 24,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 14,
+        "accusationsReceived": 5,
+        "votesCast": 16,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "matt",
+            "count": 9
+          },
+          {
+            "id": "jack",
+            "count": 7
+          },
+          {
+            "id": "angus",
+            "count": 4
+          },
+          {
+            "id": "alex_duggan",
+            "count": 1
+          },
+          {
+            "id": "sandra",
+            "count": 1
+          },
+          {
+            "id": "midy",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 14,
+        "method": "vote",
+        "tally": {
+          "matt": 1,
+          "chloe": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "claire",
+      "name": "Claire",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 25,
+        "private": 16,
+        "traitor": 7,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 9,
+        "votesCast": 9,
+        "votesReceived": 11,
+        "conversations": [
+          {
+            "id": "midy",
+            "count": 5
+          },
+          {
+            "id": "ethan",
+            "count": 4
+          },
+          {
+            "id": "nigel",
+            "count": 3
+          },
+          {
+            "id": "marielle",
+            "count": 2
+          },
+          {
+            "id": "angus",
+            "count": 1
+          },
+          {
+            "id": "millie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "vote",
+        "tally": {
+          "claire": 11,
+          "marielle": 1,
+          "matt": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.6,
+          "sociability": 0.65,
+          "trust": 0.45,
+          "risk_tolerance": 0.5
+        },
+        "description": "Claire Sawyer. Checkout operator, traitor.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "craig",
+      "name": "Craig",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 13,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 7,
+        "votesCast": 4,
+        "votesReceived": 13,
+        "conversations": [
+          {
+            "id": "olivia",
+            "count": 4
+          },
+          {
+            "id": "kashindi",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "craig": 14,
+          "jack": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.55,
+          "sociability": 0.7,
+          "trust": 0.55,
+          "risk_tolerance": 0.45
+        },
+        "description": "Craig Carr. Business coach, grounded, loyal.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "dirk",
+      "name": "Dirk",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 9,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 1,
+        "votesCast": 3,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "claire",
+            "count": 2
+          },
+          {
+            "id": "jack",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "ethan",
+      "name": "Ethan",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true,
+        "13": true,
+        "14": true
+      },
+      "stats": {
+        "public": 43,
+        "private": 21,
+        "traitor": 2,
+        "host": 0,
+        "accusationsMade": 14,
+        "accusationsReceived": 6,
+        "votesCast": 16,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "claire",
+            "count": 10
+          },
+          {
+            "id": "marielle",
+            "count": 5
+          },
+          {
+            "id": "matt",
+            "count": 3
+          },
+          {
+            "id": "justine",
+            "count": 2
+          },
+          {
+            "id": "kate",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "fi",
+      "name": "Fi",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 35,
+        "private": 21,
+        "traitor": 2,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 8,
+        "votesCast": 12,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "kashindi",
+            "count": 20
+          },
+          {
+            "id": "alex_duggan",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 11,
+        "method": "vote",
+        "tally": {
+          "fi": 7,
+          "kashindi": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jack",
+      "name": "Jack",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 22,
+        "private": 13,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 7,
+        "votesCast": 8,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "chloe",
+            "count": 8
+          },
+          {
+            "id": "paul",
+            "count": 4
+          },
+          {
+            "id": "dirk",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "justine",
+      "name": "Justine",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 3,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 0,
+        "votesCast": 1,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "ethan",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "kashindi",
+      "name": "Kashindi",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [
+        "shield"
+      ],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 37,
+        "private": 23,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 8,
+        "votesCast": 13,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "fi",
+            "count": 20
+          },
+          {
+            "id": "craig",
+            "count": 1
+          },
+          {
+            "id": "teresa",
+            "count": 1
+          },
+          {
+            "id": "midy",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 12,
+        "method": "vote",
+        "tally": {
+          "ethan": 2,
+          "kashindi": 4,
+          "marielle": 1,
+          "millie": 1,
+          "matt": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "kate",
+      "name": "Kate",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true,
+        "13": true,
+        "14": true
+      },
+      "stats": {
+        "public": 41,
+        "private": 19,
+        "traitor": 1,
+        "host": 0,
+        "accusationsMade": 14,
+        "accusationsReceived": 1,
+        "votesCast": 16,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "marielle",
+            "count": 14
+          },
+          {
+            "id": "midy",
+            "count": 2
+          },
+          {
+            "id": "ethan",
+            "count": 2
+          },
+          {
+            "id": "alex_duggan",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.6,
+          "sociability": 0.7,
+          "trust": 0.45,
+          "risk_tolerance": 0.55
+        },
+        "description": "Kate Williams. Photographer, recruited late.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "lewis",
+      "name": "Lewis",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 1,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 18,
+        "votesCast": 1,
+        "votesReceived": 21,
+        "conversations": [
+          {
+            "id": "angus",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "lewis": 21,
+          "matt": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "marielle",
+      "name": "Marielle",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true,
+        "13": true,
+        "14": true
+      },
+      "stats": {
+        "public": 42,
+        "private": 25,
+        "traitor": 12,
+        "host": 0,
+        "accusationsMade": 14,
+        "accusationsReceived": 7,
+        "votesCast": 15,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "kate",
+            "count": 10
+          },
+          {
+            "id": "claire",
+            "count": 5
+          },
+          {
+            "id": "millie",
+            "count": 3
+          },
+          {
+            "id": "ethan",
+            "count": 2
+          },
+          {
+            "id": "matt",
+            "count": 2
+          },
+          {
+            "id": "angus",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "mark",
+      "name": "Mark",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 17,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 12,
+        "votesCast": 5,
+        "votesReceived": 15,
+        "conversations": [
+          {
+            "id": "mk",
+            "count": 5
+          },
+          {
+            "id": "olivia",
+            "count": 2
+          },
+          {
+            "id": "sandra",
+            "count": 2
+          },
+          {
+            "id": "alex_duggan",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "mark": 16,
+          "nigel": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "matt",
+      "name": "Matt",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true,
+        "13": true,
+        "14": true
+      },
+      "stats": {
+        "public": 46,
+        "private": 21,
+        "traitor": 3,
+        "host": 0,
+        "accusationsMade": 14,
+        "accusationsReceived": 20,
+        "votesCast": 14,
+        "votesReceived": 28,
+        "conversations": [
+          {
+            "id": "chloe",
+            "count": 11
+          },
+          {
+            "id": "nigel",
+            "count": 5
+          },
+          {
+            "id": "ethan",
+            "count": 3
+          },
+          {
+            "id": "alex_duggan",
+            "count": 1
+          },
+          {
+            "id": "marielle",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "midy",
+      "name": "Midy",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": true,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 40,
+        "private": 20,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 13,
+        "accusationsReceived": 6,
+        "votesCast": 14,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "claire",
+            "count": 7
+          },
+          {
+            "id": "mk",
+            "count": 5
+          },
+          {
+            "id": "marielle",
+            "count": 3
+          },
+          {
+            "id": "kate",
+            "count": 2
+          },
+          {
+            "id": "kashindi",
+            "count": 1
+          },
+          {
+            "id": "ethan",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 13,
+        "method": "vote",
+        "tally": {
+          "matt": 1,
+          "midy": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "millie",
+      "name": "Millie",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 36,
+        "private": 13,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 12,
+        "accusationsReceived": 1,
+        "votesCast": 13,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "claire",
+            "count": 7
+          },
+          {
+            "id": "marielle",
+            "count": 5
+          },
+          {
+            "id": "olivia",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 12,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "mk",
+      "name": "Mk",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 29,
+        "private": 12,
+        "traitor": 2,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 12,
+        "votesCast": 10,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "mark",
+            "count": 7
+          },
+          {
+            "id": "midy",
+            "count": 5
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "matt": 2,
+          "mk": 9,
+          "kate": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "nigel",
+      "name": "Nigel",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor",
+        "12": "traitor",
+        "13": "traitor",
+        "14": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 18,
+        "private": 12,
+        "traitor": 5,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 7,
+        "votesCast": 6,
+        "votesReceived": 19,
+        "conversations": [
+          {
+            "id": "angus",
+            "count": 6
+          },
+          {
+            "id": "matt",
+            "count": 4
+          },
+          {
+            "id": "claire",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "matt": 4,
+          "nigel": 9
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.8,
+          "assertiveness": 0.6,
+          "sociability": 0.6,
+          "trust": 0.5,
+          "risk_tolerance": 0.45
+        },
+        "description": "Nigel Brennan. Hostage negotiator, composed, persuasive.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "olivia",
+      "name": "Olivia",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 1,
+        "votesCast": 4,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "mark",
+            "count": 4
+          },
+          {
+            "id": "craig",
+            "count": 4
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "paul",
+      "name": "Paul",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 12,
+        "votesCast": 3,
+        "votesReceived": 20,
+        "conversations": [
+          {
+            "id": "jack",
+            "count": 3
+          },
+          {
+            "id": "craig",
+            "count": 1
+          },
+          {
+            "id": "teresa",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "paul": 20,
+          "angus": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sandra",
+      "name": "Sandra",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 23,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 11,
+        "votesCast": 8,
+        "votesReceived": 11,
+        "conversations": [
+          {
+            "id": "mark",
+            "count": 6
+          },
+          {
+            "id": "chloe",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "sandra": 12,
+          "claire": 1,
+          "matt": 1,
+          "marielle": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "teresa",
+      "name": "Teresa",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful",
+        "12": "faithful",
+        "13": "faithful",
+        "14": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": false,
+        "14": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 1,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "kashindi",
+            "count": 1
+          },
+          {
+            "id": "paul",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    }
+  ],
+  "rounds": 14,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "chloe"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alex_duggan",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "angus",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "craig",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "dirk",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "justine",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "lewis",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "mark",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "nigel",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "olivia",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "paul",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "lewis",
+          "weight": 1
+        },
+        {
+          "from": "teresa",
+          "to": "lewis",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "lewis",
+          "matt"
+        ],
+        "counts": {
+          "lewis": 18,
+          "matt": 3,
+          "midy": 1,
+          "nigel": 1,
+          "teresa": 1
+        },
+        "accusations": {
+          "alex_duggan": "lewis",
+          "angus": "lewis",
+          "chloe": "lewis",
+          "claire": "matt",
+          "craig": "lewis",
+          "dirk": "lewis",
+          "ethan": "lewis",
+          "fi": "lewis",
+          "jack": "lewis",
+          "justine": "matt",
+          "kashindi": "midy",
+          "kate": "lewis",
+          "lewis": "nigel",
+          "marielle": "lewis",
+          "mark": "lewis",
+          "matt": "lewis",
+          "midy": "lewis",
+          "millie": "lewis",
+          "mk": "lewis",
+          "nigel": "matt",
+          "olivia": "lewis",
+          "paul": "teresa",
+          "sandra": "lewis",
+          "teresa": "lewis"
+        }
+      },
+      "elimination": {
+        "player": "justine",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "justine"
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "alex_duggan"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alex_duggan",
+          "to": "nigel",
+          "weight": 2
+        },
+        {
+          "from": "angus",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "craig",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "dirk",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "mark",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "nigel",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "olivia",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "paul",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "alex_duggan",
+          "weight": 1
+        },
+        {
+          "from": "teresa",
+          "to": "alex_duggan",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "alex_duggan",
+          "matt"
+        ],
+        "counts": {
+          "matt": 5,
+          "alex_duggan": 14,
+          "nigel": 1,
+          "paul": 1,
+          "kashindi": 1
+        },
+        "accusations": {
+          "alex_duggan": "matt",
+          "angus": "alex_duggan",
+          "chloe": "matt",
+          "claire": "matt",
+          "craig": "nigel",
+          "dirk": "matt",
+          "ethan": "alex_duggan",
+          "fi": "alex_duggan",
+          "jack": "paul",
+          "kashindi": "alex_duggan",
+          "kate": "alex_duggan",
+          "marielle": "alex_duggan",
+          "mark": "alex_duggan",
+          "matt": "alex_duggan",
+          "midy": "alex_duggan",
+          "millie": "matt",
+          "mk": "alex_duggan",
+          "nigel": "alex_duggan",
+          "olivia": "alex_duggan",
+          "paul": "alex_duggan",
+          "sandra": "alex_duggan",
+          "teresa": "kashindi"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "teresa",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "teresa"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "craig"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "craig",
+          "to": "paul",
+          "weight": 2
+        },
+        {
+          "from": "dirk",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "mark",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "nigel",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "olivia",
+          "to": "paul",
+          "weight": 1
+        },
+        {
+          "from": "paul",
+          "to": "angus",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "paul",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "paul",
+          "mark"
+        ],
+        "counts": {
+          "paul": 11,
+          "marielle": 1,
+          "kashindi": 2,
+          "angus": 1,
+          "dirk": 1,
+          "nigel": 1,
+          "mark": 3
+        },
+        "accusations": {
+          "angus": "paul",
+          "chloe": "marielle",
+          "claire": "kashindi",
+          "craig": "paul",
+          "dirk": "paul",
+          "ethan": "paul",
+          "fi": "angus",
+          "jack": "dirk",
+          "kashindi": "paul",
+          "kate": "paul",
+          "marielle": "kashindi",
+          "mark": "paul",
+          "matt": "paul",
+          "midy": "paul",
+          "millie": "nigel",
+          "mk": "paul",
+          "nigel": "mark",
+          "olivia": "paul",
+          "paul": "mark",
+          "sandra": "mark"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "dirk",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "dirk"
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "millie"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "craig",
+          "to": "jack",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "jack",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "jack",
+          "weight": 1
+        },
+        {
+          "from": "mark",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "craig",
+          "weight": 2
+        },
+        {
+          "from": "mk",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "nigel",
+          "to": "jack",
+          "weight": 1
+        },
+        {
+          "from": "olivia",
+          "to": "craig",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "craig",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "craig",
+          "jack"
+        ],
+        "counts": {
+          "craig": 7,
+          "jack": 7,
+          "mark": 1,
+          "olivia": 1,
+          "angus": 1,
+          "kate": 1
+        },
+        "accusations": {
+          "angus": "craig",
+          "chloe": "jack",
+          "claire": "craig",
+          "craig": "mark",
+          "ethan": "jack",
+          "fi": "jack",
+          "jack": "olivia",
+          "kashindi": "craig",
+          "kate": "jack",
+          "marielle": "craig",
+          "mark": "jack",
+          "matt": "craig",
+          "midy": "angus",
+          "millie": "craig",
+          "mk": "craig",
+          "nigel": "jack",
+          "olivia": "kate",
+          "sandra": "jack"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "olivia",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "olivia"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "angus"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "mark",
+          "weight": 2
+        },
+        {
+          "from": "chloe",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "mark",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "nigel",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "mark",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "mark",
+          "sandra"
+        ],
+        "counts": {
+          "mark": 8,
+          "sandra": 3,
+          "ethan": 2,
+          "nigel": 2,
+          "midy": 1
+        },
+        "accusations": {
+          "angus": "mark",
+          "chloe": "sandra",
+          "claire": "mark",
+          "ethan": "mark",
+          "fi": "mark",
+          "jack": "mark",
+          "kashindi": "ethan",
+          "kate": "nigel",
+          "marielle": "mark",
+          "mark": "nigel",
+          "matt": "sandra",
+          "midy": "mark",
+          "millie": "sandra",
+          "mk": "midy",
+          "nigel": "mark",
+          "sandra": "ethan"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "mark",
+        "method": "vote",
+        "tally": {
+          "mark": 16,
+          "nigel": 1
+        }
+      },
+      "murder": {
+        "victim": "chloe"
+      },
+      "shieldBlocked": true
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "kashindi"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "kashindi",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "nigel",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "angus",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "nigel",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "matt",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "matt",
+          "mk"
+        ],
+        "counts": {
+          "chloe": 1,
+          "claire": 1,
+          "sandra": 1,
+          "angus": 2,
+          "nigel": 2,
+          "matt": 4,
+          "mk": 3,
+          "millie": 1
+        },
+        "accusations": {
+          "angus": "chloe",
+          "chloe": "claire",
+          "claire": "sandra",
+          "ethan": "angus",
+          "fi": "nigel",
+          "jack": "nigel",
+          "kashindi": "angus",
+          "kate": "matt",
+          "marielle": "matt",
+          "matt": "mk",
+          "midy": "matt",
+          "millie": "matt",
+          "mk": "millie",
+          "nigel": "mk",
+          "sandra": "mk"
+        }
+      },
+      "revote": {
+        "called": true,
+        "resolved": {
+          "matt": 4,
+          "nigel": 9
+        }
+      },
+      "elimination": {
+        "player": "nigel",
+        "method": "vote",
+        "tally": {
+          "matt": 4,
+          "nigel": 9
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "mk",
+        "by": "angus",
+        "accepted": true
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "angus"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "sandra",
+          "weight": 2
+        },
+        {
+          "from": "chloe",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "jack",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "sandra",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "sandra",
+          "to": "marielle",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "sandra",
+          "angus"
+        ],
+        "counts": {
+          "sandra": 7,
+          "marielle": 2,
+          "angus": 3,
+          "claire": 1,
+          "matt": 1
+        },
+        "accusations": {
+          "angus": "sandra",
+          "chloe": "marielle",
+          "claire": "sandra",
+          "ethan": "sandra",
+          "fi": "sandra",
+          "jack": "sandra",
+          "kashindi": "angus",
+          "kate": "angus",
+          "marielle": "sandra",
+          "matt": "sandra",
+          "midy": "marielle",
+          "millie": "claire",
+          "mk": "matt",
+          "sandra": "angus"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "jack",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "jack"
+      }
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "fi"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "marielle",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "claire",
+          "weight": 2
+        },
+        {
+          "from": "kashindi",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "claire",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "matt",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "claire",
+          "marielle"
+        ],
+        "counts": {
+          "claire": 7,
+          "marielle": 3,
+          "matt": 1
+        },
+        "accusations": {
+          "angus": "claire",
+          "chloe": "claire",
+          "claire": "marielle",
+          "ethan": "marielle",
+          "fi": "claire",
+          "kate": "claire",
+          "marielle": "claire",
+          "matt": "claire",
+          "midy": "marielle",
+          "millie": "claire",
+          "mk": "matt"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "claire",
+        "method": "vote",
+        "tally": {
+          "claire": 11,
+          "marielle": 1,
+          "matt": 1
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "fi",
+        "by": "angus",
+        "accepted": true
+      }
+    },
+    {
+      "r": 9,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "chloe"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "mk",
+          "weight": 2
+        },
+        {
+          "from": "ethan",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "mk",
+          "weight": 1
+        },
+        {
+          "from": "mk",
+          "to": "kate",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "mk",
+          "matt"
+        ],
+        "counts": {
+          "mk": 9,
+          "matt": 2
+        },
+        "accusations": {
+          "angus": "mk",
+          "chloe": "mk",
+          "ethan": "mk",
+          "fi": "matt",
+          "kashindi": "mk",
+          "kate": "mk",
+          "marielle": "mk",
+          "matt": "mk",
+          "midy": "mk",
+          "millie": "mk",
+          "mk": "matt"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "mk",
+        "method": "vote",
+        "tally": {
+          "matt": 2,
+          "mk": 9,
+          "kate": 1
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "matt",
+        "by": "angus",
+        "accepted": true
+      }
+    },
+    {
+      "r": 10,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "kashindi"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "angus",
+          "to": "millie",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "angus",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "angus",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "angus",
+          "weight": 2
+        },
+        {
+          "from": "kate",
+          "to": "angus",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "angus",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "millie",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "angus",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "angus",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "angus",
+          "fi"
+        ],
+        "counts": {
+          "fi": 1,
+          "angus": 8,
+          "matt": 1
+        },
+        "accusations": {
+          "angus": "fi",
+          "chloe": "angus",
+          "ethan": "angus",
+          "fi": "matt",
+          "kashindi": "angus",
+          "kate": "angus",
+          "marielle": "angus",
+          "matt": "angus",
+          "midy": "angus",
+          "millie": "angus"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "angus",
+        "method": "vote",
+        "tally": {
+          "millie": 2,
+          "angus": 8,
+          "matt": 1
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "ethan",
+        "by": "fi",
+        "accepted": true
+      }
+    },
+    {
+      "r": 11,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "matt"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "chloe",
+          "to": "fi",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "kashindi",
+          "weight": 1
+        },
+        {
+          "from": "fi",
+          "to": "kashindi",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "fi",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "fi",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "kashindi",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "fi",
+          "weight": 2
+        },
+        {
+          "from": "midy",
+          "to": "fi",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "fi",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "fi",
+          "kashindi"
+        ],
+        "counts": {
+          "fi": 7,
+          "kashindi": 1,
+          "matt": 1
+        },
+        "accusations": {
+          "chloe": "fi",
+          "ethan": "kashindi",
+          "fi": "matt",
+          "kashindi": "fi",
+          "kate": "fi",
+          "marielle": "fi",
+          "matt": "fi",
+          "midy": "fi",
+          "millie": "fi"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "fi",
+        "method": "vote",
+        "tally": {
+          "fi": 7,
+          "kashindi": 3
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "kate",
+        "by": "marielle",
+        "accepted": true
+      }
+    },
+    {
+      "r": 12,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "matt"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "chloe",
+          "to": "ethan",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "kashindi",
+          "weight": 1
+        },
+        {
+          "from": "kashindi",
+          "to": "marielle",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "millie",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "kashindi",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "kashindi",
+          "weight": 2
+        },
+        {
+          "from": "midy",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "millie",
+          "to": "ethan",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "kashindi",
+          "ethan"
+        ],
+        "counts": {
+          "marielle": 1,
+          "kashindi": 4,
+          "ethan": 3
+        },
+        "accusations": {
+          "chloe": "marielle",
+          "ethan": "kashindi",
+          "kashindi": "ethan",
+          "kate": "kashindi",
+          "marielle": "kashindi",
+          "matt": "kashindi",
+          "midy": "ethan",
+          "millie": "ethan"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "millie",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "millie"
+      }
+    },
+    {
+      "r": 13,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "chloe"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "chloe",
+          "to": "matt",
+          "weight": 2
+        },
+        {
+          "from": "ethan",
+          "to": "chloe",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "midy",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "midy",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "midy",
+          "weight": 1
+        },
+        {
+          "from": "midy",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "chloe",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "midy",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "midy",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "midy",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "midy",
+          "ethan"
+        ],
+        "counts": {
+          "matt": 1,
+          "midy": 4,
+          "ethan": 1
+        },
+        "accusations": {
+          "chloe": "matt",
+          "ethan": "midy",
+          "kate": "midy",
+          "marielle": "midy",
+          "matt": "midy",
+          "midy": "ethan"
+        }
+      },
+      "daggerUsed": true,
+      "revote": {
+        "called": true,
+        "resolved": {
+          "matt": 1,
+          "midy": 3
+        }
+      },
+      "elimination": {
+        "player": "midy",
+        "method": "vote",
+        "tally": {
+          "matt": 1,
+          "midy": 3
+        }
+      },
+      "finaleStarted": true
+    },
+    {
+      "r": 14,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "chloe",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "ethan",
+          "to": "chloe",
+          "weight": 1
+        },
+        {
+          "from": "kate",
+          "to": "chloe",
+          "weight": 1
+        },
+        {
+          "from": "marielle",
+          "to": "chloe",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "chloe",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "chloe",
+          "choice": "end"
+        },
+        {
+          "player": "ethan",
+          "choice": "banish"
+        },
+        {
+          "player": "kate",
+          "choice": "banish"
+        },
+        {
+          "player": "marielle",
+          "choice": "end"
+        },
+        {
+          "player": "matt",
+          "choice": "end"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "chloe",
+          "matt"
+        ],
+        "counts": {
+          "matt": 1,
+          "chloe": 4
+        },
+        "accusations": {
+          "chloe": "matt",
+          "ethan": "chloe",
+          "kate": "chloe",
+          "marielle": "chloe",
+          "matt": "chloe"
+        }
+      },
+      "elimination": {
+        "player": "chloe",
+        "method": "vote",
+        "tally": {
+          "matt": 1,
+          "chloe": 4
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "endgame",
+    "finale": true,
+    "solo": false,
+    "survivingTraitors": [
+      "ethan",
+      "kate",
+      "marielle",
+      "matt"
+    ]
+  },
+  "metrics": {
+    "calls": 1307,
+    "failedCalls": 36,
+    "providerCalls": 85,
+    "retries": 6,
+    "transportRetries": 19,
+    "parseRetryCalls": 32,
+    "inputTokens": 10726155,
+    "outputTokens": 6037052,
+    "totalTokens": 16763207,
+    "promptCharsTotal": 44622564,
+    "byActionType": {
+      "accuse": {
+        "calls": 217,
+        "failed": 6,
+        "input_tokens": 1730405,
+        "output_tokens": 1078711
+      },
+      "end_vote": {
+        "calls": 5,
+        "failed": 0,
+        "input_tokens": 20570,
+        "output_tokens": 2080
+      },
+      "private_message": {
+        "calls": 318,
+        "failed": 11,
+        "input_tokens": 2482198,
+        "output_tokens": 978253
+      },
+      "public_message": {
+        "calls": 401,
+        "failed": 2,
+        "input_tokens": 3153537,
+        "output_tokens": 1966510
+      },
+      "rebut": {
+        "calls": 28,
+        "failed": 0,
+        "input_tokens": 261898,
+        "output_tokens": 172068
+      },
+      "recruit": {
+        "calls": 15,
+        "failed": 0,
+        "input_tokens": 185346,
+        "output_tokens": 107714
+      },
+      "recruit_decision": {
+        "calls": 15,
+        "failed": 0,
+        "input_tokens": 185994,
+        "output_tokens": 70921
+      },
+      "recruit_response": {
+        "calls": 5,
+        "failed": 0,
+        "input_tokens": 46308,
+        "output_tokens": 8300
+      },
+      "traitor_kill": {
+        "calls": 28,
+        "failed": 0,
+        "input_tokens": 254244,
+        "output_tokens": 111064
+      },
+      "traitor_message": {
+        "calls": 43,
+        "failed": 0,
+        "input_tokens": 447376,
+        "output_tokens": 344788
+      },
+      "vote": {
+        "calls": 232,
+        "failed": 17,
+        "input_tokens": 1958279,
+        "output_tokens": 1196643
+      }
+    },
+    "model": "beam-free",
+    "provider": "openai_compat",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 942,
+        "duplicate_messages": 0,
+        "duplicate_rate": 0.0,
+        "duplication_score": 0.0
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 942,
+      "parsing": {
+        "rejected_actions": 3,
+        "unparseable_actions": 3
+      },
+      "private_chats": {
+        "longest_thread": 40,
+        "mean_messages_per_pair": 6.5319,
+        "messages": 307,
+        "pairs": 47,
+        "pairs_by_length": {
+          "1": 7,
+          "2": 12,
+          "3": 4,
+          "4": 3,
+          "5": 21
+        },
+        "per_player": {
+          "alex_duggan": 10,
+          "angus": 31,
+          "chloe": 53,
+          "claire": 50,
+          "craig": 12,
+          "dirk": 4,
+          "ethan": 36,
+          "fi": 42,
+          "jack": 24,
+          "justine": 4,
+          "kashindi": 47,
+          "kate": 32,
+          "lewis": 2,
+          "marielle": 56,
+          "mark": 28,
+          "matt": 40,
+          "midy": 35,
+          "millie": 17,
+          "mk": 22,
+          "nigel": 29,
+          "olivia": 15,
+          "paul": 10,
+          "sandra": 11,
+          "teresa": 4
+        },
+        "reciprocity_rate": 0.8298,
+        "two_way_pairs": 39
+      },
+      "private_messages": 350,
+      "public_messages": 592,
+      "secrecy": {
+        "false_role_claims": 1,
+        "flags_total": 33,
+        "role_claim_total": 2,
+        "samples": [
+          {
+            "detail": "claire named fellow traitor nigel next to affiliation wording",
+            "excerpt": "Dirk, I hear your challenge; I’m not going to make my earlier Craig point carry the round. My nomination is Matt. The Nigel message I can actually see is about Dirk withholding a p",
+            "kind": "traitor_named_teammate",
+            "round": 1,
+            "sender": "claire"
+          },
+          {
+            "detail": "angus named fellow traitor nigel next to affiliation wording",
+            "excerpt": "Alex, you are my nomination, and I say that with my own ballot in mind too. When Mark pressed you, you conceded the early Angus claim was weaker than your vote treated it as, but t",
+            "kind": "traitor_named_teammate",
+            "round": 2,
+            "sender": "angus"
+          },
+          {
+            "detail": "angus named fellow traitor nigel next to affiliation wording",
+            "excerpt": "Jack, I can make this plain: Alex had finally offered a reason I could test, while the Nigel/Dirk linkage still had no fixed anchor in the public record. My ballot followed the nam",
+            "kind": "traitor_named_teammate",
+            "round": 3,
+            "sender": "angus"
+          },
+          {
+            "detail": "claire named fellow traitor nigel next to affiliation wording",
+            "excerpt": "Kashindi, I’m naming you because your reply to Nigel tightened the wrong thing. You gave a clean account of why Fi’s Paul comparison did not worry you, but that account only appear",
+            "kind": "traitor_named_teammate",
+            "round": 3,
+            "sender": "claire"
+          },
+          {
+            "detail": "angus named fellow traitor nigel next to affiliation wording",
+            "excerpt": "Mark, before I push anyone further, I’ll leave my own r4 discrepancy where it is and not polish it into consistency; if my written direction and my ballot did not match, that is mi",
+            "kind": "traitor_named_teammate",
+            "round": 5,
+            "sender": "angus"
+          },
+          {
+            "detail": "angus named fellow traitor nigel next to affiliation wording",
+            "excerpt": "Mark, I am using your answer to Midy. You could not offer a Craig-specific concern from before the vote tilted there; the mark only took shape after Craig pushed back on you, while",
+            "kind": "traitor_named_teammate",
+            "round": 5,
+            "sender": "angus"
+          },
+          {
+            "detail": "kate is faithful but claims to be a traitor",
+            "excerpt": "Nigel, I’ll direct this at you. You used my Chloe correction to keep me under review, then when Jack pressed about your first Matt pencil, you said there was nothing kept behind it",
+            "kind": "faithful_claimed_traitor",
+            "round": 5,
+            "sender": "kate"
+          },
+          {
+            "detail": "claire named fellow traitor marielle next to affiliation wording",
+            "excerpt": "Fi, Ethan and Kashindi: I’m not turning the old Matt discomfort into a fresh witness; it stays retired, and I won’t invent a round-one story. Kate was my name, but Marielle's last ",
+            "kind": "traitor_named_teammate",
+            "round": 8,
+            "sender": "claire"
+          },
+          {
+            "detail": "marielle named fellow traitor claire next to affiliation wording",
+            "excerpt": "Claire, I am taking Kate off my list because she finally put a limit on the Kashindi item. Your answer to Kate is what moves you up: you refused to account for your opening Matt im",
+            "kind": "traitor_named_teammate",
+            "round": 8,
+            "sender": "marielle"
+          },
+          {
+            "detail": "angus named fellow traitor fi next to affiliation wording",
+            "excerpt": "Chloe, I agree with the narrow filing. The thing that moved me was the way that reply gave his own shaky first choice an ending while leaving your Nigel reaction available for cros",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "angus"
+          },
+          {
+            "detail": "angus named fellow traitor fi next to affiliation wording",
+            "excerpt": "Marielle, your charge lands on the gap between Kate's reply and my next message. I accept that gap: her reply gave me enough to stop asking that Kashindi question, and I should hav",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "angus"
+          },
+          {
+            "detail": "angus named fellow traitor claire next to affiliation wording",
+            "excerpt": "Marielle, your charge lands on the gap between Kate's reply and my next message. I accept that gap: her reply gave me enough to stop asking that Kashindi question, and I should hav",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "angus"
+          },
+          {
+            "detail": "angus named fellow traitor mk next to affiliation wording",
+            "excerpt": "Marielle, your charge lands on the gap between Kate's reply and my next message. I accept that gap: her reply gave me enough to stop asking that Kashindi question, and I should hav",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "angus"
+          },
+          {
+            "detail": "marielle named fellow traitor mk next to affiliation wording",
+            "excerpt": "MK, I am putting you up because of the turn in your last note: you said the case in front of the room was stronger, then justified your own destination through a dispute with Matt ",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "marielle"
+          },
+          {
+            "detail": "fi named fellow traitor angus next to affiliation wording",
+            "excerpt": "Kashindi, yes — if that old Lewis feeling ever gets welded onto an Angus read, flag the sentence that makes the join for me. Later summaries are less useful because they show how t",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "fi"
+          },
+          {
+            "detail": "fi named fellow traitor angus next to affiliation wording",
+            "excerpt": "Matt, I’m not taking my marker off you. Your latest note drops my Millie wording question as useless, then asks Angus for an earlier basis behind his Matt mark. Kate asked me to da",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "fi"
+          },
+          {
+            "detail": "marielle named fellow traitor angus next to affiliation wording",
+            "excerpt": "Angus, your answer to Chloe is what moves you up for me: you traced the r9 Matt square to a reaction over Matt's Nigel reply, then admitted the closing note and the recorded mark w",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "marielle"
+          },
+          {
+            "detail": "matt named fellow traitor angus next to affiliation wording",
+            "excerpt": "Angus, I had let the older Matt entries rest after your earlier answer, but your reply to Ethan brings me back to the r9 square. You traced that choice to Matt's response over Chlo",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "matt"
+          },
+          {
+            "detail": "angus named fellow traitor marielle next to affiliation wording",
+            "excerpt": "Chloe, your last point turns my own downgrade into the charge: you said the reply-based origin makes the square weaker, then used that weakness as the reason to nominate me. That i",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "angus"
+          },
+          {
+            "detail": "angus named fellow traitor fi next to affiliation wording",
+            "excerpt": "Chloe, your last point turns my own downgrade into the charge: you said the reply-based origin makes the square weaker, then used that weakness as the reason to nominate me. That i",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "angus"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 31,
+        "traitor_public_declarations": 1
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.9072,
+          "max_pair": [
+            "midy",
+            "millie"
+          ],
+          "mean": 0.7236
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 276,
+        "per_player": {
+          "alex_duggan": {
+            "content_words": 0.6774,
+            "phrasing": 0.9279
+          },
+          "angus": {
+            "content_words": 0.7769,
+            "phrasing": 0.9504
+          },
+          "chloe": {
+            "content_words": 0.7847,
+            "phrasing": 0.9548
+          },
+          "claire": {
+            "content_words": 0.7797,
+            "phrasing": 0.948
+          },
+          "craig": {
+            "content_words": 0.734,
+            "phrasing": 0.9317
+          },
+          "dirk": {
+            "content_words": 0.7107,
+            "phrasing": 0.9219
+          },
+          "ethan": {
+            "content_words": 0.7921,
+            "phrasing": 0.9508
+          },
+          "fi": {
+            "content_words": 0.7759,
+            "phrasing": 0.9526
+          },
+          "jack": {
+            "content_words": 0.7385,
+            "phrasing": 0.9466
+          },
+          "justine": {
+            "content_words": 0.4259,
+            "phrasing": 0.8036
+          },
+          "kashindi": {
+            "content_words": 0.7735,
+            "phrasing": 0.9531
+          },
+          "kate": {
+            "content_words": 0.7899,
+            "phrasing": 0.9527
+          },
+          "lewis": {
+            "content_words": 0.4815,
+            "phrasing": 0.8168
+          },
+          "marielle": {
+            "content_words": 0.7603,
+            "phrasing": 0.9458
+          },
+          "mark": {
+            "content_words": 0.7001,
+            "phrasing": 0.9445
+          },
+          "matt": {
+            "content_words": 0.771,
+            "phrasing": 0.9546
+          },
+          "midy": {
+            "content_words": 0.7833,
+            "phrasing": 0.9516
+          },
+          "millie": {
+            "content_words": 0.7809,
+            "phrasing": 0.9491
+          },
+          "mk": {
+            "content_words": 0.7716,
+            "phrasing": 0.951
+          },
+          "nigel": {
+            "content_words": 0.7505,
+            "phrasing": 0.9438
+          },
+          "olivia": {
+            "content_words": 0.7224,
+            "phrasing": 0.938
+          },
+          "paul": {
+            "content_words": 0.7054,
+            "phrasing": 0.9352
+          },
+          "sandra": {
+            "content_words": 0.7694,
+            "phrasing": 0.9446
+          },
+          "teresa": {
+            "content_words": 0.6113,
+            "phrasing": 0.9046
+          }
+        },
+        "phrasing": {
+          "max": 0.9845,
+          "max_pair": [
+            "fi",
+            "kashindi"
+          ],
+          "mean": 0.9322
+        },
+        "players_compared": 24
+      }
+    },
+    "messages": {
+      "private": 350,
+      "public": 592,
+      "ratio_public_private": 1.691
+    },
+    "events": {
+      "total": 1728,
+      "byType": {
+        "ACTION_REJECTED": 3,
+        "DAGGER_USED": 11,
+        "END_VOTE_CAST": 5,
+        "FINALE_STARTED": 1,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "ITEM_AWARDED": 13,
+        "MISSION_COMPLETED": 39,
+        "MISSION_STARTED": 39,
+        "NOMINATION_TALLY": 14,
+        "PHASE_ENDED": 121,
+        "PHASE_STARTED": 122,
+        "PLAYER_ELIMINATED": 20,
+        "PRIVATE_MESSAGE": 350,
+        "PUBLIC_MESSAGE": 592,
+        "RECRUIT_ACCEPTED": 5,
+        "RECRUIT_CHOICE_MADE": 5,
+        "RECRUIT_OFFERED": 5,
+        "REVOTE_CALLED": 2,
+        "REVOTE_RESOLVED": 2,
+        "ROLE_ASSIGNED": 24,
+        "ROLE_RECRUITED": 5,
+        "ROUND_STARTED": 14,
+        "SHIELD_BLOCKED": 1,
+        "SNAPSHOT_CREATED": 119,
+        "TRAITOR_KILL": 7,
+        "VOTE_CAST": 206
+      }
+    },
+    "rejectedActions": 3,
+    "outcomes": {
+      "alex_duggan": "lost",
+      "angus": "lost",
+      "chloe": "lost",
+      "claire": "lost",
+      "craig": "lost",
+      "dirk": "lost",
+      "ethan": "won",
+      "fi": "lost",
+      "jack": "lost",
+      "justine": "lost",
+      "kashindi": "lost",
+      "kate": "won",
+      "lewis": "lost",
+      "marielle": "won",
+      "mark": "lost",
+      "matt": "won",
+      "midy": "lost",
+      "millie": "lost",
+      "mk": "lost",
+      "nigel": "lost",
+      "olivia": "lost",
+      "paul": "lost",
+      "sandra": "lost",
+      "teresa": "lost"
+    },
+    "survivingTraitors": [
+      "ethan",
+      "kate",
+      "marielle",
+      "matt"
+    ],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": true,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "the-traitors-australia-s01-5ba6ba56",
+    "rounds": 14,
+    "players": 24,
+    "traitors": 4
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 942,
+    "public": 592,
+    "private": 350,
+    "traitor": 43,
+    "host": 0,
+    "calls": 1307,
+    "inputTokens": 10726155,
+    "outputTokens": 6037052,
+    "totalTokens": 16763207,
+    "rejectedActions": 3
+  },
+  "config": {
+    "name": "the-traitors-australia-s01",
+    "players": 24,
+    "traitors": 4,
+    "faithful": 20,
+    "maxRounds": 18,
+    "language": "english",
+    "provider": "openai_compat",
+    "model": "beam-free",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 32768,
+      "reasoning_effort": "low"
+    },
+    "flags": {
+      "max_rounds": 18,
+      "recruit_on_banish": false,
+      "max_recruits": 0,
+      "recruit_choice": true,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 2,
+      "finale_faithful": 3,
+      "finale_total": 5,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [],
+      "quiet_banishment_rounds": [],
+      "endgame_vote": true,
+      "blind_finale_banishments": true,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": true,
+      "revote_enabled": true,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": true,
+      "dagger": true,
+      "seer": false,
+      "on_trial": false,
+      "voting_record": true,
+      "faithful_mandate": true,
+      "suspicion_ledger": false,
+      "evidence_accusations": false,
+      "contradiction_audit": false,
+      "vote_signal": false,
+      "recruitment_caution": false,
+      "reveal_traitor_count": false,
+      "mission_reward": 1000,
+      "mission_success_probability": 0.85,
+      "mission_defense_rounds": []
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

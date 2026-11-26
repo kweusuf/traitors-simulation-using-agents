@@ -2657,7 +2657,8 @@
       "shield": false,
       "dagger": false,
       "seer": false,
-      "on_trial": false
+      "on_trial": false,
+      "suspicion_ledger": false
     }
   },
   "hasMessages": true,

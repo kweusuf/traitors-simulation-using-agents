@@ -1,0 +1,3515 @@
+{
+  "id": "uk-s01-opencode-go-faithrand",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "season_uk_s01",
+  "season": "season_uk_s01",
+  "family": "uk-s01",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "aaron",
+      "name": "Aaron",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 6,
+        "traitor": 1,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 10,
+        "votesCast": 3,
+        "votesReceived": 18,
+        "conversations": [
+          {
+            "id": "aisha",
+            "count": 3
+          },
+          {
+            "id": "rayan",
+            "count": 2
+          },
+          {
+            "id": "meryl",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "amanda": 4,
+          "meryl": 1,
+          "aaron": 16
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.35,
+          "assertiveness": 0.55,
+          "sociability": 0.7,
+          "trust": 0.6,
+          "risk_tolerance": 0.35
+        },
+        "description": "Aaron Evans. Emotional and open; you say what you feel before you think it through, and the table can read you like a book.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "keep_your_allies_close"
+          ]
+        }
+      }
+    },
+    {
+      "id": "aisha",
+      "name": "Aisha",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 19,
+        "private": 12,
+        "traitor": 3,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 7,
+        "votesCast": 6,
+        "votesReceived": 9,
+        "conversations": [
+          {
+            "id": "meryl",
+            "count": 4
+          },
+          {
+            "id": "aaron",
+            "count": 3
+          },
+          {
+            "id": "wilf",
+            "count": 3
+          },
+          {
+            "id": "rayan",
+            "count": 1
+          },
+          {
+            "id": "alex",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "alyssa": 6,
+          "aisha": 10
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.35,
+          "sociability": 0.6,
+          "trust": 0.65,
+          "risk_tolerance": 0.3
+        },
+        "description": "Aisha Birley. Friendly and low profile; you get on with everyone and push nobody.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "stay_low_profile"
+          ]
+        }
+      }
+    },
+    {
+      "id": "alex",
+      "name": "Alex",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 34,
+        "private": 15,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 7,
+        "votesCast": 9,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "nicky",
+            "count": 8
+          },
+          {
+            "id": "kieran",
+            "count": 4
+          },
+          {
+            "id": "maddy",
+            "count": 1
+          },
+          {
+            "id": "aisha",
+            "count": 1
+          },
+          {
+            "id": "hannah",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.65,
+          "assertiveness": 0.5,
+          "sociability": 0.45,
+          "trust": 0.3,
+          "risk_tolerance": 0.55
+        },
+        "description": "Alex Gray. Guarded and private; you keep your own business to yourself and refuse pressure to hand it over.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "keep_your_own_counsel"
+          ]
+        }
+      }
+    },
+    {
+      "id": "alyssa",
+      "name": "Alyssa",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 31,
+        "private": 20,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 5,
+        "votesCast": 8,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "claire",
+            "count": 11
+          },
+          {
+            "id": "amanda",
+            "count": 7
+          },
+          {
+            "id": "matt",
+            "count": 2
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.5,
+          "sociability": 0.55,
+          "trust": 0.4,
+          "risk_tolerance": 0.55
+        },
+        "description": "Alyssa Chan. Composed under pressure; you can plant a suspicion in the group and then let it do the work.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "redirect_suspicion_early"
+          ]
+        }
+      }
+    },
+    {
+      "id": "amanda",
+      "name": "Amanda",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [
+        "shield"
+      ],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 31,
+        "private": 15,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 6,
+        "votesCast": 8,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "alyssa",
+            "count": 9
+          },
+          {
+            "id": "aaron",
+            "count": 3
+          },
+          {
+            "id": "nicky",
+            "count": 3
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.8,
+          "assertiveness": 0.6,
+          "sociability": 0.85,
+          "trust": 0.55,
+          "risk_tolerance": 0.6
+        },
+        "description": "Amanda Lovett. The warm peacemaker everyone confides in, while you quietly decide who goes and who stays.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "be_everyones_confidant"
+          ]
+        }
+      }
+    },
+    {
+      "id": "amos",
+      "name": "Amos",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 14,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 0,
+        "votesCast": 9,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "meryl",
+            "count": 10
+          },
+          {
+            "id": "aaron",
+            "count": 3
+          },
+          {
+            "id": "rayan",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.6,
+          "sociability": 0.6,
+          "trust": 0.35,
+          "risk_tolerance": 0.5
+        },
+        "description": "Amos Ogunkoya. Confident and direct; you say out loud when someone looks calmer than a faithful should.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "trust_actions_over_words"
+          ]
+        }
+      }
+    },
+    {
+      "id": "andrea",
+      "name": "Andrea",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 0,
+        "votesCast": 9,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "imran",
+            "count": 8
+          },
+          {
+            "id": "aaron",
+            "count": 3
+          },
+          {
+            "id": "rayan",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.55,
+          "assertiveness": 0.3,
+          "sociability": 0.5,
+          "trust": 0.7,
+          "risk_tolerance": 0.3
+        },
+        "description": "Andrea Addison. Quiet, warm and unhurried; you watch far more than you say.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "speak_only_when_it_matters"
+          ]
+        }
+      }
+    },
+    {
+      "id": "claire",
+      "name": "Claire",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 16,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 1,
+        "votesCast": 9,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "alyssa",
+            "count": 16
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.3,
+          "sociability": 0.45,
+          "trust": 0.75,
+          "risk_tolerance": 0.3
+        },
+        "description": "Claire Barratt. Gentle and reserved; you are close to a small number of people and prefer it that way.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "keep_your_small_circle"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fay",
+      "name": "Fay",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 29,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 1,
+        "votesCast": 9,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "ivan",
+            "count": 4
+          },
+          {
+            "id": "theo",
+            "count": 3
+          },
+          {
+            "id": "meryl",
+            "count": 2
+          },
+          {
+            "id": "maddy",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.8,
+          "sociability": 0.5,
+          "trust": 0.4,
+          "risk_tolerance": 0.5
+        },
+        "description": "Fay Greaves. Plain spoken and unimpressed; you say the thing the room is avoiding.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "call_out_the_quiet_ones"
+          ]
+        }
+      }
+    },
+    {
+      "id": "hannah",
+      "name": "Hannah",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": false
+      },
+      "stats": {
+        "public": 30,
+        "private": 19,
+        "traitor": 1,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 13,
+        "votesCast": 8,
+        "votesReceived": 10,
+        "conversations": [
+          {
+            "id": "kieran",
+            "count": 14
+          },
+          {
+            "id": "imran",
+            "count": 4
+          },
+          {
+            "id": "alex",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 10,
+        "method": "vote",
+        "tally": {
+          "hannah": 10,
+          "alex": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.7,
+          "assertiveness": 0.9,
+          "sociability": 0.75,
+          "trust": 0.5,
+          "risk_tolerance": 0.6
+        },
+        "description": "Hannah Byczkowski. Loud, dry and quick at the table; you would rather torch a bad theory in public than sit on it.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "cut_weak_theories_early"
+          ]
+        }
+      }
+    },
+    {
+      "id": "imran",
+      "name": "Imran",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 16,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 1,
+        "votesCast": 8,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "andrea",
+            "count": 8
+          },
+          {
+            "id": "hannah",
+            "count": 5
+          },
+          {
+            "id": "aaron",
+            "count": 3
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.6,
+          "assertiveness": 0.55,
+          "sociability": 0.25,
+          "trust": 0.4,
+          "risk_tolerance": 0.45
+        },
+        "description": "Imran Nasim. Detached and a little remote; you keep your own pace and do not work the room.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "stay_apart_from_the_herd"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ivan",
+      "name": "Ivan",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 26,
+        "private": 16,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 11,
+        "votesCast": 7,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "tom",
+            "count": 12
+          },
+          {
+            "id": "matt",
+            "count": 2
+          },
+          {
+            "id": "fay",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.8,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.35
+        },
+        "description": "Ivan Brett. A calm reasoner; you work out what people could not possibly have done and say so.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "reason_from_probability"
+          ]
+        }
+      }
+    },
+    {
+      "id": "john",
+      "name": "John",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 15,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 2,
+        "votesCast": 5,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "aaron",
+            "count": 3
+          },
+          {
+            "id": "nicky",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.85,
+          "sociability": 0.4,
+          "trust": 0.2,
+          "risk_tolerance": 0.7
+        },
+        "description": "John McManus. Blunt, suspicious and confrontational; you meet pressure with more pressure.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "trust_nobody_quickly"
+          ]
+        }
+      }
+    },
+    {
+      "id": "kieran",
+      "name": "Kieran",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 29,
+        "private": 16,
+        "traitor": 1,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 20,
+        "votesCast": 8,
+        "votesReceived": 10,
+        "conversations": [
+          {
+            "id": "hannah",
+            "count": 13
+          },
+          {
+            "id": "alex",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "kieran": 11,
+          "alex": 2
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.7,
+          "sociability": 0.6,
+          "trust": 0.4,
+          "risk_tolerance": 0.7
+        },
+        "description": "Kieran Tompsett. Blunt and proud; if someone plays you, you would rather burn them in front of everyone than let it slide.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "never_be_played_twice"
+          ]
+        }
+      }
+    },
+    {
+      "id": "maddy",
+      "name": "Maddy",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 12,
+        "votesCast": 1,
+        "votesReceived": 21,
+        "conversations": [
+          {
+            "id": "alex",
+            "count": 1
+          },
+          {
+            "id": "theo",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "maddy": 21,
+          "aaron": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.4,
+          "assertiveness": 0.85,
+          "sociability": 0.6,
+          "trust": 0.3,
+          "risk_tolerance": 0.7
+        },
+        "description": "Maddy Smedley. You lock onto one suspect and keep naming them, episode after episode, regardless of who agrees.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "push_your_read_relentlessly"
+          ]
+        }
+      }
+    },
+    {
+      "id": "matt",
+      "name": "Matt",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 30,
+        "private": 12,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 0,
+        "votesCast": 9,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "ivan",
+            "count": 10
+          },
+          {
+            "id": "alyssa",
+            "count": 2
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.3,
+          "assertiveness": 0.35,
+          "sociability": 0.6,
+          "trust": 0.8,
+          "risk_tolerance": 0.3
+        },
+        "description": "Matt Harris. Soft hearted and trusting; you invest hard in the people you like.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "stick_with_your_people"
+          ]
+        }
+      }
+    },
+    {
+      "id": "meryl",
+      "name": "Meryl",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      },
+      "stats": {
+        "public": 31,
+        "private": 17,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 9,
+        "votesCast": 8,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "amos",
+            "count": 8
+          },
+          {
+            "id": "aaron",
+            "count": 4
+          },
+          {
+            "id": "aisha",
+            "count": 3
+          },
+          {
+            "id": "fay",
+            "count": 2
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.25,
+          "assertiveness": 0.3,
+          "sociability": 0.65,
+          "trust": 0.75,
+          "risk_tolerance": 0.25
+        },
+        "description": "Meryl Williams. You follow the group and back the people you trust, even when the logic is thin.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "stay_loyal_to_your_read"
+          ]
+        }
+      }
+    },
+    {
+      "id": "nicky",
+      "name": "Nicky",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 17,
+        "private": 10,
+        "traitor": 3,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 22,
+        "votesCast": 5,
+        "votesReceived": 16,
+        "conversations": [
+          {
+            "id": "alex",
+            "count": 5
+          },
+          {
+            "id": "theo",
+            "count": 3
+          },
+          {
+            "id": "amanda",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "meryl": 2,
+          "nicky": 13,
+          "ivan": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.4,
+          "assertiveness": 0.45,
+          "sociability": 0.55,
+          "trust": 0.65,
+          "risk_tolerance": 0.35
+        },
+        "description": "Nicky Wilding. Open and good humoured; you assume people will take you at your word.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "assume_good_faith"
+          ]
+        }
+      }
+    },
+    {
+      "id": "rayan",
+      "name": "Rayan",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 13,
+        "private": 5,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 15,
+        "votesCast": 4,
+        "votesReceived": 16,
+        "conversations": [
+          {
+            "id": "aaron",
+            "count": 2
+          },
+          {
+            "id": "maddy",
+            "count": 1
+          },
+          {
+            "id": "theo",
+            "count": 1
+          },
+          {
+            "id": "amos",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "meryl": 1,
+          "rayan": 17,
+          "nicky": 2
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.55,
+          "assertiveness": 0.5,
+          "sociability": 0.35,
+          "trust": 0.45,
+          "risk_tolerance": 0.4
+        },
+        "description": "Rayan Rachedi. Reserved and easily read as aloof, though you have opinions and defend them when pushed.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "defend_your_record"
+          ]
+        }
+      }
+    },
+    {
+      "id": "theo",
+      "name": "Theo",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 12,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 1,
+        "votesCast": 4,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "nicky",
+            "count": 4
+          },
+          {
+            "id": "fay",
+            "count": 2
+          },
+          {
+            "id": "maddy",
+            "count": 1
+          },
+          {
+            "id": "rayan",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.35,
+          "assertiveness": 0.6,
+          "sociability": 0.7,
+          "trust": 0.7,
+          "risk_tolerance": 0.45
+        },
+        "description": "Theo Mayne. Emotional and affectionate; you cling to the people who feel safe and take their side.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "protect_your_allies"
+          ]
+        }
+      }
+    },
+    {
+      "id": "tom",
+      "name": "Tom",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 22,
+        "private": 13,
+        "traitor": 2,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 13,
+        "votesCast": 7,
+        "votesReceived": 10,
+        "conversations": [
+          {
+            "id": "ivan",
+            "count": 13
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "tom": 11,
+          "alex": 2
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.45,
+          "assertiveness": 0.95,
+          "sociability": 0.8,
+          "trust": 0.35,
+          "risk_tolerance": 0.85
+        },
+        "description": "Tom Elderfield. A showman accuser; you take the room by the collar and you believe your own read absolutely.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "lead_the_accusation"
+          ]
+        }
+      }
+    },
+    {
+      "id": "wilf",
+      "name": "Wilf",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      },
+      "stats": {
+        "public": 7,
+        "private": 3,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 6,
+        "votesCast": 2,
+        "votesReceived": 8,
+        "conversations": [
+          {
+            "id": "aisha",
+            "count": 3
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "ivan": 7,
+          "wilf": 9,
+          "matt": 1,
+          "fay": 1,
+          "nicky": 1,
+          "aaron": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.75,
+          "assertiveness": 0.7,
+          "sociability": 0.9,
+          "trust": 0.45,
+          "risk_tolerance": 0.8
+        },
+        "description": "Wilfred Webster. Warm, charming and emotional in public; you build alliances easily and you are willing to spend them.",
+        "goals": {
+          "primary": "survive",
+          "secondary": [
+            "build_alliances"
+          ]
+        }
+      }
+    }
+  ],
+  "rounds": 10,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "imran"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "aaron",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "aisha",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "alex",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "amanda",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "maddy",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "rayan",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "theo",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "maddy",
+          "weight": 1
+        },
+        {
+          "from": "wilf",
+          "to": "maddy",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "maddy",
+          "ivan"
+        ],
+        "counts": {
+          "maddy": 12,
+          "wilf": 1,
+          "ivan": 3,
+          "kieran": 2,
+          "aaron": 2,
+          "nicky": 1,
+          "aisha": 1
+        },
+        "accusations": {
+          "aaron": "maddy",
+          "aisha": "wilf",
+          "alex": "maddy",
+          "alyssa": "maddy",
+          "amanda": "maddy",
+          "amos": "maddy",
+          "andrea": "ivan",
+          "claire": "maddy",
+          "fay": "maddy",
+          "hannah": "maddy",
+          "imran": "kieran",
+          "ivan": "kieran",
+          "john": "aaron",
+          "kieran": "ivan",
+          "maddy": "aaron",
+          "matt": "nicky",
+          "meryl": "maddy",
+          "nicky": "maddy",
+          "rayan": "maddy",
+          "theo": "aisha",
+          "tom": "ivan",
+          "wilf": "maddy"
+        }
+      },
+      "elimination": {
+        "player": "maddy",
+        "method": "vote",
+        "tally": {
+          "maddy": 21,
+          "aaron": 1
+        }
+      },
+      "murder": {
+        "skipped": true
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "ivan"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "aaron",
+          "to": "ivan",
+          "weight": 1
+        },
+        {
+          "from": "aisha",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "alex",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "matt",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "ivan",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "ivan",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "wilf",
+          "weight": 2
+        },
+        {
+          "from": "john",
+          "to": "ivan",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "fay",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "ivan",
+          "weight": 1
+        },
+        {
+          "from": "rayan",
+          "to": "ivan",
+          "weight": 1
+        },
+        {
+          "from": "theo",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "wilf",
+          "weight": 1
+        },
+        {
+          "from": "wilf",
+          "to": "ivan",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "ivan",
+          "wilf"
+        ],
+        "counts": {
+          "ivan": 5,
+          "wilf": 5,
+          "john": 1,
+          "claire": 1,
+          "nicky": 3,
+          "theo": 1,
+          "fay": 1,
+          "aaron": 2,
+          "alex": 1
+        },
+        "accusations": {
+          "aaron": "ivan",
+          "aisha": "wilf",
+          "alex": "john",
+          "alyssa": "claire",
+          "amanda": "nicky",
+          "amos": "nicky",
+          "andrea": "wilf",
+          "claire": "wilf",
+          "fay": "theo",
+          "imran": "ivan",
+          "ivan": "wilf",
+          "john": "wilf",
+          "kieran": "fay",
+          "matt": "nicky",
+          "meryl": "aaron",
+          "nicky": "ivan",
+          "rayan": "aaron",
+          "theo": "ivan",
+          "tom": "ivan",
+          "wilf": "alex"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "wilf",
+        "method": "vote",
+        "tally": {
+          "ivan": 7,
+          "wilf": 9,
+          "matt": 1,
+          "fay": 1,
+          "nicky": 1,
+          "aaron": 1
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "aisha",
+        "by": "aaron",
+        "accepted": true
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "rayan"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "aaron",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "aisha",
+          "to": "meryl",
+          "weight": 1
+        },
+        {
+          "from": "alex",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "amanda",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "amanda",
+          "weight": 1
+        },
+        {
+          "from": "rayan",
+          "to": "amanda",
+          "weight": 2
+        },
+        {
+          "from": "theo",
+          "to": "aaron",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "aaron",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "aaron",
+          "amanda"
+        ],
+        "counts": {
+          "meryl": 5,
+          "aaron": 6,
+          "amanda": 6,
+          "imran": 1,
+          "john": 1,
+          "nicky": 1
+        },
+        "accusations": {
+          "aaron": "meryl",
+          "aisha": "meryl",
+          "alex": "aaron",
+          "alyssa": "amanda",
+          "amanda": "meryl",
+          "amos": "amanda",
+          "andrea": "aaron",
+          "claire": "aaron",
+          "fay": "amanda",
+          "hannah": "imran",
+          "imran": "amanda",
+          "ivan": "aaron",
+          "john": "aaron",
+          "kieran": "john",
+          "matt": "nicky",
+          "meryl": "aaron",
+          "nicky": "amanda",
+          "rayan": "amanda",
+          "theo": "meryl",
+          "tom": "meryl"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "aaron",
+        "method": "vote",
+        "tally": {
+          "amanda": 4,
+          "meryl": 1,
+          "aaron": 16
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "tom",
+        "by": "aisha",
+        "accepted": true
+      }
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "imran"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "aisha",
+          "to": "meryl",
+          "weight": 1
+        },
+        {
+          "from": "alex",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "amanda",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "rayan",
+          "weight": 2
+        },
+        {
+          "from": "ivan",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "rayan",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "theo",
+          "to": "rayan",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "rayan",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "rayan",
+          "nicky"
+        ],
+        "counts": {
+          "meryl": 1,
+          "rayan": 15,
+          "nicky": 3
+        },
+        "accusations": {
+          "aisha": "meryl",
+          "alex": "rayan",
+          "alyssa": "nicky",
+          "amanda": "rayan",
+          "amos": "rayan",
+          "andrea": "rayan",
+          "claire": "rayan",
+          "fay": "rayan",
+          "hannah": "rayan",
+          "imran": "rayan",
+          "ivan": "rayan",
+          "john": "rayan",
+          "kieran": "nicky",
+          "matt": "rayan",
+          "meryl": "rayan",
+          "nicky": "rayan",
+          "rayan": "nicky",
+          "theo": "rayan",
+          "tom": "rayan"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "theo",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "theo"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "alyssa"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "aisha",
+          "to": "meryl",
+          "weight": 1
+        },
+        {
+          "from": "alex",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "amanda",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "meryl",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "ivan",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "nicky",
+          "meryl"
+        ],
+        "counts": {
+          "meryl": 2,
+          "nicky": 14,
+          "ivan": 1
+        },
+        "accusations": {
+          "aisha": "meryl",
+          "alex": "nicky",
+          "alyssa": "nicky",
+          "amanda": "nicky",
+          "amos": "nicky",
+          "andrea": "nicky",
+          "claire": "nicky",
+          "fay": "nicky",
+          "hannah": "nicky",
+          "imran": "nicky",
+          "ivan": "nicky",
+          "john": "nicky",
+          "kieran": "nicky",
+          "matt": "nicky",
+          "meryl": "nicky",
+          "nicky": "meryl",
+          "tom": "ivan"
+        }
+      },
+      "elimination": {
+        "player": "john",
+        "method": "night",
+        "tally": {}
+      },
+      "recruit": {
+        "choice": "murder"
+      },
+      "murder": {
+        "victim": "john"
+      }
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "aisha",
+          "to": "alyssa",
+          "weight": 1
+        },
+        {
+          "from": "alex",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "aisha",
+          "weight": 2
+        },
+        {
+          "from": "amanda",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "alyssa",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "alyssa",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "alyssa",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "alyssa",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "aisha",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "alyssa",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "aisha",
+          "alyssa"
+        ],
+        "counts": {
+          "meryl": 1,
+          "aisha": 6,
+          "alyssa": 5,
+          "tom": 1,
+          "ivan": 1
+        },
+        "accusations": {
+          "aisha": "meryl",
+          "alex": "aisha",
+          "alyssa": "aisha",
+          "amanda": "alyssa",
+          "amos": "alyssa",
+          "andrea": "aisha",
+          "claire": "alyssa",
+          "hannah": "alyssa",
+          "imran": "alyssa",
+          "ivan": "aisha",
+          "kieran": "aisha",
+          "matt": "tom",
+          "meryl": "aisha",
+          "tom": "ivan"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "aisha",
+        "method": "vote",
+        "tally": {
+          "alyssa": 6,
+          "aisha": 10
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "kieran",
+        "by": "tom",
+        "accepted": true
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "alyssa"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alex",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "tom",
+          "weight": 2
+        },
+        {
+          "from": "amanda",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "ivan",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "alex",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "tom",
+          "weight": 1
+        },
+        {
+          "from": "tom",
+          "to": "alex",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "tom",
+          "alex"
+        ],
+        "counts": {
+          "tom": 12,
+          "alex": 1,
+          "ivan": 1
+        },
+        "accusations": {
+          "alex": "tom",
+          "alyssa": "tom",
+          "amanda": "tom",
+          "amos": "tom",
+          "andrea": "tom",
+          "claire": "tom",
+          "fay": "tom",
+          "hannah": "tom",
+          "imran": "tom",
+          "ivan": "tom",
+          "kieran": "alex",
+          "matt": "tom",
+          "meryl": "tom",
+          "tom": "ivan"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "tom",
+        "method": "vote",
+        "tally": {
+          "tom": 11,
+          "alex": 2
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "hannah",
+        "by": "kieran",
+        "accepted": true
+      }
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "amanda"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "kieran",
+          "alex"
+        ],
+        "counts": {
+          "kieran": 9,
+          "hannah": 2,
+          "alex": 2
+        },
+        "accusations": {
+          "alex": "kieran",
+          "alyssa": "kieran",
+          "amanda": "hannah",
+          "amos": "kieran",
+          "andrea": "kieran",
+          "claire": "kieran",
+          "fay": "kieran",
+          "hannah": "alex",
+          "imran": "hannah",
+          "ivan": "kieran",
+          "kieran": "alex",
+          "matt": "kieran",
+          "meryl": "kieran"
+        }
+      },
+      "banishmentSkipped": true,
+      "murder": {
+        "victim": "ivan"
+      },
+      "elimination": {
+        "player": "ivan",
+        "method": "night",
+        "tally": {}
+      }
+    },
+    {
+      "r": 9,
+      "missions": 3,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alex",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "amanda",
+          "to": "kieran",
+          "weight": 2
+        },
+        {
+          "from": "amos",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "alex",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "kieran",
+          "to": "alex",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "kieran",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "kieran",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "kieran",
+          "alex"
+        ],
+        "counts": {
+          "kieran": 9,
+          "hannah": 1,
+          "alex": 2
+        },
+        "accusations": {
+          "alex": "kieran",
+          "alyssa": "kieran",
+          "amanda": "kieran",
+          "amos": "kieran",
+          "andrea": "kieran",
+          "claire": "kieran",
+          "fay": "hannah",
+          "hannah": "alex",
+          "imran": "kieran",
+          "kieran": "alex",
+          "matt": "kieran",
+          "meryl": "kieran"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "kieran",
+        "method": "vote",
+        "tally": {
+          "kieran": 11,
+          "alex": 2
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "imran",
+        "by": "hannah",
+        "declined": true,
+        "ultimatum": true,
+        "ultimatumTarget": "imran"
+      },
+      "shieldBlocked": true
+    },
+    {
+      "r": 10,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "amanda"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "alex",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "alyssa",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "amanda",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "amos",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "andrea",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "claire",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "fay",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "hannah",
+          "to": "alex",
+          "weight": 1
+        },
+        {
+          "from": "imran",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "matt",
+          "to": "hannah",
+          "weight": 1
+        },
+        {
+          "from": "meryl",
+          "to": "hannah",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "hannah",
+          "alex"
+        ],
+        "counts": {
+          "hannah": 10,
+          "alex": 1
+        },
+        "accusations": {
+          "alex": "hannah",
+          "alyssa": "hannah",
+          "amanda": "hannah",
+          "amos": "hannah",
+          "andrea": "hannah",
+          "claire": "hannah",
+          "fay": "hannah",
+          "hannah": "alex",
+          "imran": "hannah",
+          "matt": "hannah",
+          "meryl": "hannah"
+        }
+      },
+      "elimination": {
+        "player": "hannah",
+        "method": "vote",
+        "tally": {
+          "hannah": 10,
+          "alex": 1
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "faithful",
+    "winningTeam": "faithful",
+    "reason": "elimination",
+    "finale": false,
+    "solo": false,
+    "survivingTraitors": []
+  },
+  "metrics": {
+    "calls": 1011,
+    "failedCalls": 54,
+    "providerCalls": 1011,
+    "retries": 10,
+    "transportRetries": 10,
+    "parseRetryCalls": 47,
+    "inputTokens": 9267691,
+    "outputTokens": 5593251,
+    "totalTokens": 14860942,
+    "promptCharsTotal": 38902959,
+    "byActionType": {
+      "accuse": {
+        "calls": 172,
+        "failed": 10,
+        "input_tokens": 1611301,
+        "output_tokens": 1057031
+      },
+      "private_message": {
+        "calls": 278,
+        "failed": 16,
+        "input_tokens": 2459323,
+        "output_tokens": 1136906
+      },
+      "public_message": {
+        "calls": 328,
+        "failed": 0,
+        "input_tokens": 2902334,
+        "output_tokens": 2013854
+      },
+      "rebut": {
+        "calls": 20,
+        "failed": 0,
+        "input_tokens": 213808,
+        "output_tokens": 133685
+      },
+      "recruit": {
+        "calls": 7,
+        "failed": 0,
+        "input_tokens": 73587,
+        "output_tokens": 48105
+      },
+      "recruit_decision": {
+        "calls": 9,
+        "failed": 0,
+        "input_tokens": 96579,
+        "output_tokens": 29883
+      },
+      "recruit_response": {
+        "calls": 5,
+        "failed": 0,
+        "input_tokens": 48364,
+        "output_tokens": 10649
+      },
+      "traitor_kill": {
+        "calls": 7,
+        "failed": 0,
+        "input_tokens": 79746,
+        "output_tokens": 31345
+      },
+      "traitor_message": {
+        "calls": 11,
+        "failed": 0,
+        "input_tokens": 121087,
+        "output_tokens": 103592
+      },
+      "vote": {
+        "calls": 174,
+        "failed": 28,
+        "input_tokens": 1661562,
+        "output_tokens": 1028201
+      }
+    },
+    "model": "hy4-flash-free",
+    "provider": "openai_compat",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 783,
+        "duplicate_messages": 0,
+        "duplicate_rate": 0.0,
+        "duplication_score": 0.0
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 783,
+      "parsing": {
+        "rejected_actions": 7,
+        "unparseable_actions": 7
+      },
+      "private_chats": {
+        "longest_thread": 29,
+        "mean_messages_per_pair": 6.75,
+        "messages": 270,
+        "pairs": 40,
+        "pairs_by_length": {
+          "1": 4,
+          "2": 10,
+          "3": 5,
+          "4": 3,
+          "5": 18
+        },
+        "per_player": {
+          "aaron": 32,
+          "aisha": 26,
+          "alex": 26,
+          "alyssa": 47,
+          "amanda": 24,
+          "amos": 23,
+          "andrea": 20,
+          "claire": 27,
+          "fay": 16,
+          "hannah": 40,
+          "imran": 28,
+          "ivan": 43,
+          "john": 5,
+          "kieran": 36,
+          "maddy": 6,
+          "matt": 16,
+          "meryl": 34,
+          "nicky": 31,
+          "rayan": 11,
+          "theo": 16,
+          "tom": 27,
+          "wilf": 6
+        },
+        "reciprocity_rate": 0.75,
+        "two_way_pairs": 30
+      },
+      "private_messages": 273,
+      "public_messages": 510,
+      "secrecy": {
+        "false_role_claims": 2,
+        "flags_total": 16,
+        "role_claim_total": 3,
+        "samples": [
+          {
+            "detail": "wilf named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Aisha, yes — if you actually run that Alex check and show me the reply, I will stop treating your Aaron focus as a convenience. I won't ask you to stage a test with Maddy now that ",
+            "kind": "traitor_named_teammate",
+            "round": 2,
+            "sender": "wilf"
+          },
+          {
+            "detail": "aisha named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Meryl, I am putting you forward. Your latest ask to Aaron demands a written starting point, but your own r2 mark has no comparable origin: it appears only after Maddy put Aaron in ",
+            "kind": "traitor_named_teammate",
+            "round": 3,
+            "sender": "aisha"
+          },
+          {
+            "detail": "aaron named fellow traitor wilf next to affiliation wording",
+            "excerpt": "The case against me is wrong because it treats an unsourced impression as concealment. Being unable to cite an old line should make you lower the weight of a read, not convert it i",
+            "kind": "traitor_named_teammate",
+            "round": 3,
+            "sender": "aaron"
+          },
+          {
+            "detail": "aisha named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Rayan, your tally of the Wilf voters is accurate, but it treats votes as a relay. Wilf challenged my unfinished Alex check, so that mark was about that pressure; my following mark ",
+            "kind": "traitor_named_teammate",
+            "round": 4,
+            "sender": "aisha"
+          },
+          {
+            "detail": "aisha named fellow traitor tom next to affiliation wording",
+            "excerpt": "Rayan, your tally of the Wilf voters is accurate, but it treats votes as a relay. Wilf challenged my unfinished Alex check, so that mark was about that pressure; my following mark ",
+            "kind": "traitor_named_teammate",
+            "round": 4,
+            "sender": "aisha"
+          },
+          {
+            "detail": "tom is a traitor and said so in a public_message (matched \\bas a traitor\\b)",
+            "excerpt": "Ivan, you are my nomination. Your public answer to my slot question selected me as the spare name, but the reason you gave was the moment I asked you for a spare name. That does no",
+            "kind": "traitor_public_declaration",
+            "round": 5,
+            "sender": "tom"
+          },
+          {
+            "detail": "nicky named fellow traitor tom next to affiliation wording",
+            "excerpt": "The case against me is wrong because Amanda's own note leaves the exposed-name gap as background; her live complaint is about how I ranked and explained, not about a vote that prov",
+            "kind": "traitor_named_teammate",
+            "round": 5,
+            "sender": "nicky"
+          },
+          {
+            "detail": "tom named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Ivan, I'll grant you the form: you have finally placed me beside Aaron and given a way for that note to be retired. I won't charge you for anything left hanging after that exchange",
+            "kind": "traitor_named_teammate",
+            "round": 6,
+            "sender": "tom"
+          },
+          {
+            "detail": "kieran named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Alex, the case against me is wrong at the clock: you and the room are treating one sentence in my reply to Amanda as if it created the Alex read. It did not. That sentence explaine",
+            "kind": "traitor_named_teammate",
+            "round": 8,
+            "sender": "kieran"
+          },
+          {
+            "detail": "hannah named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Amanda, you made my unused seventh line carry more weight than it can bear. An empty ballot is a missed obligation, not evidence that I nudged anyone; the most it does is make my j",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "hannah"
+          },
+          {
+            "detail": "kieran named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Amanda, your either/or leaves out the thing I actually had: I was not waiting for Alex to produce a dated Aaron note, and I won't invent a page now. The incident was his live handl",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "kieran"
+          },
+          {
+            "detail": "amanda is faithful but claims to be a traitor",
+            "excerpt": "Kieran, your latest move is enough for me: you set the Aaron dispute aside, then brought it back through Alex's answer to Fay about Meryl. That material appeared only after the cou",
+            "kind": "faithful_claimed_traitor",
+            "round": 9,
+            "sender": "amanda"
+          },
+          {
+            "detail": "claire is faithful but claims to be a traitor",
+            "excerpt": "Kieran, you challenge Alex for letting Meryl's two early Aaron marks count while his own early Aaron mark is discounted. I don't think that analogy helps you: Meryl has since refus",
+            "kind": "faithful_claimed_traitor",
+            "round": 9,
+            "sender": "claire"
+          },
+          {
+            "detail": "hannah named fellow traitor kieran next to affiliation wording",
+            "excerpt": "Alex, your note to Fay disqualifies the opened Alyssa destinations as proof, then leans on that same pattern to lift my old card over Kieran's. That is traitor-shaped selection: a ",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "hannah"
+          },
+          {
+            "detail": "kieran named fellow traitor aaron next to affiliation wording",
+            "excerpt": "Alex, your answer to Fay about Meryl is the clearest thing in this case, and it cuts against the pile on me. You said an absent final line should not erase earlier work; then, when",
+            "kind": "traitor_named_teammate",
+            "round": 9,
+            "sender": "kieran"
+          },
+          {
+            "detail": "hannah named fellow traitor tom next to affiliation wording",
+            "excerpt": "Alex, your latest table note admits there was no earlier point where Alyssa outranked the people being removed, yet you kept me in front for the same hole. I won't take that trade.",
+            "kind": "traitor_named_teammate",
+            "round": 10,
+            "sender": "hannah"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 13,
+        "traitor_public_declarations": 1
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.8945,
+          "max_pair": [
+            "andrea",
+            "imran"
+          ],
+          "mean": 0.7696
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 231,
+        "per_player": {
+          "aaron": {
+            "content_words": 0.6779,
+            "phrasing": 0.9453
+          },
+          "aisha": {
+            "content_words": 0.7603,
+            "phrasing": 0.9533
+          },
+          "alex": {
+            "content_words": 0.7964,
+            "phrasing": 0.9639
+          },
+          "alyssa": {
+            "content_words": 0.8152,
+            "phrasing": 0.9624
+          },
+          "amanda": {
+            "content_words": 0.7976,
+            "phrasing": 0.9624
+          },
+          "amos": {
+            "content_words": 0.8016,
+            "phrasing": 0.9625
+          },
+          "andrea": {
+            "content_words": 0.8116,
+            "phrasing": 0.9649
+          },
+          "claire": {
+            "content_words": 0.8082,
+            "phrasing": 0.9624
+          },
+          "fay": {
+            "content_words": 0.789,
+            "phrasing": 0.96
+          },
+          "hannah": {
+            "content_words": 0.7889,
+            "phrasing": 0.9605
+          },
+          "imran": {
+            "content_words": 0.8065,
+            "phrasing": 0.9654
+          },
+          "ivan": {
+            "content_words": 0.7934,
+            "phrasing": 0.9619
+          },
+          "john": {
+            "content_words": 0.7582,
+            "phrasing": 0.9533
+          },
+          "kieran": {
+            "content_words": 0.7884,
+            "phrasing": 0.9624
+          },
+          "maddy": {
+            "content_words": 0.5745,
+            "phrasing": 0.8749
+          },
+          "matt": {
+            "content_words": 0.8182,
+            "phrasing": 0.9642
+          },
+          "meryl": {
+            "content_words": 0.8061,
+            "phrasing": 0.9655
+          },
+          "nicky": {
+            "content_words": 0.7892,
+            "phrasing": 0.9552
+          },
+          "rayan": {
+            "content_words": 0.7648,
+            "phrasing": 0.9538
+          },
+          "theo": {
+            "content_words": 0.7627,
+            "phrasing": 0.9489
+          },
+          "tom": {
+            "content_words": 0.7679,
+            "phrasing": 0.9588
+          },
+          "wilf": {
+            "content_words": 0.6538,
+            "phrasing": 0.9375
+          }
+        },
+        "phrasing": {
+          "max": 0.9815,
+          "max_pair": [
+            "andrea",
+            "matt"
+          ],
+          "mean": 0.9545
+        },
+        "players_compared": 22
+      }
+    },
+    "messages": {
+      "private": 273,
+      "public": 510,
+      "ratio_public_private": 1.868
+    },
+    "events": {
+      "total": 1362,
+      "byType": {
+        "ACTION_REJECTED": 7,
+        "BANISHMENT_SKIPPED": 1,
+        "DAGGER_USED": 6,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "ITEM_AWARDED": 8,
+        "MISSION_COMPLETED": 30,
+        "MISSION_STARTED": 30,
+        "MURDER_SKIPPED": 1,
+        "NOMINATION_TALLY": 10,
+        "PHASE_ENDED": 89,
+        "PHASE_STARTED": 90,
+        "PLAYER_ELIMINATED": 12,
+        "PRIVATE_MESSAGE": 273,
+        "PUBLIC_MESSAGE": 510,
+        "RECRUIT_ACCEPTED": 4,
+        "RECRUIT_CHOICE_MADE": 6,
+        "RECRUIT_DECLINED": 1,
+        "RECRUIT_OFFERED": 5,
+        "ROLE_ASSIGNED": 22,
+        "ROLE_RECRUITED": 4,
+        "ROUND_STARTED": 10,
+        "SHIELD_BLOCKED": 1,
+        "SNAPSHOT_CREATED": 89,
+        "TRAITOR_KILL": 3,
+        "ULTIMATUM_ISSUED": 1,
+        "VOTE_CAST": 146
+      }
+    },
+    "rejectedActions": 7,
+    "outcomes": {
+      "aaron": "lost",
+      "aisha": "lost",
+      "alex": "won",
+      "alyssa": "won",
+      "amanda": "won",
+      "amos": "won",
+      "andrea": "won",
+      "claire": "won",
+      "fay": "won",
+      "hannah": "lost",
+      "imran": "won",
+      "ivan": "won",
+      "john": "won",
+      "kieran": "lost",
+      "maddy": "won",
+      "matt": "won",
+      "meryl": "won",
+      "nicky": "lost",
+      "rayan": "won",
+      "theo": "won",
+      "tom": "lost",
+      "wilf": "lost"
+    },
+    "survivingTraitors": [],
+    "winner": "faithful",
+    "winningTeam": "faithful",
+    "finale": false,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "season_uk_s01-5dab86c3",
+    "rounds": 10,
+    "players": 22,
+    "traitors": 3
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 783,
+    "public": 510,
+    "private": 273,
+    "traitor": 11,
+    "host": 0,
+    "calls": 1011,
+    "inputTokens": 9267691,
+    "outputTokens": 5593251,
+    "totalTokens": 14860942,
+    "rejectedActions": 7
+  },
+  "config": {
+    "name": "season_uk_s01",
+    "players": 22,
+    "traitors": 3,
+    "faithful": 19,
+    "maxRounds": 18,
+    "language": "english",
+    "provider": "openai_compat",
+    "model": "hy4-flash-free",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 32768,
+      "reasoning_effort": "high"
+    },
+    "flags": {
+      "max_rounds": 18,
+      "recruit_on_banish": false,
+      "max_recruits": 0,
+      "recruit_choice": true,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 2,
+      "finale_faithful": 3,
+      "finale_total": 5,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [
+        1
+      ],
+      "quiet_banishment_rounds": [
+        8
+      ],
+      "endgame_vote": true,
+      "blind_finale_banishments": true,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": true,
+      "revote_enabled": true,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": true,
+      "dagger": true,
+      "seer": false,
+      "on_trial": false,
+      "voting_record": true,
+      "faithful_mandate": true,
+      "suspicion_ledger": false,
+      "evidence_accusations": false,
+      "contradiction_audit": false,
+      "vote_signal": false,
+      "recruitment_caution": false,
+      "reveal_traitor_count": false,
+      "mission_reward": 1000,
+      "mission_success_probability": 0.85,
+      "mission_defense_rounds": []
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}

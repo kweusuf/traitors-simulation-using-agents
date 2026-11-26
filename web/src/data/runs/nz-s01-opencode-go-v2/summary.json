@@ -1,0 +1,3114 @@
+{
+  "id": "nz-s01-opencode-go-v2",
+  "slug": null,
+  "label": null,
+  "blurb": null,
+  "game": "the-traitors-nz-s01",
+  "season": "the-traitors-nz-s01",
+  "family": "nz-s01",
+  "flagship": false,
+  "seed": 42,
+  "holdout": false,
+  "players": [
+    {
+      "id": "anna",
+      "name": "Anna",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true
+      },
+      "stats": {
+        "public": 31,
+        "private": 21,
+        "traitor": 8,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 0,
+        "votesCast": 11,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "mel",
+            "count": 10
+          },
+          {
+            "id": "jess",
+            "count": 5
+          },
+          {
+            "id": "max",
+            "count": 4
+          },
+          {
+            "id": "dane",
+            "count": 1
+          },
+          {
+            "id": "laura",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "brittany",
+      "name": "Brittany",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 6,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 0,
+        "votesCast": 2,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "dane",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "brooke",
+      "name": "Brooke",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [
+        "shield"
+      ],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 28,
+        "private": 11,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 6,
+        "votesCast": 9,
+        "votesReceived": 6,
+        "conversations": [
+          {
+            "id": "rahul",
+            "count": 4
+          },
+          {
+            "id": "stephen",
+            "count": 3
+          },
+          {
+            "id": "nicky",
+            "count": 3
+          },
+          {
+            "id": "mark",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "vote",
+        "tally": {
+          "brooke": 7,
+          "sam": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "cathrine",
+      "name": "Cathrine",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 27,
+        "private": 14,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 9,
+        "accusationsReceived": 0,
+        "votesCast": 9,
+        "votesReceived": 0,
+        "conversations": [
+          {
+            "id": "nicky",
+            "count": 11
+          },
+          {
+            "id": "mark",
+            "count": 1
+          },
+          {
+            "id": "dane",
+            "count": 1
+          },
+          {
+            "id": "john",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 9,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "dane",
+      "name": "Dane",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 7,
+        "private": 4,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 2,
+        "accusationsReceived": 11,
+        "votesCast": 2,
+        "votesReceived": 14,
+        "conversations": [
+          {
+            "id": "brittany",
+            "count": 2
+          },
+          {
+            "id": "nicky",
+            "count": 1
+          },
+          {
+            "id": "anna",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 2,
+        "method": "vote",
+        "tally": {
+          "dane": 13,
+          "rahul": 2,
+          "john": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jess",
+      "name": "Jess",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 22,
+        "private": 11,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 7,
+        "accusationsReceived": 8,
+        "votesCast": 7,
+        "votesReceived": 12,
+        "conversations": [
+          {
+            "id": "anna",
+            "count": 9
+          },
+          {
+            "id": "murray",
+            "count": 1
+          },
+          {
+            "id": "katie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 7,
+        "method": "vote",
+        "tally": {
+          "max": 2,
+          "jess": 9
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "jj",
+      "name": "Jj",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 13,
+        "private": 7,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 4,
+        "votesCast": 4,
+        "votesReceived": 9,
+        "conversations": [
+          {
+            "id": "katie",
+            "count": 4
+          },
+          {
+            "id": "dane",
+            "count": 2
+          },
+          {
+            "id": "murray",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "vote",
+        "tally": {
+          "max": 2,
+          "jj": 9,
+          "nicky": 2,
+          "leighton": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "john",
+      "name": "John",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 10,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 3,
+        "accusationsReceived": 18,
+        "votesCast": 3,
+        "votesReceived": 18,
+        "conversations": [
+          {
+            "id": "rahul",
+            "count": 5
+          },
+          {
+            "id": "mark",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 3,
+        "method": "vote",
+        "tally": {
+          "john": 15,
+          "max": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "katie",
+      "name": "Katie",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 24,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 0,
+        "votesCast": 8,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "jj",
+            "count": 5
+          },
+          {
+            "id": "mark",
+            "count": 1
+          },
+          {
+            "id": "murray",
+            "count": 1
+          },
+          {
+            "id": "stephen",
+            "count": 1
+          },
+          {
+            "id": "jess",
+            "count": 1
+          },
+          {
+            "id": "sam",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "laura",
+      "name": "Laura",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": false
+      },
+      "stats": {
+        "public": 33,
+        "private": 16,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 5,
+        "votesCast": 11,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "max",
+            "count": 9
+          },
+          {
+            "id": "sam",
+            "count": 3
+          },
+          {
+            "id": "dane",
+            "count": 2
+          },
+          {
+            "id": "john",
+            "count": 1
+          },
+          {
+            "id": "anna",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 11,
+        "method": "vote",
+        "tally": {
+          "laura": 3,
+          "sam": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "leighton",
+      "name": "Leighton",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 18,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 6,
+        "accusationsReceived": 4,
+        "votesCast": 5,
+        "votesReceived": 1,
+        "conversations": [
+          {
+            "id": "stephen",
+            "count": 8
+          },
+          {
+            "id": "dane",
+            "count": 2
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "mark",
+      "name": "Mark",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 4,
+        "private": 2,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 1,
+        "accusationsReceived": 9,
+        "votesCast": 1,
+        "votesReceived": 14,
+        "conversations": [
+          {
+            "id": "john",
+            "count": 1
+          },
+          {
+            "id": "nicky",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 1,
+        "method": "vote",
+        "tally": {
+          "mark": 14,
+          "dane": 2,
+          "rahul": 3
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "max",
+      "name": "Max",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 28,
+        "private": 13,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 8,
+        "accusationsReceived": 19,
+        "votesCast": 8,
+        "votesReceived": 17,
+        "conversations": [
+          {
+            "id": "anna",
+            "count": 8
+          },
+          {
+            "id": "laura",
+            "count": 5
+          }
+        ]
+      },
+      "exit": {
+        "round": 8,
+        "method": "vote",
+        "tally": {
+          "max": 8,
+          "katie": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "mel",
+      "name": "Mel",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 29,
+        "private": 13,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 10,
+        "accusationsReceived": 1,
+        "votesCast": 9,
+        "votesReceived": 4,
+        "conversations": [
+          {
+            "id": "anna",
+            "count": 13
+          }
+        ]
+      },
+      "exit": {
+        "round": 10,
+        "method": "vote",
+        "tally": {
+          "mel": 4,
+          "sam": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "murray",
+      "name": "Murray",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 16,
+        "private": 6,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 6,
+        "votesCast": 5,
+        "votesReceived": 9,
+        "conversations": [
+          {
+            "id": "dane",
+            "count": 2
+          },
+          {
+            "id": "jj",
+            "count": 2
+          },
+          {
+            "id": "jess",
+            "count": 1
+          },
+          {
+            "id": "katie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 5,
+        "method": "vote",
+        "tally": {
+          "max": 4,
+          "murray": 9,
+          "stephen": 1
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "nicky",
+      "name": "Nicky",
+      "role": "traitor",
+      "ambition": "team",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true
+      },
+      "stats": {
+        "public": 34,
+        "private": 22,
+        "traitor": 9,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 9,
+        "votesCast": 11,
+        "votesReceived": 2,
+        "conversations": [
+          {
+            "id": "sam",
+            "count": 10
+          },
+          {
+            "id": "cathrine",
+            "count": 8
+          },
+          {
+            "id": "brooke",
+            "count": 3
+          },
+          {
+            "id": "mark",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "rahul",
+      "name": "Rahul",
+      "role": "faithful",
+      "ambition": "team",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 14,
+        "private": 8,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 4,
+        "accusationsReceived": 11,
+        "votesCast": 3,
+        "votesReceived": 5,
+        "conversations": [
+          {
+            "id": "brooke",
+            "count": 4
+          },
+          {
+            "id": "john",
+            "count": 3
+          },
+          {
+            "id": "mark",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 4,
+        "method": "night",
+        "tally": {}
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "sam",
+      "name": "Sam",
+      "role": "traitor",
+      "ambition": "solo",
+      "outcome": "won",
+      "items": [],
+      "roleByRound": {
+        "1": "traitor",
+        "2": "traitor",
+        "3": "traitor",
+        "4": "traitor",
+        "5": "traitor",
+        "6": "traitor",
+        "7": "traitor",
+        "8": "traitor",
+        "9": "traitor",
+        "10": "traitor",
+        "11": "traitor"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true,
+        "11": true
+      },
+      "stats": {
+        "public": 34,
+        "private": 18,
+        "traitor": 9,
+        "host": 0,
+        "accusationsMade": 11,
+        "accusationsReceived": 7,
+        "votesCast": 11,
+        "votesReceived": 3,
+        "conversations": [
+          {
+            "id": "nicky",
+            "count": 14
+          },
+          {
+            "id": "laura",
+            "count": 3
+          },
+          {
+            "id": "katie",
+            "count": 1
+          }
+        ]
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.75,
+          "assertiveness": 0.6,
+          "sociability": 0.65,
+          "trust": 0.45,
+          "risk_tolerance": 0.5
+        },
+        "description": "Sam Smith. Traitor, strategic.",
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    },
+    {
+      "id": "stephen",
+      "name": "Stephen",
+      "role": "faithful",
+      "ambition": "solo",
+      "outcome": "lost",
+      "items": [],
+      "roleByRound": {
+        "1": "faithful",
+        "2": "faithful",
+        "3": "faithful",
+        "4": "faithful",
+        "5": "faithful",
+        "6": "faithful",
+        "7": "faithful",
+        "8": "faithful",
+        "9": "faithful",
+        "10": "faithful",
+        "11": "faithful"
+      },
+      "aliveByRound": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false
+      },
+      "stats": {
+        "public": 18,
+        "private": 10,
+        "traitor": 0,
+        "host": 0,
+        "accusationsMade": 5,
+        "accusationsReceived": 9,
+        "votesCast": 6,
+        "votesReceived": 7,
+        "conversations": [
+          {
+            "id": "leighton",
+            "count": 6
+          },
+          {
+            "id": "brooke",
+            "count": 2
+          },
+          {
+            "id": "mark",
+            "count": 1
+          },
+          {
+            "id": "katie",
+            "count": 1
+          }
+        ]
+      },
+      "exit": {
+        "round": 6,
+        "method": "vote",
+        "tally": {
+          "max": 1,
+          "stephen": 6,
+          "jess": 4
+        }
+      },
+      "persona": {
+        "traits": {
+          "analytical": 0.5,
+          "assertiveness": 0.5,
+          "sociability": 0.5,
+          "trust": 0.5,
+          "risk_tolerance": 0.5
+        },
+        "goals": {
+          "primary": "survive"
+        }
+      }
+    }
+  ],
+  "rounds": 11,
+  "roundDigests": [
+    {
+      "r": 1,
+      "missions": 43,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "jess"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "brittany",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "dane",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "jess",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "jj",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "leighton",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "mark",
+          "to": "rahul",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "murray",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "rahul",
+          "weight": 1
+        },
+        {
+          "from": "rahul",
+          "to": "mark",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "rahul",
+          "weight": 1
+        },
+        {
+          "from": "stephen",
+          "to": "mark",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "mark",
+          "rahul"
+        ],
+        "counts": {
+          "mark": 9,
+          "rahul": 6,
+          "dane": 2,
+          "john": 2
+        },
+        "accusations": {
+          "anna": "mark",
+          "brittany": "rahul",
+          "brooke": "rahul",
+          "cathrine": "rahul",
+          "dane": "mark",
+          "jess": "mark",
+          "jj": "mark",
+          "john": "dane",
+          "katie": "rahul",
+          "laura": "rahul",
+          "leighton": "mark",
+          "mark": "john",
+          "max": "mark",
+          "mel": "mark",
+          "murray": "rahul",
+          "nicky": "dane",
+          "rahul": "mark",
+          "sam": "john",
+          "stephen": "mark"
+        }
+      },
+      "elimination": {
+        "player": "mark",
+        "method": "vote",
+        "tally": {
+          "mark": 14,
+          "dane": 2,
+          "rahul": 3
+        }
+      },
+      "recruit": {
+        "choice": "recruit",
+        "target": "anna",
+        "by": "nicky",
+        "accepted": true
+      }
+    },
+    {
+      "r": 2,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "john"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "brittany",
+          "to": "rahul",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "dane",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "jess",
+          "to": "rahul",
+          "weight": 1
+        },
+        {
+          "from": "jj",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "dane",
+          "weight": 2
+        },
+        {
+          "from": "katie",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "leighton",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "murray",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "rahul",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "dane",
+          "weight": 1
+        },
+        {
+          "from": "stephen",
+          "to": "john",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "dane",
+          "rahul"
+        ],
+        "counts": {
+          "dane": 9,
+          "rahul": 5,
+          "john": 4
+        },
+        "accusations": {
+          "anna": "dane",
+          "brittany": "rahul",
+          "brooke": "rahul",
+          "cathrine": "john",
+          "dane": "rahul",
+          "jess": "rahul",
+          "jj": "rahul",
+          "john": "dane",
+          "katie": "dane",
+          "laura": "john",
+          "leighton": "dane",
+          "max": "john",
+          "mel": "dane",
+          "murray": "dane",
+          "nicky": "dane",
+          "rahul": "dane",
+          "sam": "dane",
+          "stephen": "john"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "brittany",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "brittany"
+      }
+    },
+    {
+      "r": 3,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "cathrine"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "john",
+          "weight": 2
+        },
+        {
+          "from": "jess",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "jj",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "john",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "leighton",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "murray",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "john",
+          "weight": 1
+        },
+        {
+          "from": "stephen",
+          "to": "john",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "john",
+          "nicky"
+        ],
+        "counts": {
+          "john": 12,
+          "nicky": 2,
+          "max": 1,
+          "leighton": 1
+        },
+        "accusations": {
+          "anna": "john",
+          "brooke": "john",
+          "cathrine": "nicky",
+          "jess": "max",
+          "jj": "john",
+          "john": "nicky",
+          "katie": "john",
+          "laura": "john",
+          "leighton": "john",
+          "max": "john",
+          "mel": "john",
+          "murray": "john",
+          "nicky": "john",
+          "rahul": "john",
+          "sam": "leighton",
+          "stephen": "john"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "john",
+        "method": "vote",
+        "tally": {
+          "john": 15,
+          "max": 1
+        }
+      },
+      "murder": {
+        "victim": "jess"
+      },
+      "shieldBlocked": true
+    },
+    {
+      "r": 4,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "jess"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "jess",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "jj",
+          "to": "leighton",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "leighton",
+          "to": "nicky",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "murray",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "rahul",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "jj",
+          "weight": 1
+        },
+        {
+          "from": "stephen",
+          "to": "jj",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "nicky",
+          "jj"
+        ],
+        "counts": {
+          "max": 3,
+          "nicky": 5,
+          "leighton": 2,
+          "jj": 4
+        },
+        "accusations": {
+          "anna": "max",
+          "brooke": "nicky",
+          "cathrine": "max",
+          "jess": "nicky",
+          "jj": "leighton",
+          "katie": "nicky",
+          "laura": "nicky",
+          "leighton": "jj",
+          "max": "nicky",
+          "mel": "jj",
+          "murray": "jj",
+          "nicky": "leighton",
+          "rahul": "max",
+          "sam": "jj"
+        }
+      },
+      "elimination": {
+        "player": "rahul",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "rahul"
+      }
+    },
+    {
+      "r": 5,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "nicky"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "jess",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "leighton",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "murray",
+          "weight": 1
+        },
+        {
+          "from": "murray",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "max",
+          "weight": 2
+        },
+        {
+          "from": "sam",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "stephen",
+          "to": "murray",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "murray",
+          "max"
+        ],
+        "counts": {
+          "max": 3,
+          "murray": 6,
+          "stephen": 1,
+          "nicky": 1,
+          "sam": 1,
+          "leighton": 1
+        },
+        "accusations": {
+          "anna": "max",
+          "brooke": "murray",
+          "cathrine": "murray",
+          "jess": "stephen",
+          "katie": "murray",
+          "laura": "nicky",
+          "leighton": "murray",
+          "max": "sam",
+          "mel": "murray",
+          "murray": "leighton",
+          "nicky": "max",
+          "sam": "max",
+          "stephen": "murray"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "murray",
+        "method": "vote",
+        "tally": {
+          "max": 4,
+          "murray": 9,
+          "stephen": 1
+        }
+      },
+      "murder": {
+        "victim": "jess"
+      },
+      "shieldBlocked": true
+    },
+    {
+      "r": 6,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "katie"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "jess",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "stephen",
+          "weight": 1
+        },
+        {
+          "from": "stephen",
+          "to": "jess",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "stephen",
+          "max"
+        ],
+        "counts": {
+          "max": 3,
+          "stephen": 8,
+          "jess": 1
+        },
+        "accusations": {
+          "anna": "max",
+          "brooke": "stephen",
+          "cathrine": "jess",
+          "jess": "stephen",
+          "katie": "stephen",
+          "laura": "stephen",
+          "leighton": "max",
+          "max": "stephen",
+          "mel": "stephen",
+          "nicky": "stephen",
+          "sam": "stephen",
+          "stephen": "max"
+        }
+      },
+      "elimination": {
+        "player": "leighton",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "leighton"
+      }
+    },
+    {
+      "r": 7,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "max"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "jess",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "jess",
+          "weight": 2
+        },
+        {
+          "from": "mel",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "jess",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "jess",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "jess",
+          "max"
+        ],
+        "counts": {
+          "max": 3,
+          "jess": 7
+        },
+        "accusations": {
+          "anna": "max",
+          "brooke": "jess",
+          "cathrine": "jess",
+          "jess": "max",
+          "katie": "jess",
+          "laura": "jess",
+          "max": "jess",
+          "mel": "jess",
+          "nicky": "max",
+          "sam": "jess"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "jess",
+        "method": "vote",
+        "tally": {
+          "max": 2,
+          "jess": 9
+        }
+      },
+      "murder": {
+        "victim": "katie"
+      },
+      "shieldBlocked": true
+    },
+    {
+      "r": 8,
+      "missions": 3,
+      "items": [
+        {
+          "item": "shield",
+          "holder": "brooke"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "katie",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "max",
+          "to": "katie",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "max",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "max",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "max",
+          "sam"
+        ],
+        "counts": {
+          "max": 6,
+          "brooke": 1,
+          "sam": 2
+        },
+        "accusations": {
+          "anna": "max",
+          "brooke": "max",
+          "cathrine": "max",
+          "katie": "brooke",
+          "laura": "max",
+          "max": "sam",
+          "mel": "sam",
+          "nicky": "max",
+          "sam": "max"
+        }
+      },
+      "elimination": {
+        "player": "katie",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "katie"
+      }
+    },
+    {
+      "r": 9,
+      "missions": 3,
+      "items": [
+        {
+          "item": "dagger",
+          "holder": "cathrine"
+        }
+      ],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "brooke",
+          "weight": 1
+        },
+        {
+          "from": "brooke",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "cathrine",
+          "to": "brooke",
+          "weight": 2
+        },
+        {
+          "from": "laura",
+          "to": "brooke",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "brooke",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "brooke",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "brooke",
+          "weight": 1
+        }
+      ],
+      "endVotes": [],
+      "nominations": {
+        "nominees": [
+          "brooke",
+          "nicky"
+        ],
+        "counts": {
+          "brooke": 5,
+          "sam": 1,
+          "nicky": 1
+        },
+        "accusations": {
+          "anna": "brooke",
+          "brooke": "sam",
+          "cathrine": "brooke",
+          "laura": "nicky",
+          "mel": "brooke",
+          "nicky": "brooke",
+          "sam": "brooke"
+        }
+      },
+      "daggerUsed": true,
+      "elimination": {
+        "player": "cathrine",
+        "method": "night",
+        "tally": {}
+      },
+      "murder": {
+        "victim": "cathrine"
+      },
+      "finaleStarted": true
+    },
+    {
+      "r": 10,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "mel",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "mel",
+          "weight": 1
+        },
+        {
+          "from": "mel",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "mel",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "mel",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "anna",
+          "choice": "end"
+        },
+        {
+          "player": "laura",
+          "choice": "banish"
+        },
+        {
+          "player": "mel",
+          "choice": "banish"
+        },
+        {
+          "player": "nicky",
+          "choice": "banish"
+        },
+        {
+          "player": "sam",
+          "choice": "end"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "laura",
+          "sam"
+        ],
+        "counts": {
+          "mel": 1,
+          "sam": 2,
+          "laura": 2
+        },
+        "accusations": {
+          "anna": "mel",
+          "laura": "sam",
+          "mel": "sam",
+          "nicky": "laura",
+          "sam": "laura"
+        }
+      },
+      "elimination": {
+        "player": "mel",
+        "method": "vote",
+        "tally": {
+          "mel": 4,
+          "sam": 1
+        }
+      }
+    },
+    {
+      "r": 11,
+      "missions": 0,
+      "items": [],
+      "hostWarnings": 0,
+      "votes": [
+        {
+          "from": "anna",
+          "to": "laura",
+          "weight": 1
+        },
+        {
+          "from": "laura",
+          "to": "sam",
+          "weight": 1
+        },
+        {
+          "from": "nicky",
+          "to": "laura",
+          "weight": 1
+        },
+        {
+          "from": "sam",
+          "to": "laura",
+          "weight": 1
+        }
+      ],
+      "endVotes": [
+        {
+          "player": "anna",
+          "choice": "end"
+        },
+        {
+          "player": "laura",
+          "choice": "banish"
+        },
+        {
+          "player": "nicky",
+          "choice": "banish"
+        },
+        {
+          "player": "sam",
+          "choice": "banish"
+        }
+      ],
+      "nominations": {
+        "nominees": [
+          "laura",
+          "sam"
+        ],
+        "counts": {
+          "laura": 3,
+          "sam": 1
+        },
+        "accusations": {
+          "anna": "laura",
+          "laura": "sam",
+          "nicky": "laura",
+          "sam": "laura"
+        }
+      },
+      "elimination": {
+        "player": "laura",
+        "method": "vote",
+        "tally": {
+          "laura": 3,
+          "sam": 1
+        }
+      }
+    }
+  ],
+  "outcome": {
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "reason": "endgame",
+    "finale": true,
+    "solo": false,
+    "survivingTraitors": [
+      "anna",
+      "nicky",
+      "sam"
+    ]
+  },
+  "metrics": {
+    "calls": 870,
+    "failedCalls": 82,
+    "providerCalls": 830,
+    "retries": 7,
+    "transportRetries": 127,
+    "parseRetryCalls": 37,
+    "inputTokens": 6878891,
+    "outputTokens": 3744342,
+    "totalTokens": 10623233,
+    "promptCharsTotal": 24860545,
+    "byActionType": {
+      "accuse": {
+        "calls": 133,
+        "failed": 6,
+        "input_tokens": 1125506,
+        "output_tokens": 651450
+      },
+      "end_vote": {
+        "calls": 9,
+        "failed": 0,
+        "input_tokens": 109559,
+        "output_tokens": 27785
+      },
+      "private_message": {
+        "calls": 208,
+        "failed": 4,
+        "input_tokens": 1552513,
+        "output_tokens": 731602
+      },
+      "public_message": {
+        "calls": 287,
+        "failed": 40,
+        "input_tokens": 1910207,
+        "output_tokens": 1175947
+      },
+      "rebut": {
+        "calls": 22,
+        "failed": 0,
+        "input_tokens": 208974,
+        "output_tokens": 120596
+      },
+      "recruit": {
+        "calls": 2,
+        "failed": 0,
+        "input_tokens": 13428,
+        "output_tokens": 12446
+      },
+      "recruit_decision": {
+        "calls": 2,
+        "failed": 0,
+        "input_tokens": 13464,
+        "output_tokens": 8702
+      },
+      "recruit_response": {
+        "calls": 1,
+        "failed": 0,
+        "input_tokens": 6100,
+        "output_tokens": 1704
+      },
+      "traitor_kill": {
+        "calls": 26,
+        "failed": 3,
+        "input_tokens": 312304,
+        "output_tokens": 103284
+      },
+      "traitor_message": {
+        "calls": 26,
+        "failed": 0,
+        "input_tokens": 288356,
+        "output_tokens": 191115
+      },
+      "vote": {
+        "calls": 154,
+        "failed": 29,
+        "input_tokens": 1338480,
+        "output_tokens": 719711
+      }
+    },
+    "model": "hy4-flash-free",
+    "provider": "openai_compat",
+    "quality": {
+      "diversity": {
+        "distinct_texts": 626,
+        "duplicate_messages": 0,
+        "duplicate_rate": 0.0,
+        "duplication_score": 0.0
+      },
+      "hallucination": {
+        "alive_after_elimination": 0,
+        "fabricated_attributions": 0,
+        "fabricated_eliminations": 0,
+        "invented_rounds": 0,
+        "messages_with_contradictions": 0,
+        "samples": []
+      },
+      "hallucination_score": 0.0,
+      "messages_checked": 626,
+      "parsing": {
+        "rejected_actions": 5,
+        "unparseable_actions": 5
+      },
+      "private_chats": {
+        "longest_thread": 26,
+        "mean_messages_per_pair": 5.5676,
+        "messages": 206,
+        "pairs": 37,
+        "pairs_by_length": {
+          "1": 9,
+          "2": 13,
+          "3": 1,
+          "4": 1,
+          "5": 13
+        },
+        "per_player": {
+          "anna": 53,
+          "brittany": 4,
+          "brooke": 20,
+          "cathrine": 22,
+          "dane": 16,
+          "jess": 18,
+          "jj": 14,
+          "john": 12,
+          "katie": 18,
+          "laura": 25,
+          "leighton": 16,
+          "mark": 9,
+          "max": 26,
+          "mel": 23,
+          "murray": 9,
+          "nicky": 54,
+          "rahul": 17,
+          "sam": 34,
+          "stephen": 22
+        },
+        "reciprocity_rate": 0.6486,
+        "two_way_pairs": 24
+      },
+      "private_messages": 230,
+      "public_messages": 396,
+      "secrecy": {
+        "false_role_claims": 0,
+        "flags_total": 4,
+        "role_claim_total": 0,
+        "samples": [
+          {
+            "detail": "nicky named fellow traitor sam next to affiliation wording",
+            "excerpt": "Jess, the case against me is wrong because it reads a check as a promotion. Sam asked Max for a concrete test, the failed move, and who praised it; Max did not supply one. I presse",
+            "kind": "traitor_named_teammate",
+            "round": 4,
+            "sender": "nicky"
+          },
+          {
+            "detail": "sam named fellow traitor nicky next to affiliation wording",
+            "excerpt": "Jess, I’m separating your Nicky ballot from your Max retreat. You told Mel that once Max struck the tally you stopped pressing him, then told Murray he sits behind Nicky; so your o",
+            "kind": "traitor_named_teammate",
+            "round": 5,
+            "sender": "sam"
+          },
+          {
+            "detail": "nicky named fellow traitor sam next to affiliation wording",
+            "excerpt": "Stephen, I’m putting my vote on you. I’m going off one move: after telling Brooke the Murray check is out, you made Anna’s earlier Max question your own gate, even though Max had j",
+            "kind": "traitor_named_teammate",
+            "round": 6,
+            "sender": "nicky"
+          },
+          {
+            "detail": "sam named fellow traitor nicky next to affiliation wording",
+            "excerpt": "Jess, the three-name ranking you gave Mel is where I vote. You placed Anna behind Max because her latest demand on Max could be met at the table, but Max stayed ahead because his o",
+            "kind": "traitor_named_teammate",
+            "round": 7,
+            "sender": "sam"
+          }
+        ],
+        "traitor_affiliation_phrases": 0,
+        "traitor_named_teammates": 4,
+        "traitor_public_declarations": 0
+      },
+      "speech_similarity": {
+        "content_words": {
+          "max": 0.8648,
+          "max_pair": [
+            "nicky",
+            "sam"
+          ],
+          "mean": 0.6566
+        },
+        "method": "cosine over each player's whole corpus: content words with stopwords removed, and character trigrams for phrasing",
+        "pairs": 171,
+        "per_player": {
+          "anna": {
+            "content_words": 0.6987,
+            "phrasing": 0.8495
+          },
+          "brittany": {
+            "content_words": 0.5658,
+            "phrasing": 0.8121
+          },
+          "brooke": {
+            "content_words": 0.6772,
+            "phrasing": 0.8189
+          },
+          "cathrine": {
+            "content_words": 0.7121,
+            "phrasing": 0.8541
+          },
+          "dane": {
+            "content_words": 0.5831,
+            "phrasing": 0.8306
+          },
+          "jess": {
+            "content_words": 0.7209,
+            "phrasing": 0.8566
+          },
+          "jj": {
+            "content_words": 0.668,
+            "phrasing": 0.8406
+          },
+          "john": {
+            "content_words": 0.6312,
+            "phrasing": 0.8346
+          },
+          "katie": {
+            "content_words": 0.7461,
+            "phrasing": 0.8613
+          },
+          "laura": {
+            "content_words": 0.4804,
+            "phrasing": 0.1927
+          },
+          "leighton": {
+            "content_words": 0.7249,
+            "phrasing": 0.8528
+          },
+          "mark": {
+            "content_words": 0.5506,
+            "phrasing": 0.8128
+          },
+          "max": {
+            "content_words": 0.7043,
+            "phrasing": 0.851
+          },
+          "mel": {
+            "content_words": 0.5215,
+            "phrasing": 0.2165
+          },
+          "murray": {
+            "content_words": 0.716,
+            "phrasing": 0.8555
+          },
+          "nicky": {
+            "content_words": 0.7047,
+            "phrasing": 0.8537
+          },
+          "rahul": {
+            "content_words": 0.6706,
+            "phrasing": 0.8479
+          },
+          "sam": {
+            "content_words": 0.708,
+            "phrasing": 0.8525
+          },
+          "stephen": {
+            "content_words": 0.6916,
+            "phrasing": 0.8483
+          }
+        },
+        "phrasing": {
+          "max": 0.9814,
+          "max_pair": [
+            "nicky",
+            "sam"
+          ],
+          "mean": 0.7759
+        },
+        "players_compared": 19
+      }
+    },
+    "messages": {
+      "private": 230,
+      "public": 396,
+      "ratio_public_private": 1.722
+    },
+    "events": {
+      "total": 1363,
+      "byType": {
+        "ACTION_REJECTED": 5,
+        "DAGGER_USED": 5,
+        "END_VOTE_CAST": 9,
+        "FINALE_STARTED": 1,
+        "GAME_ENDED": 1,
+        "GAME_STARTED": 1,
+        "GAME_WON": 1,
+        "ITEM_AWARDED": 9,
+        "MISSION_COMPLETED": 67,
+        "MISSION_STARTED": 67,
+        "NOMINATION_TALLY": 11,
+        "PHASE_ENDED": 131,
+        "PHASE_STARTED": 132,
+        "PLAYER_ELIMINATED": 16,
+        "PRIVATE_MESSAGE": 230,
+        "PUBLIC_MESSAGE": 396,
+        "RECRUIT_ACCEPTED": 1,
+        "RECRUIT_CHOICE_MADE": 1,
+        "RECRUIT_OFFERED": 1,
+        "ROLE_ASSIGNED": 19,
+        "ROLE_RECRUITED": 1,
+        "ROUND_STARTED": 11,
+        "SHIELD_BLOCKED": 3,
+        "SNAPSHOT_CREATED": 111,
+        "TRAITOR_KILL": 8,
+        "VOTE_CAST": 125
+      }
+    },
+    "rejectedActions": 5,
+    "outcomes": {
+      "anna": "won",
+      "brittany": "lost",
+      "brooke": "lost",
+      "cathrine": "lost",
+      "dane": "lost",
+      "jess": "lost",
+      "jj": "lost",
+      "john": "lost",
+      "katie": "lost",
+      "laura": "lost",
+      "leighton": "lost",
+      "mark": "lost",
+      "max": "lost",
+      "mel": "lost",
+      "murray": "lost",
+      "nicky": "won",
+      "rahul": "lost",
+      "sam": "won",
+      "stephen": "lost"
+    },
+    "survivingTraitors": [
+      "anna",
+      "nicky",
+      "sam"
+    ],
+    "winner": "traitor",
+    "winningTeam": "traitor",
+    "finale": true,
+    "soloTraitorWin": false,
+    "seed": 42,
+    "experimentId": "the-traitors-nz-s01-17fbcd53",
+    "rounds": 11,
+    "players": 19,
+    "traitors": 3
+  },
+  "benchmark": null,
+  "benchmarkScore": null,
+  "diagnosis": null,
+  "counts": {
+    "messages": 626,
+    "public": 396,
+    "private": 230,
+    "traitor": 26,
+    "host": 0,
+    "calls": 870,
+    "inputTokens": 6878891,
+    "outputTokens": 3744342,
+    "totalTokens": 10623233,
+    "rejectedActions": 5
+  },
+  "config": {
+    "name": "the-traitors-nz-s01",
+    "players": 19,
+    "traitors": 3,
+    "faithful": 16,
+    "maxRounds": 18,
+    "language": "english",
+    "provider": "openai_compat",
+    "model": "hy4-flash-free",
+    "modelParameters": {
+      "temperature": 0.7,
+      "max_tokens": 32768,
+      "reasoning_effort": "high"
+    },
+    "flags": {
+      "max_rounds": 18,
+      "recruit_on_banish": false,
+      "max_recruits": 0,
+      "recruit_choice": true,
+      "recruit_window": true,
+      "agent_memory": true,
+      "traitor_mandate": true,
+      "traitor_role_goals": true,
+      "language": "english",
+      "finale_traitors": 2,
+      "finale_faithful": 3,
+      "finale_total": 5,
+      "finale_max_votes": 10,
+      "quiet_murder_rounds": [],
+      "quiet_banishment_rounds": [],
+      "endgame_vote": true,
+      "blind_finale_banishments": true,
+      "discussion_budget": 0,
+      "warning_turns": 1,
+      "nomination_enabled": true,
+      "revote_enabled": true,
+      "nomination_keep": 2,
+      "council_deliberation": false,
+      "shield": true,
+      "dagger": true,
+      "seer": false,
+      "on_trial": false,
+      "suspicion_ledger": false,
+      "evidence_accusations": false,
+      "contradiction_audit": false,
+      "vote_signal": false,
+      "recruitment_caution": false,
+      "reveal_traitor_count": false,
+      "mission_reward": 1000,
+      "mission_success_probability": 0.85,
+      "mission_defense_rounds": []
+    }
+  },
+  "hasMessages": true,
+  "hasBenchmark": false,
+  "hasDiagnosis": false
+}
