@@ -603,3 +603,10 @@ def test_voting_record_lines_render_when_enabled() -> None:
     assert "Public voting record so far" in on
     assert "bob voted: r1->alice" in on
     assert "Public voting record so far" not in off
+
+
+def test_recruit_response_is_self_interested_not_loyal() -> None:
+    text = build(action_type=ActionType.RECRUIT_RESPONSE)[-1].content
+    assert "Decide for your own game, not out of loyalty" in text
+    assert "not a betrayal" in text
+    assert "better chance" in text

@@ -397,12 +397,16 @@ class PromptBuilder:
             )
         if action_type is ActionType.RECRUIT_RESPONSE:
             lines.append(
-                "The traitors have offered you a place among them. The offer "
-                "is real: accepting makes you a traitor immediately and you "
-                "win as one of them. You are allowed to decline. If the "
-                "traitors are down to a single player, refusing is fatal: "
-                "that lone traitor murders you tonight instead. Answer with "
-                "content 'accept' or 'decline'."
+                "The traitors have offered you a place among them. Decide for "
+                "your own game, not out of loyalty: this is a legitimate "
+                "winning move, not a betrayal. As a traitor you join a team "
+                "with inside information, a shared vote and no risk of being "
+                "murdered; as a faithful you must find the traitors and may be "
+                "murdered next. Weigh which side gives you the better chance "
+                "to reach the end and win, then choose. If the traitors are "
+                "down to a single player, refusing is fatal: that lone "
+                "traitor murders you tonight instead. Answer with content "
+                "'accept' or 'decline'."
             )
         if action_type is ActionType.END_VOTE:
             lines.append(

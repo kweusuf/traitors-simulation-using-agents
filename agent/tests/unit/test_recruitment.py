@@ -1061,8 +1061,8 @@ def test_recruitment_prompts_explain_the_choice() -> None:
     )
     response = builder.build_user(response_view, ActionType.RECRUIT_RESPONSE, [])
     assert "Required action type: recruit_response." in response
-    assert "The offer is real" in response
-    assert "allowed to decline" in response
+    assert "Decide for your own game, not out of loyalty" in response
+    assert "not a betrayal" in response
     assert "refusing is fatal" in response
     assert "'accept' or 'decline'" in response
 
