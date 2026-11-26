@@ -17,6 +17,7 @@ from simulation.engine.state import GamePhase, GameState, Role
 from simulation.environments.traitors.phases import (
     EliminationPhase,
     EndVotePhase,
+    IntroductionsPhase,
     MissionPhase,
     PrivateChatPhase,
     PublicDiscussionPhase,
@@ -53,6 +54,7 @@ class TraitorsEnvironment:
 
     def phases(self) -> dict[str, Phase]:
         return {
+            "introductions": IntroductionsPhase(),
             "mission": MissionPhase(),
             "public_discussion": PublicDiscussionPhase("public_discussion"),
             "round_table": RoundTablePhase(),

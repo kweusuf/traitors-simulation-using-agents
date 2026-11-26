@@ -21,6 +21,7 @@ class Role(str, Enum):
 
 class GamePhase(str, Enum):
     SETUP = "setup"
+    INTRODUCTIONS = "introductions"
     MISSION = "mission"
     PUBLIC_DISCUSSION = "public_discussion"
     PRIVATE_CHAT = "private_chat"

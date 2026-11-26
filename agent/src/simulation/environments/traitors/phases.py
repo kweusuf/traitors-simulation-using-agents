@@ -170,6 +170,29 @@ async def _run_debate(context: PhaseContext) -> None:
     await _run_hosted_debate(context, game.discussion_budget, game.warning_turns)
 
 
+_INTRODUCTION = (
+    "Opening introductions, before any suspicion. Introduce yourself to the "
+    "group: your name, where you come from, your profession or background, "
+    "and one personal detail that tells the room who you are. Three or four "
+    "sentences, in character and consistent with the persona you were given. "
+    "Do not accuse anyone or discuss the game yet."
+)
+
+
+class IntroductionsPhase:
+    """A short public introduction from every player before round 1."""
+
+    name = "introductions"
+
+    async def run(self, context: PhaseContext) -> Optional[PhaseResult]:
+        if not context.config.game.introductions:
+            return None
+        if context.engine.state.round_number != 1:
+            return None
+        await _ask_all_alive(context, ActionType.PUBLIC_MESSAGE, _INTRODUCTION)
+        return None
+
+
 class MissionPhase:
     """A mission banks money and earns the round's item on success.
 

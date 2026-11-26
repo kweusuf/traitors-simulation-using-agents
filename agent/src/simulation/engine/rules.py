@@ -20,6 +20,7 @@ from simulation.experiments.config import GameConfig
 # is on, so a default config keeps exactly the vocabulary it had before.
 PHASE_ALLOWED_ACTIONS: dict[GamePhase, frozenset[ActionType]] = {
     GamePhase.SETUP: frozenset(),
+    GamePhase.INTRODUCTIONS: frozenset({ActionType.PUBLIC_MESSAGE}),
     GamePhase.MISSION: frozenset(),
     GamePhase.PUBLIC_DISCUSSION: frozenset({ActionType.PUBLIC_MESSAGE}),
     GamePhase.PRIVATE_CHAT: frozenset({ActionType.PRIVATE_MESSAGE}),

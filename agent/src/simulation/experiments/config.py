@@ -183,6 +183,9 @@ class GameSettings(StrictModel):
     vote_signal: bool = False
     recruitment_caution: bool = False
     reveal_traitor_count: bool = False
+    # `introductions`: a round-1 opening where every player gives a short
+    # public background (name, origin, profession) before any suspicion.
+    introductions: bool = False
     # `voting_record`: show the public vote history, with revealed-traitor
     # cross-references, to every player. `faithful_mandate`: brief the
     # faithful at induction on using the record, testing claims, and

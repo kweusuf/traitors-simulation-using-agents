@@ -72,6 +72,13 @@ ARTIFACTS = (
 EventObserver = Callable[[Event], None]
 
 
+def _with_introductions(config: GameConfig) -> GameConfig:
+    """Prepend the opening introductions phase when the config asks for it."""
+    if config.game.introductions and "introductions" not in config.phases:
+        config.phases = ["introductions", *config.phases]
+    return config
+
+
 @dataclass
 class RunResult:
     game_id: str
@@ -315,7 +322,9 @@ class GameRunner:
         self.tracer.record("game_started", game_id=game_id, seed=seed)
         started = time.monotonic()
         asyncio.run(
-            PhaseEngine(config, env.engine, env.phases()).run(
+            PhaseEngine(
+                _with_introductions(config), env.engine, env.phases()
+            ).run(
                 context,
                 resume_at,
                 point.completed_phases if point is not None else (),
